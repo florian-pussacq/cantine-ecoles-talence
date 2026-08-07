@@ -4,10 +4,12 @@
   import { resolve } from '$app/paths';
   import Sprite from '$lib/illustrations/Sprite.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
+  import { appUpdate } from '$lib/pwa/update.svelte.js';
 
   let { children } = $props();
 
   allergenFilter.hydrate();
+  appUpdate.register();
 
   const tabs = [
     { path: '/', label: 'Jour' },
@@ -25,6 +27,17 @@
       <a href={resolve(tab.path)} aria-current={current ? 'page' : undefined}>{tab.label}</a>
     {/each}
   </nav>
+
+  {#if appUpdate.available}
+    <!--
+      La nouvelle version attend : elle ne remplace pas l'application pendant
+      qu'on la consulte, ce qui ferait perdre le jour qu'on regardait.
+    -->
+    <p class="update">
+      <span>Une nouvelle version est disponible.</span>
+      <button type="button" onclick={() => appUpdate.apply()}>Appliquer</button>
+    </p>
+  {/if}
 
   {@render children()}
 </div>
@@ -60,6 +73,32 @@
     color: var(--on-table);
     text-decoration: none;
     opacity: 0.75;
+  }
+
+  .update {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    background: var(--warn);
+    color: var(--warn-on);
+    border-radius: var(--radius-cell);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .update button {
+    font: inherit;
+    font-weight: 700;
+    color: var(--warn-on);
+    background: none;
+    border: 2px solid currentcolor;
+    border-radius: 999px;
+    min-height: var(--touch);
+    padding-inline: var(--space-3);
+    cursor: pointer;
   }
 
   /* L'onglet courant est signalé par un fond plein autant que par aria-current :

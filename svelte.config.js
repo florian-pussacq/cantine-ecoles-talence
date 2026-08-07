@@ -26,6 +26,11 @@ const config = {
       base: process.env.BASE_PATH ?? '',
       relative: true
     },
+    serviceWorker: {
+      // Enregistré à la main pour pouvoir détecter une version en attente et
+      // laisser l'utilisateur décider quand l'appliquer (src/lib/pwa/update).
+      register: false
+    },
     typescript: {
       config: (cfg) => {
         cfg.include = [...(cfg.include ?? []), '../scripts/**/*.js'];

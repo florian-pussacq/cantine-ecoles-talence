@@ -88,12 +88,12 @@
 
 ## 9. Hors ligne et installabilité
 
-- [ ] 9.1 Implémenter le service worker : cache-first sur la coque, stale-while-revalidate sur les données
-- [ ] 9.2 Versionner le cache par build et purger les caches obsolètes à l'activation
-- [ ] 9.3 Proposer l'application d'une nouvelle version sans perte du contexte de consultation
-- [ ] 9.4 Gérer la première ouverture hors ligne par un message explicite
-- [ ] 9.5 Écrire le manifeste PWA et produire les icônes, sans reprendre le logo ni la charte de la Ville
-- [ ] 9.6 Afficher l'avertissement de fraîcheur au-delà de 48 heures depuis la génération du manifeste
+- [x] 9.1 Implémenter le service worker : cache-first sur la coque, stale-while-revalidate sur les données
+- [x] 9.2 Versionner le cache par build et purger les caches obsolètes à l'activation
+- [x] 9.3 Proposer l'application d'une nouvelle version sans perte du contexte de consultation
+- [x] 9.4 Gérer la première ouverture hors ligne par un message explicite
+- [x] 9.5 Écrire le manifeste PWA et produire les icônes, sans reprendre le logo ni la charte de la Ville
+- [x] 9.6 Afficher l'avertissement de fraîcheur au-delà de 48 heures depuis la génération du manifeste
 
 ## 10. Écran À propos
 
@@ -106,7 +106,7 @@
 ## 11. Vérification
 
 - [ ] 11.1 Écrire les tests de rendu couvrant chaque état limite de la spécification
-- [ ] 11.2 Écrire le test de bout en bout : ouvrir, voir aujourd'hui, passer hors ligne, vérifier que le menu reste visible
+- [x] 11.2 Écrire le test de bout en bout : ouvrir, voir aujourd'hui, passer hors ligne, vérifier que le menu reste visible
 - [ ] 11.3 Vérifier l'accessibilité au clavier et au lecteur d'écran sur les quatre écrans
 - [ ] 11.4 Mesurer le LCP en 4G simulée sur profil mobile milieu de gamme et confirmer la tenue des budgets
 - [ ] 11.5 Vérifier qu'aucune requête n'est émise vers un domaine tiers
