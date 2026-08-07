@@ -1,10 +1,10 @@
 ## 1. Socle du projet
 
-- [ ] 1.1 Initialiser le projet SvelteKit avec TypeScript et `@sveltejs/adapter-static`, en mode prerender complet
-- [ ] 1.2 Configurer `base` de manière à supporter un déploiement sous sous-chemin GitHub Pages, et interdire les chemins absolus écrits à la main
-- [ ] 1.3 Mettre en place Vitest pour les tests unitaires et Playwright pour le test de bout en bout
-- [ ] 1.4 Ajouter une vérification de budget au build : échec si le JavaScript compressé dépasse 60 Ko ou le premier chargement 150 Ko
-- [ ] 1.5 Configurer le formatage, le lint et la vérification de types, exécutés en une seule commande
+- [x] 1.1 Initialiser le projet SvelteKit avec TypeScript et `@sveltejs/adapter-static`, en mode prerender complet
+- [x] 1.2 Configurer `base` de manière à supporter un déploiement sous sous-chemin GitHub Pages, et interdire les chemins absolus écrits à la main
+- [x] 1.3 Mettre en place Vitest pour les tests unitaires et Playwright pour le test de bout en bout
+- [x] 1.4 Ajouter une vérification de budget au build : échec si le JavaScript compressé dépasse 60 Ko ou le premier chargement 150 Ko
+- [x] 1.5 Configurer le formatage, le lint et la vérification de types, exécutés en une seule commande
 
 ## 2. Contrat de données
 

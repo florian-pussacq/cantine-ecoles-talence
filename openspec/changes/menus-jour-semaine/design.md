@@ -34,7 +34,9 @@ Trois contraintes structurantes, toutes issues du PRD et arbitrées avec le port
 
 Le premier arbitrage penchait vers vanilla : le budget de 60 Ko est confortable et l'application n'est qu'un lecteur de JSON. L'arbitrage a basculé quand la qualité visuelle et l'ergonomie ont été posées comme priorité n°1.
 
-SvelteKit fournit le routing, le service worker typé, le préchargement et le build optimisé. Son runtime coûte environ 15 Ko gzip, soit un quart du budget. Ce que l'on achète avec ces 10 Ko de différence, c'est du temps qui va au design plutôt qu'à la plomberie, et des transitions (`transition:`, `crossfade`) natives pour la navigation entre jours.
+SvelteKit fournit le routing, le service worker typé, le préchargement et le build optimisé. Ce que l'on achète, c'est du temps qui va au design plutôt qu'à la plomberie, et des transitions (`transition:`, `crossfade`) natives pour la navigation entre jours.
+
+*Mesuré après l'initialisation du socle :* la coque vide pèse **26,8 Ko de JavaScript gzip**, pas les 15 Ko estimés en amont. La marge sur le budget de 60 Ko n'est donc pas de 4× mais de 2,2× — il reste 33 Ko pour tout le code applicatif, ce qui est confortable pour un lecteur de JSON mais n'autorise aucune dépendance lourde. La vérification de budget au build (tâche 1.4) existe précisément pour que cette marge ne s'érode pas sans qu'on le voie.
 
 *Alternatives écartées :* vanilla + Vite (fait économiser 10 Ko sur un budget qui n'est pas contraint, en échange d'un routeur et d'un service worker à écrire) ; React (40 Ko pour afficher une liste — un impôt sans contrepartie ici) ; Astro (excellent pour le statique, mais l'interactivité client de l'écran Aujourd'hui en ferait un détour).
 

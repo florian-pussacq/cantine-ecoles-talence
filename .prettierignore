@@ -1,0 +1,12 @@
+.svelte-kit/
+build/
+node_modules/
+sources/
+.remember/
+package-lock.json
+
+# La documentation est de la prose relue à la main : Prettier la réécrirait
+# (guillemets d'emphase, lignes vides) sans rien apporter, et polluerait le diff
+# des specs à chaque exécution.
+*.md
+openspec/
