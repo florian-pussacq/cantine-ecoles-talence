@@ -209,6 +209,14 @@
     font-weight: 700;
   }
 
+  /* Les liens d'un tableau de définitions sont isolés, pas au fil d'une phrase :
+     ils doivent atteindre la cible tactile minimale. */
+  dd :global(a) {
+    min-height: var(--touch);
+    display: inline-flex;
+    align-items: center;
+  }
+
   @media (prefers-color-scheme: dark) {
     .panel :global(a) {
       color: var(--on-table);

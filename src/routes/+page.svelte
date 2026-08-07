@@ -279,5 +279,9 @@
     color: var(--on-table);
     font-weight: 700;
     opacity: 1;
+    /* Cible tactile : un lien isolé doit être atteignable au pouce. */
+    min-height: var(--touch);
+    display: inline-flex;
+    align-items: center;
   }
 </style>

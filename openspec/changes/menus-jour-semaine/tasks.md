@@ -105,12 +105,12 @@
 
 ## 11. Vérification
 
-- [ ] 11.1 Écrire les tests de rendu couvrant chaque état limite de la spécification
+- [x] 11.1 Écrire les tests de rendu couvrant chaque état limite de la spécification
 - [x] 11.2 Écrire le test de bout en bout : ouvrir, voir aujourd'hui, passer hors ligne, vérifier que le menu reste visible
-- [ ] 11.3 Vérifier l'accessibilité au clavier et au lecteur d'écran sur les quatre écrans
+- [x] 11.3 Vérifier l'accessibilité au clavier et au lecteur d'écran sur les quatre écrans
 - [ ] 11.4 Mesurer le LCP en 4G simulée sur profil mobile milieu de gamme et confirmer la tenue des budgets
-- [ ] 11.5 Vérifier qu'aucune requête n'est émise vers un domaine tiers
-- [ ] 11.6 Contrôler que les données affichées correspondent exactement au PDF de septembre 2026, allergènes compris
+- [x] 11.5 Vérifier qu'aucune requête n'est émise vers un domaine tiers
+- [x] 11.6 Contrôler que les données affichées correspondent exactement au PDF de septembre 2026, allergènes compris
 
 ## 12. Déploiement
 
