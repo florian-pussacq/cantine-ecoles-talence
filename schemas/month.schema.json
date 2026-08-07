@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://menus-talence.invalid/schemas/month.schema.json",
+  "title": "MonthMenu",
+  "description": "Les menus d'un mois. Un fichier par mois, publié sous /data/<AAAA-MM>.json. C'est le contrat entre le producteur des données et l'application ; toute évolution incompatible passe par un incrément de schemaVersion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "month", "source", "allergenLegend", "days"],
+  "properties": {
+    "schemaVersion": {
+      "description": "Version du contrat. Une application refuse un fichier dont la version dépasse celle qu'elle sait lire, plutôt que d'en interpréter une partie.",
+      "const": 1
+    },
+    "month": {
+      "description": "Mois couvert, au format AAAA-MM.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+    },
+    "source": { "$ref": "#/$defs/Source" },
+    "allergenLegend": { "$ref": "#/$defs/AllergenLegend" },
+    "days": {
+      "description": "Les jours couverts, triés par date croissante. Un jour non servi peut être absent ; il n'a pas à être représenté.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Day" }
+    }
+  },
+  "$defs": {
+    "Source": {
+      "title": "Source",
+      "description": "D'où viennent ces données et à quel point elles sont fraîches. Ces champs remplissent une obligation légale autant qu'un besoin d'interface : le CRPA impose d'indiquer la source et la date de dernière mise à jour d'une information publique réutilisée.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pdfUrl", "pdfSha256", "fetchedAt"],
+      "properties": {
+        "pdfUrl": {
+          "description": "URL du PDF officiel dont ce fichier dérive.",
+          "type": "string",
+          "format": "uri"
+        },
+        "pdfSha256": {
+          "description": "Empreinte du PDF, qui permet de savoir si la source a changé sans la ré-analyser.",
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "updatedLabel": {
+          "description": "Le libellé de mise à jour tel qu'imprimé sur le document, repris mot pour mot. Sert de repli quand la date n'a pas pu en être extraite.",
+          "type": ["string", "null"]
+        },
+        "updatedAt": {
+          "description": "La date de mise à jour extraite du document. Nulle si le document ne la donne pas ou si elle n'a pas pu être lue — il ne faut jamais l'inventer.",
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "fetchedAt": {
+          "description": "Instant de récupération du document, en UTC.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "producerVersion": {
+          "description": "Version du producteur ayant écrit ce fichier. « manual » pour une saisie humaine, un numéro de version pour le parser.",
+          "type": "string"
+        }
+      }
+    },
+    "AllergenLegend": {
+      "title": "AllergenLegend",
+      "description": "Les quatorze allergènes réglementaires, du code numérique vers son libellé en clair. La légende est portée par le fichier plutôt que codée en dur : elle est imprimée sur le document source et peut y être formulée autrement.",
+      "type": "object",
+      "propertyNames": { "pattern": "^([1-9]|1[0-4])$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "Day": {
+      "title": "Day",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["date", "kind", "confidence", "courses"],
+      "properties": {
+        "date": {
+          "description": "Date du jour couvert, au format AAAA-MM-JJ.",
+          "type": "string",
+          "format": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "kind": {
+          "description": "Nature du jour. « school » est un jour servi ; les autres ne le sont pas et n'ont pas de plats.",
+          "enum": ["school", "holiday", "weekend", "strike-fallback"]
+        },
+        "theme": {
+          "description": "Thème du jour, issu de l'encart « ZOOM SUR » du document. Nul la plupart du temps.",
+          "type": ["string", "null"]
+        },
+        "note": {
+          "description": "Note éditoriale accompagnant le thème.",
+          "type": ["string", "null"]
+        },
+        "revision": {
+          "description": "RÉSERVÉ — incrémenté par le pipeline à chaque changement détecté sur ce jour. Déclaré maintenant pour éviter un schemaVersion 2 sur un ajout prévisible, mais ni produit ni consommé tant que le pipeline de diff n'existe pas (design.md, D4).",
+          "type": "integer",
+          "minimum": 1
+        },
+        "changedAt": {
+          "description": "RÉSERVÉ — date du dernier changement détecté sur ce jour. Voir revision.",
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "courses": {
+          "description": "Les plats du jour, dans l'ordre de service. Un jour non servi porte une liste vide.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/Course" }
+        },
+        "confidence": {
+          "description": "Fiabilité des données de ce jour. « low » déclenche un avertissement dans l'application, le menu restant affiché : publier en dégradé plutôt que rien, mais jamais silencieusement.",
+          "enum": ["high", "low"]
+        }
+      }
+    },
+    "Course": {
+      "title": "Course",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "label", "allergens", "flags"],
+      "properties": {
+        "slot": {
+          "description": "Rôle du plat dans le repas. C'est une valeur sémantique et jamais une position : le document source comporte des cellules vides, ce qui interdit toute déduction par index.",
+          "enum": ["pain", "entree", "plat", "accompagnement", "laitage", "dessert", "gouter"]
+        },
+        "label": {
+          "description": "Libellé du plat, tel qu'imprimé, débarrassé de son suffixe d'allergènes. La borne de 80 caractères est un garde-fou : au-delà, c'est presque toujours le signe de deux cellules fusionnées par erreur.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "allergens": {
+          "description": "Codes des allergènes déclarés pour ce plat. Une liste vide signifie « aucun allergène déclaré sur le document », ce qui ne garantit pas l'absence de traces.",
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 14 },
+          "uniqueItems": true
+        },
+        "flags": {
+          "description": "Labels de qualité imprimés à côté du plat.",
+          "type": "array",
+          "items": {
+            "enum": [
+              "bio",
+              "label-rouge",
+              "vbf",
+              "vpf",
+              "vf",
+              "pf",
+              "msc",
+              "igp",
+              "bbc",
+              "ue-subventionne"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "porkFree": {
+          "description": "Texte de substitution du régime sans porc, quand le document en propose une pour ce plat.",
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://menus-talence.invalid/schemas/index.schema.json",
+  "title": "MenuIndex",
+  "description": "Le manifeste des mois disponibles, publié sous /data/index.json. C'est le seul fichier que l'application retélécharge systématiquement au démarrage ; il doit donc rester petit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "months"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedAt": {
+      "description": "Instant de génération du manifeste, en UTC. Au-delà de 48 heures, l'application affiche un avertissement de fraîcheur.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "months": {
+      "description": "Les mois publiés, triés par mois croissant.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/MonthEntry" }
+    }
+  },
+  "$defs": {
+    "MonthEntry": {
+      "title": "MonthEntry",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["month", "contentHash"],
+      "properties": {
+        "month": {
+          "description": "Mois couvert, au format AAAA-MM. Le fichier correspondant est /data/<mois>.json.",
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+        },
+        "contentHash": {
+          "description": "Empreinte du fichier mensuel. L'application ne le retélécharge que si cette empreinte diffère de celle qu'elle a en cache.",
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "updatedAt": {
+          "description": "Date de mise à jour de la source de ce mois, recopiée depuis le fichier mensuel pour permettre un affichage sans le télécharger.",
+          "type": ["string", "null"],
+          "format": "date"
+        }
+      }
+    }
+  }
+}

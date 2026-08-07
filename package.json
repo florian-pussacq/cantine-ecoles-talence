@@ -9,10 +9,11 @@
     "preview": "vite preview",
     "budget": "node scripts/check-budget.js",
     "format": "prettier --write .",
-    "validate": "prettier --check . && eslint . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
+    "validate": "prettier --check . && eslint . && node scripts/generate-types.js --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
     "test:unit": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
-    "prepare": "svelte-kit sync"
+    "prepare": "svelte-kit sync",
+    "types": "node scripts/generate-types.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -8,11 +8,11 @@
 
 ## 2. Contrat de données
 
-- [ ] 2.1 Écrire le JSON Schema du fichier mensuel (`schemaVersion` 1) : mois, source, légende des allergènes, jours, plats, rôles, allergènes, labels, `confidence`
-- [ ] 2.2 Déclarer `revision` et `changedAt` dans le schéma en les documentant comme réservés au futur pipeline, sans les consommer
-- [ ] 2.3 Écrire le JSON Schema du manifeste `index.json` : mois disponibles, empreinte de contenu, date de génération
-- [ ] 2.4 Dériver les types TypeScript du schéma et vérifier au build qu'ils ne divergent pas
-- [ ] 2.5 Documenter le schéma dans un fichier lisible par le futur auteur du parser Python
+- [x] 2.1 Écrire le JSON Schema du fichier mensuel (`schemaVersion` 1) : mois, source, légende des allergènes, jours, plats, rôles, allergènes, labels, `confidence`
+- [x] 2.2 Déclarer `revision` et `changedAt` dans le schéma en les documentant comme réservés au futur pipeline, sans les consommer
+- [x] 2.3 Écrire le JSON Schema du manifeste `index.json` : mois disponibles, empreinte de contenu, date de génération
+- [x] 2.4 Dériver les types TypeScript du schéma et vérifier au build qu'ils ne divergent pas
+- [x] 2.5 Documenter le schéma dans un fichier lisible par le futur auteur du parser Python
 
 ## 3. Données de septembre 2026 saisies à la main
 
