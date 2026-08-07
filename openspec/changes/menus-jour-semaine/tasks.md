@@ -27,12 +27,12 @@
 
 ## 4. Chargement et résolution des données
 
-- [ ] 4.1 Implémenter le chargement du manifeste puis des mois, avec repli sur le cache en cas d'échec réseau
-- [ ] 4.2 Refuser un fichier dont `schemaVersion` est supérieur à la version supportée, et afficher le message dédié
-- [ ] 4.3 Implémenter `resolveDisplayDay(dataset, now)` en fonction pure, sans lecture de l'horloge
-- [ ] 4.4 Implémenter la navigation vers le jour servi précédent et suivant, en sautant les jours non servis
-- [ ] 4.5 Implémenter l'ordre de priorité entre sources : événementiel, transition, mensuel ; le menu de grève n'étant jamais sélectionné automatiquement
-- [ ] 4.6 Couvrir par des tests unitaires les états limites : week-end, vacances, fin de mois publié, mois absent, bornes du jeu de données
+- [x] 4.1 Implémenter le chargement du manifeste puis des mois, avec repli sur le cache en cas d'échec réseau
+- [x] 4.2 Refuser un fichier dont `schemaVersion` est supérieur à la version supportée, et afficher le message dédié
+- [x] 4.3 Implémenter `resolveDisplayDay(dataset, now)` en fonction pure, sans lecture de l'horloge
+- [x] 4.4 Implémenter la navigation vers le jour servi précédent et suivant, en sautant les jours non servis
+- [x] 4.5 Implémenter l'ordre de priorité entre sources : événementiel, transition, mensuel ; le menu de grève n'étant jamais sélectionné automatiquement
+- [x] 4.6 Couvrir par des tests unitaires les états limites : week-end, vacances, fin de mois publié, mois absent, bornes du jeu de données
 
 ## 5. Direction visuelle
 

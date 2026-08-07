@@ -142,6 +142,10 @@ export interface MonthEntry {
    */
   contentHash: string;
   /**
+   * Nature du fichier, qui fixe sa priorité quand plusieurs couvrent la même date : « event » l'emporte sur « transition », qui l'emporte sur « monthly ». Un fichier « strike » n'est jamais retenu automatiquement, l'application ne pouvant pas savoir qu'il y a grève. Absent, la valeur est « monthly ».
+   */
+  kind?: 'monthly' | 'transition' | 'event' | 'strike';
+  /**
    * Date de mise à jour de la source de ce mois, recopiée depuis le fichier mensuel pour permettre un affichage sans le télécharger.
    */
   updatedAt?: string | null;
