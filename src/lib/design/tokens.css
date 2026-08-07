@@ -1,0 +1,160 @@
+/**
+ * Palette « Réfectoire » et échelles, arrêtées sur maquette (design.md, D15).
+ *
+ * Le parti pris est la couleur franche plutôt que le pastel terreux. Deux
+ * teintes ont été assombries pour tenir 4,5:1 avec du texte blanc, et la
+ * volaille inverse sa polarité — son ambre est trop clair pour du blanc, et
+ * l'assombrir jusqu'à la lisibilité l'aurait virée au marron.
+ *
+ * Chaque famille porte trois valeurs : la couleur pleine, une teinte pâle pour
+ * les fonds de disque, et la couleur du texte qui tient dessus. Une illustration
+ * colorée n'est jamais posée sur un aplat saturé : elle repose sur la teinte
+ * pâle, sans quoi un poisson bleu sur fond bleu disparaît.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Surfaces */
+  --table: #1e5a6b;
+  --tray: #f3f5f1;
+  --cell: #e3e9e4;
+  --edge: #c6d0ca;
+  --chip: #ffffff;
+  --sheet: #f7f9f6;
+  /* Alvéole d'un rôle absent : toujours plus sombre que les autres, dans les
+     deux thèmes, pour qu'un creux se lise comme un creux et non comme un relief. */
+  --cell-empty: #d5ded7;
+
+  /* Encres */
+  --ink: #16211f;
+  --ink-muted: #56645f;
+  --on-table: #f3f5f1;
+
+  /* Familles de plat */
+  --fam-viande: #d93b2b;
+  --fam-viande-pale: #faded9;
+  --fam-viande-on: #ffffff;
+
+  --fam-volaille: #e89406;
+  --fam-volaille-pale: #fcebce;
+  --fam-volaille-on: #2a1b00;
+
+  --fam-poisson: #1479be;
+  --fam-poisson-pale: #d7e9f8;
+  --fam-poisson-on: #ffffff;
+
+  --fam-vegetarien: #23803e;
+  --fam-vegetarien-pale: #d8eddf;
+  --fam-vegetarien-on: #ffffff;
+
+  --fam-inconnu: #5f6b66;
+  --fam-inconnu-pale: #e3e6e4;
+  --fam-inconnu-on: #ffffff;
+
+  /* Sémantique — distincte des familles, jamais utilisée comme accent */
+  --warn: #e89406;
+  --warn-on: #2a1b00;
+
+  /* Typographie : pile système, aucune requête réseau (PRD §8) */
+  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --text-xs: 0.6875rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.5rem;
+
+  /* Espacements */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+
+  --radius-cell: 10px;
+  --radius-tray: 15px;
+
+  /* Cible tactile minimale (WCAG 2.1 AA) */
+  --touch: 44px;
+}
+
+/**
+ * Thème sombre.
+ *
+ * Les familles sont éclaircies pour retrouver leur contraste sur fond sombre.
+ * L'inversion de polarité de la volaille disparaît au passage : sur une surface
+ * sombre, l'ambre porte du texte clair comme les autres.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --table: #0d1a20;
+    --tray: #1b262d;
+    --cell: #232f37;
+    --edge: #33424b;
+    --chip: #2c3941;
+    --sheet: #1b262d;
+    --cell-empty: #182229;
+
+    --ink: #e8eef1;
+    --ink-muted: #9aa9b1;
+    --on-table: #e8eef1;
+
+    --fam-viande: #b32d1f;
+    --fam-viande-pale: #3a201c;
+    --fam-viande-on: #ffffff;
+
+    --fam-volaille: #a86a04;
+    --fam-volaille-pale: #392b12;
+    --fam-volaille-on: #ffffff;
+
+    --fam-poisson: #10598b;
+    --fam-poisson-pale: #17303f;
+    --fam-poisson-on: #ffffff;
+
+    --fam-vegetarien: #1a6130;
+    --fam-vegetarien-pale: #18301f;
+    --fam-vegetarien-on: #ffffff;
+
+    --fam-inconnu: #47514d;
+    --fam-inconnu-pale: #262e2b;
+    --fam-inconnu-on: #ffffff;
+
+    --warn: #a86a04;
+    --warn-on: #ffffff;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--table);
+}
+
+body {
+  margin: 0;
+  background: var(--table);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(a, button):focus-visible {
+  outline: 3px solid var(--on-table);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

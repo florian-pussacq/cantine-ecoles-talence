@@ -23,7 +23,7 @@
 - [x] 3.5 Relire la saisie ligne à ligne contre le PDF, en accordant une attention particulière aux allergènes
 - [x] 3.6 Déclarer le couple PDF → sortie attendue comme premier cas golden destiné au futur parser
 - [x] 3.7 Construire un second fixture synthétique portant des cas limites : jour sans entrée, jour sans accompagnement, jour `confidence: low`, jour `holiday`
-- [ ] 3.8 Recenser les libellés de septembre non couverts par la table de mots-clés, pour alimenter le groupe 5bis
+- [x] 3.8 Recenser les libellés de septembre non couverts par la table de mots-clés, pour alimenter le groupe 5bis
 
 ## 4. Chargement et résolution des données
 
@@ -37,35 +37,35 @@
 ## 5. Direction visuelle
 
 - [x] 5.1 Arrêter la direction visuelle sur maquettes — palette Réfectoire, encodage gommette (D15)
-- [ ] 5.2 Traduire la palette Réfectoire en CSS custom properties : cinq familles avec teinte pleine, teinte pâle et couleur de texte associée
-- [ ] 5.3 Définir l'échelle typographique et l'échelle d'espacement en jetons
-- [ ] 5.4 Décliner les jetons en thème sombre via `prefers-color-scheme`, sans bascule manuelle
+- [x] 5.2 Traduire la palette Réfectoire en CSS custom properties : cinq familles avec teinte pleine, teinte pâle et couleur de texte associée
+- [x] 5.3 Définir l'échelle typographique et l'échelle d'espacement en jetons
+- [x] 5.4 Décliner les jetons en thème sombre via `prefers-color-scheme`, sans bascule manuelle
 - [ ] 5.5 Vérifier les rapports de contraste sur les deux thèmes, y compris l'inversion de polarité de la volaille et les états de signalement d'allergène
-- [ ] 5.6 Choisir et auto-héberger la police, sans requête vers un domaine tiers
+- [x] 5.6 Choisir et auto-héberger la police, sans requête vers un domaine tiers
 
 ## 5bis. Bibliothèque d'illustrations
 
-- [ ] 5b.1 Recenser les familles d'aliments à partir d'une année de menus réels et arrêter la liste des dessins à produire
-- [ ] 5b.2 Dessiner les illustrations en SVG, dans un style cohérent, lisibles de la plus petite à la plus grande taille d'affichage
+- [x] 5b.1 Recenser les familles d'aliments à partir d'une année de menus réels et arrêter la liste des dessins à produire
+- [x] 5b.2 Dessiner les illustrations en SVG, dans un style cohérent, lisibles de la plus petite à la plus grande taille d'affichage
 - [ ] 5b.3 Dessiner l'illustration de repli et les pictogrammes des quatorze allergènes
-- [ ] 5b.4 Implémenter l'association libellé → famille en fonction pure, insensible à la casse et aux accents, avec règle de spécificité documentée
-- [ ] 5b.5 Implémenter le repli et recenser les libellés non reconnus de manière consultable
-- [ ] 5b.6 Marquer les illustrations comme décoratives et vérifier que le menu reste compréhensible sans elles
-- [ ] 5b.7 Mesurer le poids de la bibliothèque, brut et compressé, contre le budget de 150 Ko
+- [x] 5b.4 Implémenter l'association libellé → famille en fonction pure, insensible à la casse et aux accents, avec règle de spécificité documentée
+- [x] 5b.5 Implémenter le repli et recenser les libellés non reconnus de manière consultable
+- [x] 5b.6 Marquer les illustrations comme décoratives et vérifier que le menu reste compréhensible sans elles
+- [x] 5b.7 Mesurer le poids de la bibliothèque, brut et compressé, contre le budget de 150 Ko
 
 ## 6. Écran Aujourd'hui
 
-- [ ] 6.1 Construire la grille compartimentée : alvéoles dimensionnées par rôle, alvéole principale pleine largeur
-- [ ] 6.2 Appliquer la couleur de famille à l'alvéole du plat principal, avec une teinte de repli honnête pour les plats inclassables
-- [ ] 6.3 Traiter le cas du jour à rôle manquant selon l'arbitrage « creux vide ou grille réorganisée »
-- [ ] 6.4 Placer le goûter hors du plateau, sous une séparation
-- [ ] 6.5 Afficher le surtitre de date (« Aujourd'hui » / « Prochain service · dans N jours ») au-dessus de la date, plus le thème et la note éditoriale du jour
-- [ ] 6.6 Implémenter la navigation entre jours au clavier et par commande visible, avec focus visible
+- [x] 6.1 Construire la grille compartimentée : alvéoles dimensionnées par rôle, alvéole principale pleine largeur
+- [x] 6.2 Appliquer la couleur de famille à l'alvéole du plat principal, avec une teinte de repli honnête pour les plats inclassables
+- [x] 6.3 Traiter le cas du jour à rôle manquant selon l'arbitrage « creux vide ou grille réorganisée »
+- [x] 6.4 Placer le goûter hors du plateau, sous une séparation
+- [x] 6.5 Afficher le surtitre de date (« Aujourd'hui » / « Prochain service · dans N jours ») au-dessus de la date, plus le thème et la note éditoriale du jour
+- [x] 6.6 Implémenter la navigation entre jours au clavier et par commande visible, avec focus visible
 - [ ] 6.7 Ajouter le balayage horizontal et la transition associée, désactivée sous `prefers-reduced-motion`
-- [ ] 6.8 Implémenter le détail des allergènes d'un plat en libellés clairs, avec le cas « aucun allergène déclaré »
-- [ ] 6.9 Afficher la bannière de confiance faible et son renvoi vers le PDF officiel
-- [ ] 6.10 Afficher les mentions de source et de date de mise à jour accessibles depuis l'écran
-- [ ] 6.11 Vérifier l'absence de squelette et d'indicateur de chargement lorsque les données sont en cache
+- [x] 6.8 Implémenter le détail des allergènes d'un plat en libellés clairs, avec le cas « aucun allergène déclaré »
+- [x] 6.9 Afficher la bannière de confiance faible et son renvoi vers le PDF officiel
+- [x] 6.10 Afficher les mentions de source et de date de mise à jour accessibles depuis l'écran
+- [x] 6.11 Vérifier l'absence de squelette et d'indicateur de chargement lorsque les données sont en cache
 
 ## 7. Écran Semaine
 
