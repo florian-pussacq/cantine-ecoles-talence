@@ -40,6 +40,14 @@
   {/if}
 
   {@render children()}
+
+  <!--
+    « À propos » n'est pas un onglet : on le consulte une fois, pas tous les
+    matins. Un quatrième onglet volerait de la place à ce qu'on ouvre chaque jour.
+  -->
+  <footer class="about">
+    <a href={resolve('/a-propos')}>Source, mentions et vie privée</a>
+  </footer>
 </div>
 
 <style>
@@ -73,6 +81,22 @@
     color: var(--on-table);
     text-decoration: none;
     opacity: 0.75;
+  }
+
+  .about {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    text-align: center;
+  }
+
+  .about a {
+    color: var(--on-table);
+    opacity: 0.7;
+    font-size: var(--text-xs);
+    min-height: var(--touch);
+    display: inline-flex;
+    align-items: center;
+    padding-inline: var(--space-3);
   }
 
   .update {

@@ -97,11 +97,11 @@
 
 ## 10. Écran À propos
 
-- [ ] 10.1 Rédiger et afficher la source, la date de mise à jour et le lien vers le PDF officiel
-- [ ] 10.2 Afficher l'avertissement non masquable « seul le document officiel de la Ville fait foi »
-- [ ] 10.3 Afficher la mention de non-affiliation et le lien vers l'application officielle
-- [ ] 10.4 Documenter l'absence de suivi, de cookie et de ressource tierce
-- [ ] 10.5 Documenter la limitation d'installation sur iOS
+- [x] 10.1 Rédiger et afficher la source, la date de mise à jour et le lien vers le PDF officiel
+- [x] 10.2 Afficher l'avertissement non masquable « seul le document officiel de la Ville fait foi »
+- [x] 10.3 Afficher la mention de non-affiliation et le lien vers l'application officielle
+- [x] 10.4 Documenter l'absence de suivi, de cookie et de ressource tierce
+- [x] 10.5 Documenter la limitation d'installation sur iOS
 
 ## 11. Vérification
 
@@ -110,7 +110,7 @@
 - [ ] 11.3 Vérifier l'accessibilité au clavier et au lecteur d'écran sur les quatre écrans
 - [ ] 11.4 Mesurer le LCP en 4G simulée sur profil mobile milieu de gamme et confirmer la tenue des budgets
 - [ ] 11.5 Vérifier qu'aucune requête n'est émise vers un domaine tiers
-- [ ] 11.6 Contrôler que les données affichées correspondent exactement au PDF de juin 2026, allergènes compris
+- [ ] 11.6 Contrôler que les données affichées correspondent exactement au PDF de septembre 2026, allergènes compris
 
 ## 12. Déploiement
 
