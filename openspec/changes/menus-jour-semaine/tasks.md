@@ -69,22 +69,22 @@
 
 ## 7. Écran Semaine
 
-- [ ] 7.1 Construire la liste des cinq jours ouvrés, une ligne par jour, avec le disque de famille et le plat principal
-- [ ] 7.2 Placer jour et numéro en tête de ligne, en encre pleine
-- [ ] 7.3 Marquer le jour courant par quatre signaux dont aucun n'est chromatique
-- [ ] 7.4 Rendre chaque jour actionnable vers l'écran Aujourd'hui correspondant
-- [ ] 7.5 Distinguer visuellement un jour non publié d'un jour sans école
-- [ ] 7.6 Reporter le signalement d'allergène sur cette vue
-- [ ] 7.7 Dessiner les états vacances scolaires, jour férié et semaine non publiée
+- [x] 7.1 Construire la liste des cinq jours ouvrés, une ligne par jour, avec le disque de famille et le plat principal
+- [x] 7.2 Placer jour et numéro en tête de ligne, en encre pleine
+- [x] 7.3 Marquer le jour courant par quatre signaux dont aucun n'est chromatique
+- [x] 7.4 Rendre chaque jour actionnable vers l'écran Aujourd'hui correspondant
+- [x] 7.5 Distinguer visuellement un jour non publié d'un jour sans école
+- [x] 7.6 Reporter le signalement d'allergène sur cette vue
+- [x] 7.7 Dessiner les états vacances scolaires, jour férié et semaine non publiée
 
 ## 8. Filtre allergènes
 
-- [ ] 8.1 Implémenter la persistance du jeu d'allergènes en `localStorage`, avec dégradation silencieuse si le stockage est indisponible
-- [ ] 8.2 Construire l'écran de réglage : les quatorze allergènes en libellés clairs, cibles tactiles d'au moins 44 pixels
-- [ ] 8.3 Implémenter le signalement des plats concernés, doublé d'un libellé textuel et d'une marque non chromatique
+- [x] 8.1 Implémenter la persistance du jeu d'allergènes en `localStorage`, avec dégradation silencieuse si le stockage est indisponible
+- [x] 8.2 Construire l'écran de réglage : les quatorze allergènes en libellés clairs, cibles tactiles d'au moins 44 pixels
+- [x] 8.3 Implémenter le signalement des plats concernés, doublé d'un libellé textuel et d'une marque non chromatique
 - [ ] 8.4 Restituer le signalement aux lecteurs d'écran et vérifier sa lisibilité en niveaux de gris
-- [ ] 8.5 Traiter le cas « sélection vide » sans invitation insistante à en configurer une
-- [ ] 8.6 Informer l'utilisateur si l'enregistrement est impossible faute de stockage
+- [x] 8.5 Traiter le cas « sélection vide » sans invitation insistante à en configurer une
+- [x] 8.6 Informer l'utilisateur si l'enregistrement est impossible faute de stockage
 
 ## 9. Hors ligne et installabilité
 

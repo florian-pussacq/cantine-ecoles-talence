@@ -3,9 +3,25 @@
   import { classify } from '../illustrations/families.js';
   import type { ResolvedDay } from '../data/dataset.js';
   import type { Course } from '../data/schema.js';
-  import { LUNCH_SLOTS, qualityLabel, slotAbsence, slotLabel } from './labels.js';
+  import {
+    allergenNames,
+    LUNCH_SLOTS,
+    qualityLabel,
+    shortAllergenName,
+    slotAbsence,
+    slotLabel
+  } from './labels.js';
+  import { allergenFilter } from '../filter/allergens.svelte.js';
+  import AllergenChip from './AllergenChip.svelte';
 
   let { day, onSelect }: { day: ResolvedDay; onSelect: (course: Course) => void } = $props();
+
+  /** Les allergènes cochés que porte ce plat, en libellés courts. */
+  function flagged(course: Course): string[] {
+    return allergenNames({ ...course, allergens: allergenFilter.matching(course) }, day.legend).map(
+      (allergen) => shortAllergenName(allergen.name)
+    );
+  }
 
   /**
    * Les six compartiments du déjeuner, dans l'ordre du service.
@@ -43,6 +59,9 @@
                   {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
                 </span>
               {/if}
+              {#if flagged(course).length > 0}
+                <AllergenChip names={flagged(course)} />
+              {/if}
             </span>
           </button>
         {:else}
@@ -65,6 +84,9 @@
               <span class="tags muted-tags">
                 {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
               </span>
+            {/if}
+            {#if flagged(course).length > 0}
+              <AllergenChip names={flagged(course)} />
             {/if}
           </button>
         {:else}

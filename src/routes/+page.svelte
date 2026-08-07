@@ -8,6 +8,7 @@
   import Illustration from '$lib/illustrations/Illustration.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import { classify } from '$lib/illustrations/families.js';
+  import { selection } from '$lib/menu/selection.svelte.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -15,8 +16,8 @@
   const now = new Date();
   const target = $derived(resolveDisplayDay(data.dataset, now));
 
-  /** La date consultée. Elle part du jour résolu et suit la navigation. */
-  let chosen = $state<string | null>(null);
+  /** La date consultée : celle choisie depuis la semaine, ou le jour résolu. */
+  const chosen = $derived(selection.date);
   const date = $derived(chosen ?? (target.status === 'not-published' ? null : target.date));
   const day = $derived(date === null ? null : (data.dataset.byDate.get(date) ?? null));
 
@@ -36,8 +37,8 @@
 
   function onKeydown(event: KeyboardEvent) {
     if (selected !== null) return;
-    if (event.key === 'ArrowLeft' && previous !== null) chosen = previous;
-    if (event.key === 'ArrowRight' && next !== null) chosen = next;
+    if (event.key === 'ArrowLeft' && previous !== null) selection.set(previous);
+    if (event.key === 'ArrowRight' && next !== null) selection.set(next);
   }
 </script>
 
@@ -106,13 +107,13 @@
   <nav aria-label="Navigation entre les jours">
     <button
       type="button"
-      onclick={() => previous && (chosen = previous)}
+      onclick={() => previous && selection.set(previous)}
       disabled={previous === null}
     >
       <span aria-hidden="true">←</span>
       {previous === null ? 'Début des menus' : formatDay(previous, { month: 'short' })}
     </button>
-    <button type="button" onclick={() => next && (chosen = next)} disabled={next === null}>
+    <button type="button" onclick={() => next && selection.set(next)} disabled={next === null}>
       {next === null ? 'Fin des menus' : formatDay(next, { month: 'short' })}
       <span aria-hidden="true">→</span>
     </button>
