@@ -16,13 +16,13 @@
 
 ## 3. Données de septembre 2026 saisies à la main
 
-- [ ] 3.1 Ranger `09-MENUS-WEB-SEPTEMBRE-2026.pdf` sous `sources/pdf/`, versionné et exclu du build
-- [ ] 3.2 Saisir le mois complet dans `static/data/2026-09.json` : jours ouvrés, rôles, libellés, allergènes, labels qualité, thèmes
-- [ ] 3.3 Renseigner le bloc source : URL du PDF, empreinte SHA-256, libellé et date de mise à jour
-- [ ] 3.4 Générer `static/data/index.json` et vérifier la validation des deux fichiers contre leurs schémas
-- [ ] 3.5 Relire la saisie ligne à ligne contre le PDF, en accordant une attention particulière aux allergènes
-- [ ] 3.6 Copier le jeu de données comme premier fixture golden destiné au futur parser
-- [ ] 3.7 Construire un second fixture synthétique portant des cas limites : jour sans entrée, jour sans accompagnement, jour `confidence: low`, jour `holiday`
+- [x] 3.1 Ranger `09-MENUS-WEB-SEPTEMBRE-2026.pdf` sous `sources/pdf/`, versionné et exclu du build
+- [x] 3.2 Saisir le mois complet dans `static/data/2026-09.json` : jours ouvrés, rôles, libellés, allergènes, labels qualité, thèmes
+- [x] 3.3 Renseigner le bloc source : URL du PDF, empreinte SHA-256, libellé et date de mise à jour
+- [x] 3.4 Générer `static/data/index.json` et vérifier la validation des deux fichiers contre leurs schémas
+- [x] 3.5 Relire la saisie ligne à ligne contre le PDF, en accordant une attention particulière aux allergènes
+- [x] 3.6 Déclarer le couple PDF → sortie attendue comme premier cas golden destiné au futur parser
+- [x] 3.7 Construire un second fixture synthétique portant des cas limites : jour sans entrée, jour sans accompagnement, jour `confidence: low`, jour `holiday`
 - [ ] 3.8 Recenser les libellés de septembre non couverts par la table de mots-clés, pour alimenter le groupe 5bis
 
 ## 4. Chargement et résolution des données

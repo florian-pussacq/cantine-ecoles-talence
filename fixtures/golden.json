@@ -1,0 +1,11 @@
+{
+  "description": "Couples PDF source → sortie attendue, pour la non-régression du futur parser. Voir fixtures/README.md.",
+  "cases": [
+    {
+      "pdf": "sources/pdf/09-MENUS-WEB-SEPTEMBRE-2026.pdf",
+      "expected": "static/data/2026-09.json",
+      "producedBy": "manual",
+      "notes": "Premier mois saisi à la main. Contient un lundi 31 août : un fichier mensuel déborde sur le mois précédent, parce que la grille est découpée en semaines entières."
+    }
+  ]
+}

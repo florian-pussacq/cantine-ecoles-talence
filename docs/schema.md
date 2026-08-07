@@ -17,14 +17,18 @@ Le producteur n'a donc à connaître que les deux fichiers `schemas/`. Il n'a au
 
 JSON Schema valide la forme, pas la cohérence. Les règles suivantes viennent du PRD §6.2.5 et doivent être vérifiées par le producteur **avant publication** :
 
-- chaque jour ouvré du mois est présent, sauf vacances scolaires ;
 - un jour servi comporte entre 3 et 8 plats ;
 - un jour servi comporte au moins un plat de rôle `plat` ;
-- les dates appartiennent bien au mois annoncé par `month` ;
-- les jours sont triés par date croissante ;
-- `allergenLegend` couvre tous les codes réellement cités dans les plats.
+- un jour non servi ne porte aucun plat ;
+- les jours sont strictement croissants en date ;
+- `allergenLegend` couvre tous les codes réellement cités dans les plats ;
+- les dates ne s'écartent pas de plus d'une semaine du mois annoncé par `month`.
 
-Un jour qui échoue à l'une de ces règles n'est pas retiré : il est publié avec `confidence: "low"`, ce qui déclenche un avertissement dans l'application. **Publier en dégradé plutôt que rien, mais jamais en silence.**
+Un jour qui échoue à l'une de ces règles n'est pas retiré : il est publié avec `confidence: "low"`, ce qui déclenche un avertissement dans l'application. **Publier en dégradé plutôt que rien, mais jamais en silence.** Un jour incohérent qui se déclare `high`, lui, fait échouer la validation.
+
+`npm run data` applique ces règles ; `npm run data:index` les applique puis régénère le manifeste.
+
+> **Une règle a été corrigée par les données réelles.** La première rédaction exigeait que toute date appartienne au mois annoncé. Le document de septembre 2026 commence au **lundi 31 août** : la grille est découpée en semaines entières, pas en mois. La règle tolère donc une semaine de débordement de chaque côté. C'est exactement ce que la construction du consommateur avant le producteur était censée révéler.
 
 Les types TypeScript générés perdent au passage quelques contraintes que le schéma exprime — `allergens` y devient `number[]` sans la borne 1–14. La validation à l'exécution, elle, s'appuie sur le schéma et les conserve.
 

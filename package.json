@@ -9,11 +9,13 @@
     "preview": "vite preview",
     "budget": "node scripts/check-budget.js",
     "format": "prettier --write .",
-    "validate": "prettier --check . && eslint . && node scripts/generate-types.js --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
+    "validate": "prettier --check . && eslint . && node scripts/generate-types.js --check && node scripts/validate-data.js && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
     "test:unit": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
     "prepare": "svelte-kit sync",
-    "types": "node scripts/generate-types.js"
+    "types": "node scripts/generate-types.js",
+    "data": "node scripts/validate-data.js",
+    "data:index": "node scripts/validate-data.js --write-index"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
