@@ -6,14 +6,22 @@ maintenable dans le temps, performant, resilient et compréhensible.
 
 ## Agent skills
 
-### Issue tracker
+### Suivi des changements
 
-Local markdown — issues et specs sous `.scratch/<feature>/`. Voir `docs/agents/issue-tracker.md`.
+**OpenSpec est le seul tracker.** Un changement vit sous `openspec/changes/<nom>/` :
+`proposal.md` (pourquoi) → `design.md` (comment) + `specs/<capability>/spec.md` (quoi) → `tasks.md`.
 
-### Triage labels
+Commandes : `openspec list`, `openspec status --change <nom>`, `openspec validate <nom>`.
+Skills : `/opsx:propose`, `/opsx:continue`, `/opsx:apply`, `/opsx:verify`, `/opsx:archive`, `/opsx:explore`.
 
-Vocabulaire canonique par défaut (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). Voir `docs/agents/triage-labels.md`.
+N'utilise pas `.scratch/` : ce répertoire n'est pas le tracker de ce dépôt.
 
 ### Domain docs
 
 Single-context — `CONTEXT.md` + `docs/adr/` à la racine. Voir `docs/agents/domain.md`.
+
+### Skills mattpocock
+
+Outils de pensée, pas un tracker : `/grilling`, `/domain-modeling`, `/tdd`, `/research`,
+`/prototype`, `/codebase-design`, `/diagnosing-bugs`. Ce qu'ils appellent « publier au
+tracker », c'est un artefact OpenSpec.
