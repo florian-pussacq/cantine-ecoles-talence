@@ -40,7 +40,7 @@
 - [x] 5.2 Traduire la palette Réfectoire en CSS custom properties : cinq familles avec teinte pleine, teinte pâle et couleur de texte associée
 - [x] 5.3 Définir l'échelle typographique et l'échelle d'espacement en jetons
 - [x] 5.4 Décliner les jetons en thème sombre via `prefers-color-scheme`, sans bascule manuelle
-- [ ] 5.5 Vérifier les rapports de contraste sur les deux thèmes, y compris l'inversion de polarité de la volaille et les états de signalement d'allergène
+- [x] 5.5 Vérifier les rapports de contraste sur les deux thèmes, y compris l'inversion de polarité de la volaille et les états de signalement d'allergène
 - [x] 5.6 Choisir et auto-héberger la police, sans requête vers un domaine tiers
 
 ## 5bis. Bibliothèque d'illustrations
@@ -82,7 +82,7 @@
 - [x] 8.1 Implémenter la persistance du jeu d'allergènes en `localStorage`, avec dégradation silencieuse si le stockage est indisponible
 - [x] 8.2 Construire l'écran de réglage : les quatorze allergènes en libellés clairs, cibles tactiles d'au moins 44 pixels
 - [x] 8.3 Implémenter le signalement des plats concernés, doublé d'un libellé textuel et d'une marque non chromatique
-- [ ] 8.4 Restituer le signalement aux lecteurs d'écran et vérifier sa lisibilité en niveaux de gris
+- [x] 8.4 Restituer le signalement aux lecteurs d'écran et vérifier sa lisibilité en niveaux de gris
 - [x] 8.5 Traiter le cas « sélection vide » sans invitation insistante à en configurer une
 - [x] 8.6 Informer l'utilisateur si l'enregistrement est impossible faute de stockage
 
@@ -108,7 +108,7 @@
 - [x] 11.1 Écrire les tests de rendu couvrant chaque état limite de la spécification
 - [x] 11.2 Écrire le test de bout en bout : ouvrir, voir aujourd'hui, passer hors ligne, vérifier que le menu reste visible
 - [x] 11.3 Vérifier l'accessibilité au clavier et au lecteur d'écran sur les quatre écrans
-- [ ] 11.4 Mesurer le LCP en 4G simulée sur profil mobile milieu de gamme et confirmer la tenue des budgets
+- [x] 11.4 Mesurer le LCP en 4G simulée sur profil mobile milieu de gamme et confirmer la tenue des budgets
 - [x] 11.5 Vérifier qu'aucune requête n'est émise vers un domaine tiers
 - [x] 11.6 Contrôler que les données affichées correspondent exactement au PDF de septembre 2026, allergènes compris
 
