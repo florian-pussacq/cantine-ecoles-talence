@@ -114,7 +114,7 @@
 
 ## 12. Déploiement
 
-- [ ] 12.1 Écrire le workflow GitHub Actions de construction et de publication sur GitHub Pages
-- [ ] 12.2 Vérifier le rendu sous sous-chemin, en particulier la résolution des fichiers de données
-- [ ] 12.3 Ajouter un contrôle post-déploiement vérifiant que le manifeste est bien servi
+- [x] 12.1 Écrire le workflow GitHub Actions de construction et de publication sur GitHub Pages
+- [x] 12.2 Vérifier le rendu sous sous-chemin, en particulier la résolution des fichiers de données
+- [x] 12.3 Ajouter un contrôle post-déploiement vérifiant que le manifeste est bien servi
 - [ ] 12.4 Vérifier l'installation et le fonctionnement hors ligne sur un appareil réel
