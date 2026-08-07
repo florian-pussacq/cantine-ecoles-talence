@@ -47,7 +47,7 @@
 
 - [x] 5b.1 Recenser les familles d'aliments à partir d'une année de menus réels et arrêter la liste des dessins à produire
 - [x] 5b.2 Dessiner les illustrations en SVG, dans un style cohérent, lisibles de la plus petite à la plus grande taille d'affichage
-- [ ] 5b.3 Dessiner l'illustration de repli et les pictogrammes des quatorze allergènes
+- [x] 5b.3 Dessiner l'illustration de repli et les pictogrammes des quatorze allergènes
 - [x] 5b.4 Implémenter l'association libellé → famille en fonction pure, insensible à la casse et aux accents, avec règle de spécificité documentée
 - [x] 5b.5 Implémenter le repli et recenser les libellés non reconnus de manière consultable
 - [x] 5b.6 Marquer les illustrations comme décoratives et vérifier que le menu reste compréhensible sans elles
@@ -61,7 +61,7 @@
 - [x] 6.4 Placer le goûter hors du plateau, sous une séparation
 - [x] 6.5 Afficher le surtitre de date (« Aujourd'hui » / « Prochain service · dans N jours ») au-dessus de la date, plus le thème et la note éditoriale du jour
 - [x] 6.6 Implémenter la navigation entre jours au clavier et par commande visible, avec focus visible
-- [ ] 6.7 Ajouter le balayage horizontal et la transition associée, désactivée sous `prefers-reduced-motion`
+- [x] 6.7 Ajouter le balayage horizontal et la transition associée, désactivée sous `prefers-reduced-motion`
 - [x] 6.8 Implémenter le détail des allergènes d'un plat en libellés clairs, avec le cas « aucun allergène déclaré »
 - [x] 6.9 Afficher la bannière de confiance faible et son renvoi vers le PDF officiel
 - [x] 6.10 Afficher les mentions de source et de date de mise à jour accessibles depuis l'écran

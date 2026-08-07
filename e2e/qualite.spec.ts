@@ -115,3 +115,64 @@ test('le menu du jour est peint rapidement', async ({ page }) => {
   // preuve que l'objectif est tenu. Celle-ci demande un appareil réel (12.4).
   expect(lcp).toBeLessThan(2500);
 });
+
+test('le balayage horizontal change de jour', async ({ page }) => {
+  await page.goto('/');
+  const titre = page.getByRole('heading', { level: 1 });
+  const initial = await titre.textContent();
+
+  const plateau = page.locator('.balayage');
+  const boite = await plateau.boundingBox();
+  if (boite === null) throw new Error('plateau introuvable');
+
+  const y = boite.y + boite.height / 2;
+  // Vers la gauche : jour suivant.
+  await page.mouse.move(boite.x + boite.width - 20, y);
+  await page.touchscreen.tap(boite.x + boite.width - 20, y);
+  await page.dispatchEvent('.balayage', 'pointerdown', {
+    clientX: boite.x + boite.width - 20,
+    clientY: y,
+    pointerType: 'touch'
+  });
+  await page.dispatchEvent('.balayage', 'pointerup', {
+    clientX: boite.x + 20,
+    clientY: y,
+    pointerType: 'touch'
+  });
+  await expect(titre).not.toHaveText(initial ?? '');
+
+  // Vers la droite : retour au jour précédent.
+  await page.dispatchEvent('.balayage', 'pointerdown', {
+    clientX: boite.x + 20,
+    clientY: y,
+    pointerType: 'touch'
+  });
+  await page.dispatchEvent('.balayage', 'pointerup', {
+    clientX: boite.x + boite.width - 20,
+    clientY: y,
+    pointerType: 'touch'
+  });
+  await expect(titre).toHaveText(initial ?? '');
+});
+
+test('un défilement vertical ne change pas de jour', async ({ page }) => {
+  await page.goto('/');
+  const titre = page.getByRole('heading', { level: 1 });
+  const initial = await titre.textContent();
+  const boite = await page.locator('.balayage').boundingBox();
+  if (boite === null) throw new Error('plateau introuvable');
+
+  // Un geste surtout vertical, même s'il dérive un peu de côté, ne doit rien
+  // déclencher : c'est un défilement, pas une navigation.
+  await page.dispatchEvent('.balayage', 'pointerdown', {
+    clientX: boite.x + 60,
+    clientY: boite.y + 40,
+    pointerType: 'touch'
+  });
+  await page.dispatchEvent('.balayage', 'pointerup', {
+    clientX: boite.x + 160,
+    clientY: boite.y + 300,
+    pointerType: 'touch'
+  });
+  await expect(titre).toHaveText(initial ?? '');
+});

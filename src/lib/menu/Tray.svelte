@@ -16,11 +16,15 @@
 
   let { day, onSelect }: { day: ResolvedDay; onSelect: (course: Course) => void } = $props();
 
-  /** Les allergènes cochés que porte ce plat, en libellés courts. */
-  function flagged(course: Course): string[] {
-    return allergenNames({ ...course, allergens: allergenFilter.matching(course) }, day.legend).map(
-      (allergen) => shortAllergenName(allergen.name)
-    );
+  /** Les allergènes cochés que porte ce plat : leurs codes et leurs noms courts. */
+  function flagged(course: Course) {
+    const codes = allergenFilter.matching(course);
+    return {
+      codes,
+      names: allergenNames({ ...course, allergens: codes }, day.legend).map((allergen) =>
+        shortAllergenName(allergen.name)
+      )
+    };
   }
 
   /**
@@ -59,8 +63,8 @@
                   {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
                 </span>
               {/if}
-              {#if flagged(course).length > 0}
-                <AllergenChip names={flagged(course)} />
+              {#if flagged(course).codes.length > 0}
+                <AllergenChip {...flagged(course)} />
               {/if}
             </span>
           </button>
@@ -85,8 +89,8 @@
                 {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
               </span>
             {/if}
-            {#if flagged(course).length > 0}
-              <AllergenChip names={flagged(course)} />
+            {#if flagged(course).codes.length > 0}
+              <AllergenChip {...flagged(course)} />
             {/if}
           </button>
         {:else}

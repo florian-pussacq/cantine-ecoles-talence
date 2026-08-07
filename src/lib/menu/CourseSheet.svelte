@@ -4,6 +4,7 @@
   import type { Course } from '../data/schema.js';
   import { allergenNames, qualityLabel, slotLabel } from './labels.js';
   import ExternalLink from '../ui/ExternalLink.svelte';
+  import { allergenIcon } from '../illustrations/allergens.js';
 
   let {
     course,
@@ -54,13 +55,7 @@
         {#each allergens as allergen (allergen.code)}
           <li>
             <svg width="21" height="21" aria-hidden="true" focusable="false" class="alg-icon">
-              <use
-                href={allergen.code === 7
-                  ? '#alg-lait'
-                  : allergen.code === 3
-                    ? '#alg-oeufs'
-                    : '#alg-defaut'}
-              />
+              <use href={`#${allergenIcon(allergen.code)}`} />
             </svg>
             <span>{allergen.name}</span>
           </li>

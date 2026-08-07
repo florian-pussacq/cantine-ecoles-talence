@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { allergenIcon } from '../illustrations/allergens.js';
+
   /**
    * Le signalement d'un allergène de la sélection.
    *
@@ -8,16 +10,13 @@
    */
   let {
     names,
+    codes = [],
     compact = false,
     count = null
-  }: { names: string[]; compact?: boolean; count?: number | null } = $props();
+  }: { names: string[]; codes?: number[]; compact?: boolean; count?: number | null } = $props();
 
-  const ICONS: Record<string, string> = {
-    Lait: '#alg-lait',
-    Œufs: '#alg-oeufs'
-  };
-
-  const icon = $derived(ICONS[names[0] ?? ''] ?? '#alg-defaut');
+  // Le pictogramme est celui du premier allergène cité, choisi par son code.
+  const icon = $derived(`#${allergenIcon(codes[0] ?? 0)}`);
   /*
     Sur la semaine, le nombre de plats concernés compte plus que la liste des
     allergènes : à Talence, presque chaque jour contient du lait, si bien qu'une

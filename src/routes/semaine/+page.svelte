@@ -65,16 +65,19 @@
   }
 
   /** Les allergènes de la sélection présents quelque part dans la journée. */
-  function flagged(day: NonNullable<(typeof days)[number]['day']>): string[] {
-    const codes = new Set(day.courses.flatMap((course) => allergenFilter.matching(course)));
-    return [...codes]
-      .sort((a, b) => a - b)
-      .map((code) =>
+  function flagged(day: NonNullable<(typeof days)[number]['day']>) {
+    const codes = [
+      ...new Set(day.courses.flatMap((course) => allergenFilter.matching(course)))
+    ].sort((a, b) => a - b);
+    return {
+      codes,
+      names: codes.map((code) =>
         shortAllergenName(
           allergenNames({ slot: 'plat', label: '', allergens: [code], flags: [] }, day.legend)[0]
             ?.name ?? String(code)
         )
-      );
+      )
+    };
   }
 
   async function open(date: string) {
@@ -128,9 +131,9 @@
               </span>
               <span class="main">{course.label}</span>
               {#if rest(day)}<span class="rest">{rest(day)}</span>{/if}
-              {#if flagged(day).length > 0}
+              {#if flagged(day).codes.length > 0}
                 <span class="chips">
-                  <AllergenChip names={flagged(day)} count={flaggedCount(day)} compact />
+                  <AllergenChip {...flagged(day)} count={flaggedCount(day)} compact />
                 </span>
               {/if}
             </span>

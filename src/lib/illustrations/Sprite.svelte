@@ -136,19 +136,33 @@
       <circle cx="24" cy="24" r="10.5" fill="#dfe4e1" />
     </symbol>
 
-    <!-- Allergènes. Trois seulement pour l'instant ; il en faut quatorze. -->
-    <symbol id="alg-lait" viewBox="0 0 48 48">
+    <!--
+      Les quatorze allergènes réglementaires.
+
+      Chaque forme est distincte en silhouette, pas seulement en teinte : posés
+      côte à côte dans la feuille de détail, ils doivent rester distinguables en
+      niveaux de gris. Ils n'apparaissent jamais seuls, toujours à côté du nom
+      de l'allergène en toutes lettres.
+    -->
+    <symbol id="alg-gluten" viewBox="0 0 48 48">
+      <path d="M24 6v36" stroke="#b07a2e" stroke-width="3" stroke-linecap="round" />
       <path
-        d="M24 6c7 9.5 11.5 14.5 11.5 21A11.5 11.5 0 0 1 12.5 27C12.5 20.5 17 15.5 24 6z"
-        fill="#2e62a8"
+        d="M24 14c-5-1-8-4-9-8 5-1 8 1 9 4zM24 14c5-1 8-4 9-8-5-1-8 1-9 4zM24 25c-5-1-8-4-9-8 5-1 8 1 9 4zM24 25c5-1 8-4 9-8-5-1-8 1-9 4zM24 36c-5-1-8-4-9-8 5-1 8 1 9 4zM24 36c5-1 8-4 9-8-5-1-8 1-9 4z"
+        fill="#dfa868"
       />
+    </symbol>
+
+    <symbol id="alg-crustaces" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="27" rx="10" ry="12" fill="#d4674a" />
+      <path d="M17 16c-4-3-7-3-9-1 2 3 5 4 8 4zM31 16c4-3 7-3 9-1-2 3-5 4-8 4z" fill="#b34e34" />
       <path
-        d="M20 25c0 3 1.6 5 4 5.6"
-        stroke="#a8c6ec"
-        stroke-width="2.4"
-        fill="none"
+        d="M12 30h-5M36 30h5M13 36l-4 3M35 36l4 3"
+        stroke="#b34e34"
+        stroke-width="3"
         stroke-linecap="round"
       />
+      <circle cx="20" cy="21" r="1.8" fill="#5c2317" />
+      <circle cx="28" cy="21" r="1.8" fill="#5c2317" />
     </symbol>
 
     <symbol id="alg-oeufs" viewBox="0 0 48 48">
@@ -164,6 +178,142 @@
       <circle cx="24" cy="27" r="6.2" fill="#e08f1b" />
     </symbol>
 
+    <symbol id="alg-poisson" viewBox="0 0 48 48">
+      <path d="M15 24c0-7 7.5-12 15-12s14 5 14 12-6.5 12-14 12-15-5-15-12z" fill="#5b93b5" />
+      <path d="M15 24 4 14.5v19z" fill="#3d7292" />
+      <circle cx="36.5" cy="21" r="2.2" fill="#16323f" />
+    </symbol>
+
+    <symbol id="alg-arachides" viewBox="0 0 48 48">
+      <path
+        d="M24 8c6 0 9 4 9 8 0 3-2 5-2 8s2 5 2 8c0 4-3 8-9 8s-9-4-9-8c0-3 2-5 2-8s-2-5-2-8c0-4 3-8 9-8z"
+        fill="#c99a5c"
+      />
+      <path d="M17 22c4 2 10 2 14 0" stroke="#9c7238" stroke-width="2.4" fill="none" />
+      <circle cx="21" cy="16" r="1.6" fill="#9c7238" />
+      <circle cx="27" cy="34" r="1.6" fill="#9c7238" />
+    </symbol>
+
+    <symbol id="alg-soja" viewBox="0 0 48 48">
+      <path
+        d="M11 30c0-8 6-14 14-14 7 0 12 4 12 9 0 6-5 9-11 9-5 0-9-2-9-6"
+        stroke="#6a9741"
+        stroke-width="6"
+        fill="none"
+        stroke-linecap="round"
+      />
+      <circle cx="17" cy="30" r="3" fill="#c7dcae" />
+      <circle cx="26" cy="25" r="3" fill="#c7dcae" />
+      <circle cx="33" cy="27" r="3" fill="#c7dcae" />
+    </symbol>
+
+    <symbol id="alg-lait" viewBox="0 0 48 48">
+      <path
+        d="M24 6c7 9.5 11.5 14.5 11.5 21A11.5 11.5 0 0 1 12.5 27C12.5 20.5 17 15.5 24 6z"
+        fill="#2e62a8"
+      />
+      <path
+        d="M20 25c0 3 1.6 5 4 5.6"
+        stroke="#a8c6ec"
+        stroke-width="2.4"
+        fill="none"
+        stroke-linecap="round"
+      />
+    </symbol>
+
+    <symbol id="alg-fruits-a-coque" viewBox="0 0 48 48">
+      <path d="M24 8c9 0 15 7 15 15s-6 17-15 17S9 31 9 23 15 8 24 8z" fill="#a5703c" />
+      <path d="M24 8c4 6 6 12 6 16s-2 10-6 16" stroke="#7d5228" stroke-width="2.6" fill="none" />
+      <path d="M24 8c-4 6-6 12-6 16s2 10 6 16" stroke="#7d5228" stroke-width="2.6" fill="none" />
+    </symbol>
+
+    <symbol id="alg-celeri" viewBox="0 0 48 48">
+      <path
+        d="M18 40c-1-10 0-18 2-26M24 40c0-11 1-19 2-27M30 40c1-10 2-17 4-24"
+        stroke="#5b9440"
+        stroke-width="4.5"
+        stroke-linecap="round"
+        fill="none"
+      />
+      <path d="M14 41h20" stroke="#3f6e2c" stroke-width="5" stroke-linecap="round" />
+      <ellipse cx="21" cy="12" rx="6" ry="4" transform="rotate(-18 21 12)" fill="#7fb95c" />
+      <ellipse cx="33" cy="15" rx="5" ry="3.5" transform="rotate(-30 33 15)" fill="#7fb95c" />
+    </symbol>
+
+    <symbol id="alg-moutarde" viewBox="0 0 48 48">
+      <path d="M18 12h12l2 6H16z" fill="#c9a227" />
+      <path d="M16 18h16l2 20a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3z" fill="#e8c34a" />
+      <path d="M20 8h8v4h-8z" fill="#9c7c14" />
+      <circle cx="24" cy="30" r="4" fill="#9c7c14" />
+    </symbol>
+
+    <symbol id="alg-sesame" viewBox="0 0 48 48">
+      <ellipse
+        cx="17"
+        cy="18"
+        rx="4"
+        ry="6"
+        transform="rotate(-25 17 18)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+      <ellipse
+        cx="31"
+        cy="21"
+        rx="4"
+        ry="6"
+        transform="rotate(20 31 21)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+      <ellipse
+        cx="22"
+        cy="32"
+        rx="4"
+        ry="6"
+        transform="rotate(-10 22 32)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+      <ellipse
+        cx="33"
+        cy="34"
+        rx="4"
+        ry="6"
+        transform="rotate(35 33 34)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+    </symbol>
+
+    <symbol id="alg-sulfites" viewBox="0 0 48 48">
+      <path
+        d="M18 6h12v9c0 3 5 6 5 12v16a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V27c0-6 5-9 5-12z"
+        fill="#8e5b8a"
+      />
+      <path d="M13 30h22v13a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3z" fill="#6d3f6a" />
+      <path d="M17 5h14v3H17z" fill="#5a325a" />
+    </symbol>
+
+    <symbol id="alg-lupin" viewBox="0 0 48 48">
+      <path d="M24 42V20" stroke="#5b9440" stroke-width="3.5" stroke-linecap="round" />
+      <ellipse cx="24" cy="12" rx="5" ry="7" fill="#7b6bbd" />
+      <ellipse cx="16" cy="21" rx="5" ry="6" transform="rotate(-25 16 21)" fill="#9b8bd6" />
+      <ellipse cx="32" cy="21" rx="5" ry="6" transform="rotate(25 32 21)" fill="#9b8bd6" />
+      <ellipse cx="18" cy="31" rx="4.5" ry="5.5" transform="rotate(-20 18 31)" fill="#7b6bbd" />
+      <ellipse cx="30" cy="31" rx="4.5" ry="5.5" transform="rotate(20 30 31)" fill="#7b6bbd" />
+    </symbol>
+
+    <symbol id="alg-mollusques" viewBox="0 0 48 48">
+      <path d="M24 40 7 20c0-7 8-12 17-12s17 5 17 12z" fill="#d8b48a" />
+      <path d="M24 40 15 18M24 40l9-22M24 40V15" stroke="#a8834f" stroke-width="2.2" fill="none" />
+    </symbol>
+
+    <!-- Repli : un code que la légende introduirait sans qu'on l'ait dessiné. -->
     <symbol id="alg-defaut" viewBox="0 0 48 48">
       <circle cx="24" cy="24" r="17" fill="#8d7f5f" />
       <path d="M24 13v14" stroke="#fbf6ea" stroke-width="4" stroke-linecap="round" />
