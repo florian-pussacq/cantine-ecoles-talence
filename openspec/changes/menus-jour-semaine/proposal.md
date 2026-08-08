@@ -6,7 +6,7 @@ Ce premier change livre le cœur consommable du produit : **l'écran du jour lis
 
 ## What Changes
 
-- Mise en place d'une PWA **SvelteKit + `adapter-static`**, déployée en fichiers statiques (GitHub Pages), sans aucun backend.
+- Mise en place d'une PWA **SvelteKit + `adapter-static`**, déployée en fichiers statiques (Netlify), sans aucun backend.
 - Publication du **schéma JSON des menus** (`schemaVersion: 1`) comme contrat versionné entre producteur et consommateur — le producteur de ce change est un humain, le producteur suivant sera le parser.
 - Saisie manuelle d'**un mois de menus réels** (juin 2026) conforme au schéma, commité comme donnée *et* comme fixture.
 - Écran **Aujourd'hui** : date, thème éventuel, plats disposés en grille compartimentée façon plateau, illustration par plat, allergènes sélectionnés mis en évidence. Navigation jour précédent / suivant.
@@ -39,6 +39,6 @@ Aucune — premier change du projet, `openspec/specs/` est vide.
 - **Nouvelles dépendances** : `svelte`, `@sveltejs/kit`, `@sveltejs/adapter-static`, `vite`, `typescript`, `vitest`, `@playwright/test`. Budget à tenir : < 60 Ko JS gzip, < 150 Ko au premier chargement (PRD §8).
 - **Nouvelles données versionnées** : `static/data/index.json` et `static/data/2026-06.json`, qui serviront aussi de fixtures de test.
 - **Contrat inter-composants** : le JSON Schema publié devient la frontière que le futur parser Python devra respecter. Le figer correctement ici est le principal enjeu de conception de ce change.
-- **Déploiement** : GitHub Actions → GitHub Pages. Ne nécessite pas de dépôt distant pour développer, seulement pour publier.
+- **Déploiement** : GitLab CI vérifie, Netlify publie (D2). Ne nécessite pas de dépôt distant pour développer, seulement pour publier.
 - **Conformité** : cible RGAA / WCAG 2.1 AA dès le départ (moins cher que de rattraper). Zéro tracking, zéro cookie, zéro CDN tiers, zéro Google Font.
 - **Risque produit assumé** : une donnée allergène fausse a des conséquences médicales. Le disclaimer et le rappel du document officiel ne sont pas décoratifs.

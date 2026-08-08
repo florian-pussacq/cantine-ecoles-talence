@@ -42,15 +42,23 @@ SvelteKit fournit le routing, le service worker typé, le préchargement et le b
 
 **Le framework ne détermine pas la qualité visuelle.** Elle se joue dans la typographie, l'échelle d'espacement et la retenue chromatique. D5 traite ce point séparément.
 
-### D2 — Hébergement statique GitHub Pages, déploiement par commit
+### D2 — Hébergement statique sur Netlify
 
 La contrainte « tout en France » du PRD §6.3 est levée : elle protégeait des données personnelles qui n'existent pas dans cette architecture.
 
-Ce qui disparaît en conséquence : un compte alwaysdata, un secret SSH, une étape `rsync`, un quota de 100 Mo (et donc la question de la conservation des PDF bruts), et une clause d'usage non lucratif. Le déploiement devient un commit sur `gh-pages` via GitHub Actions.
+Ce qui disparaît en conséquence : un compte alwaysdata, un secret SSH, une étape `rsync`, un quota de 100 Mo (et donc la question de la conservation des PDF bruts), et une clause d'usage non lucratif.
 
-*Alternative conservée en réserve :* Cloudflare Pages, si des en-têtes HTTP personnalisés (CSP, `Cache-Control`) deviennent nécessaires — GitHub Pages ne les permet pas. Le service worker gérant lui-même sa politique de cache, ce n'est pas bloquant en V1.
+**Netlify plutôt que GitHub Pages**, initialement retenu. Trois raisons, dans l'ordre où elles comptent :
 
-*Conséquence à gérer :* GitHub Pages sert le site sous `/<repo>/` sauf domaine personnalisé. La `base` SvelteKit doit être configurée, et tous les chemins de données construits à partir d'elle. C'est une source classique de casse silencieuse en production alors que tout fonctionne en local.
+1. **Le site est servi à la racine.** GitHub Pages impose `/<dépôt>/` sauf domaine personnalisé, ce qui oblige à porter un `base` partout et constitue une source classique de casse silencieuse : tout marche en local et rien en production. Cette classe de bogue disparaît.
+2. **Les en-têtes HTTP sont configurables.** C'est ce qui permet de poser une politique de sécurité de contenu stricte, et donc de faire appliquer par le navigateur la promesse « aucune ressource tierce » que l'écran À propos formule et qu'un test vérifie. Trois façons de dire la même chose valent mieux qu'une. Le cache des données et du service worker devient également explicite, au lieu d'être laissé aux défauts de l'hébergeur.
+3. **La publication ne dépend d'aucun hébergeur de dépôt.** `netlify deploy` publie depuis un poste de travail ; le projet peut vivre sans dépôt distant, ce qui était son état au moment de ce choix.
+
+`paths.base` reste lu depuis l'environnement et `paths.relative` reste actif : le code n'écrit aucun chemin absolu, si bien qu'un retour vers un hébergement sous sous-chemin resterait une variable d'environnement, pas une refonte.
+
+*Conséquence :* le dépôt vit sur GitLab et l'intégration continue y vit aussi. `.gitlab-ci.yml` ne publie pas : il vérifie — mêmes contrôles qu'en local, plus les tests de bout en bout — et Netlify, branché sur le dépôt, rejoue `npm run validate && npm run build` à la publication.
+
+*Contrepartie assumée :* Netlify n'exécute pas les tests de bout en bout, qui demandent des navigateurs que son image de construction n'a pas. Un job `e2e` rouge n'empêche donc pas la publication. C'est le prix de l'intégration Git native, qui est ce qui donne les prévisualisations de merge request ; `npm run validate` reste joué des deux côtés. L'alternative — publier depuis GitLab CI avec `netlify deploy --prod` — rétablirait la séquence stricte au prix des prévisualisations.
 
 ### D3 — Données saisies à la main, non générées
 
@@ -196,7 +204,7 @@ Point non négociable : **l'information allergène n'est jamais portée par la s
 
 **Une donnée allergène erronée peut avoir des conséquences médicales** → trois lignes de défense : la saisie manuelle est relue, le disclaimer « seul le document officiel de la Ville fait foi » est visible et non repliable, et le lien vers le PDF source est présent sur chaque écran de menu. Le chemin de rendu `confidence: low` est implémenté et testé maintenant, avant d'être nécessaire.
 
-**Le `base` GitHub Pages casse en production ce qui marche en local** → aucun chemin absolu écrit à la main ; les chemins de données passent par `$app/paths`. Un smoke test post-déploiement vérifie que `index.json` est bien servi.
+**Un chemin qui marche en local et casse en production** → aucun chemin absolu écrit à la main ; les chemins de données passent par `$app/paths`. Le risque a beaucoup baissé depuis que le site est servi à la racine (D2) plutôt que sous un sous-chemin, mais il n'est pas nul : un déploiement vert ne prouve pas qu'un site est servi. Le contrôle post-déploiement qui vérifiait que `index.json` répondait effectivement est tombé avec la publication GitHub Pages ; il reste à réintroduire (tasks 12.3).
 
 **Le service worker sert du contenu périmé après un déploiement** → versionnement du cache indexé sur le build, `stale-while-revalidate` sur `/data/*` et non `cache-only`, et suppression des anciens caches à l'activation. Un service worker mal purgé est le mode de panne le plus pénible d'une PWA, parce qu'il survit au rechargement.
 

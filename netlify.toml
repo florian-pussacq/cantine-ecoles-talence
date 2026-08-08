@@ -1,0 +1,55 @@
+# Déploiement Netlify.
+#
+# Le site est servi à la racine du domaine : contrairement à GitHub Pages, il n'y
+# a pas de sous-chemin, donc pas de BASE_PATH à poser et pas de risque de casser
+# en production ce qui marche en local.
+
+[build]
+  command = "npm run validate && npm run build"
+  publish = "build"
+
+# Aucun [build.environment] ici, volontairement.
+#
+# La version de Node vient de `.nvmrc`, que Netlify lit : une seule déclaration
+# pour l'hébergeur, l'intégration continue et le poste de travail.
+#
+# Et surtout, ne jamais poser NODE_ENV = "production" : Netlify sauterait alors
+# les dépendances de développement, et `npm run validate` mourrait sur un
+# « prettier: not found ». C'est le genre de variable qu'on ajoute par propreté
+# et qui casse la construction.
+#
+# Les prévisualisations de merge request portent déjà `X-Robots-Tag: noindex`,
+# posé par Netlify. Rien à configurer : les en-têtes déclarés ici sont globaux
+# et ne peuvent de toute façon pas être limités à un contexte de déploiement.
+
+# Les modules portent une empreinte dans leur nom : ils ne changent jamais sous
+# une même adresse et peuvent être gardés indéfiniment.
+[[headers]]
+  for = "/_app/immutable/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Les menus, eux, changent sous la même adresse. Le navigateur doit revalider à
+# chaque fois ; c'est le service worker qui décide de servir depuis son cache,
+# et lui seul sait quand rafraîchir.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Le service worker ne doit jamais être servi depuis un cache périmé : c'est lui
+# qui pilote tous les autres, et un exemplaire figé bloquerait les mises à jour.
+[[headers]]
+  for = "/service-worker.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    # L'application ne charge rien depuis un autre domaine et ne collecte rien.
+    # Le navigateur applique désormais cette promesse plutôt que de nous croire
+    # sur parole. Les styles et scripts intégrés viennent de SvelteKit.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"

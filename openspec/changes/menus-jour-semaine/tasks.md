@@ -114,7 +114,7 @@
 
 ## 12. Déploiement
 
-- [x] 12.1 Écrire le workflow GitHub Actions de construction et de publication sur GitHub Pages
-- [x] 12.2 Vérifier le rendu sous sous-chemin, en particulier la résolution des fichiers de données
-- [x] 12.3 Ajouter un contrôle post-déploiement vérifiant que le manifeste est bien servi
+- [x] 12.1 Écrire le pipeline GitLab CI de vérification, la publication étant faite par Netlify (D2)
+- [x] 12.2 Vérifier la résolution des fichiers de données, servis à la racine du domaine
+- [ ] 12.3 Ajouter un contrôle post-déploiement vérifiant que le manifeste est bien servi — supprimé avec la publication GitHub Pages, à réintroduire comme pipeline planifié GitLab
 - [ ] 12.4 Vérifier l'installation et le fonctionnement hors ligne sur un appareil réel
