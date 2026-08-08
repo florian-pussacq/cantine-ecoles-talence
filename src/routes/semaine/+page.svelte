@@ -7,6 +7,7 @@
   import { isStale } from '$lib/data/load.js';
   import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
   import { selection } from '$lib/menu/selection.svelte.js';
+  import { createBalayage } from '$lib/ui/balayage.js';
   import AllergenChip from '$lib/menu/AllergenChip.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import {
@@ -84,6 +85,21 @@
     selection.set(date);
     await goto(resolve('/'));
   }
+
+  /** Le même geste que sur l'écran du jour, d'une semaine à l'autre (D17). */
+  const balayage = createBalayage({
+    onPrevious: () => selection.set(shift(first, -7)),
+    onNext: () => selection.set(shift(first, 7))
+  });
+
+  /** Le sens de la dernière navigation, pour que la transition suive le geste. */
+  let sens = $state(1);
+  let precedente: string | null = null;
+
+  $effect(() => {
+    if (precedente !== null && first !== precedente) sens = first > precedente ? 1 : -1;
+    precedente = first;
+  });
 </script>
 
 <svelte:head>
@@ -108,60 +124,70 @@
     </p>
   {/if}
 
-  <ul class="sheet">
-    {#each days as { date, day } (date)}
-      {@const isToday = date === today}
-      {@const course = day ? mainCourse(day) : null}
-      {@const match = course ? classify(course.label) : null}
-      <li class:today={isToday}>
-        {#if day && day.kind === 'school' && course && match}
-          <button type="button" onclick={() => open(date)}>
-            <span
-              class="disc"
-              style:--pale={`var(--fam-${match.family}-pale)`}
-              style:--ring={`var(--fam-${match.family})`}
-            >
-              <Illustration name={match.illustration} size={32} />
-            </span>
-            <span class="body">
-              <span class="when">
-                <span class="dow">{formatWeekday(date)}</span>
-                <span class="num">{dayNumber(date)}</span>
-                {#if isToday}<span class="now">Aujourd'hui</span>{/if}
-              </span>
-              <span class="main">{course.label}</span>
-              {#if rest(day)}<span class="rest">{rest(day)}</span>{/if}
-              {#if flagged(day).codes.length > 0}
-                <span class="chips">
-                  <AllergenChip {...flagged(day)} count={flaggedCount(day)} compact />
+  <!--
+    Le geste est strictement redondant avec les commandes de semaine, toutes
+    deux atteignables et annoncées. Lui inventer un rôle ARIA ajouterait un
+    élément interactif de plus à parcourir pour la même fonction — voir la note
+    équivalente sur l'écran du jour.
+  -->
+  <div class="balayage" {...balayage}>
+    {#key first}
+      <ul class="sheet glisse" style:--sens={sens}>
+        {#each days as { date, day } (date)}
+          {@const isToday = date === today}
+          {@const course = day ? mainCourse(day) : null}
+          {@const match = course ? classify(course.label) : null}
+          <li class:today={isToday}>
+            {#if day && day.kind === 'school' && course && match}
+              <button type="button" onclick={() => open(date)}>
+                <span
+                  class="disc"
+                  style:--pale={`var(--fam-${match.family}-pale)`}
+                  style:--ring={`var(--fam-${match.family})`}
+                >
+                  <Illustration name={match.illustration} size={32} />
                 </span>
-              {/if}
-            </span>
-          </button>
-        {:else}
-          <div class="quiet">
-            <span class="disc muted"><Illustration name="inconnu" size={32} /></span>
-            <span class="body">
-              <span class="when">
-                <span class="dow">{formatWeekday(date)}</span>
-                <span class="num">{dayNumber(date)}</span>
-                {#if isToday}<span class="now">Aujourd'hui</span>{/if}
-              </span>
-              <!--
+                <span class="body">
+                  <span class="when">
+                    <span class="dow">{formatWeekday(date)}</span>
+                    <span class="num">{dayNumber(date)}</span>
+                    {#if isToday}<span class="now">Aujourd'hui</span>{/if}
+                  </span>
+                  <span class="main">{course.label}</span>
+                  {#if rest(day)}<span class="rest">{rest(day)}</span>{/if}
+                  {#if flagged(day).codes.length > 0}
+                    <span class="chips">
+                      <AllergenChip {...flagged(day)} count={flaggedCount(day)} compact />
+                    </span>
+                  {/if}
+                </span>
+              </button>
+            {:else}
+              <div class="quiet">
+                <span class="disc muted"><Illustration name="inconnu" size={32} /></span>
+                <span class="body">
+                  <span class="when">
+                    <span class="dow">{formatWeekday(date)}</span>
+                    <span class="num">{dayNumber(date)}</span>
+                    {#if isToday}<span class="now">Aujourd'hui</span>{/if}
+                  </span>
+                  <!--
                 Deux absences très différentes. « Pas d'école » est une donnée :
                 la Ville a dit qu'il n'y avait pas de service. « Pas encore
                 publié » est un silence. Les confondre ferait croire à une
                 information là où il n'y en a aucune.
               -->
-              <span class="main quiet-label">
-                {day === null ? 'Menu pas encore publié' : "Pas d'école ce jour"}
-              </span>
-            </span>
-          </div>
-        {/if}
-      </li>
-    {/each}
-  </ul>
+                  <span class="main quiet-label">
+                    {day === null ? 'Menu pas encore publié' : "Pas d'école ce jour"}
+                  </span>
+                </span>
+              </div>
+            {/if}
+          </li>
+        {/each}
+      </ul>
+    {/key}
+  </div>
 
   <nav class="weeks" aria-label="Navigation entre les semaines">
     <button type="button" onclick={() => selection.set(shift(first, -7))}>
@@ -219,6 +245,13 @@
     color: var(--on-table);
     opacity: 0.8;
     font-size: var(--text-sm);
+  }
+
+  /* `pan-y` rend le défilement vertical au navigateur et garde l'horizontal
+     pour l'application. Sans cette ligne, le geste meurt sur `pointercancel`
+     sans que rien ne le signale (D18). */
+  .balayage {
+    touch-action: pan-y;
   }
 
   .sheet {

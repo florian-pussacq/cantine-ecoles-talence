@@ -151,6 +151,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * Transition directionnelle d'un balayage.
+ *
+ * Elle ne sert qu'à la continuité spatiale : elle dit d'où vient ce qu'on
+ * regarde. Elle est ici, et non dans un composant, parce qu'elle est partagée
+ * par l'écran du jour et celui de la semaine — `--sens` porte le sens du geste,
+ * et `prefers-reduced-motion` la supprime plus bas.
+ */
+.glisse {
+  animation: glisser 180ms ease-out;
+}
+
+@keyframes glisser {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--sens, 1) * 24px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 :where(a, button):focus-visible {
   outline: 3px solid var(--on-table);
   outline-offset: 2px;

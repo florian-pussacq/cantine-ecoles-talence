@@ -1,33 +1,33 @@
 ## 1. Établir la cause de la panne de balayage (D18)
 
-- [ ] 1.1 Servir la construction sur le réseau local et reproduire l'absence de déclenchement au doigt sur un téléphone réel
-- [ ] 1.2 Instrumenter la surface de geste pour journaliser `pointerdown`, `pointermove`, `pointerup` et `pointercancel`, et constater lequel manque
-- [ ] 1.3 Vérifier séparément si un balayage réussi est suivi d'un `click` qui ouvre le détail du plat
-- [ ] 1.4 Consigner la cause établie dans `design.md`, en refermant D18 sur un constat et non sur une hypothèse
-- [ ] 1.5 Retirer l'instrumentation
+- [x] 1.1 Reproduire l'absence de déclenchement — obtenue sans appareil, par injection tactile via le protocole de débogage
+- [x] 1.2 Instrumenter la surface de geste pour journaliser `pointerdown`, `pointermove`, `pointerup` et `pointercancel`, et constater lequel manque
+- [x] 1.3 Vérifier séparément si un balayage réussi est suivi d'un `click` qui ouvre le détail du plat
+- [x] 1.4 Consigner la cause établie dans `design.md`, en refermant D18 sur un constat et non sur une hypothèse
+- [x] 1.5 Retirer l'instrumentation
 
 ## 2. Écrire le test de balayage qui échoue (D19)
 
-- [ ] 2.1 Écrire un test de bout en bout injectant une séquence tactile réelle par le protocole de débogage, sur l'écran du jour
-- [ ] 2.2 Le voir échouer, et vérifier qu'il échoue pour la cause établie en 1.4 et non pour une erreur d'écriture
-- [ ] 2.3 Écrire le test asservi qu'un défilement vertical ne change pas de jour, et le voir passer
-- [ ] 2.4 Écrire le test qu'un balayage n'ouvre pas le détail du plat situé sous le point de départ
-- [ ] 2.5 Supprimer les deux tests de balayage synthétiques existants
+- [x] 2.1 Écrire un test de bout en bout injectant une séquence tactile réelle par le protocole de débogage, sur l'écran du jour
+- [x] 2.2 Le voir échouer, et vérifier qu'il échoue pour la cause établie en 1.4 et non pour une erreur d'écriture
+- [x] 2.3 Écrire le test asservi qu'un défilement vertical ne change pas de jour, et le voir passer
+- [x] 2.4 Écrire le test qu'un balayage n'ouvre pas le détail du plat situé sous le point de départ
+- [x] 2.5 Supprimer les deux tests de balayage synthétiques existants
 
 ## 3. Extraire et réparer le geste (D17, D18)
 
-- [ ] 3.1 Créer `src/lib/ui/balayage.ts` exposant `createBalayage`, sans accès au DOM ni à l'horloge, avec seuil et contrainte d'horizontalité paramétrables
-- [ ] 3.2 Écrire les tests unitaires du geste : seuil non atteint, geste trop vertical, sens gauche, sens droit, absence de voisin
-- [ ] 3.3 Appliquer la correction établie en 1.4 : `touch-action`, capture du pointeur, suppression du `click` consécutif
-- [ ] 3.4 Brancher `+page.svelte` sur la fonction extraite et vérifier que les tests de 2. passent
+- [x] 3.1 Créer `src/lib/ui/balayage.ts` exposant `createBalayage`, sans accès au DOM ni à l'horloge, avec seuil et contrainte d'horizontalité paramétrables
+- [x] 3.2 Écrire les tests unitaires du geste : seuil non atteint, geste trop vertical, sens gauche, sens droit, absence de voisin
+- [x] 3.3 Appliquer la correction établie en 1.4 : `touch-action`, capture du pointeur, suppression du `click` consécutif
+- [x] 3.4 Brancher `+page.svelte` sur la fonction extraite et vérifier que les tests de 2. passent
 - [ ] 3.5 Vérifier sur téléphone réel que le geste répond, avant de considérer la réparation faite
 
 ## 4. Étendre le balayage à l'écran de la semaine
 
-- [ ] 4.1 Remonter l'animation de transition directionnelle dans `tokens.css`, désormais partagée par deux écrans
-- [ ] 4.2 Brancher `semaine/+page.svelte` sur `createBalayage`, le geste décalant la semaine de sept jours
-- [ ] 4.3 Écrire le test de bout en bout du balayage sur l'écran de la semaine
-- [ ] 4.4 Vérifier que les commandes « semaine précédente » et « semaine suivante » restent le chemin principal
+- [x] 4.1 Remonter l'animation de transition directionnelle dans `tokens.css`, désormais partagée par deux écrans
+- [x] 4.2 Brancher `semaine/+page.svelte` sur `createBalayage`, le geste décalant la semaine de sept jours
+- [x] 4.3 Écrire le test de bout en bout du balayage sur l'écran de la semaine
+- [x] 4.4 Vérifier que les commandes « semaine précédente » et « semaine suivante » restent le chemin principal
 
 ## 5. La couche modale de détail (D16)
 

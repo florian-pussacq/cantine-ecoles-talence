@@ -9,6 +9,7 @@
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import { classify } from '$lib/illustrations/families.js';
   import { selection } from '$lib/menu/selection.svelte.js';
+  import { createBalayage } from '$lib/ui/balayage.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -46,33 +47,11 @@
     precedente = date;
   });
 
-  /**
-   * Balayage horizontal pour changer de jour.
-   *
-   * Le geste double la navigation, il ne la remplace pas : les boutons et les
-   * flèches restent le chemin principal, parce qu'un geste ne se découvre pas et
-   * n'est pas atteignable au clavier.
-   *
-   * Le seuil de 60 pixels et la contrainte d'horizontalité évitent de déclencher
-   * sur un défilement vertical ou une simple hésitation du doigt.
-   */
-  let depart: { x: number; y: number } | null = null;
-
-  function onPointerDown(event: PointerEvent) {
-    if (event.pointerType === 'mouse') return;
-    depart = { x: event.clientX, y: event.clientY };
-  }
-
-  function onPointerUp(event: PointerEvent) {
-    if (depart === null) return;
-    const dx = event.clientX - depart.x;
-    const dy = event.clientY - depart.y;
-    depart = null;
-
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    if (dx < 0 && next !== null) selection.set(next);
-    if (dx > 0 && previous !== null) selection.set(previous);
-  }
+  /** Le balayage vit dans `$lib/ui/balayage` (design.md, D17). */
+  const balayage = createBalayage({
+    onPrevious: () => previous !== null && selection.set(previous),
+    onNext: () => next !== null && selection.set(next)
+  });
 
   function onKeydown(event: KeyboardEvent) {
     if (selected !== null) return;
@@ -138,16 +117,15 @@
     flèches du clavier, tous deux atteignables et annoncés. Lui inventer un rôle
     ARIA ajouterait un élément interactif de plus à parcourir au lecteur d'écran
     pour la même fonction.
+
+    Contrepartie du branchement par diffusion : Svelte ne voit plus les
+    gestionnaires, donc son contrôle d'accessibilité ne s'exprime plus ici. Le
+    raisonnement ci-dessus tient lieu de justification, sans directive à tenir
+    à jour.
   -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="balayage"
-    onpointerdown={onPointerDown}
-    onpointerup={onPointerUp}
-    onpointercancel={() => (depart = null)}
-  >
+  <div class="balayage" {...balayage}>
     {#key date}
-      <div class="jour" style:--sens={sens}>
+      <div class="glisse" style:--sens={sens}>
         <Tray {day} onSelect={(course) => (selected = course)} />
       </div>
     {/key}
@@ -257,23 +235,13 @@
   }
 
   /*
-    La transition ne sert qu'à la continuité spatiale : elle dit d'où vient le
-    jour affiché. Elle est courte, et `prefers-reduced-motion` la supprime
-    globalement (tokens.css).
+    `pan-y` rend le défilement vertical au navigateur et garde l'horizontal pour
+    l'application. Sans cette ligne, le navigateur revendique le mouvement, émet
+    `pointercancel`, et le geste meurt sans que rien ne le signale — c'est la
+    panne constatée en D18.
   */
-  .jour {
-    animation: glisser 180ms ease-out;
-  }
-
-  @keyframes glisser {
-    from {
-      opacity: 0;
-      transform: translateX(calc(var(--sens) * 24px));
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+  .balayage {
+    touch-action: pan-y;
   }
 
   .theme {

@@ -64,6 +64,21 @@ Le geste ne se déclenche pas au doigt sur un téléphone réel. Trois causes pl
 
 Corriger les trois d'un bloc produirait un correctif qui marche sans qu'on sache pourquoi, donc un correctif qu'on ne saura pas défendre à la prochaine régression. La cause se constate d'abord.
 
+**Constat.** La reproduction n'a pas demandé d'appareil : injecter de vrais événements tactiles par le protocole de débogage suffit, puisqu'ils passent par l'arbitrage de geste. Sur ce même code, l'ancien test synthétique reste vert — la démonstration de D19 est venue par surcroît.
+
+La surface de geste porte `touch-action: auto`, et la séquence observée est :
+
+```
+pointerdown → pointermove → pointercancel → (aucun pointerup)
+```
+
+**La cause est le suspect n°1.** Le navigateur revendique le mouvement pour son propre défilement et annule le flux de pointeur. Le gestionnaire d'annulation efface alors le point de départ, et le `pointerup` qui aurait décidé du geste n'arrive jamais. La panne est silencieuse par construction.
+
+Les deux autres suspects ne sont pas innocentés pour autant, ils étaient masqués :
+
+- **La capture reste nécessaire.** Une fois le geste rendu à l'application, le doigt sort du rectangle de la surface avant de se lever — c'est le propre d'un balayage qui traverse l'écran. Sans capture, le `pointerup` se produit sur un autre élément et ne remonte pas jusqu'au gestionnaire.
+- **Le `click` de fin de course reste à neutraliser.** Le test qui l'interdit passe aujourd'hui, mais pour la mauvaise raison : le geste n'aboutissant jamais, aucun clic ne suit. Il ne devient un vrai test qu'une fois le balayage réparé.
+
 ### D19 — Le test de balayage est remplacé, pas complété
 
 Le test actuel fabrique des événements DOM. Il court-circuite l'arbitrage de geste du navigateur, c'est-à-dire précisément la couche où la panne se produit. Il est vert pendant que la fonctionnalité est cassée.
