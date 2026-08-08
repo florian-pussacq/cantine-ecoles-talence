@@ -82,4 +82,4 @@
 - [x] 10.2 Budgets tenus : la construction ne doit pas échouer sur les 60 Ko de JavaScript
 - [ ] 10.3 Vérifier sur téléphone réel : balayage sur les deux écrans, couche modale, thème forcé après rechargement
 - [ ] 10.4 Vérifier sur écran de bureau : colonne bornée, structure identique, aucune horizontalité parasite
-- [ ] 10.5 Trancher les questions ouvertes de `design.md` et les consigner comme décisions
+- [x] 10.5 Trancher les questions ouvertes de `design.md` et les consigner comme décisions

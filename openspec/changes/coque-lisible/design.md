@@ -131,8 +131,13 @@ Les tests de bout en bout ne s'exécutent aujourd'hui que sur un profil de tél�
 
 **Le geste extrait doit rester redondant** → si une régression rendait les commandes visibles inopérantes, le geste masquerait la panne pour les utilisateurs tactiles et la laisserait entière au clavier. Les tests de navigation par commande et par clavier restent la référence.
 
+## Questions tranchées
+
+**L'échelle typographique de l'écran large : un cran sur tout.** La question était de savoir s'il fallait épargner le titre de premier niveau, déjà volumineux. Elle s'est dissoute : l'en-tête est passé à une seule ligne et d'une taille en dessous (D26 implicite, voir la refonte de l'en-tête), si bien qu'il n'est plus l'élément qui domine. Monter toutes les tailles d'un cran garde les proportions intactes, ce qui est le sens même de « la même structure à une autre échelle ».
+
+**L'animation de transition entre jours est conservée.** La question dépendait de ce que D18 établirait ; la panne n'ayant rien à voir avec elle, il n'y avait pas de raison de la retirer. Elle a même servi : le contrôle de débordement horizontal ajouté pour l'écran large a révélé que son décalage de vingt-quatre pixels s'ajoutait brièvement à la largeur défilable, sur l'écran du jour depuis toujours. Une découpe sur l'axe horizontal le corrige.
+
 ## Open Questions
 
-- Le seuil de bascule de la couche modale entre feuille ancrée en bas et boîte centrée : 640 pixels est proposé, à confirmer en le regardant sur une tablette en portrait.
-- L'échelle typographique de l'écran large : un cran sur toutes les tailles, ou seulement sur les corps de texte ? Le titre de premier niveau est déjà volumineux.
-- Faut-il conserver l'animation de transition entre jours maintenant que le geste est continu ou non — la réponse dépend de ce que D18 établit.
+- Le seuil de bascule de la couche modale entre feuille ancrée en bas et boîte centrée : 640 pixels est en place et vérifié par les deux profils de test, mais aucun d'eux n'est une tablette en portrait, où le choix se joue vraiment.
+- Le seuil de l'écran large est à 760 pixels. Il a été choisi comme la largeur à partir de laquelle 520 pixels commencent à flotter dans du vide, ce qui reste un jugement à confirmer sur un vrai écran.
