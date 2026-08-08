@@ -54,7 +54,7 @@
       >
         {#if course && match}
           <button type="button" class="reset main-button" onclick={() => onSelect(course)}>
-            <span class="disc"><Illustration name={match.illustration} size={46} /></span>
+            <span class="disc"><Illustration name={match.illustration} /></span>
             <span class="main-body">
               <span class="role on-fam">{slotLabel(slot)}</span>
               <span class="main-name">{course.label}</span>
@@ -81,7 +81,7 @@
           <button type="button" class="reset cell-button" onclick={() => onSelect(course)}>
             <span class="cell-top">
               <span class="role">{slotLabel(slot)}</span>
-              <Illustration name={match.illustration} size={34} />
+              <Illustration name={match.illustration} />
             </span>
             <span class="name">{course.label}</span>
             {#if course.flags.length > 0}
@@ -191,6 +191,19 @@
     color: var(--on);
   }
 
+  /* Les tailles viennent des jetons, pour qu'un seul palier les fasse toutes
+     grandir sur écran large (D23). Une propriété CSS l'emporte sur l'attribut
+     du SVG, ce qui évite de dupliquer le seuil dans chaque composant. */
+  .main-button :global(.illustration) {
+    width: var(--ill-plat);
+    height: var(--ill-plat);
+  }
+
+  .cell-button :global(.illustration) {
+    width: var(--ill-cellule);
+    height: var(--ill-cellule);
+  }
+
   .main-button {
     display: flex;
     align-items: center;
@@ -203,8 +216,8 @@
     un poisson bleu sur fond bleu ne se voit pas.
   */
   .disc {
-    width: 68px;
-    height: 68px;
+    width: var(--ill-disque);
+    height: var(--ill-disque);
     border-radius: 50%;
     background: var(--tray);
     display: grid;

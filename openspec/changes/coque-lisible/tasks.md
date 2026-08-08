@@ -69,17 +69,17 @@
 
 ## 9. L'écran large (D23, D24)
 
-- [ ] 9.1 Extraire la largeur de la coque en jeton et l'utiliser dans `+layout.svelte`
-- [ ] 9.2 Ajouter le palier de largeur, et monter d'un cran la typographie et les illustrations
-- [ ] 9.3 Reprendre la barre d'onglets pour qu'elle ne s'étire pas sur toute la largeur
-- [ ] 9.4 Ajouter le projet de test « bureau » dans la configuration Playwright
-- [ ] 9.5 Faire porter les contrôles d'accessibilité et de cibles tactiles sur les deux profils, en réservant les tests de geste au profil tactile
-- [ ] 9.6 Constater le comportement du blocage de défilement sur le profil bureau, et compenser par une gouttière stable si la page saute
+- [x] 9.1 Extraire la largeur de la coque en jeton et l'utiliser dans `+layout.svelte`
+- [x] 9.2 Ajouter le palier de largeur, et monter d'un cran la typographie et les illustrations
+- [x] 9.3 Reprendre la barre d'onglets pour qu'elle ne s'étire pas sur toute la largeur
+- [x] 9.4 Ajouter le projet de test « bureau » dans la configuration Playwright
+- [x] 9.5 Faire porter les contrôles d'accessibilité et de cibles tactiles sur les deux profils, en réservant les tests de geste au profil tactile
+- [x] 9.6 Constater le comportement du blocage de défilement sur le profil bureau, et compenser par une gouttière stable si la page saute
 
 ## 10. Vérification d'ensemble
 
-- [ ] 10.1 `npm run validate` et `npm run test:e2e` verts sur les deux profils
-- [ ] 10.2 Budgets tenus : la construction ne doit pas échouer sur les 60 Ko de JavaScript
+- [x] 10.1 `npm run validate` et `npm run test:e2e` verts sur les deux profils
+- [x] 10.2 Budgets tenus : la construction ne doit pas échouer sur les 60 Ko de JavaScript
 - [ ] 10.3 Vérifier sur téléphone réel : balayage sur les deux écrans, couche modale, thème forcé après rechargement
 - [ ] 10.4 Vérifier sur écran de bureau : colonne bornée, structure identique, aucune horizontalité parasite
 - [ ] 10.5 Trancher les questions ouvertes de `design.md` et les consigner comme décisions

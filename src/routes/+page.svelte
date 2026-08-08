@@ -215,6 +215,11 @@
   */
   .balayage {
     touch-action: pan-y;
+    /* La transition d'entrée décale son contenu de 24 pixels : sans découpe, ce
+       débordement s'ajoute brièvement à la largeur défilable et laisse la page
+       glisser de côté pendant l'animation. `clip` découpe sans créer de conteneur
+       de défilement, et laisse donc l'axe vertical intact. */
+    overflow-x: clip;
   }
 
   .theme {

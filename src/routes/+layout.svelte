@@ -54,7 +54,7 @@
 
 <style>
   .shell {
-    max-width: 520px;
+    max-width: var(--shell);
     margin-inline: auto;
     min-height: 100dvh;
     padding: var(--space-3) var(--space-3) var(--space-5);
@@ -65,6 +65,7 @@
 
   .tabs {
     display: flex;
+    max-width: 360px;
     gap: var(--space-1);
     padding: 3px;
     border-radius: 999px;

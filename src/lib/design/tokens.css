@@ -79,6 +79,16 @@
   /* Cible tactile minimale (WCAG 2.1 AA) */
   --touch: 44px;
 
+  /* Largeur de la colonne de contenu. Elle grandit sur écran large, mais reste
+     bornée : un texte étiré sur toute la largeur d'un écran de bureau ne se lit
+     pas (design.md, D23). */
+  --shell: 520px;
+
+  /* Échelle des illustrations, pour qu'elles suivent la colonne. */
+  --ill-plat: 46px;
+  --ill-cellule: 34px;
+  --ill-disque: 68px;
+
   /* Palette sombre : déclarée ici, appliquée plus bas par simple renvoi (D20). */
   --dark-table: #0d1a20;
   --dark-tray: #1b262d;
@@ -190,6 +200,33 @@
 
 :root[data-theme='light'] {
   color-scheme: light;
+}
+
+/*
+ * Écran large : la même structure, à une autre échelle (design.md, D23).
+ *
+ * Il n'y a pas de seconde mise en page. Un seul jeton de largeur et un cran de
+ * plus sur la typographie et les illustrations suffisent : aucun composant ne
+ * connaît deux dispositions, et il n'y a donc rien à maintenir en double.
+ *
+ * Le seuil est celui où 520 pixels commencent à flotter dans du vide, pas celui
+ * d'un appareil particulier.
+ */
+@media (min-width: 760px) {
+  :root {
+    --shell: 720px;
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 1.75rem;
+
+    --ill-plat: 58px;
+    --ill-cellule: 42px;
+    --ill-disque: 84px;
+  }
 }
 
 * {
