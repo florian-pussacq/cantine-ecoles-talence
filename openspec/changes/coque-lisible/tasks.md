@@ -31,16 +31,16 @@
 
 ## 5. La couche modale de détail (D16)
 
-- [ ] 5.1 Simuler `showModal` et `close` dans `src/vitest-setup.ts`, jsdom ne les implémentant pas
-- [ ] 5.2 Écrire les tests unitaires de `CourseSheet` : ouverture, fermeture par la commande visible, contenu des allergènes déclarés et de leur absence
-- [ ] 5.3 Réécrire `CourseSheet.svelte` autour de `<dialog>` : ouverture par `showModal`, fermeture par l'événement natif, contenu dans un élément enfant
-- [ ] 5.4 Fermer sur action hors du contenu, en distinguant la cible par l'élément enfant
-- [ ] 5.5 Supprimer l'écoute d'échappement devenue redondante, en conservant la neutralisation des flèches de navigation
-- [ ] 5.6 Supprimer la poignée décorative
-- [ ] 5.7 Bloquer le défilement du fond tant qu'une couche est ouverte
-- [ ] 5.8 Styler les deux formes : ancrée en bas et pleine largeur sous le seuil, centrée et bornée au-dessus
-- [ ] 5.9 Ajouter l'animation d'entrée sans JavaScript, et vérifier qu'elle disparaît sous `prefers-reduced-motion`
-- [ ] 5.10 Écrire les tests de bout en bout : le focus reste enfermé, il revient sur la cellule appelante, le fond ne défile pas, les flèches sont sans effet
+- [x] 5.1 Simuler `showModal` et `close` dans `src/vitest-setup.ts`, jsdom ne les implémentant pas
+- [x] 5.2 Écrire les tests unitaires de `CourseSheet` : ouverture, fermeture par la commande visible, contenu des allergènes déclarés et de leur absence
+- [x] 5.3 Réécrire `CourseSheet.svelte` autour de `<dialog>` : ouverture par `showModal`, fermeture par l'événement natif, contenu dans un élément enfant
+- [x] 5.4 Fermer sur action hors du contenu, en distinguant la cible par l'élément enfant
+- [x] 5.5 Supprimer l'écoute d'échappement devenue redondante, en conservant la neutralisation des flèches de navigation
+- [x] 5.6 Supprimer la poignée décorative
+- [x] 5.7 Bloquer le défilement du fond tant qu'une couche est ouverte
+- [x] 5.8 Styler les deux formes : ancrée en bas et pleine largeur sous le seuil, centrée et bornée au-dessus
+- [x] 5.9 Ajouter l'animation d'entrée sans JavaScript, et vérifier qu'elle disparaît sous `prefers-reduced-motion`
+- [x] 5.10 Écrire les tests de bout en bout : le focus reste enfermé, il revient sur la cellule appelante, le fond ne défile pas, les flèches sont sans effet
 
 ## 6. L'en-tête partagé
 

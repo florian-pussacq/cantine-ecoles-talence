@@ -38,7 +38,13 @@ Trois contraintes du socle encadrent tout ce qui suit :
 
 *Alternative écartée — un détail dépliable dans le flux.* Zéro couche superposée, zéro gestion de focus. Mais ouvrir une section pousse le plateau vers le bas : on perd le repère spatial de la cellule qu'on vient de toucher, sur l'écran qu'on consulte tous les matins.
 
-*Conséquences à gérer :* un clic sur `::backdrop` a pour cible le `<dialog>` lui-même, il faut donc un élément enfant pour distinguer « dehors » de « dedans » ; le défilement de fond reste à bloquer explicitement ; et **jsdom n'implémente pas `showModal()`**, ce qui impose une simulation dans la configuration de test.
+*Conséquences à gérer :* un clic sur `::backdrop` a pour cible le `<dialog>` lui-même, il faut donc un élément enfant pour distinguer « dehors » de « dedans » ; le défilement de fond reste à bloquer explicitement ; et **jsdom n'implémente ni `show`, ni `showModal`, ni `close`, ni `requestClose`** — vérifié sur la version 30 — ce qui impose une simulation dans la configuration de test.
+
+*Deux constats faits à l'implémentation, qui ne se devinaient pas :*
+
+**Le piège de focus repasse par `document.body`.** Au point de bouclage, Chromium redonne le focus au point de départ de la navigation séquentielle avant de revenir au premier élément de la couche. Le cycle observé est « lien → corps du document → commande de fermeture → lien ». Ce n'est pas une fuite : aucun élément interactif situé derrière n'est atteint. Un test qui exigerait que le focus soit *toujours* à l'intérieur du dialogue échouerait sur un comportement correct — c'est l'atteinte d'une commande située derrière qu'il faut interdire, pas le passage par le corps du document.
+
+**`overflow: hidden` ne bloque pas le défilement programmatique.** Il empêche l'utilisateur de défiler ; `window.scrollTo` continue de fonctionner. Seul `overflow: clip` interdirait les deux. Le verrou est donc correct pour ce qu'on lui demande — un doigt, une molette — et un test qui le mesurerait par l'API mesurerait ce qu'il n'a jamais promis. `clip` a été écarté : il fige aussi la position de défilement, alors que rouvrir sur un écran qui a bougé pendant qu'on lisait est précisément ce qu'on cherche à éviter.
 
 *La poignée disparaît.* Elle imite l'affordance d'une feuille déplaçable sans qu'aucun gestionnaire n'y soit attaché. Une promesse non tenue coûte plus cher qu'une absence de promesse.
 

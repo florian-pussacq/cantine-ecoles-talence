@@ -134,6 +134,13 @@ html {
   background: var(--table);
 }
 
+/* Une couche modale retient le regard mais pas le doigt : sans cela, le contenu
+   continue de défiler derrière elle, et l'on revient sur un écran qui a bougé
+   pendant qu'on lisait. Le `<dialog>` rend le fond inerte, jamais immobile. */
+:root:has(dialog[open]) {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   background: var(--table);
