@@ -44,10 +44,10 @@
 
 ## 6. L'en-tête partagé
 
-- [ ] 6.1 Créer `src/lib/ui/EnTete.svelte` : une ligne, un seul titre de premier niveau, la mention et l'objet sur la même ligne de base
-- [ ] 6.2 Écrire son test unitaire, y compris le cas d'un jour autre que celui du moment
-- [ ] 6.3 Remplacer les en-têtes des quatre écrans et supprimer les quatre blocs de style recopiés
-- [ ] 6.4 Vérifier que chaque écran porte toujours exactement un titre de premier niveau
+- [x] 6.1 Créer `src/lib/ui/EnTete.svelte` : une ligne, un seul titre de premier niveau, la mention et l'objet sur la même ligne de base
+- [x] 6.2 Écrire son test unitaire, y compris le cas d'un jour autre que celui du moment
+- [x] 6.3 Remplacer les en-têtes des quatre écrans et supprimer les quatre blocs de style recopiés
+- [x] 6.4 Vérifier que chaque écran porte toujours exactement un titre de premier niveau
 
 ## 7. Restructurer la palette (D20)
 

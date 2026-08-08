@@ -1,4 +1,5 @@
 <script lang="ts">
+  import EnTete from '$lib/ui/EnTete.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import { formatDay } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
@@ -23,10 +24,7 @@
   <title>À propos — menus des écoles de Talence</title>
 </svelte:head>
 
-<header>
-  <p class="eyebrow">À propos</p>
-  <h1>D'où viennent ces menus</h1>
-</header>
+<EnTete quand="À propos" quoi="D'où viennent ces menus" />
 
 <!--
   L'avertissement vient en premier et n'est pas repliable. Une donnée allergène
@@ -117,31 +115,6 @@
 </section>
 
 <style>
-  header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    color: var(--on-table);
-    padding-inline: var(--space-2);
-  }
-
-  .eyebrow {
-    margin: 0;
-    font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-weight: 700;
-    opacity: 0.72;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: var(--text-2xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-  }
-
   .disclaimer {
     margin: 0;
     background: var(--warn);

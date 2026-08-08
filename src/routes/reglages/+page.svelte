@@ -1,4 +1,5 @@
 <script lang="ts">
+  import EnTete from '$lib/ui/EnTete.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '$lib/filter/storage.js';
   import type { PageProps } from './$types.js';
@@ -29,10 +30,7 @@
   <title>Allergènes à signaler — menus des écoles de Talence</title>
 </svelte:head>
 
-<header>
-  <p class="eyebrow">Réglage</p>
-  <h1>Allergènes à signaler</h1>
-</header>
+<EnTete quand="Réglage" quoi="Allergènes à signaler" />
 
 <div class="panel">
   <p class="intro">
@@ -84,31 +82,6 @@
 </div>
 
 <style>
-  header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    color: var(--on-table);
-    padding-inline: var(--space-2);
-  }
-
-  .eyebrow {
-    margin: 0;
-    font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-weight: 700;
-    opacity: 0.72;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: var(--text-2xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-  }
-
   .panel {
     background: var(--tray);
     color: var(--ink);

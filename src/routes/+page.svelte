@@ -10,6 +10,7 @@
   import { classify } from '$lib/illustrations/families.js';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
+  import EnTete from '$lib/ui/EnTete.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -70,10 +71,7 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<header>
-  <p class="eyebrow">{eyebrow}</p>
-  <h1>{date === null ? 'Menus des écoles' : formatDay(date)}</h1>
-</header>
+<EnTete quand={eyebrow} quoi={date === null ? 'Menus des écoles' : formatDay(date)} />
 
 {#if data.status.kind === 'schema-too-new'}
   <p class="notice">
@@ -175,31 +173,6 @@
 {/if}
 
 <style>
-  header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    color: var(--on-table);
-    padding-inline: var(--space-2);
-  }
-
-  .eyebrow {
-    margin: 0;
-    font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-weight: 700;
-    opacity: 0.72;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: var(--text-2xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-  }
-
   .notice {
     margin: 0;
     background: var(--tray);
