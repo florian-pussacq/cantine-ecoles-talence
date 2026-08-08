@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "budget": "node scripts/check-budget.js",
     "format": "prettier --write .",
-    "validate": "prettier --check . && eslint . && node scripts/generate-types.js --check && node scripts/validate-data.js && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
+    "validate": "prettier --check . && eslint . && node scripts/check-lockfile.js && node scripts/generate-types.js --check && node scripts/validate-data.js && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
     "test:unit": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
     "prepare": "svelte-kit sync",
@@ -43,6 +43,6 @@
     "vitest": "^4.1.10"
   },
   "engines": {
-    "node": ">=22"
+    "node": "^22.22.2 || >=24.15.0"
   }
 }

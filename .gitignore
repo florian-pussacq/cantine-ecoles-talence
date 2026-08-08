@@ -1,4 +1,7 @@
 node_modules/
+# Cache npm du pipeline, qui le pose dans le répertoire de travail pour pouvoir
+# le conserver d'une exécution à l'autre.
+/.npm/
 /build/
 /.svelte-kit/
 /test-results/
