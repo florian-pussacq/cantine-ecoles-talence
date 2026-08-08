@@ -6,6 +6,12 @@
       "expected": "static/data/2026-09.json",
       "producedBy": "manual",
       "notes": "Premier mois saisi à la main. Contient un lundi 31 août : un fichier mensuel déborde sur le mois précédent, parce que la grille est découpée en semaines entières."
+    },
+    {
+      "pdf": "sources/pdf/10-MENUS-WEB-OCTOBRE-2026.pdf",
+      "expected": "static/data/2026-10.json",
+      "producedBy": "manual",
+      "notes": "Déborde lui aussi sur septembre (premier jour le 28/09) et s'arrête au 16/10 : le PDF ne couvre pas le mois entier, un parser qui supposerait le contraire produirait des jours manquants sans le signaler. Porte un thème étalé sur quatre jours consécutifs (« Semaine du goût ») là où septembre n'en avait qu'un isolé, et le seul jour du corpus qui cumule un thème et une note."
     }
   ]
 }
