@@ -11,8 +11,10 @@
 # prévisualisations de merge request.
 
 default:
-  # Même version que `.nvmrc` et que Netlify, qui lit ce même fichier.
-  image: node:24.3.0
+  # À tenir égale au contenu de `.nvmrc`, que Netlify lit de son côté. GitLab ne
+  # sait pas résoudre une image depuis un fichier : c'est la seule duplication
+  # de la version de Node, et elle se corrige ici.
+  image: node:24.19.0
   cache:
     key:
       files: [package-lock.json]
