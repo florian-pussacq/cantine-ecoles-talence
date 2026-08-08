@@ -1,0 +1,114 @@
+<!doctype html>
+<!--
+  Page servie par Netlify pour toute adresse inconnue.
+
+  Elle ne passe pas par SvelteKit : l'adapter est en `fallback: undefined`, donc
+  une URL qui ne correspond à aucune route prérendue n'atteint jamais
+  l'application. D'où la duplication des couleurs ici — c'est le seul fichier du
+  projet qui ne peut pas lire `tokens.css`, et une page d'erreur qui dépendrait
+  du chargement de l'application serait une page d'erreur qui échoue.
+
+  Pour la même raison, le lien de retour est le seul chemin absolu écrit à la
+  main du dépôt : `$app/paths` n'est pas atteignable ici, et le site est servi à
+  la racine du domaine (design.md, D2).
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex" />
+    <title>Page introuvable — menus des écoles de Talence</title>
+    <link rel="icon" href="/favicon.svg" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --table: #1e5a6b;
+        --tray: #f3f5f1;
+        --ink: #16211f;
+        --on-table: #f3f5f1;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --table: #0d1a20;
+          --tray: #1b262d;
+          --ink: #e8eef1;
+          --on-table: #e8eef1;
+        }
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+        background: var(--table);
+        color: var(--on-table);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main {
+        max-width: 30rem;
+        text-align: center;
+      }
+
+      p.eyebrow {
+        margin: 0;
+        font-size: 0.6875rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 700;
+        opacity: 0.72;
+      }
+
+      h1 {
+        margin: 0.1rem 0 0.75rem;
+        font-size: 1.375rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        text-wrap: balance;
+      }
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        /* Cible tactile minimale (WCAG 2.1 AA), comme dans l'application. */
+        min-height: 44px;
+        padding-inline: 1rem;
+        margin-top: 0.5rem;
+        border-radius: 999px;
+        background: var(--tray);
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      a:focus-visible {
+        outline: 3px solid var(--on-table);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Erreur 404</p>
+      <h1>Cette page n'existe pas.</h1>
+      <a href="/">Voir le menu du jour</a>
+    </main>
+  </body>
+</html>
