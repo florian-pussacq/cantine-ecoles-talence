@@ -2,6 +2,7 @@
   import EnTete from '$lib/ui/EnTete.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '$lib/filter/storage.js';
+  import { THEME_LABELS, THEMES, themePreference } from '$lib/theme/theme.svelte.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -30,7 +31,30 @@
   <title>Allergènes à signaler — menus des écoles de Talence</title>
 </svelte:head>
 
-<EnTete quand="Réglage" quoi="Allergènes à signaler" />
+<EnTete quand="Réglages" quoi="Affichage et allergènes" />
+
+<!--
+  Le thème est un réglage : on le choisit une fois. Lui donner une place
+  permanente en tête d'écran coûterait de la surface à ce qu'on ouvre chaque
+  matin (design.md, D22).
+-->
+<fieldset class="panel theme">
+  <legend>Thème</legend>
+  <div class="options" role="radiogroup" aria-label="Thème de l'application">
+    {#each THEMES as valeur (valeur)}
+      <label class:actif={themePreference.theme === valeur}>
+        <input
+          type="radio"
+          name="theme"
+          value={valeur}
+          checked={themePreference.theme === valeur}
+          onchange={() => themePreference.set(valeur)}
+        />
+        <span>{THEME_LABELS[valeur]}</span>
+      </label>
+    {/each}
+  </div>
+</fieldset>
 
 <div class="panel">
   <p class="intro">
@@ -82,6 +106,50 @@
 </div>
 
 <style>
+  /*
+    L'option retenue porte deux signaux : le bouton radio natif, et un fond
+    plein. Ni la couleur ni l'opacité ne portent seules l'information (D8).
+  */
+  .theme {
+    border: 0;
+    margin: 0;
+  }
+
+  .theme legend {
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-muted);
+    padding: 0;
+    margin-bottom: var(--space-2);
+  }
+
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .options label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch);
+    padding-inline: var(--space-3);
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .options label.actif {
+    background: var(--cell);
+    border-color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+
   .panel {
     background: var(--tray);
     color: var(--ink);

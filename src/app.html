@@ -4,8 +4,44 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#1e5a6b" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0d1a20" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="theme-color"
+      content="#1e5a6b"
+      media="(prefers-color-scheme: light)"
+      data-teinte="light"
+    />
+    <meta
+      name="theme-color"
+      content="#0d1a20"
+      media="(prefers-color-scheme: dark)"
+      data-teinte="dark"
+    />
+    <!--
+      Le thème choisi, posé avant la première peinture.
+
+      Le site est prérendu : son HTML arrive avec le thème du système. Attendre
+      l'hydratation pour appliquer un thème contraire produirait un clignotement
+      visible à chaque chargement (design.md, D21).
+
+      Ce script est bloquant et sans dépendance, et il duplique nécessairement la
+      clé de stockage et les noms de thèmes — un fichier HTML ne peut pas importer
+      un module. Un test unitaire vérifie que cette duplication reste alignée sur
+      `$lib/theme/theme.svelte.ts`.
+    -->
+    <script>
+      try {
+        var theme = localStorage.getItem('cantine.theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', theme);
+          var teintes = document.querySelectorAll('meta[name="theme-color"][data-teinte]');
+          for (var i = 0; i < teintes.length; i++) {
+            teintes[i].media = teintes[i].dataset.teinte === theme ? 'all' : 'not all';
+          }
+        }
+      } catch (erreur) {
+        // Stockage refusé : on suit le système, ce qui est déjà le cas.
+      }
+    </script>
     <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
     <link rel="apple-touch-icon" href="%sveltekit.assets%/icons/apple-touch-icon.png" />
     <link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />

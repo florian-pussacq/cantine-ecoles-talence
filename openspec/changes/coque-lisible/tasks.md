@@ -60,12 +60,12 @@
 
 ## 8. Le choix de thème (D21, D22)
 
-- [ ] 8.1 Créer `src/lib/theme/theme.svelte.ts` : trois états, persistance par le stockage tolérant existant, pose et retrait de l'attribut de thème
-- [ ] 8.2 Écrire ses tests unitaires, dont le cas d'un stockage refusé
-- [ ] 8.3 Ajouter le script en ligne bloquant dans `src/app.html`, avant le reste de l'en-tête
-- [ ] 8.4 Faire suivre la couleur annoncée au navigateur au thème effectivement appliqué
-- [ ] 8.5 Ajouter l'interrupteur à trois options dans l'écran Réglages, chaque option énoncée en toutes lettres
-- [ ] 8.6 Écrire le test de bout en bout d'absence de clignotement : thème forcé contraire au système, puis rechargement
+- [x] 8.1 Créer `src/lib/theme/theme.svelte.ts` : trois états, persistance par le stockage tolérant existant, pose et retrait de l'attribut de thème
+- [x] 8.2 Écrire ses tests unitaires, dont le cas d'un stockage refusé
+- [x] 8.3 Ajouter le script en ligne bloquant dans `src/app.html`, avant le reste de l'en-tête
+- [x] 8.4 Faire suivre la couleur annoncée au navigateur au thème effectivement appliqué
+- [x] 8.5 Ajouter l'interrupteur à trois options dans l'écran Réglages, chaque option énoncée en toutes lettres
+- [x] 8.6 Écrire le test de bout en bout d'absence de clignotement : thème forcé contraire au système, puis rechargement
 
 ## 9. L'écran large (D23, D24)
 
