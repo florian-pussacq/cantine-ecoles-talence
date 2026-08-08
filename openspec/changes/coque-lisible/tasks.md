@@ -51,12 +51,12 @@
 
 ## 7. Restructurer la palette (D20)
 
-- [ ] 7.1 Déclarer les valeurs sombres une seule fois sous préfixe dans `tokens.css`, sans modifier aucune teinte
-- [ ] 7.2 Écrire les deux blocs de renvois : requête de média excluant le thème clair forcé, et attribut de thème sombre
-- [ ] 7.3 Déclarer le mode de couleur dans chacun des deux blocs
-- [ ] 7.4 Réécrire `contrast.test.ts` : découpage par préfixe et non par position dans le fichier
-- [ ] 7.5 Vérifier que les quarante mesures produisent exactement les mêmes valeurs qu'avant restructuration
-- [ ] 7.6 Vérifier que `AllergenChip.test.ts`, qui importe la fonction de contraste, passe toujours
+- [x] 7.1 Déclarer les valeurs sombres une seule fois sous préfixe dans `tokens.css`, sans modifier aucune teinte
+- [x] 7.2 Écrire les deux blocs de renvois : requête de média excluant le thème clair forcé, et attribut de thème sombre
+- [x] 7.3 Déclarer le mode de couleur dans chacun des deux blocs
+- [x] 7.4 Réécrire `contrast.test.ts` : découpage par préfixe et non par position dans le fichier
+- [x] 7.5 Vérifier que les quarante mesures produisent exactement les mêmes valeurs qu'avant restructuration
+- [x] 7.6 Vérifier que `AllergenChip.test.ts`, qui importe la fonction de contraste, passe toujours
 
 ## 8. Le choix de thème (D21, D22)
 

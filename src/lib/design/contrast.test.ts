@@ -11,26 +11,83 @@ import { describe, expect, it } from 'vitest';
 
 const CSS = readFileSync('src/lib/design/tokens.css', 'utf8');
 
-/** Les jetons du bloc `:root`, puis ceux que le thème sombre redéfinit. */
+/**
+ * Les jetons, découpés par préfixe.
+ *
+ * Le découpage se faisait auparavant par la *position* de la déclaration dans le
+ * fichier, relativement à la ligne de la requête de média. Il ne survit pas à
+ * l'existence de deux voies d'application du thème sombre (design.md, D20), et
+ * il cassait au moindre bloc ajouté. Le préfixe ne dépend plus de l'ordre des
+ * règles, ce qui le rend accessoirement plus solide qu'avant.
+ */
 function readTokens(): { clair: Record<string, string>; sombre: Record<string, string> } {
   const clair: Record<string, string> = {};
   const sombre: Record<string, string> = {};
 
-  const darkStart = CSS.indexOf('@media (prefers-color-scheme: dark)');
-  const declarations = /--([\w-]+):\s*(#[0-9a-fA-F]{6})/g;
-
-  for (const match of CSS.matchAll(declarations)) {
-    const [full, name, value] = match;
+  for (const match of CSS.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)) {
+    const [, name, value] = match;
     if (name === undefined || value === undefined) continue;
-    const cible = (match.index ?? 0) > darkStart ? sombre : clair;
-    cible[name] = value;
-    void full;
+    if (name.startsWith('dark-')) sombre[name.slice('dark-'.length)] = value;
+    else clair[name] = value;
   }
 
   return { clair, sombre: { ...clair, ...sombre } };
 }
 
 const { clair, sombre } = readTokens();
+
+/**
+ * Les deux voies d'application du thème sombre ne peuvent pas diverger.
+ *
+ * C'est la promesse de D20, et elle se vérifie sur le texte : les deux blocs ne
+ * doivent contenir que des renvois, jamais une couleur écrite en dur. Un seul
+ * hexadécimal qui s'y glisserait rétablirait la duplication que la
+ * restructuration a supprimée — et le reste de ce fichier ne le verrait pas,
+ * puisqu'il ne lit que les jetons préfixés.
+ */
+describe('les deux voies du thème sombre', () => {
+  const blocs = [
+    ['@media (prefers-color-scheme: dark)', CSS.indexOf('@media (prefers-color-scheme: dark)')],
+    ["[data-theme='dark']", CSS.indexOf(":root[data-theme='dark']")]
+  ] as const;
+
+  for (const [nom, debut] of blocs) {
+    it(`${nom} ne contient que des renvois`, () => {
+      expect(debut, `bloc ${nom} introuvable`).toBeGreaterThan(-1);
+      const fin = CSS.indexOf('\n}', CSS.indexOf('{', debut + 1));
+      const corps = CSS.slice(debut, fin);
+      const enDur = [...corps.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => m[0]);
+      expect(enDur, 'couleur écrite en dur au lieu d’un renvoi').toEqual([]);
+    });
+  }
+
+  it('applique exactement les mêmes jetons par les deux voies', () => {
+    const renvois = (debut: number) => {
+      const fin = CSS.indexOf('\n}', CSS.indexOf('{', debut + 1));
+      return [...CSS.slice(debut, fin).matchAll(/(--[\w-]+):\s*var\((--dark-[\w-]+)\)/g)]
+        .map((m) => `${m[1]}=${m[2]}`)
+        .sort();
+    };
+    const [auto, force] = blocs.map(([, debut]) => renvois(debut));
+    expect(auto?.length, 'aucun renvoi trouvé').toBeGreaterThan(0);
+    expect(force).toEqual(auto);
+  });
+
+  it('applique tous les jetons sombres déclarés', () => {
+    // Le mode de panne de D20 n'est plus la divergence de valeurs, devenue
+    // impossible, mais l'oubli d'un renvoi : un jeton déclaré que rien
+    // n'applique laisserait sa couleur claire en thème sombre.
+    const applique = new Set(
+      [
+        ...CSS.slice(CSS.indexOf(":root[data-theme='dark']")).matchAll(/var\((--dark-[\w-]+)\)/g)
+      ].map((m) => (m[1] ?? '').slice('--dark-'.length))
+    );
+    const oublies = [...CSS.matchAll(/--dark-([\w-]+):/g)]
+      .map((m) => m[1] ?? '')
+      .filter((nom) => !applique.has(nom));
+    expect(oublies, 'jeton sombre déclaré mais jamais appliqué').toEqual([]);
+  });
+});
 
 function canal(valeur: number): number {
   const s = valeur / 255;
