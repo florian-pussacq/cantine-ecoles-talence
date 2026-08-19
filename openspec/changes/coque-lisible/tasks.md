@@ -20,7 +20,7 @@
 - [x] 3.2 Écrire les tests unitaires du geste : seuil non atteint, geste trop vertical, sens gauche, sens droit, absence de voisin
 - [x] 3.3 Appliquer la correction établie en 1.4 : `touch-action`, capture du pointeur, suppression du `click` consécutif
 - [x] 3.4 Brancher `+page.svelte` sur la fonction extraite et vérifier que les tests de 2. passent
-- [ ] 3.5 Vérifier sur téléphone réel que le geste répond, avant de considérer la réparation faite
+- [x] 3.5 Vérifier sur téléphone réel que le geste répond, avant de considérer la réparation faite
 
 ## 4. Étendre le balayage à l'écran de la semaine
 
@@ -80,6 +80,6 @@
 
 - [x] 10.1 `npm run validate` et `npm run test:e2e` verts sur les deux profils
 - [x] 10.2 Budgets tenus : la construction ne doit pas échouer sur les 60 Ko de JavaScript
-- [ ] 10.3 Vérifier sur téléphone réel : balayage sur les deux écrans, couche modale, thème forcé après rechargement
-- [ ] 10.4 Vérifier sur écran de bureau : colonne bornée, structure identique, aucune horizontalité parasite
+- [x] 10.3 Vérifier sur téléphone réel : balayage sur les deux écrans, couche modale, thème forcé après rechargement
+- [x] 10.4 Vérifier sur écran de bureau : colonne bornée, structure identique, aucune horizontalité parasite
 - [x] 10.5 Trancher les questions ouvertes de `design.md` et les consigner comme décisions

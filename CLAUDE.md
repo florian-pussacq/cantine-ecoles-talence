@@ -6,27 +6,24 @@ maintenable dans le temps, performant, resilient et compréhensible.
 
 ## Publication
 
-**Tout commit qui passe la vérification est poussé sur GitLab, sans le demander.**
+**Ne pousse jamais de toi-même. La poussée est la décision de l'humain.**
 
-La vérification, c'est la commande de la CI et de Netlify, ni plus ni moins :
+Netlify publie sur `main` : une poussée met en ligne. Ce déclenchement
+appartient à celui qui l'assume, pas à l'agent. Tu commites, tu t'arrêtes là,
+tu dis ce qui est prêt à partir.
+
+Ce que tu fais en revanche systématiquement, avant tout commit : la
+vérification, celle de la CI et de Netlify, ni plus ni moins :
 
 ```bash
 npm run validate && npm run build
 ```
 
-et `npm run test:e2e` dès qu'un commit touche l'interface ou les données servies.
+et `npm run test:e2e` dès qu'un commit touche l'interface ou les données
+servies.
 
-Pousser n'est pas une étape de fin de séance : Netlify publie sur `main`, donc
-chaque poussée produit une URL consultable. C'est le seul moyen de juger sur un
-vrai appareil ce qui ne se juge pas en local — le balayage au doigt, un thème
-sans clignotement, une mise en page large.
-
-En creux : ne pas empiler des commits locaux en attendant qu'un ensemble soit
-« complet ». Un commit vert se pousse ; un commit rouge ne se commite pas.
-
-Pas de poussée en revanche si la vérification échoue, si l'arbre porte un
-travail à moitié fait, ou si `main` est protégé contre l'opération demandée —
-dans ce dernier cas, le dire plutôt que de contourner.
+Un commit rouge ne se commite pas. Un commit vert reste local jusqu'à ce qu'on
+te demande de pousser — et alors seulement, tu pousses.
 
 ## Agent skills
 
