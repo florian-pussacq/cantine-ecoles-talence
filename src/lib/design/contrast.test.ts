@@ -7,97 +7,44 @@ import { describe, expect, it } from 'vitest';
  * Ce test lit `tokens.css` : il attrape donc une teinte modifiée à la main, qui
  * est exactement la façon dont une palette accessible cesse de l'être. Deux
  * couleurs ont déjà été assombries à cause de lui (design.md, D15).
+ *
+ * Il ne lisait jusqu'ici que des jetons opaques. Or l'application peint aussi
+ * des surfaces obtenues par mélange à l'opacité, et l'une d'elles ne tenait pas
+ * son seuil depuis l'origine sans que rien puisse le voir (design.md, D27).
  */
 
 const CSS = readFileSync('src/lib/design/tokens.css', 'utf8');
 
-/**
- * Les jetons, découpés par préfixe.
- *
- * Le découpage se faisait auparavant par la *position* de la déclaration dans le
- * fichier, relativement à la ligne de la requête de média. Il ne survit pas à
- * l'existence de deux voies d'application du thème sombre (design.md, D20), et
- * il cassait au moindre bloc ajouté. Le préfixe ne dépend plus de l'ordre des
- * règles, ce qui le rend accessoirement plus solide qu'avant.
- */
-function readTokens(): { clair: Record<string, string>; sombre: Record<string, string> } {
-  const clair: Record<string, string> = {};
-  const sombre: Record<string, string> = {};
+/** Les jetons de la palette. Il n'y en a qu'une (design.md, D25). */
+function readTokens(): Record<string, string> {
+  const jetons: Record<string, string> = {};
 
   for (const match of CSS.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)) {
     const [, name, value] = match;
     if (name === undefined || value === undefined) continue;
-    if (name.startsWith('dark-')) sombre[name.slice('dark-'.length)] = value;
-    else clair[name] = value;
+    jetons[name] = value;
   }
 
-  return { clair, sombre: { ...clair, ...sombre } };
+  return jetons;
 }
 
-const { clair, sombre } = readTokens();
-
-/**
- * Les deux voies d'application du thème sombre ne peuvent pas diverger.
- *
- * C'est la promesse de D20, et elle se vérifie sur le texte : les deux blocs ne
- * doivent contenir que des renvois, jamais une couleur écrite en dur. Un seul
- * hexadécimal qui s'y glisserait rétablirait la duplication que la
- * restructuration a supprimée — et le reste de ce fichier ne le verrait pas,
- * puisqu'il ne lit que les jetons préfixés.
- */
-describe('les deux voies du thème sombre', () => {
-  const blocs = [
-    ['@media (prefers-color-scheme: dark)', CSS.indexOf('@media (prefers-color-scheme: dark)')],
-    ["[data-theme='dark']", CSS.indexOf(":root[data-theme='dark']")]
-  ] as const;
-
-  for (const [nom, debut] of blocs) {
-    it(`${nom} ne contient que des renvois`, () => {
-      expect(debut, `bloc ${nom} introuvable`).toBeGreaterThan(-1);
-      const fin = CSS.indexOf('\n}', CSS.indexOf('{', debut + 1));
-      const corps = CSS.slice(debut, fin);
-      const enDur = [...corps.matchAll(/(--[\w-]+):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => m[0]);
-      expect(enDur, 'couleur écrite en dur au lieu d’un renvoi').toEqual([]);
-    });
-  }
-
-  it('applique exactement les mêmes jetons par les deux voies', () => {
-    const renvois = (debut: number) => {
-      const fin = CSS.indexOf('\n}', CSS.indexOf('{', debut + 1));
-      return [...CSS.slice(debut, fin).matchAll(/(--[\w-]+):\s*var\((--dark-[\w-]+)\)/g)]
-        .map((m) => `${m[1]}=${m[2]}`)
-        .sort();
-    };
-    const [auto, force] = blocs.map(([, debut]) => renvois(debut));
-    expect(auto?.length, 'aucun renvoi trouvé').toBeGreaterThan(0);
-    expect(force).toEqual(auto);
-  });
-
-  it('applique tous les jetons sombres déclarés', () => {
-    // Le mode de panne de D20 n'est plus la divergence de valeurs, devenue
-    // impossible, mais l'oubli d'un renvoi : un jeton déclaré que rien
-    // n'applique laisserait sa couleur claire en thème sombre.
-    const applique = new Set(
-      [
-        ...CSS.slice(CSS.indexOf(":root[data-theme='dark']")).matchAll(/var\((--dark-[\w-]+)\)/g)
-      ].map((m) => (m[1] ?? '').slice('--dark-'.length))
-    );
-    const oublies = [...CSS.matchAll(/--dark-([\w-]+):/g)]
-      .map((m) => m[1] ?? '')
-      .filter((nom) => !applique.has(nom));
-    expect(oublies, 'jeton sombre déclaré mais jamais appliqué').toEqual([]);
-  });
-});
+const jetons = readTokens();
 
 function canal(valeur: number): number {
   const s = valeur / 255;
   return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
 }
 
+function composantes(hex: string): [number, number, number] {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16)
+  ];
+}
+
 function luminance(hex: string): number {
-  const r = canal(parseInt(hex.slice(1, 3), 16));
-  const g = canal(parseInt(hex.slice(3, 5), 16));
-  const b = canal(parseInt(hex.slice(5, 7), 16));
+  const [r, g, b] = composantes(hex).map(canal) as [number, number, number];
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
@@ -105,6 +52,23 @@ export function contraste(avant: string, arriere: string): number {
   const a = luminance(avant);
   const b = luminance(arriere);
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+/**
+ * La couleur réellement peinte par `color-mix(… X%, transparent)` posé sur un
+ * fond, ou par une opacité appliquée à un texte.
+ *
+ * Les deux reviennent au même calcul : la composition d'une source partiellement
+ * transparente sur un fond opaque est une interpolation linéaire par canal. Le
+ * mélange se fait en sRGB parce que c'est l'espace que déclarent les appels de
+ * `color-mix` de la feuille de style ; le changer ici ferait mesurer une couleur
+ * que le navigateur ne peint pas.
+ */
+export function compose(source: string, fond: string, alpha: number): string {
+  const s = composantes(source);
+  const f = composantes(fond);
+  const canaux = s.map((valeur, i) => Math.round(valeur * alpha + (f[i] as number) * (1 - alpha)));
+  return `#${canaux.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
 /**
@@ -141,33 +105,190 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
   ])
 ];
 
-for (const [nomTheme, jetons] of [
-  ['clair', clair],
-  ['sombre', sombre]
-] as const) {
-  describe(`thème ${nomTheme}`, () => {
-    for (const { texte, fond, seuil, quoi } of PAIRES) {
-      it(`${quoi} tient ${seuil}:1`, () => {
-        const avant = jetons[texte];
-        const arriere = jetons[fond];
-        expect(avant, `jeton --${texte} absent`).toBeDefined();
-        expect(arriere, `jeton --${fond} absent`).toBeDefined();
+/**
+ * Les surfaces peintes par transparence.
+ *
+ * Elles échappent aux paires ci-dessus, qui ne connaissent que des jetons
+ * opaques : ce sont des couleurs qui n'existent nulle part dans `tokens.css` et
+ * que seul le rendu produit. Le taux est recopié depuis le style scopé qui le
+ * porte — duplication surveillée plus bas par un contrôle qui refuse toute
+ * transparence non déclarée ici.
+ *
+ * Le seuil de 3:1 des bordures vient de WCAG 1.4.11 : une bordure qui délimite
+ * une commande porte une information, au même titre qu'un texte.
+ */
+const TRANSPARENCES: {
+  source: string;
+  fond: string;
+  /** Un voile posé sur le fond avant la source : le fond peint n'est alors pas un jeton. */
+  voile?: { source: string; alpha: number };
+  alpha: number;
+  seuil: number;
+  quoi: string;
+  ou: string;
+}[] = [
+  {
+    source: 'on-table',
+    fond: 'table',
+    alpha: 0.7,
+    seuil: 4.5,
+    quoi: 'lien « Source, mentions et vie privée »',
+    ou: '+layout.svelte, .about a'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
+    alpha: 0.72,
+    seuil: 4.5,
+    quoi: 'pied de page du jour, source et date de mise à jour',
+    ou: '+page.svelte, footer'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
+    alpha: 0.8,
+    seuil: 4.5,
+    quoi: 'avis « menus non rafraîchis »',
+    ou: '+page.svelte, .notice.subtle'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
+    voile: { source: 'on-table', alpha: 0.12 },
+    alpha: 0.75,
+    seuil: 4.5,
+    quoi: 'libellé d’un onglet non courant, sur le fond translucide de la pilule',
+    ou: '+layout.svelte, .tabs a'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
+    alpha: 0.4,
+    seuil: 3,
+    quoi: 'bordure des boutons de jour et de semaine',
+    ou: '+page.svelte et semaine/+page.svelte, nav button'
+  }
+];
 
-        const rapport = contraste(avant as string, arriere as string);
-        expect(
-          Number(rapport.toFixed(2)),
-          `--${texte} sur --${fond} : ${rapport.toFixed(2)}:1`
-        ).toBeGreaterThanOrEqual(seuil);
-      });
-    }
-  });
-}
+/**
+ * Les transparences délibérément non mesurées, et pourquoi.
+ *
+ * Sans cette liste, le contrôle de couverture ci-dessous ne laisserait aucune
+ * échappatoire et forcerait à foncer des traits décoratifs pour satisfaire un
+ * seuil que la norme ne leur applique pas.
+ */
+const DECORATIFS: { alpha: number; quoi: string; pourquoi: string }[] = [
+  {
+    alpha: 0.22,
+    quoi: 'filet de séparation des pieds de page',
+    pourquoi:
+      'ne délimite aucune commande et ne porte aucune information : rien ne dépend de sa perception'
+  },
+  {
+    alpha: 0.12,
+    quoi: 'fond de la pilule d’onglets',
+    pourquoi:
+      'aplat sans rôle propre — ce qui doit se lire, c’est le libellé posé dessus, et il est mesuré'
+  }
+];
+
+describe('la palette', () => {
+  for (const { texte, fond, seuil, quoi } of PAIRES) {
+    it(`${quoi} tient ${seuil}:1`, () => {
+      const avant = jetons[texte];
+      const arriere = jetons[fond];
+      expect(avant, `jeton --${texte} absent`).toBeDefined();
+      expect(arriere, `jeton --${fond} absent`).toBeDefined();
+
+      const rapport = contraste(avant as string, arriere as string);
+      expect(
+        Number(rapport.toFixed(2)),
+        `--${texte} sur --${fond} : ${rapport.toFixed(2)}:1`
+      ).toBeGreaterThanOrEqual(seuil);
+    });
+  }
+});
+
+describe('les surfaces peintes par transparence', () => {
+  for (const { source, fond, voile, alpha, seuil, quoi, ou } of TRANSPARENCES) {
+    it(`${quoi} tient ${seuil}:1`, () => {
+      const avant = jetons[source];
+      const base = jetons[fond];
+      expect(avant, `jeton --${source} absent`).toBeDefined();
+      expect(base, `jeton --${fond} absent`).toBeDefined();
+
+      const arriere =
+        voile === undefined
+          ? (base as string)
+          : compose(jetons[voile.source] as string, base as string, voile.alpha);
+
+      const peint = compose(avant as string, arriere, alpha);
+      const rapport = contraste(peint, arriere);
+      expect(
+        Number(rapport.toFixed(2)),
+        `--${source} à ${alpha * 100} % sur ${arriere} donne ${peint} : ${rapport.toFixed(2)}:1 (${ou})`
+      ).toBeGreaterThanOrEqual(seuil);
+    });
+  }
+});
+
+/**
+ * Le contrôle qui rattrape l'oubli.
+ *
+ * Recopier un taux dans la liste ci-dessus ne protège de rien si l'on ajoute une
+ * surface translucide sans y penser — c'est exactement ce qui s'est produit à
+ * l'écriture de ce test, où la bordure identique de l'écran de la semaine avait
+ * été manquée à la lecture. Le contrôle lit les composants et refuse tout taux
+ * qui ne serait ni mesuré ni explicitement tenu pour décoratif.
+ *
+ * Il ne couvre que `color-mix(… var(--on-table) N%, transparent)`, la forme
+ * mécaniquement reconnaissable. Les opacités appliquées à un élément entier ne
+ * disent pas sur quel fond elles se posent, et resteraient à déclarer à la main.
+ */
+describe('couverture des transparences', () => {
+  const FICHIERS = [
+    'src/routes/+layout.svelte',
+    'src/routes/+page.svelte',
+    'src/routes/semaine/+page.svelte',
+    'src/routes/reglages/+page.svelte',
+    'src/routes/a-propos/+page.svelte'
+  ];
+
+  const connus = new Set([
+    ...TRANSPARENCES.map(({ alpha }) => alpha),
+    ...TRANSPARENCES.flatMap(({ voile }) => (voile ? [voile.alpha] : [])),
+    ...DECORATIFS.map(({ alpha }) => alpha)
+  ]);
+
+  for (const fichier of FICHIERS) {
+    it(`${fichier} ne peint aucune transparence non déclarée`, () => {
+      const source = readFileSync(fichier, 'utf8');
+      const trouves = [
+        ...source.matchAll(/color-mix\(in srgb, var\(--on-table\) (\d+)%, transparent\)/g)
+      ].map((m) => Number(m[1]) / 100);
+
+      const orphelins = [...new Set(trouves)].filter((alpha) => !connus.has(alpha));
+      expect(
+        orphelins,
+        'transparence peinte sur le fond de la table sans être ni mesurée ni tenue pour décorative'
+      ).toEqual([]);
+    });
+  }
+});
 
 describe('la volaille inverse sa polarité', () => {
-  it('porte du texte sombre en thème clair, parce que son ambre est trop clair pour du blanc', () => {
+  it('porte du texte sombre, parce que son ambre est trop clair pour du blanc', () => {
     // Documenté en D15 : assombrir l'ambre jusqu'à la lisibilité du blanc
     // l'aurait viré au marron, ce que la palette refuse.
-    expect(contraste('#ffffff', clair['fam-volaille'] as string)).toBeLessThan(4.5);
-    expect(clair['fam-volaille-on']).not.toBe('#ffffff');
+    expect(contraste('#ffffff', jetons['fam-volaille'] as string)).toBeLessThan(4.5);
+    expect(jetons['fam-volaille-on']).not.toBe('#ffffff');
+  });
+});
+
+describe('le fond de la table', () => {
+  it('ne porte aucune trace de la palette sombre supprimée (D25)', () => {
+    expect(CSS).not.toContain('--dark-');
+    expect(CSS).not.toContain('data-theme');
+    expect(CSS).not.toContain('prefers-color-scheme');
   });
 });

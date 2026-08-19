@@ -277,7 +277,11 @@
     font-weight: 600;
     color: var(--on-table);
     background: none;
-    border: 1px solid color-mix(in srgb, var(--on-table) 35%, transparent);
+    /* 40 % et non 35 % : sur le fond de la table, le mélange à 35 % ne mesure
+       que 2,81:1 alors qu'une bordure délimitant une commande en demande 3
+       (WCAG 1.4.11). À 40 %, elle mesure 3,20:1 — vérifié par `contrast.test.ts`,
+       qui mesure désormais aussi les surfaces obtenues par opacité (D27). */
+    border: 1px solid color-mix(in srgb, var(--on-table) 40%, transparent);
     border-radius: 999px;
     cursor: pointer;
   }

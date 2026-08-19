@@ -5,12 +5,10 @@
   import Sprite from '$lib/illustrations/Sprite.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { appUpdate } from '$lib/pwa/update.svelte.js';
-  import { themePreference } from '$lib/theme/theme.svelte.js';
 
   let { children } = $props();
 
   allergenFilter.hydrate();
-  themePreference.hydrate();
   appUpdate.register();
 
   const tabs = [

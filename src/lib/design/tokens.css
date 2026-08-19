@@ -10,20 +10,27 @@
  * les fonds de disque, et la couleur du texte qui tient dessus. Une illustration
  * colorée n'est jamais posée sur un aplat saturé : elle repose sur la teinte
  * pâle, sans quoi un poisson bleu sur fond bleu disparaît.
+ *
+ * **Il n'y a qu'une palette** (design.md, D25). Ni thème clair ni thème sombre :
+ * une apparence, un fond profond, des plateaux clairs. Rien ici ne dépend d'une
+ * préférence du système ni d'un attribut posé sur la racine, et il n'y a donc
+ * pas de seconde valeur à tenir cohérente avec la première.
  */
 
 :root {
-  color-scheme: light dark;
+  /* Les commandes de formulaire vivent sur les plateaux clairs, jamais sur le
+     fond de la table : c'est leur surface qui décide, pas l'impression générale. */
+  color-scheme: light;
 
   /* Surfaces */
-  --table: #1e5a6b;
+  --table: #2b3440;
   --tray: #f3f5f1;
   --cell: #e3e9e4;
   --edge: #c6d0ca;
   --chip: #ffffff;
   --sheet: #f7f9f6;
-  /* Alvéole d'un rôle absent : toujours plus sombre que les autres, dans les
-     deux thèmes, pour qu'un creux se lise comme un creux et non comme un relief. */
+  /* Alvéole d'un rôle absent : plus sombre que les autres, pour qu'un creux se
+     lise comme un creux et non comme un relief. */
   --cell-empty: #d5ded7;
 
   /* Encres */
@@ -88,118 +95,6 @@
   --ill-plat: 46px;
   --ill-cellule: 34px;
   --ill-disque: 68px;
-
-  /* Palette sombre : déclarée ici, appliquée plus bas par simple renvoi (D20). */
-  --dark-table: #0d1a20;
-  --dark-tray: #1b262d;
-  --dark-cell: #232f37;
-  --dark-edge: #33424b;
-  --dark-chip: #2c3941;
-  --dark-sheet: #1b262d;
-  --dark-cell-empty: #182229;
-  --dark-ink: #e8eef1;
-  --dark-ink-muted: #9aa9b1;
-  --dark-on-table: #e8eef1;
-  --dark-fam-viande: #b32d1f;
-  --dark-fam-viande-pale: #3a201c;
-  --dark-fam-viande-on: #ffffff;
-  --dark-fam-volaille: #a36704;
-  --dark-fam-volaille-pale: #392b12;
-  --dark-fam-volaille-on: #ffffff;
-  --dark-fam-poisson: #10598b;
-  --dark-fam-poisson-pale: #17303f;
-  --dark-fam-poisson-on: #ffffff;
-  --dark-fam-vegetarien: #1a6130;
-  --dark-fam-vegetarien-pale: #18301f;
-  --dark-fam-vegetarien-on: #ffffff;
-  --dark-fam-inconnu: #47514d;
-  --dark-fam-inconnu-pale: #262e2b;
-  --dark-fam-inconnu-on: #ffffff;
-  --dark-warn: #a36704;
-  --dark-warn-on: #ffffff;
-}
-
-/**
- * Thème sombre.
- *
- * Les familles sont éclaircies pour retrouver leur contraste sur fond sombre.
- * L'inversion de polarité de la volaille disparaît au passage : sur une surface
- * sombre, l'ambre porte du texte clair comme les autres.
- *
- * Les valeurs sont déclarées une seule fois, plus haut, sous le préfixe
- * `--dark-`. Les deux blocs ci-dessous ne contiennent que des renvois : une
- * couleur ne peut donc pas diverger entre le thème appliqué automatiquement et
- * le thème choisi explicitement (design.md, D20). Au pire un renvoi manque, ce
- * qui se voit immédiatement.
- */
-@media (prefers-color-scheme: dark) {
-  /* `:not([data-theme='light'])` : un thème clair explicitement choisi doit
-     l'emporter sur la préférence du système. */
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --table: var(--dark-table);
-    --tray: var(--dark-tray);
-    --cell: var(--dark-cell);
-    --edge: var(--dark-edge);
-    --chip: var(--dark-chip);
-    --sheet: var(--dark-sheet);
-    --cell-empty: var(--dark-cell-empty);
-    --ink: var(--dark-ink);
-    --ink-muted: var(--dark-ink-muted);
-    --on-table: var(--dark-on-table);
-    --fam-viande: var(--dark-fam-viande);
-    --fam-viande-pale: var(--dark-fam-viande-pale);
-    --fam-viande-on: var(--dark-fam-viande-on);
-    --fam-volaille: var(--dark-fam-volaille);
-    --fam-volaille-pale: var(--dark-fam-volaille-pale);
-    --fam-volaille-on: var(--dark-fam-volaille-on);
-    --fam-poisson: var(--dark-fam-poisson);
-    --fam-poisson-pale: var(--dark-fam-poisson-pale);
-    --fam-poisson-on: var(--dark-fam-poisson-on);
-    --fam-vegetarien: var(--dark-fam-vegetarien);
-    --fam-vegetarien-pale: var(--dark-fam-vegetarien-pale);
-    --fam-vegetarien-on: var(--dark-fam-vegetarien-on);
-    --fam-inconnu: var(--dark-fam-inconnu);
-    --fam-inconnu-pale: var(--dark-fam-inconnu-pale);
-    --fam-inconnu-on: var(--dark-fam-inconnu-on);
-    --warn: var(--dark-warn);
-    --warn-on: var(--dark-warn-on);
-  }
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --table: var(--dark-table);
-  --tray: var(--dark-tray);
-  --cell: var(--dark-cell);
-  --edge: var(--dark-edge);
-  --chip: var(--dark-chip);
-  --sheet: var(--dark-sheet);
-  --cell-empty: var(--dark-cell-empty);
-  --ink: var(--dark-ink);
-  --ink-muted: var(--dark-ink-muted);
-  --on-table: var(--dark-on-table);
-  --fam-viande: var(--dark-fam-viande);
-  --fam-viande-pale: var(--dark-fam-viande-pale);
-  --fam-viande-on: var(--dark-fam-viande-on);
-  --fam-volaille: var(--dark-fam-volaille);
-  --fam-volaille-pale: var(--dark-fam-volaille-pale);
-  --fam-volaille-on: var(--dark-fam-volaille-on);
-  --fam-poisson: var(--dark-fam-poisson);
-  --fam-poisson-pale: var(--dark-fam-poisson-pale);
-  --fam-poisson-on: var(--dark-fam-poisson-on);
-  --fam-vegetarien: var(--dark-fam-vegetarien);
-  --fam-vegetarien-pale: var(--dark-fam-vegetarien-pale);
-  --fam-vegetarien-on: var(--dark-fam-vegetarien-on);
-  --fam-inconnu: var(--dark-fam-inconnu);
-  --fam-inconnu-pale: var(--dark-fam-inconnu-pale);
-  --fam-inconnu-on: var(--dark-fam-inconnu-on);
-  --warn: var(--dark-warn);
-  --warn-on: var(--dark-warn-on);
-}
-
-:root[data-theme='light'] {
-  color-scheme: light;
 }
 
 /*

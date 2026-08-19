@@ -387,7 +387,7 @@
     font-weight: 600;
     color: var(--on-table);
     background: none;
-    border: 1px solid color-mix(in srgb, var(--on-table) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--on-table) 40%, transparent);
     border-radius: 999px;
     cursor: pointer;
   }
