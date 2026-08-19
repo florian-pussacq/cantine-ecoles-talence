@@ -42,7 +42,11 @@ La règle retenue se formule sans nommer le pain : **lorsque le libellé d'un pl
 
 *Cas de repli.* Une tautologie sans qualité à promouvoir — le goûter du mercredi — ne peut pas être réparée par le nommage : il n'y a rien à nommer. Elle devient alors une absence déclarée, dans les termes de D12, qui exige déjà qu'un creux reste distinguable d'une donnée manquante. La formulation dit que le détail n'est pas publié, et non que le goûter n'existe pas : la différence compte, puisque les allergènes de ces sept jours *sont* renseignés — il y a bien un goûter, on ignore lequel.
 
+*Tranché sur le PDF officiel.* Le document source imprime, tous les autres jours, `Goûter : Pain + Crème de marron`. Le mercredi, il imprime `Goûter` seul, suivi des mêmes allergènes `1+3+7+8`, et cela sans exception sur tous les mercredis du mois. **C'est un défaut de la source, pas de la saisie** : celle-ci a reproduit fidèlement ce qui est publié. Il n'y a donc rien à corriger dans les données, et la formulation retenue est la seule honnête — la Ville déclare les allergènes d'un goûter dont elle ne nomme pas le contenu.
+
 *Ce qui n'est pas touché.* Les autres compartiments gardent leur qualité en capsule discrète, à sa place : là où le libellé désigne réellement un plat, la qualité est une précision, pas le sujet.
+
+*Vérifié sur la source, après coup.* Le PDF municipal de septembre imprime `PAIN BIO`, `PAIN LABEL ROUGE`, `PAIN DU MOIS` — la qualité fait partie du nom du pain **sur le document d'origine**. La saisie l'avait séparée en un libellé et un indicateur, ce qui est juste pour le modèle de données ; l'affichage, lui, l'avait perdue. La règle ne fabrique donc pas une information : elle reconstitue à l'écran ce que la Ville imprime sur son menu.
 
 *Alternative écartée — masquer le compartiment du pain.* C'était ma proposition, et elle était moins bonne. Retirer le pain aurait supprimé, avec la tautologie, l'information de qualité que ce compartiment est le seul à porter ; et il aurait fallu la reloger ailleurs, ou la perdre. Le compartiment n'était pas de trop : il était mal rempli.
 
@@ -100,7 +104,8 @@ D'où l'ordre des opérations : **ralentir sans corriger la désynchronisation l
 
 *Consignées, et non laissées à la conversation — voir le Context.*
 
-- **Le balayage qui suit le doigt.** Un carrousel à trois positions, les jours voisins pré-rendus, la position pilotée par le pointeur, un ressort au relâchement. C'est ce que le geste promet aujourd'hui sans le tenir. Coût réel : le rendu de trois jours au lieu d'un, sur un budget JavaScript à 88 %. À instruire avant de s'y engager.
-- **La durée finale de la transition**, qui ne se tranchera que sur un téléphone, et seulement après que l'en-tête soit passé sous la même horloge.
-- **Les sept mercredis sans goûter détaillé.** Défaut de la source ou de la saisie ? Ce changement les rend visibles ; il ne dit pas s'ils sont réparables. À regarder sur le PDF officiel d'un mercredi.
-- **La coque : la barre d'onglets, la place des allergènes, la roue crantée.** Hors de ce changement, non instruite, et cette fois écrite quelque part. La question qui la bloque n'est pas l'icône mais l'état : sortir les allergènes de la barre demande de décider où se signale un filtre actif, puisque celui-ci n'est pas un réglage inerte — il modifie en permanence ce qui s'affiche sur les deux écrans de consultation.
+- **Le balayage qui suit le doigt.** Un carrousel à trois positions, les jours voisins pré-rendus, la position pilotée par le pointeur, un ressort au relâchement. C'est ce que le geste promet aujourd'hui sans le tenir. Coût réel : le rendu de trois jours au lieu d'un, sur un budget JavaScript à 89 %. À instruire avant de s'y engager.
+- **La durée finale de la transition.** L'horloge est unifiée et la durée portée à 260 ms, mesurés identiques sur les deux blocs animés. Cette valeur reste un point de départ : elle ne se tranchera que sur un téléphone, et se change dans le seul jeton `--glisse`.
+- ~~Les sept mercredis sans goûter détaillé.~~ **Tranché** : défaut de la source. Le PDF imprime `Goûter` seul, tous les mercredis, avec ses allergènes. Voir D28.
+- ~~La coque : la barre d'onglets, la place des allergènes, la roue crantée.~~ **Instruite** dans le change `navigation-basse`, décisions D31 à D34.
+- **La hauteur sur un téléphone court.** Mesuré sur le profil de test (839 pixels de pli) : le plat principal s'arrête à 436 pixels, la carte du goûter occupe 708 à 801, tout tient au-dessus du pli. Sur un appareil plus court — de l'ordre de 670 pixels — le goûter passe sous le pli. C'est acceptable puisqu'il est sous le plateau par construction, mais cela n'a pas été vu sur un vrai appareil de cette taille.

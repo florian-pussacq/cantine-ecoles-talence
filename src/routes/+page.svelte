@@ -4,9 +4,17 @@
   import type { Course } from '$lib/data/schema.js';
   import CourseSheet from '$lib/menu/CourseSheet.svelte';
   import Tray from '$lib/menu/Tray.svelte';
-  import { formatDay, slotLabel, targetEyebrow } from '$lib/menu/labels.js';
+  import {
+    courseName,
+    flaggedAllergenNames,
+    formatDay,
+    slotLabel,
+    targetEyebrow
+  } from '$lib/menu/labels.js';
   import Illustration from '$lib/illustrations/Illustration.svelte';
+  import AllergenChip from '$lib/menu/AllergenChip.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
+  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { classify } from '$lib/illustrations/families.js';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
@@ -71,7 +79,24 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<EnTete quand={eyebrow} quoi={date === null ? 'Menus des écoles' : formatDay(date)} />
+<!--
+  L'en-tête change sous la même horloge que le contenu qu'il annonce (D30).
+
+  Il était rendu hors du bloc animé : la date passait au jour suivant pendant
+  que le plateau du jour précédent n'avait pas fini de sortir. Un seul
+  changement, deux temps — c'est ce défaut-là que l'œil enregistre, avant même
+  de pouvoir nommer une vitesse.
+
+  Deux blocs distincts et non un seul englobant : le contenu du jour vit à
+  l'intérieur de la surface de geste, qui doit rester stable pendant qu'un doigt
+  la touche. Ils partagent la même clé, le même sens et la même durée, ce qui
+  est précisément ce que « une seule horloge » veut dire.
+-->
+{#key date}
+  <div class="glisse" style:--sens={sens}>
+    <EnTete quand={eyebrow} quoi={date === null ? 'Menus des écoles' : formatDay(date)} />
+  </div>
+{/key}
 
 {#if data.status.kind === 'schema-too-new'}
   <p class="notice">
@@ -103,13 +128,6 @@
     </p>
   {/if}
 
-  {#if day.theme}
-    <section class="theme">
-      <h2>{day.theme}</h2>
-      {#if day.note}<p>{day.note}</p>{/if}
-    </section>
-  {/if}
-
   <!--
     Le geste est strictement redondant avec les boutons de navigation et les
     flèches du clavier, tous deux atteignables et annoncés. Lui inventer un rôle
@@ -120,22 +138,55 @@
     gestionnaires, donc son contrôle d'accessibilité ne s'exprime plus ici. Le
     raisonnement ci-dessus tient lieu de justification, sans directive à tenir
     à jour.
+
+    La surface de geste reste hors de la clé : elle porte les gestionnaires et
+    la capture du pointeur, et la détruire pendant qu'un doigt la touche tuerait
+    le geste en cours. C'est son contenu qui se renouvelle, pas elle.
   -->
   <div class="balayage" {...balayage}>
     {#key date}
-      <div class="glisse" style:--sens={sens}>
+      <div class="jour glisse" style:--sens={sens}>
+        {#if day.theme}
+          <section class="theme">
+            <h2>{day.theme}</h2>
+            {#if day.note}<p>{day.note}</p>{/if}
+          </section>
+        {/if}
+
         <Tray {day} onSelect={(course) => (selected = course)} />
+
+        {#if snack}
+          {@const match = classify(snack.label)}
+          {@const nom = courseName(snack)}
+          {@const codes = allergenFilter.matching(snack)}
+          <!--
+            Le goûter n'est pas sur le plateau du déjeuner : il n'est pas servi au
+            même moment, et l'y ranger dirait le contraire. Il n'est pas non plus
+            une note de bas de plateau — vingt libellés distincts sur trente-cinq
+            jours, c'est la deuxième quantité d'information de l'écran (D29).
+
+            La séparation est portée par sa forme et son éloignement, et non par
+            un filet : l'écran en porte déjà un en pied de page, où il signifie
+            « fin du contenu », et un trait sépare deux choses de même nature.
+          -->
+          <button type="button" class="snack" onclick={() => (selected = snack)}>
+            <span class="snack-cell">
+              <span class="snack-disc"><Illustration name={match.illustration} /></span>
+              <span class="snack-body">
+                <span class="snack-role">{slotLabel('gouter')}</span>
+                <span class="snack-name" class:unknown={nom.kind === 'undisclosed'}>
+                  {nom.text}
+                </span>
+                {#if codes.length > 0}
+                  <AllergenChip {codes} names={flaggedAllergenNames(snack, day.legend, codes)} />
+                {/if}
+              </span>
+            </span>
+          </button>
+        {/if}
       </div>
     {/key}
   </div>
-
-  {#if snack}
-    {@const match = classify(snack.label)}
-    <button type="button" class="snack" onclick={() => (selected = snack)}>
-      <Illustration name={match.illustration} size={26} />
-      <span><b>{slotLabel('gouter')}</b> · {snack.label}</span>
-    </button>
-  {/if}
 
   <nav aria-label="Navigation entre les jours">
     <button
@@ -222,6 +273,14 @@
     overflow-x: clip;
   }
 
+  /* Le contenu du jour reproduit l'intervalle de la coque : il est devenu un
+     seul enfant de celle-ci, pour n'avoir qu'une horloge (D30). */
+  .jour {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
   .theme {
     background: var(--tray);
     color: var(--ink);
@@ -243,21 +302,94 @@
     line-height: 1.45;
   }
 
-  /* Le goûter est hors du plateau : il n'est pas servi sur celui du déjeuner. */
+  /*
+    Le goûter est un second plateau, plus petit, posé plus loin sur la table.
+
+    Il reprend la construction du plateau du déjeuner — une surface claire, un
+    compartiment posé dessus — parce que c'est le vocabulaire que l'application
+    a déjà pour dire « ce qui est servi ». Ce qui le sépare est la distance : la
+    coque espace déjà ses enfants, cette marge double l'intervalle, et la rupture
+    se lit sans qu'aucun trait ne soit ajouté (D29).
+  */
   .snack {
+    margin-top: var(--space-3);
+    padding: 8px;
+    background: var(--tray);
+    border: 0;
+    border-radius: var(--radius-tray);
+    font: inherit;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+  }
+
+  .snack-cell {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2);
-    min-height: var(--touch);
-    font: inherit;
-    font-size: var(--text-sm);
-    color: var(--on-table);
-    background: none;
-    border: 0;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--cell);
+    border: 1px solid var(--edge);
     border-radius: var(--radius-cell);
-    cursor: pointer;
-    text-align: left;
+  }
+
+  /* Le disque suit l'échelle des illustrations plutôt qu'une valeur fixe : un
+     seul palier de largeur les fait toutes grandir (D23). */
+  .snack-disc {
+    width: calc(var(--ill-cellule) * 1.5);
+    height: calc(var(--ill-cellule) * 1.5);
+    border-radius: 50%;
+    background: var(--tray);
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+
+  .snack :global(.illustration) {
+    width: var(--ill-cellule);
+    height: var(--ill-cellule);
+  }
+
+  .snack-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .snack-role {
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  .snack-name {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  /* Voir Tray.svelte : un détail non publié s'écrit comme une mention, pas
+     comme un titre — et ne se confond pas avec une absence. */
+  .snack-name.unknown {
+    font-style: italic;
+    font-weight: 600;
+    font-size: var(--text-base);
+    color: var(--ink-muted);
+  }
+
+  /* Le liseré rentre dans la carte plutôt que d'en sortir : il vit désormais
+     dans une surface découpée horizontalement, et un décalage vers l'extérieur
+     serait rogné sur ses deux bords. Même choix que les compartiments. */
+  .snack:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: -3px;
   }
 
   nav {

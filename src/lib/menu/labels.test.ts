@@ -1,11 +1,14 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   allergenNames,
+  courseName,
   dayNumber,
   formatDay,
   formatWeekday,
   shortAllergenName,
   slotAbsence,
+  slotLabel,
   targetEyebrow
 } from './labels.js';
 import type { Course } from '../data/schema.js';
@@ -53,6 +56,124 @@ describe('slotAbsence', () => {
   it('accorde la formulation au rôle', () => {
     expect(slotAbsence('entree')).toBe("Pas d'entrée ce jour");
     expect(slotAbsence('accompagnement')).toBe('Pas de garniture ce jour');
+  });
+});
+
+describe('courseName', () => {
+  function course(partial: Partial<Course> & Pick<Course, 'slot' | 'label'>): Course {
+    return { allergens: [], flags: [], ...partial };
+  }
+
+  describe('un libellé qui dit autre chose que son rôle', () => {
+    it('est affiché tel quel', () => {
+      expect(courseName(course({ slot: 'plat', label: 'Rôti de dinde' }))).toEqual({
+        kind: 'label',
+        text: 'Rôti de dinde'
+      });
+    });
+
+    it('est affiché tel quel même quand il commence par le mot du rôle', () => {
+      // « Pain du mois » dit ce que « Pain » ne dit pas : la règle ne se
+      // déclenche que sur l'égalité, jamais sur un préfixe.
+      expect(courseName(course({ slot: 'pain', label: 'Pain du mois' }))).toEqual({
+        kind: 'label',
+        text: 'Pain du mois'
+      });
+    });
+  });
+
+  describe('un libellé qui répète son rôle', () => {
+    it('cède la place à la qualité', () => {
+      expect(courseName(course({ slot: 'pain', label: 'Pain', flags: ['label-rouge'] }))).toEqual({
+        kind: 'quality',
+        text: 'Label Rouge'
+      });
+    });
+
+    it('cite toutes les qualités quand il y en a plusieurs', () => {
+      expect(courseName(course({ slot: 'pain', label: 'Pain', flags: ['bio', 'igp'] }))).toEqual({
+        kind: 'quality',
+        text: 'Bio · IGP'
+      });
+    });
+
+    it('déclare le détail non publié quand il n’y a aucune qualité à promouvoir', () => {
+      // Les sept mercredis du jeu de données : le goûter existe, ses allergènes
+      // sont renseignés, seul son contenu manque. Le dire n'est pas dire qu'il
+      // n'y en a pas.
+      expect(
+        courseName(course({ slot: 'gouter', label: 'Goûter', allergens: [1, 3, 7, 8] }))
+      ).toEqual({ kind: 'undisclosed', text: 'Détail non publié' });
+    });
+  });
+
+  describe('les bords de la comparaison', () => {
+    it('ignore la casse', () => {
+      expect(courseName(course({ slot: 'pain', label: 'PAIN', flags: ['bio'] })).kind).toBe(
+        'quality'
+      );
+    });
+
+    it('ignore les espaces de bordure', () => {
+      expect(courseName(course({ slot: 'pain', label: '  Pain ', flags: ['bio'] })).kind).toBe(
+        'quality'
+      );
+    });
+
+    it('ignore les accents manquants, que la source omet parfois', () => {
+      expect(courseName(course({ slot: 'gouter', label: 'Gouter', flags: ['bio'] })).kind).toBe(
+        'quality'
+      );
+    });
+
+    it('ne se déclenche pas sur un libellé qui contient le mot du rôle', () => {
+      expect(courseName(course({ slot: 'pain', label: 'Pain bio', flags: ['bio'] }))).toEqual({
+        kind: 'label',
+        text: 'Pain bio'
+      });
+    });
+  });
+});
+
+describe('courseName sur les menus réellement publiés', () => {
+  /*
+    Les comptes ne sont pas assertés — ils changeraient au prochain mois saisi.
+    Ce qui est asserté est l'invariant que D28 pose : aucun compartiment ne dit
+    deux fois le mot de son rôle. Il vaut pour les menus d'aujourd'hui comme
+    pour ceux qui seront ajoutés.
+  */
+  const months = (
+    JSON.parse(readFileSync('static/data/index.json', 'utf8')) as { months: { month: string }[] }
+  ).months;
+
+  const courses = months.flatMap(({ month }) =>
+    (
+      JSON.parse(readFileSync(`static/data/${month}.json`, 'utf8')) as {
+        days: { date: string; courses: Course[] }[];
+      }
+    ).days.flatMap((day) => day.courses.map((course) => ({ date: day.date, course })))
+  );
+
+  it('lit au moins un menu, faute de quoi ce test ne prouverait rien', () => {
+    expect(courses.length).toBeGreaterThan(0);
+  });
+
+  it('ne laisse aucun plat répéter le mot de son rôle', () => {
+    const repetitions = courses
+      .filter(({ course }) => {
+        const nom = courseName(course);
+        return nom.text.trim().toLowerCase() === slotLabel(course.slot).toLowerCase();
+      })
+      .map(({ date, course }) => `${date} · ${course.slot} · ${course.label}`);
+
+    expect(repetitions).toEqual([]);
+  });
+
+  it('promeut une qualité plutôt que de laisser un libellé creux', () => {
+    // Le pain porte « bio » ou « label-rouge » la plupart des jours : si la
+    // règle cessait de se déclencher, ce compte tomberait à zéro.
+    const promus = courses.filter(({ course }) => courseName(course).kind === 'quality');
+    expect(promus.length).toBeGreaterThan(0);
   });
 });
 

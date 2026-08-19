@@ -40,9 +40,17 @@ test('la page ne défile jamais horizontalement', async ({ page }) => {
 test('la structure est la même quelle que soit la largeur', async ({ page }) => {
   // Les mêmes éléments dans le même ordre : c'est la promesse de D23, et ce que
   // trahirait l'apparition d'une seconde mise en page.
+  //
+  // L'ordre est lu dans le document entier et non parmi les seuls enfants
+  // directs de la coque. La profondeur d'imbrication n'est portée par aucune
+  // exigence : envelopper un élément pour lui donner une animation ne change
+  // pas la structure de l'écran, et un test qui échouerait là-dessus mesurerait
+  // la façon d'écrire le balisage plutôt que ce que l'écran présente.
   await page.goto('/');
   const ordre = await page.evaluate(() =>
-    [...(document.querySelector('.shell')?.children ?? [])].map((n) => n.tagName.toLowerCase())
+    [...document.querySelectorAll('.shell nav, .shell header, .shell footer')].map((n) =>
+      n.tagName.toLowerCase()
+    )
   );
   expect(ordre[0]).toBe('nav');
   expect(ordre).toContain('header');

@@ -59,6 +59,19 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    /*
+      La colonne ne défile jamais de côté, et c'est ici que ça se dit.
+
+      Une transition d'entrée décale son élément de 24 pixels : ce débordement
+      s'ajoute brièvement à la largeur défilable et laisse la page glisser
+      pendant l'animation. La découpe doit être portée par un ancêtre — un
+      élément translaté ne se découpe pas lui-même — et la porter une fois ici
+      couvre toutes les animations de la colonne plutôt qu'une par une.
+
+      `clip` et non `hidden` : il découpe sans créer de conteneur de défilement,
+      et c'est la seule valeur qui laisse l'axe vertical intact.
+    */
+    overflow-x: clip;
   }
 
   .tabs {

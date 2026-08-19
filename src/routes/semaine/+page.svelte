@@ -107,10 +107,15 @@
   <title>La semaine — menus des écoles de Talence</title>
 </svelte:head>
 
-<EnTete
-  quand={anchor === today || days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine'}
-  quoi={`${formatDay(first, { weekday: undefined })} au ${formatDay(last, { weekday: undefined })}`}
-/>
+<!-- L'en-tête change sous la même horloge que la semaine qu'il annonce (D30). -->
+{#key first}
+  <div class="glisse" style:--sens={sens}>
+    <EnTete
+      quand={anchor === today || days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine'}
+      quoi={`${formatDay(first, { weekday: undefined })} au ${formatDay(last, { weekday: undefined })}`}
+    />
+  </div>
+{/key}
 
 {#if data.status.kind !== 'ok'}
   <p class="notice">

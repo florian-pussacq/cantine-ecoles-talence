@@ -4,10 +4,10 @@
   import type { ResolvedDay } from '../data/dataset.js';
   import type { Course } from '../data/schema.js';
   import {
-    allergenNames,
+    courseName,
+    flaggedAllergenNames,
     LUNCH_SLOTS,
     qualityLabel,
-    shortAllergenName,
     slotAbsence,
     slotLabel
   } from './labels.js';
@@ -19,12 +19,7 @@
   /** Les allergènes cochés que porte ce plat : leurs codes et leurs noms courts. */
   function flagged(course: Course) {
     const codes = allergenFilter.matching(course);
-    return {
-      codes,
-      names: allergenNames({ ...course, allergens: codes }, day.legend).map((allergen) =>
-        shortAllergenName(allergen.name)
-      )
-    };
+    return { codes, names: flaggedAllergenNames(course, day.legend, codes) };
   }
 
   /**
@@ -53,12 +48,14 @@
         style:--on={match ? `var(--fam-${match.family}-on)` : 'var(--fam-inconnu-on)'}
       >
         {#if course && match}
+          {@const nom = courseName(course)}
           <button type="button" class="reset main-button" onclick={() => onSelect(course)}>
             <span class="disc"><Illustration name={match.illustration} /></span>
             <span class="main-body">
               <span class="role on-fam">{slotLabel(slot)}</span>
-              <span class="main-name">{course.label}</span>
-              {#if course.flags.length > 0}
+              <span class="main-name" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
+              <!-- Une qualité promue au rang de nom ne se redit pas en capsule. -->
+              {#if course.flags.length > 0 && nom.kind !== 'quality'}
                 <span class="tags">
                   {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
                 </span>
@@ -78,13 +75,15 @@
       <div class="cell" class:wide class:empty={course === null}>
         {#if course}
           {@const match = classify(course.label)}
+          {@const nom = courseName(course)}
           <button type="button" class="reset cell-button" onclick={() => onSelect(course)}>
             <span class="cell-top">
               <span class="role">{slotLabel(slot)}</span>
               <Illustration name={match.illustration} />
             </span>
-            <span class="name">{course.label}</span>
-            {#if course.flags.length > 0}
+            <span class="name" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
+            <!-- Une qualité promue au rang de nom ne se redit pas en capsule. -->
+            {#if course.flags.length > 0 && nom.kind !== 'quality'}
               <span class="tags muted-tags">
                 {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
               </span>
@@ -182,6 +181,15 @@
     font-style: italic;
     color: var(--ink-muted);
     margin-top: auto;
+  }
+
+  /* Un détail non publié n'est pas un nom de plat : il s'écrit comme une
+     mention, pas comme un titre. Il se distingue aussi d'une absence, qui
+     occupe un compartiment vide et non un compartiment rempli. */
+  .unknown {
+    font-style: italic;
+    font-weight: 600;
+    opacity: 0.75;
   }
 
   /* Le compartiment du plat porte la couleur de sa famille. */
