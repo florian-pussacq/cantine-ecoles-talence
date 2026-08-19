@@ -86,6 +86,25 @@
   /* Cible tactile minimale (WCAG 2.1 AA) */
   --touch: 44px;
 
+  /*
+   * La barre de navigation basse, et la place qu'il faut lui laisser.
+   *
+   * Les deux ne sont pas la même chose, et les confondre est le défaut qu'on ne
+   * voit pas sur une machine de développement : `viewport-fit=cover` est déclaré
+   * depuis l'origine dans `app.html`, ce qui étend la page sous l'indicateur
+   * d'accueil des téléphones qui en ont un. Rien n'y était ancré jusqu'ici, donc
+   * rien ne le montrait. Une barre fixe, si.
+   *
+   * `--barre` est la hauteur de la barre elle-même — sa cible tactile et son
+   * rembourrage. `--encart-bas` est ce que le système réserve sous elle.
+   * `--barre-reservee` est ce que le contenu doit laisser libre : la somme des
+   * deux. Réserver seulement `--barre` ferait passer le pied de page sous la
+   * barre sur les appareils concernés, et nulle part ailleurs (design.md, D34).
+   */
+  --barre: 56px;
+  --encart-bas: env(safe-area-inset-bottom, 0px);
+  --barre-reservee: calc(var(--barre) + var(--encart-bas));
+
   /* Durée de la transition entre jours et entre semaines.
      Elle était de 180 ms, ce qui se lisait comme un sursaut plutôt que comme un
      mouvement — mais le défaut principal était ailleurs : l'en-tête changeait

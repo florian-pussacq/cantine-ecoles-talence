@@ -246,12 +246,22 @@ describe('les surfaces peintes par transparence', () => {
  * disent pas sur quel fond elles se posent, et resteraient à déclarer à la main.
  */
 describe('couverture des transparences', () => {
+  /*
+    Les écrans, et les composants partagés qui peignent eux aussi sur le fond de
+    la table. La liste ne comportait que les écrans, ce qui laissait une porte
+    ouverte : une transparence introduite dans un composant de `$lib/ui` n'aurait
+    été vue par personne. La barre de navigation et la commande de réglages y
+    vivent désormais, et c'est ce déplacement qui a montré le trou.
+  */
   const FICHIERS = [
     'src/routes/+layout.svelte',
     'src/routes/+page.svelte',
     'src/routes/semaine/+page.svelte',
     'src/routes/reglages/+page.svelte',
-    'src/routes/a-propos/+page.svelte'
+    'src/routes/a-propos/+page.svelte',
+    'src/lib/ui/EnTete.svelte',
+    'src/lib/ui/CommandeReglages.svelte',
+    'src/lib/ui/Icone.svelte'
   ];
 
   const connus = new Set([

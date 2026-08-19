@@ -10,6 +10,8 @@
    * Le titre de premier niveau reste unique par écran : c'est une exigence
    * vérifiée de bout en bout, et le repère principal d'un lecteur d'écran.
    */
+  import CommandeReglages from './CommandeReglages.svelte';
+
   let { quand, quoi }: { quand: string; quoi: string } = $props();
 </script>
 
@@ -20,12 +22,27 @@
     <span aria-hidden="true" class="point">·</span>
     <span class="quoi">{quoi}</span>
   </h1>
+  <!--
+    Le réglage des allergènes s'atteint d'ici depuis que la barre ne porte plus
+    que les vues consultées chaque matin (design.md, D31). Il vit dans l'en-tête
+    parce que c'est le seul élément commun à tous les écrans, et qu'un réglage
+    n'a pas à voyager avec le contenu.
+  -->
+  <CommandeReglages />
 </header>
 
 <style>
   header {
     color: var(--on-table);
     padding-inline: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  h1 {
+    flex: 1;
+    min-width: 0;
   }
 
   h1 {

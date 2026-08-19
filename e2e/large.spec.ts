@@ -46,14 +46,17 @@ test('la structure est la même quelle que soit la largeur', async ({ page }) =>
   // exigence : envelopper un élément pour lui donner une animation ne change
   // pas la structure de l'écran, et un test qui échouerait là-dessus mesurerait
   // la façon d'écrire le balisage plutôt que ce que l'écran présente.
+  //
+  // La coque commence désormais par l'en-tête : la barre d'écrans n'y est plus,
+  // elle est ancrée à la fenêtre et vérifiée par `barre.spec.ts`.
   await page.goto('/');
   const ordre = await page.evaluate(() =>
     [...document.querySelectorAll('.shell nav, .shell header, .shell footer')].map((n) =>
       n.tagName.toLowerCase()
     )
   );
-  expect(ordre[0]).toBe('nav');
-  expect(ordre).toContain('header');
+  expect(ordre[0]).toBe('header');
+  expect(ordre, 'la navigation entre jours a disparu de la colonne').toContain('nav');
   expect(ordre.at(-1)).toBe('footer');
 });
 

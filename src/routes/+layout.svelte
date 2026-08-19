@@ -11,23 +11,24 @@
   allergenFilter.hydrate();
   appUpdate.register();
 
+  /*
+    La barre ne porte que ce qui se consulte chaque matin (design.md, D31).
+
+    Les allergènes en sont sortis : c'est un réglage, coché une fois à
+    l'installation, et lui donner un tiers de la barre revenait à le mettre sur
+    le même plan que les deux vues du menu. L'argument avait déjà servi contre
+    le thème (D22) et contre « À propos » ; il n'avait simplement jamais été
+    retourné contre eux. Ils s'atteignent désormais par la commande d'en-tête.
+  */
   const tabs = [
     { path: '/', label: 'Jour' },
-    { path: '/semaine', label: 'Semaine' },
-    { path: '/reglages', label: 'Allergènes' }
+    { path: '/semaine', label: 'Semaine' }
   ] as const;
 </script>
 
 <Sprite />
 
 <div class="shell">
-  <nav class="tabs" aria-label="Écrans">
-    {#each tabs as tab (tab.path)}
-      {@const current = page.url.pathname.replace(/\/$/, '') === tab.path.replace(/\/$/, '')}
-      <a href={resolve(tab.path)} aria-current={current ? 'page' : undefined}>{tab.label}</a>
-    {/each}
-  </nav>
-
   {#if appUpdate.available}
     <!--
       La nouvelle version attend : elle ne remplace pas l'application pendant
@@ -50,12 +51,33 @@
   </footer>
 </div>
 
+<!--
+  La barre est ancrée au bas de la fenêtre, à portée du pouce (D31).
+
+  Elle est hors de la coque parce qu'elle n'appartient pas au flux du contenu :
+  celui-ci lui réserve sa hauteur, elle ne la lui prend pas. Sur les écrans qui
+  n'y figurent pas — les réglages, les mentions — aucun segment n'est courant et
+  la barre sert de sortie : on la quitte en désignant où l'on va, plutôt que par
+  une flèche de retour dont la destination dépend de l'historique.
+-->
+<nav class="barre" aria-label="Écrans">
+  <span class="tabs">
+    {#each tabs as tab (tab.path)}
+      {@const current = page.url.pathname.replace(/\/$/, '') === tab.path.replace(/\/$/, '')}
+      <a href={resolve(tab.path)} aria-current={current ? 'page' : undefined}>{tab.label}</a>
+    {/each}
+  </span>
+</nav>
+
 <style>
   .shell {
     max-width: var(--shell);
     margin-inline: auto;
     min-height: 100dvh;
-    padding: var(--space-3) var(--space-3) var(--space-5);
+    /* Le contenu réserve la barre *et* l'encart système sous elle : réserver la
+       seule hauteur de la barre ferait passer le pied de page dessous sur les
+       appareils à indicateur d'accueil, et nulle part ailleurs (D34). */
+    padding: var(--space-3) var(--space-3) calc(var(--space-5) + var(--barre-reservee));
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
@@ -74,8 +96,40 @@
     overflow-x: clip;
   }
 
+  /*
+    La barre reste bornée à la colonne de contenu, et ne s'étire pas sur toute
+    la fenêtre : une barre de 1 400 pixels serait une seconde mise en page qui
+    ne dit pas son nom, alors que D23 n'en admet qu'une. Le pouce n'est de toute
+    façon pas le sujet sur un écran de bureau.
+
+    Son fond est opaque : le contenu défile derrière elle, et un fond translucide
+    laisserait passer le texte qui glisse dessous.
+  */
+  .barre {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1;
+    margin-inline: auto;
+    max-width: var(--shell);
+    min-height: var(--barre-reservee);
+    display: flex;
+    align-items: flex-start;
+    /* Le rembourrage bas porte l'encart système en plus du sien : c'est ce qui
+       empêche la moitié basse de la barre de passer sous l'indicateur d'accueil
+       (D34). */
+    padding: 3px var(--space-3) calc(3px + var(--encart-bas));
+    background: var(--table);
+  }
+
+  /* La pilule garde la borne posée en 9.3 de `coque-lisible` — elle ne s'étire
+     pas sur toute la largeur — mais se centre désormais dans la barre : calée à
+     gauche en haut de l'écran, elle s'alignait sur le contenu ; posée en bas et
+     bornée, elle laissait un vide asymétrique à sa droite. */
   .tabs {
     display: flex;
+    flex: 1;
+    margin-inline: auto;
     max-width: 360px;
     gap: var(--space-1);
     padding: 3px;

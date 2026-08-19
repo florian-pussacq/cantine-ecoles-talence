@@ -54,6 +54,10 @@ Deux gestes distincts, décidés ensemble parce qu'ils touchent le même éléme
 
 *Ce que ça coûte.* Une bande permanente en bas de tous les écrans, prise sur la hauteur du plateau, qui est la raison d'être de l'application. C'est le même arbitrage que celui qui a réduit l'en-tête à une ligne, et il se juge de la même façon : sur un vrai appareil, en regardant si le plat principal reste visible sans défiler. Il se cumule avec la hauteur que `hierarchie-du-jour` donne au goûter — les deux changements se jugent donc ensemble, une fois les deux en ligne.
 
+*Mesuré, et l'inverse de ce qui était craint.* Sur le profil de test — 839 pixels de pli — le bas du plat principal passe de 436 à **374 pixels**, et la carte du goûter tient encore au-dessus de la barre. Le déménagement ne coûte pas de hauteur visible, il en rend : la barre du haut occupait la première chose que l'œil rencontre, celle du bas recouvre un contenu qui défile de toute façon. Le verdict au pouce, lui, reste à rendre sur un vrai appareil.
+
+*La page 404 n'est pas concernée.* `static/404.html` est une page autonome servie par l'hébergeur hors de la coque SvelteKit. Elle n'a jamais porté la barre d'onglets, elle n'en reçoit pas, et elle porte son propre lien de retour vers le menu du jour.
+
 ### D32 — La roue porte l'état, et cet état ne peut pas être prérendu
 
 Le filtre d'allergènes n'est pas une préférence inerte comme l'était le thème. Il modifie en permanence ce que montrent les deux écrans de consultation. Sortir son accès de la barre sans rien montrer rendrait cet état invisible partout où aucun plat n'est concerné — c'est-à-dire précisément les jours où l'on croit qu'il n'y a rien à signaler, sans savoir si c'est parce qu'il n'y a rien ou parce qu'on n'a rien coché.
