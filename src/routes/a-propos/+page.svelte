@@ -190,9 +190,16 @@
     align-items: center;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .panel :global(a) {
-      color: var(--on-table);
-    }
-  }
+  /*
+    Une requête média sur le thème du système vivait ici, survivante de
+    l'apparence sombre supprimée par D25. Elle repeignait ces liens en clair
+    lorsque le système de l'utilisateur était en sombre — ce que l'exigence
+    d'apparence unique interdit depuis, et qui les rendait de toute façon
+    illisibles sur le panneau clair où ils vivent.
+
+    Elle est retirée plutôt que laissée. Le contrôle qui vérifiait cette
+    interdiction ne lisait que `tokens.css` ; deux composants la violaient encore
+    sans que rien ne le voie. Il lit désormais tous les composants, et c'est lui
+    qui a trouvé celui-ci.
+  */
 </style>

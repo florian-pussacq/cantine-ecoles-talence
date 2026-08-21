@@ -9,7 +9,9 @@ import {
   shortAllergenName,
   slotAbsence,
   slotLabel,
-  targetEyebrow
+  targetEyebrow,
+  targetReturnLabel,
+  weekReturnLabel
 } from './labels.js';
 import type { Course } from '../data/schema.js';
 
@@ -55,7 +57,7 @@ describe('targetEyebrow', () => {
 describe('slotAbsence', () => {
   it('accorde la formulation au rôle', () => {
     expect(slotAbsence('entree')).toBe("Pas d'entrée ce jour");
-    expect(slotAbsence('accompagnement')).toBe('Pas de garniture ce jour');
+    expect(slotAbsence('accompagnement')).toBe("Pas d'accompagnement ce jour");
   });
 });
 
@@ -196,5 +198,44 @@ describe('allergenNames', () => {
   it('raccourcit pour les pastilles sans perdre le nom', () => {
     expect(shortAllergenName('Gluten (blé, seigle)')).toBe('Gluten');
     expect(shortAllergenName('Lait')).toBe('Lait');
+  });
+});
+
+describe('le libellé de la commande de retour', () => {
+  it('dit « Aujourd’hui » quand le repère est bien aujourd’hui', () => {
+    expect(targetReturnLabel({ status: 'today', date: '2026-09-10' })).toBe("Aujourd'hui");
+  });
+
+  it('dit « Demain » plutôt que « Aujourd’hui » à un jour de distance', () => {
+    expect(targetReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1 })).toBe(
+      'Demain'
+    );
+  });
+
+  it('ne dit jamais « Aujourd’hui » devant un jour qui ne l’est pas', () => {
+    // Week-ends et vacances réunis, le jour civil n'est pas servi environ
+    // quarante pour cent des jours de l'année. Un libellé fixe afficherait lundi
+    // un dimanche, ce que targetEyebrow existe pour empêcher (design.md, D45).
+    const label = targetReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 10 });
+    expect(label).toBe('Prochain service');
+    expect(label).not.toContain("Aujourd'hui");
+  });
+
+  it('reste plus court que la mention, qui ne tiendrait pas sur un bouton', () => {
+    const cible = { status: 'next-served', date: '2026-09-14', daysAhead: 10 } as const;
+    expect((targetReturnLabel(cible) as string).length).toBeLessThan(targetEyebrow(cible).length);
+  });
+
+  it('n’existe pas quand rien n’est publié : il n’y a nulle part où revenir', () => {
+    expect(targetReturnLabel({ status: 'not-published' })).toBeNull();
+    expect(weekReturnLabel({ status: 'not-published' })).toBeNull();
+  });
+
+  it('nomme une semaine et non un jour sur l’écran de la semaine', () => {
+    // « Demain » ne veut rien dire devant une période de cinq jours.
+    expect(weekReturnLabel({ status: 'today', date: '2026-09-10' })).toBe('Cette semaine');
+    expect(weekReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1 })).toBe(
+      'Prochain service'
+    );
   });
 });

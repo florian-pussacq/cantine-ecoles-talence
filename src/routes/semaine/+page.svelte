@@ -5,6 +5,7 @@
   import { classify } from '$lib/illustrations/families.js';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { isStale } from '$lib/data/load.js';
+  import { horloge } from '$lib/data/horloge.svelte.js';
   import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
@@ -16,7 +17,8 @@
     dayNumber,
     formatDay,
     formatWeekday,
-    shortAllergenName
+    shortAllergenName,
+    weekReturnLabel
   } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
@@ -28,12 +30,17 @@
     return new Date(time).toISOString().slice(0, 10);
   }
 
-  const now = new Date();
-  const today = parisDate(now);
+  /* L'instant vient de l'horloge et non du montage (design.md, D47). */
+  const now = $derived(horloge.instant);
+  const today = $derived(parisDate(now));
   const target = $derived(resolveDisplayDay(data.dataset, now));
-  const anchor = $derived(
-    selection.date ?? (target.status === 'not-published' ? today : target.date)
-  );
+
+  /** Le jour du repère : celui autour duquel la semaine se cale à l'ouverture. */
+  const repere = $derived(target.status === 'not-published' ? today : target.date);
+
+  /* Le choix cesse de valoir quand le jour civil change (D47). */
+  const chosen = $derived(selection.dateLe(today));
+  const anchor = $derived(chosen ?? repere);
 
   const days = $derived(
     weekOf(anchor).map((date) => ({ date, day: data.dataset.byDate.get(date) ?? null }))
@@ -83,14 +90,33 @@
   }
 
   async function open(date: string) {
-    selection.set(date);
+    selection.set(date, today);
     await goto(resolve('/'));
   }
 
+  /**
+   * Le retour à la semaine du repère (design.md, D44).
+   *
+   * La comparaison porte sur le lundi de chaque semaine et non sur la date
+   * ancrée : consulter mardi ou jeudi de la même semaine, c'est consulter la
+   * même semaine, et la commande n'aurait alors rien à ramener.
+   *
+   * Le libellé ne dit pas « Cette semaine » quand le repère n'y est pas : une
+   * semaine de vacances scolaires renvoie à celle du prochain service, et
+   * l'annoncer autrement serait la confusion que D45 refuse pour le jour.
+   */
+  const ecarte = $derived(weekOf(anchor)[0] !== weekOf(repere)[0]);
+  const retourLibelle = $derived(weekReturnLabel(target));
+  const retour = $derived(
+    ecarte && retourLibelle !== null
+      ? { libelle: retourLibelle, action: () => selection.reset() }
+      : null
+  );
+
   /** Le même geste que sur l'écran du jour, d'une semaine à l'autre (D17). */
   const balayage = createBalayage({
-    onPrevious: () => selection.set(shift(first, -7)),
-    onNext: () => selection.set(shift(first, 7))
+    onPrevious: () => selection.set(shift(first, -7), today),
+    onNext: () => selection.set(shift(first, 7), today)
   });
 
   /** Le sens de la dernière navigation, pour que la transition suive le geste. */
@@ -111,8 +137,9 @@
 {#key first}
   <div class="glisse" style:--sens={sens}>
     <EnTete
-      quand={anchor === today || days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine'}
+      quand={days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine affichée'}
       quoi={`${formatDay(first, { weekday: undefined })} au ${formatDay(last, { weekday: undefined })}`}
+      {retour}
     />
   </div>
 {/key}
@@ -194,10 +221,10 @@
   </div>
 
   <nav class="weeks" aria-label="Navigation entre les semaines">
-    <button type="button" onclick={() => selection.set(shift(first, -7))}>
+    <button type="button" onclick={() => selection.set(shift(first, -7), today)}>
       <span aria-hidden="true">←</span> Semaine précédente
     </button>
-    <button type="button" onclick={() => selection.set(shift(first, 7))}>
+    <button type="button" onclick={() => selection.set(shift(first, 7), today)}>
       Semaine suivante <span aria-hidden="true">→</span>
     </button>
   </nav>

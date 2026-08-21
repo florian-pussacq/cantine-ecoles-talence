@@ -69,7 +69,7 @@ test("l'ouverture de la couche modale ne décale pas le contenu", async ({ page 
     () => document.querySelector('.shell')?.getBoundingClientRect().left ?? 0
   );
 
-  await page.locator('.tray .main button').click();
+  await page.locator('.cible').click();
   await expect(page.locator('dialog')).toBeVisible();
 
   const apres = await page.evaluate(

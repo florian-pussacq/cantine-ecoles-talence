@@ -72,17 +72,21 @@ test.describe('écran du jour', () => {
     await expect(titre).toHaveText(initial ?? '');
   });
 
-  test("le balayage n'ouvre pas le détail du plat qu'il a touché", async ({ page }) => {
-    // Le geste démarre sur une cellule, qui est un bouton : sans précaution, le
+  test("le balayage n'ouvre pas le détail de la journée qu'il a touchée", async ({ page }) => {
+    // Le geste démarre sur le déjeuner, qui est un bouton : sans précaution, le
     // `click` de fin de course ouvre la feuille par-dessus le jour changé.
+    //
+    // La surface cliquable a grandi avec D38 — c'est le déjeuner entier, et non
+    // plus un compartiment — ce qui rend cette protection plus nécessaire, pas
+    // moins : un doigt qui balaie a désormais toutes les chances de partir de là.
     await page.goto('/');
     const { boite } = await surface(page, '.balayage');
-    const cellule = await page.locator('.tray .main button').boundingBox();
-    if (cellule === null) throw new Error('cellule du plat principal introuvable');
+    const cible = await page.locator('.cible').boundingBox();
+    if (cible === null) throw new Error('cible de la journée introuvable');
 
     await glisser(page, {
-      de: { x: cellule.x + cellule.width - 20, y: cellule.y + cellule.height / 2 },
-      vers: { x: boite.x + 20, y: cellule.y + cellule.height / 2 }
+      de: { x: cible.x + cible.width - 20, y: cible.y + cible.height / 2 },
+      vers: { x: boite.x + 20, y: cible.y + cible.height / 2 }
     });
 
     await expect(page.locator('dialog')).toHaveCount(0);

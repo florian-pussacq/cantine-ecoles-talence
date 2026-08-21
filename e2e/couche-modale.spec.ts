@@ -9,12 +9,19 @@ import { expect, test, type Page } from '@playwright/test';
  * a été choisi (design.md, D16). Elles ne se constatent que dans un navigateur.
  */
 
-/** Ouvre le détail du plat principal et rend le bouton qui l'a ouvert. */
+/**
+ * Ouvre le détail de la journée et rend le bouton qui l'a ouvert.
+ *
+ * La cible est le déjeuner entier depuis D38, et non plus un plat : il n'y a
+ * qu'une couche, et elle décrit la journée. Le bouton est rendu parce que la
+ * restitution du focus doit revenir sur lui — et qu'il en existe désormais un
+ * second, le goûter, qui mène à la même couche.
+ */
 async function ouvrirLeDetail(page: Page) {
-  const cellule = page.locator('.tray .main button');
-  await cellule.click();
+  const cible = page.locator('.cible');
+  await cible.click();
   await expect(page.locator('dialog')).toBeVisible();
-  return cellule;
+  return cible;
 }
 
 test('le focus ne quitte pas la couche ouverte', async ({ page }) => {
@@ -40,16 +47,31 @@ test('le focus ne quitte pas la couche ouverte', async ({ page }) => {
   }
 });
 
-test('le focus revient sur la cellule qui a ouvert la couche', async ({ page }) => {
+test("le focus revient sur l'élément qui a ouvert la couche", async ({ page }) => {
   await page.goto('/');
-  const cellule = await ouvrirLeDetail(page);
+  const cible = await ouvrirLeDetail(page);
 
   await page.getByRole('button', { name: 'Fermer' }).click();
   await expect(page.locator('dialog')).toHaveCount(0);
 
   // Et non au début du document : reprendre sa lecture ne doit pas coûter une
   // traversée complète de l'écran au clavier.
-  await expect(cellule).toBeFocused();
+  await expect(cible).toBeFocused();
+});
+
+test("le focus revient sur le goûter lorsque c'est lui qui a ouvert", async ({ page }) => {
+  // Deux chemins d'ouverture mènent à la même couche depuis D38. Un retour de
+  // focus câblé sur le déjeuner serait faux pour ce chemin-là, et c'est
+  // précisément pourquoi rien n'est câblé : le `<dialog>` natif s'en charge.
+  await page.goto('/');
+  const gouter = page.locator('.snack');
+  await gouter.click();
+  await expect(page.locator('dialog')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Fermer' }).click();
+  await expect(page.locator('dialog')).toHaveCount(0);
+
+  await expect(gouter).toBeFocused();
 });
 
 test('le contenu situé derrière ne défile pas', async ({ page }) => {
@@ -88,7 +110,7 @@ test("l'ouverture de la couche ne fait pas remonter la page", async ({ page }) =
   // déplacerait la page pour une raison étrangère au verrou et rendrait la
   // mesure ininterprétable — d'autant que cet écran n'offre qu'une quarantaine
   // de pixels de course. L'événement est donc envoyé sans repositionnement.
-  await page.locator('.tray .main button').dispatchEvent('click');
+  await page.locator('.cible').dispatchEvent('click');
   await expect(page.locator('dialog')).toBeVisible();
 
   expect(await page.evaluate(() => window.scrollY)).toBe(avant);

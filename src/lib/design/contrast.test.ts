@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { globSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 /**
@@ -154,6 +154,30 @@ const TRANSPARENCES: {
   {
     source: 'on-table',
     fond: 'table',
+    alpha: 0.72,
+    seuil: 4.5,
+    quoi: 'nom de l’application sur l’enseigne',
+    ou: 'Enseigne.svelte, .nom'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
+    alpha: 0.72,
+    seuil: 4.5,
+    quoi: 'mention qui situe la date',
+    ou: 'EnTete.svelte, .quand'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
+    alpha: 0.72,
+    seuil: 4.5,
+    quoi: 'indice « Allergènes de la journée » en pied d’ardoise',
+    ou: '+page.svelte, .indice'
+  },
+  {
+    source: 'on-table',
+    fond: 'table',
     voile: { source: 'on-table', alpha: 0.12 },
     alpha: 0.75,
     seuil: 4.5,
@@ -260,6 +284,7 @@ describe('couverture des transparences', () => {
     'src/routes/reglages/+page.svelte',
     'src/routes/a-propos/+page.svelte',
     'src/lib/ui/EnTete.svelte',
+    'src/lib/ui/Enseigne.svelte',
     'src/lib/ui/CommandeReglages.svelte',
     'src/lib/ui/Icone.svelte'
   ];
@@ -301,4 +326,28 @@ describe('le fond de la table', () => {
     expect(CSS).not.toContain('data-theme');
     expect(CSS).not.toContain('prefers-color-scheme');
   });
+});
+
+/**
+ * L'apparence unique, surveillée là où elle avait discrètement cessé de l'être.
+ *
+ * Le contrôle ci-dessus ne lisait que `tokens.css`, et deux composants ont vécu
+ * des mois avec une règle `prefers-color-scheme: dark` héritée du thème supprimé
+ * par D25 — dont l'une repeignait des liens en clair sur un panneau clair. Une
+ * exigence qui n'est vérifiée qu'à un seul endroit ne l'est pas.
+ */
+describe("l'apparence ne dépend d'aucune préférence extérieure", () => {
+  const COMPOSANTS = globSync('src/**/*.svelte');
+
+  it('trouve bien des composants à contrôler', () => {
+    expect(COMPOSANTS.length).toBeGreaterThan(5);
+  });
+
+  for (const fichier of COMPOSANTS) {
+    it(`${fichier} ne fait dépendre son apparence d'aucun thème système`, () => {
+      const source = readFileSync(fichier, 'utf8');
+      expect(source).not.toContain('prefers-color-scheme');
+      expect(source).not.toContain('data-theme');
+    });
+  }
 });

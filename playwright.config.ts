@@ -5,11 +5,14 @@ import { defineConfig, devices } from '@playwright/test';
  * vérifiée (design.md, D24).
  *
  * Les contrôles d'accessibilité et de cibles tactiles portent les mêmes
- * exigences sur les deux. Les fichiers qui éprouvent un geste tactile sont
- * réservés au profil mobile : un écran de bureau n'a pas de doigt, et les y
- * jouer produirait un échec qui n'apprendrait rien.
+ * exigences sur les deux. Certains fichiers ne valent que pour le téléphone,
+ * pour deux raisons distinctes : ceux qui éprouvent un geste tactile, parce
+ * qu'un écran de bureau n'a pas de doigt ; et celui qui mesure la hauteur de la
+ * journée, parce que l'exigence porte sur la fenêtre d'un téléphone — un écran
+ * de bureau a une colonne plus large et une fenêtre plus basse, ce qui en fait
+ * un cas différent et non un cas plus permissif (D39).
  */
-const TACTILE_SEULEMENT = [/balayage\.spec\.ts/, /couche-modale\.spec\.ts/];
+const MOBILE_SEULEMENT = [/balayage\.spec\.ts/, /couche-modale\.spec\.ts/, /hauteur\.spec\.ts/];
 
 export default defineConfig({
   testDir: 'e2e',
@@ -25,7 +28,7 @@ export default defineConfig({
     {
       name: 'bureau',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: TACTILE_SEULEMENT
+      testIgnore: MOBILE_SEULEMENT
     }
   ],
   webServer: {

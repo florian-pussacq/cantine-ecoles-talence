@@ -1,15 +1,16 @@
 <script lang="ts">
   import { isStale } from '$lib/data/load.js';
-  import { resolveDisplayDay, servedNeighbour } from '$lib/data/resolve.js';
-  import type { Course } from '$lib/data/schema.js';
-  import CourseSheet from '$lib/menu/CourseSheet.svelte';
+  import { horloge } from '$lib/data/horloge.svelte.js';
+  import { parisDate, resolveDisplayDay, servedNeighbour } from '$lib/data/resolve.js';
+  import DaySheet from '$lib/menu/DaySheet.svelte';
   import Tray from '$lib/menu/Tray.svelte';
   import {
     courseName,
     flaggedAllergenNames,
     formatDay,
     slotLabel,
-    targetEyebrow
+    targetEyebrow,
+    targetReturnLabel
   } from '$lib/menu/labels.js';
   import Illustration from '$lib/illustrations/Illustration.svelte';
   import AllergenChip from '$lib/menu/AllergenChip.svelte';
@@ -23,18 +24,45 @@
 
   let { data }: PageProps = $props();
 
-  const now = new Date();
+  /*
+    L'instant vient de l'horloge et non du montage (design.md, D47).
+
+    `const now = new Date()` vivait ici, évalué une fois. Une application
+    installée n'étant pas rechargée mais reprise, un écran repris après deux
+    jours de veille calculait sa cible, sa mention et son avis de fraîcheur avec
+    l'horloge d'avant-hier.
+  */
+  const now = $derived(horloge.instant);
+  const today = $derived(parisDate(now));
   const target = $derived(resolveDisplayDay(data.dataset, now));
 
-  /** La date consultée : celle choisie depuis la semaine, ou le jour résolu. */
-  const chosen = $derived(selection.date);
-  const date = $derived(chosen ?? (target.status === 'not-published' ? null : target.date));
+  /** Le jour du repère : celui que le système montre à l'ouverture. */
+  const repere = $derived(target.status === 'not-published' ? null : target.date);
+
+  /**
+   * La date consultée : celle choisie, ou le jour résolu.
+   *
+   * Le choix est lu à travers le jour courant : il cesse de valoir quand le jour
+   * civil change, sans qu'aucun écouteur ait à l'effacer (D47).
+   */
+  const chosen = $derived(selection.dateLe(today));
+  const date = $derived(chosen ?? repere);
   const day = $derived(date === null ? null : (data.dataset.byDate.get(date) ?? null));
 
-  const eyebrow = $derived(
-    chosen === null || chosen === (target.status === 'not-published' ? null : target.date)
-      ? targetEyebrow(target)
-      : 'Menu du jour'
+  /**
+   * Qui a choisi le jour affiché — c'est ce qui décide de tout l'en-tête (D44).
+   *
+   * Si c'est le système, l'en-tête situe. Si c'est l'utilisateur, il offre le
+   * retour. La constante « Menu du jour », qui occupait ce cas, disait la même
+   * chose tous les jours, dans les deux directions et à toutes les distances.
+   */
+  const ecarte = $derived(chosen !== null && chosen !== repere);
+
+  const retourLibelle = $derived(targetReturnLabel(target));
+  const retour = $derived(
+    ecarte && retourLibelle !== null
+      ? { libelle: retourLibelle, action: () => selection.reset() }
+      : null
   );
 
   const previous = $derived(date === null ? null : servedNeighbour(data.dataset, date, 'previous'));
@@ -43,7 +71,14 @@
   const snack = $derived(day?.courses.find((course) => course.slot === 'gouter') ?? null);
   const stale = $derived(isStale(data.dataset, now));
 
-  let selected = $state<Course | null>(null);
+  /**
+   * La journée est ouverte, ou elle ne l'est pas (design.md, D38).
+   *
+   * L'état portait auparavant le plat choisi. Il n'y a plus de plat choisi : la
+   * cible est la journée, et la fiche la montre entière. Un booléen suffit, et
+   * c'est le signe que la cible était de trop.
+   */
+  let ouverte = $state(false);
 
   /** Le sens de la dernière navigation, pour que la transition suive le geste. */
   let sens = $state(1);
@@ -58,14 +93,14 @@
 
   /** Le balayage vit dans `$lib/ui/balayage` (design.md, D17). */
   const balayage = createBalayage({
-    onPrevious: () => previous !== null && selection.set(previous),
-    onNext: () => next !== null && selection.set(next)
+    onPrevious: () => previous !== null && selection.set(previous, today),
+    onNext: () => next !== null && selection.set(next, today)
   });
 
   function onKeydown(event: KeyboardEvent) {
-    if (selected !== null) return;
-    if (event.key === 'ArrowLeft' && previous !== null) selection.set(previous);
-    if (event.key === 'ArrowRight' && next !== null) selection.set(next);
+    if (ouverte) return;
+    if (event.key === 'ArrowLeft' && previous !== null) selection.set(previous, today);
+    if (event.key === 'ArrowRight' && next !== null) selection.set(next, today);
   }
 </script>
 
@@ -94,7 +129,11 @@
 -->
 {#key date}
   <div class="glisse" style:--sens={sens}>
-    <EnTete quand={eyebrow} quoi={date === null ? 'Menus des écoles' : formatDay(date)} />
+    <EnTete
+      quand={targetEyebrow(target)}
+      quoi={date === null ? 'Menus des écoles' : formatDay(date)}
+      {retour}
+    />
   </div>
 {/key}
 
@@ -153,34 +192,53 @@
           </section>
         {/if}
 
-        <Tray {day} onSelect={(course) => (selected = course)} />
+        <!--
+          Le déjeuner est une cible unique (D38).
+
+          Chaque plat était auparavant actionnable, ce qui lui imposait 44 pixels
+          de hauteur et rendait le plateau incompressible. La question posée à
+          cet écran n'est de toute façon pas « quelle case contient l'allergène »
+          mais « la journée en contient-elle un » : une ouverture, la liste
+          entière.
+
+          L'indice en pied dit ce que l'appui fait, et il est à l'intérieur du
+          bouton : il devient ainsi la fin du nom accessible, sans qu'aucune
+          annotation ARIA n'ait à être inventée ni tenue à jour.
+        -->
+        <button type="button" class="cible" onclick={() => (ouverte = true)}>
+          <Tray {day} />
+          <span class="indice">Allergènes de la journée</span>
+        </button>
 
         {#if snack}
           {@const match = classify(snack.label)}
           {@const nom = courseName(snack)}
           {@const codes = allergenFilter.matching(snack)}
           <!--
-            Le goûter n'est pas sur le plateau du déjeuner : il n'est pas servi au
+            Le goûter n'est pas sur l'ardoise du déjeuner : il n'est pas servi au
             même moment, et l'y ranger dirait le contraire. Il n'est pas non plus
-            une note de bas de plateau — vingt libellés distincts sur trente-cinq
+            une note de bas de page — vingt libellés distincts sur trente-cinq
             jours, c'est la deuxième quantité d'information de l'écran (D29).
+
+            Il emprunte le vocabulaire de la vedette — un disque, une
+            illustration, un nom — parce que c'est le seul qui reste depuis que
+            les compartiments ont disparu (D41). Il mène à la même fiche que le
+            déjeuner : deux chemins d'ouverture, une seule journée à décrire.
 
             La séparation est portée par sa forme et son éloignement, et non par
             un filet : l'écran en porte déjà un en pied de page, où il signifie
             « fin du contenu », et un trait sépare deux choses de même nature.
           -->
-          <button type="button" class="snack" onclick={() => (selected = snack)}>
-            <span class="snack-cell">
-              <span class="snack-disc"><Illustration name={match.illustration} /></span>
-              <span class="snack-body">
-                <span class="snack-role">{slotLabel('gouter')}</span>
-                <span class="snack-name" class:unknown={nom.kind === 'undisclosed'}>
-                  {nom.text}
-                </span>
-                {#if codes.length > 0}
-                  <AllergenChip {codes} names={flaggedAllergenNames(snack, day.legend, codes)} />
-                {/if}
+          <button type="button" class="snack" onclick={() => (ouverte = true)}>
+            <span class="snack-disc"><Illustration name={match.illustration} /></span>
+            <span class="snack-body">
+              <span class="snack-role">{slotLabel('gouter')}</span>
+              <span class="snack-name" class:unknown={nom.kind === 'undisclosed'}>
+                {nom.text}
               </span>
+              {#if codes.length > 0}
+                <AllergenChip {codes} names={flaggedAllergenNames(snack, day.legend, codes)} />
+              {/if}
             </span>
           </button>
         {/if}
@@ -191,13 +249,17 @@
   <nav aria-label="Navigation entre les jours">
     <button
       type="button"
-      onclick={() => previous && selection.set(previous)}
+      onclick={() => previous && selection.set(previous, today)}
       disabled={previous === null}
     >
       <span aria-hidden="true">←</span>
       {previous === null ? 'Début des menus' : formatDay(previous, { month: 'short' })}
     </button>
-    <button type="button" onclick={() => next && selection.set(next)} disabled={next === null}>
+    <button
+      type="button"
+      onclick={() => next && selection.set(next, today)}
+      disabled={next === null}
+    >
       {next === null ? 'Fin des menus' : formatDay(next, { month: 'short' })}
       <span aria-hidden="true">→</span>
     </button>
@@ -214,13 +276,13 @@
   </footer>
 {/if}
 
-{#if selected && day}
-  <CourseSheet
-    course={selected}
-    legend={day.legend}
-    pdfUrl={day.source.pdfUrl}
-    onClose={() => (selected = null)}
-  />
+{#if ouverte && day}
+  <!--
+    Le focus revient de lui-même sur l'élément qui a ouvert la couche, que ce
+    soit le déjeuner ou le goûter : c'est le `<dialog>` natif qui s'en charge, et
+    c'est précisément pourquoi il ne faut rien câbler ici (D38).
+  -->
+  <DaySheet {day} onClose={() => (ouverte = false)} />
 {/if}
 
 <style>
@@ -281,6 +343,58 @@
     gap: var(--space-3);
   }
 
+  /*
+    La cible de la journée : une commande qui ne ressemble pas à une commande.
+
+    Elle n'a ni fond ni bordure propres — c'est l'ardoise qu'elle contient qui
+    porte la surface. Le bouton n'existe que pour rendre le déjeuner atteignable
+    d'un seul appui et d'une seule tabulation.
+  */
+  .cible {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /*
+    L'affordance est écrite plutôt que suggérée.
+
+    Une grande surface muette ne se donne pas pour actionnable, et un chevron
+    seul ne dit pas ce qu'il ouvre. Le texte fait les deux — il montre que
+    l'ardoise s'ouvre, et il termine le nom accessible du bouton par ce que
+    l'appui produit.
+  */
+  .indice {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-2) 0;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--on-table) 72%, transparent);
+  }
+
+  .indice::after {
+    content: '›';
+    font-size: var(--text-base);
+    line-height: 1;
+  }
+
+  .cible:focus-visible {
+    outline: 3px solid var(--on-table);
+    outline-offset: 3px;
+    border-radius: var(--radius-tray);
+  }
+
   .theme {
     background: var(--tray);
     color: var(--ink);
@@ -303,17 +417,26 @@
   }
 
   /*
-    Le goûter est un second plateau, plus petit, posé plus loin sur la table.
+    Le goûter est un second objet, plus petit, posé plus loin sur la table.
 
-    Il reprend la construction du plateau du déjeuner — une surface claire, un
-    compartiment posé dessus — parce que c'est le vocabulaire que l'application
-    a déjà pour dire « ce qui est servi ». Ce qui le sépare est la distance : la
-    coque espace déjà ses enfants, cette marge double l'intervalle, et la rupture
-    se lit sans qu'aucun trait ne soit ajouté (D29).
+    Il portait jusqu'ici deux cadres emboîtés — une surface claire, un
+    compartiment posé dessus — parce qu'il empruntait la construction des
+    compartiments du plateau. Ces compartiments n'existent plus, et le cadre
+    intérieur ne renvoyait donc plus à rien : il ne restait qu'une bordure de
+    plus à traverser du regard. Il emprunte désormais le vocabulaire de la
+    vedette, seul vocabulaire restant pour dire « ce qui est servi » (D41).
+
+    Ce qui le sépare du déjeuner est la distance : la coque espace déjà ses
+    enfants, cette marge double l'intervalle, et la rupture se lit sans qu'aucun
+    trait ne soit ajouté (D29).
   */
   .snack {
     margin-top: var(--space-3);
-    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-3);
     background: var(--tray);
     border: 0;
     border-radius: var(--radius-tray);
@@ -321,27 +444,18 @@
     color: var(--ink);
     text-align: left;
     cursor: pointer;
-    display: block;
-    width: 100%;
-  }
-
-  .snack-cell {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3);
-    background: var(--cell);
-    border: 1px solid var(--edge);
-    border-radius: var(--radius-cell);
   }
 
   /* Le disque suit l'échelle des illustrations plutôt qu'une valeur fixe : un
      seul palier de largeur les fait toutes grandir (D23). */
+  /* Le disque prend la teinte des alvéoles, faute de quoi il disparaîtrait :
+     il repose désormais directement sur la surface claire du goûter, et non
+     plus sur un compartiment qui l'en séparait. */
   .snack-disc {
     width: calc(var(--ill-cellule) * 1.5);
     height: calc(var(--ill-cellule) * 1.5);
     border-radius: 50%;
-    background: var(--tray);
+    background: var(--cell);
     display: grid;
     place-items: center;
     flex: none;

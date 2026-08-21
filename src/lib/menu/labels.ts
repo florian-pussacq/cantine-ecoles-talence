@@ -1,14 +1,29 @@
 import type { Course } from '../data/schema.js';
 import type { DisplayTarget } from '../data/resolve.js';
 
-/** Les rôles du déjeuner, dans l'ordre du service. Le goûter en est exclu : il n'est pas servi sur le plateau. */
+/**
+ * Les rôles du déjeuner, dans l'ordre où l'écran les montre.
+ *
+ * C'est l'ordre du service — entrée, plat, accompagnement, laitage, dessert —
+ * suivi du pain. Le pain vient après, et ce n'est pas une entorse : il n'est pas
+ * servi à un moment du repas, il est sur la table du début à la fin. Il s'appelle
+ * par ailleurs « Pain » trente-trois jours sur trente-cinq, ce qui en fait la
+ * ligne la moins informative de l'ardoise (design.md, D39).
+ *
+ * Le goûter est exclu de cette liste : il n'est pas servi au même moment que le
+ * déjeuner, et l'y ranger dirait le contraire (D29).
+ *
+ * Cette constante est l'ordre de référence : l'ardoise et la fiche de journée la
+ * lisent toutes deux, faute de quoi la lecture de l'écran et celle du détail
+ * cesseraient de se correspondre.
+ */
 export const LUNCH_SLOTS = [
-  'pain',
   'entree',
   'plat',
   'accompagnement',
   'laitage',
-  'dessert'
+  'dessert',
+  'pain'
 ] as const;
 
 export type LunchSlot = (typeof LUNCH_SLOTS)[number];
@@ -17,7 +32,7 @@ const SLOT_LABELS: Record<Course['slot'], string> = {
   pain: 'Pain',
   entree: 'Entrée',
   plat: 'Plat',
-  accompagnement: 'Garniture',
+  accompagnement: 'Accompagnement',
   laitage: 'Laitage',
   dessert: 'Dessert',
   gouter: 'Goûter'
@@ -32,7 +47,7 @@ const SLOT_ABSENT: Record<LunchSlot, string> = {
   pain: 'Pas de pain ce jour',
   entree: "Pas d'entrée ce jour",
   plat: 'Pas de plat ce jour',
-  accompagnement: 'Pas de garniture ce jour',
+  accompagnement: "Pas d'accompagnement ce jour",
   laitage: 'Pas de laitage ce jour',
   dessert: 'Pas de dessert ce jour'
 };
@@ -165,6 +180,54 @@ export function targetEyebrow(target: DisplayTarget): string {
       return `Prochain service · dans ${target.daysAhead} jours`;
     case 'not-published':
       return 'Menu non publié';
+  }
+}
+
+/**
+ * Le libellé de la commande qui ramène au jour que le système a choisi (D45).
+ *
+ * Il ne dit pas « Aujourd'hui » par défaut, et c'est tout l'objet de cette
+ * fonction. La commande ne ramène pas au jour civil : elle ramène à la cible,
+ * c'est-à-dire à aujourd'hui **s'il est servi**, et au prochain jour servi
+ * sinon. Week-ends et vacances scolaires réunis, le jour civil n'est pas servi
+ * environ quarante pour cent des jours de l'année ; un libellé fixe afficherait
+ * donc lundi un dimanche, et rouvrirait par l'autre bout la confusion que
+ * `targetEyebrow` existe pour empêcher.
+ *
+ * C'est la version courte de cette mention, et non la même chaîne : « Prochain
+ * service · dans 10 jours » situe bien dans un en-tête et ne tient pas sur une
+ * commande. Les deux fonctions sont voisines pour rester cohérentes sans être
+ * confondues.
+ *
+ * Rend `null` lorsque rien n'est publié : il n'existe alors aucun jour où
+ * revenir, et la commande ne doit pas être affichée.
+ */
+export function targetReturnLabel(target: DisplayTarget): string | null {
+  switch (target.status) {
+    case 'today':
+      return "Aujourd'hui";
+    case 'next-served':
+      return target.daysAhead === 1 ? 'Demain' : 'Prochain service';
+    case 'not-published':
+      return null;
+  }
+}
+
+/**
+ * Le même libellé, pour l'écran de la semaine.
+ *
+ * Une semaine ne se nomme pas comme un jour : « Demain » n'y veut rien dire. La
+ * commande y ramène à la semaine qui contient la cible, et l'annonce comme
+ * telle.
+ */
+export function weekReturnLabel(target: DisplayTarget): string | null {
+  switch (target.status) {
+    case 'today':
+      return 'Cette semaine';
+    case 'next-served':
+      return 'Prochain service';
+    case 'not-published':
+      return null;
   }
 }
 

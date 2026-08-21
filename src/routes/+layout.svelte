@@ -3,13 +3,24 @@
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
   import Sprite from '$lib/illustrations/Sprite.svelte';
+  import Enseigne from '$lib/ui/Enseigne.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
+  import { horloge } from '$lib/data/horloge.svelte.js';
   import { appUpdate } from '$lib/pwa/update.svelte.js';
 
   let { children } = $props();
 
   allergenFilter.hydrate();
   appUpdate.register();
+  /*
+    L'horloge est suivie une seule fois, ici, pour toute l'application (D47).
+
+    Les écrans lisaient l'instant de leur montage. Une application installée
+    n'est pas rechargée mais reprise : sans cet abonnement, un écran repris après
+    deux jours de veille affirmerait qu'un menu vieux de deux jours est celui du
+    jour.
+  */
+  horloge.suivre();
 
   /*
     La barre ne porte que ce qui se consulte chaque matin (design.md, D31).
@@ -20,6 +31,17 @@
     le thème (D22) et contre « À propos » ; il n'avait simplement jamais été
     retourné contre eux. Ils s'atteignent désormais par la commande d'en-tête.
   */
+  /*
+    Un onglet ne réinitialise pas le jour consulté, et ce n'est pas un oubli
+    (design.md, D48).
+
+    Depuis un jour éloigné, passer par Semaine puis revenir sur Jour ramène au
+    jour éloigné — ce qui a l'air d'un défaut. Le partage du jour consulté entre
+    les deux écrans est pourtant délibéré : c'est lui qui fait qu'ouvrir un jour
+    depuis la semaine ouvre *ce* jour. Un onglet qui réinitialiserait casserait
+    la moitié du contrat pour réparer une gêne, et cette gêne a sa commande,
+    visible et nommée, dans l'en-tête (D44).
+  */
   const tabs = [
     { path: '/', label: 'Jour' },
     { path: '/semaine', label: 'Semaine' }
@@ -29,6 +51,12 @@
 <Sprite />
 
 <div class="shell">
+  <!--
+    L'enseigne est la première ligne de tous les écrans, et elle est hors de
+    tout bloc animé : le nom du lieu ne change pas avec le jour (D35).
+  -->
+  <Enseigne />
+
   {#if appUpdate.available}
     <!--
       La nouvelle version attend : elle ne remplace pas l'application pendant

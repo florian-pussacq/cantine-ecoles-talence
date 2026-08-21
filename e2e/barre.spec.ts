@@ -174,7 +174,7 @@ test('la couche modale recouvre la barre et reste refermable', async ({ page }) 
   // pouce. Playwright refuse de cliquer un élément recouvert : si la fermeture
   // passait sous la barre, ce test échouerait au clic plutôt qu'à l'assertion.
   await page.goto('/');
-  await page.locator('.tray .main button').click();
+  await page.locator('.cible').click();
 
   const couche = page.locator('dialog');
   await expect(couche).toBeVisible();
