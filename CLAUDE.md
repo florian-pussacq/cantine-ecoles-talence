@@ -37,6 +37,11 @@ Skills : `/opsx:propose`, `/opsx:continue`, `/opsx:apply`, `/opsx:verify`, `/ops
 
 N'utilise pas `.scratch/` : ce répertoire n'est pas le tracker de ce dépôt.
 
+### Menus
+
+Les menus se produisent depuis les PDF de la Ville, par `scripts/extract-menu-pdf.py` ;
+aucun plat ne se saisit à la main. Procédure : skill `menus-talence`.
+
 ### Domain docs
 
 Single-context — `CONTEXT.md` + `docs/adr/` à la racine. Voir `docs/agents/domain.md`.
