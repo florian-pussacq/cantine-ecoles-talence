@@ -20,6 +20,17 @@ function jour(date: string): ResolvedDay {
   };
 }
 
+/**
+ * Un jour qui sert les sept rôles. Le corpus est réel et la Ville réédite ses
+ * PDF en cours de mois : figer une date ici ferait tomber le test au premier
+ * jour où un laitage disparaît, ce qui ne dit rien de l'ordre d'affichage.
+ */
+function jourComplet(): string {
+  const day = menu.days.find((d) => d.courses.length === 7);
+  if (day === undefined) throw new Error('aucun jour ne sert les sept rôles dans le corpus');
+  return day.date;
+}
+
 function sheetFor(date: string, onClose = () => {}) {
   return render(DaySheet, { props: { day: jour(date), onClose } });
 }
@@ -65,7 +76,7 @@ describe('la feuille porte la journée, pas un plat', () => {
   });
 
   it("suit l'ordre de l'écran, pour que les deux lectures se correspondent", () => {
-    const { container } = sheetFor('2026-09-01');
+    const { container } = sheetFor(jourComplet());
     const roles = [...container.querySelectorAll('.plat-role')].map((n) => n.textContent);
     expect(roles).toEqual([
       'Entrée',

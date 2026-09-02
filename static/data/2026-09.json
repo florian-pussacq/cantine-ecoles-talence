@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "month": "2026-09",
   "source": {
-    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/06/09-MENUS-WEB-SEPTEMBRE-2026.pdf",
-    "pdfSha256": "6527e613366c5d283182121b14730ffe8015049812e3f0d9d85424d9ad90a23a",
-    "updatedLabel": "Menus mis à jour le 23 juin 2026",
-    "updatedAt": "2026-06-23",
-    "fetchedAt": "2026-08-07T07:37:00Z",
-    "producerVersion": "manual"
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/08/09-MENUS-WEB-SEPTEMBRE-2026.pdf",
+    "pdfSha256": "05ee2527986aba7cad6d0cf64280a8973b8b9d60fa5c0e278fa68dd56c946f1c",
+    "updatedLabel": "Menus mis à jour le 25 août 2026",
+    "updatedAt": "2026-08-25",
+    "fetchedAt": "2026-09-02T13:37:17Z",
+    "producerVersion": "extract-menu-pdf/1"
   },
   "allergenLegend": {
     "1": "Gluten (blé, seigle, orge, avoine, épeautre, kamut)",
@@ -57,14 +57,8 @@
           "flags": ["bio"]
         },
         { "slot": "plat", "label": "Boulettes de pois chiche", "allergens": [1], "flags": ["bio"] },
-        {
-          "slot": "accompagnement",
-          "label": "Ratatouille",
-          "allergens": [7, 9],
-          "flags": ["bio"]
-        },
-        { "slot": "laitage", "label": "Mousse au chocolat", "allergens": [3, 7], "flags": [] },
-        { "slot": "dessert", "label": "Ananas au sirop", "allergens": [], "flags": [] },
+        { "slot": "accompagnement", "label": "Ratatouille", "allergens": [7, 9], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Riz au lait", "allergens": [1, 7], "flags": [] },
         { "slot": "gouter", "label": "Pain Bio + Confiture", "allergens": [1], "flags": [] }
       ]
     },
@@ -74,12 +68,7 @@
       "confidence": "high",
       "courses": [
         { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
-        {
-          "slot": "entree",
-          "label": "Salade grecque",
-          "allergens": [7, 10, 12],
-          "flags": ["bio"]
-        },
+        { "slot": "entree", "label": "Salade grecque", "allergens": [7, 10, 12], "flags": ["bio"] },
         { "slot": "plat", "label": "Tajine de veau", "allergens": [8, 12], "flags": [] },
         {
           "slot": "accompagnement",

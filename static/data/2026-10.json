@@ -6,8 +6,8 @@
     "pdfSha256": "56eb6126f150a35b9807d7ffdf4af5d8529fea639b6b0de511be38683bb07409",
     "updatedLabel": "Menus mis à jour le 24 juin 2026",
     "updatedAt": "2026-06-24",
-    "fetchedAt": "2026-08-07T14:19:00Z",
-    "producerVersion": "manual"
+    "fetchedAt": "2026-09-02T13:37:17Z",
+    "producerVersion": "extract-menu-pdf/1"
   },
   "allergenLegend": {
     "1": "Gluten (blé, seigle, orge, avoine, épeautre, kamut)",
@@ -70,12 +70,7 @@
         { "slot": "plat", "label": "Émincé au curry", "allergens": [7], "flags": ["bio"] },
         { "slot": "accompagnement", "label": "Blé", "allergens": [1], "flags": ["bio"] },
         { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
-        {
-          "slot": "dessert",
-          "label": "Compote pomme fraises",
-          "allergens": [],
-          "flags": ["bio"]
-        },
+        { "slot": "dessert", "label": "Compote pomme fraises", "allergens": [], "flags": ["bio"] },
         {
           "slot": "gouter",
           "label": "Madeleine + Yaourt à boire Bio",
@@ -138,21 +133,11 @@
           "allergens": [10, 12],
           "flags": ["bio"]
         },
-        {
-          "slot": "plat",
-          "label": "Sauté d'encornets",
-          "allergens": [2, 7, 12, 14],
-          "flags": []
-        },
+        { "slot": "plat", "label": "Sauté d'encornets", "allergens": [2, 7, 12, 14], "flags": [] },
         { "slot": "accompagnement", "label": "Ratatouille", "allergens": [7, 9], "flags": ["bio"] },
         { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
         { "slot": "dessert", "label": "Flan pâtissier", "allergens": [1, 3, 7], "flags": [] },
-        {
-          "slot": "gouter",
-          "label": "Pain + Fruit de saison Bio",
-          "allergens": [1],
-          "flags": []
-        }
+        { "slot": "gouter", "label": "Pain + Fruit de saison Bio", "allergens": [1], "flags": [] }
       ]
     },
     {
@@ -168,12 +153,7 @@
           "flags": ["bio"]
         },
         { "slot": "plat", "label": "Haut de cuisse de poulet", "allergens": [9], "flags": [] },
-        {
-          "slot": "accompagnement",
-          "label": "Lentilles",
-          "allergens": [9, 12],
-          "flags": ["bio"]
-        },
+        { "slot": "accompagnement", "label": "Lentilles", "allergens": [9, 12], "flags": ["bio"] },
         { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
         { "slot": "dessert", "label": "Fruit", "allergens": [], "flags": ["bio"] },
         {
@@ -199,12 +179,7 @@
         { "slot": "plat", "label": "Tarte douceur automnale", "allergens": [1, 3, 7], "flags": [] },
         { "slot": "laitage", "label": "Mousse au citron", "allergens": [7], "flags": [] },
         { "slot": "dessert", "label": "Barre bretonne", "allergens": [1, 3, 7, 8], "flags": [] },
-        {
-          "slot": "gouter",
-          "label": "Biscuit + Fruit Bio",
-          "allergens": [1, 3, 7, 8],
-          "flags": []
-        }
+        { "slot": "gouter", "label": "Biscuit + Fruit Bio", "allergens": [1, 3, 7, 8], "flags": [] }
       ]
     },
     {
@@ -269,7 +244,6 @@
           "allergens": [7, 12],
           "flags": []
         },
-        { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
         { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
         { "slot": "gouter", "label": "Pain + Fromage Bio", "allergens": [1, 7], "flags": [] }
       ]
@@ -325,12 +299,7 @@
       "confidence": "high",
       "courses": [
         { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
-        {
-          "slot": "entree",
-          "label": "Salade grecque",
-          "allergens": [7, 10, 12],
-          "flags": ["bio"]
-        },
+        { "slot": "entree", "label": "Salade grecque", "allergens": [7, 10, 12], "flags": ["bio"] },
         { "slot": "plat", "label": "Rôti de bœuf", "allergens": [12], "flags": ["bio"] },
         {
           "slot": "accompagnement",
