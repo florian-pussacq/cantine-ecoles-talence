@@ -200,14 +200,9 @@
           cet écran n'est de toute façon pas « quelle case contient l'allergène »
           mais « la journée en contient-elle un » : une ouverture, la liste
           entière.
-
-          L'indice en pied dit ce que l'appui fait, et il est à l'intérieur du
-          bouton : il devient ainsi la fin du nom accessible, sans qu'aucune
-          annotation ARIA n'ait à être inventée ni tenue à jour.
         -->
         <button type="button" class="cible" onclick={() => (ouverte = true)}>
           <Tray {day} />
-          <span class="indice">Allergènes de la journée</span>
         </button>
 
         {#if snack}
@@ -343,33 +338,6 @@
     color: inherit;
     text-align: left;
     cursor: pointer;
-  }
-
-  /*
-    L'affordance est écrite plutôt que suggérée.
-
-    Une grande surface muette ne se donne pas pour actionnable, et un chevron
-    seul ne dit pas ce qu'il ouvre. Le texte fait les deux — il montre que
-    l'ardoise s'ouvre, et il termine le nom accessible du bouton par ce que
-    l'appui produit.
-  */
-  .indice {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--space-1);
-    padding: var(--space-2) var(--space-2) 0;
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--ink) 72%, transparent);
-  }
-
-  .indice::after {
-    content: '›';
-    font-size: var(--text-base);
-    line-height: 1;
   }
 
   .cible:focus-visible {
