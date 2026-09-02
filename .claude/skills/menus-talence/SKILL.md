@@ -10,9 +10,10 @@ Aucun plat ne se saisit à la main : la saisie manuelle a déjà inventé un fro
 le 9 octobre 2026, recopié de la colonne voisine, et personne ne l'a vu pendant
 un mois.
 
-**Terminé quand** chaque mois publié sur la page de la Ville a son fichier sous
-`static/data/`, que son `source.pdfSha256` vaut l'empreinte du PDF en ligne, et
-que `npm run validate`, `npm run build` et `npm run test:e2e` passent.
+**Terminé quand** chaque mois publié sur la page de la Ville — plus le menu de
+grève — a son fichier sous `static/data/`, que son `source.pdfSha256` vaut
+l'empreinte du PDF en ligne, et que `npm run validate`, `npm run build` et
+`npm run test:e2e` passent.
 
 ## 1. Relever ce que la Ville publie
 
@@ -23,8 +24,12 @@ L'URL d'un mois change quand la Ville le réédite : septembre 2026 est passé d
 `/uploads/2026/06/` à `/uploads/2026/08/`. Prendre l'URL sur la page, jamais
 celle du fichier existant.
 
-Deux PDF de la page ne sont pas des menus mensuels et ne se traitent pas ici :
-le menu de grève (générique, sans dates) et l'affichage de l'origine des viandes.
+Le menu de grève est sur la même page mais suit un autre gabarit — cinq jours de
+semaine croisés avec deux variantes, sans dates. Il se traite à l'étape 3, avec
+`--greve`. En pratique il n'a pas bougé depuis 2023 : ce qu'on vérifie est son
+empreinte, pas son contenu.
+
+L'affichage de l'origine des viandes n'est pas un menu et ne se traite pas ici.
 
 ## 2. Télécharger et comparer les empreintes
 
@@ -33,9 +38,10 @@ curl -sSL -o sources/pdf/<nom>.pdf <url>
 sha256sum sources/pdf/*.pdf
 ```
 
-Comparer chaque empreinte au `source.pdfSha256` du fichier mensuel correspondant.
-Empreinte identique, mois inchangé : passer au suivant. Empreinte différente ou
-mois absent : le traiter.
+Comparer chaque empreinte au `source.pdfSha256` du fichier correspondant —
+`static/data/<AAAA-MM>.json` pour un mois, `static/data/greve.json` pour la
+grève. Empreinte identique, document inchangé : passer au suivant. Empreinte
+différente ou fichier absent : le traiter.
 
 ## 3. Extraire
 
@@ -49,6 +55,15 @@ python3 scripts/extract-menu-pdf.py sources/pdf/<nom>.pdf \
 `--merge` et `--out` désignent le même fichier : le thème « ZOOM SUR » et sa note
 sont éditoriaux, rattachés à un jour par jugement humain, et le parser ne sait
 pas les produire. `--merge` les reprend. Sur un mois nouveau, l'omettre.
+
+Le menu de grève se produit avec `--greve`, sans `--merge` : il ne porte pas de
+thème.
+
+```bash
+python3 scripts/extract-menu-pdf.py sources/pdf/00-MENUS-WEB-GREVES.pdf --greve \
+  --url <url officielle> \
+  --out static/data/greve.json
+```
 
 Le script écrit ses avertissements sur la sortie d'erreur. Un `⚠` sur un jour
 signale une structure inhabituelle, et ce jour part en `confidence: "low"` :

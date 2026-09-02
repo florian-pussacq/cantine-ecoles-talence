@@ -42,7 +42,7 @@ Documentés au §4 du PRD, constatés sur des extractions réelles. Ils ne sont 
 
 **Un libellé de plus de 80 caractères est presque toujours une fusion de cellules.** Le schéma le refuse, exprès.
 
-**Le menu de grève n'a pas de dates.** Il est organisé par jour de la semaine et relève d'un fichier distinct. Il n'est jamais sélectionné automatiquement.
+**Le menu de grève n'a pas de dates.** Il est organisé par jour de la semaine — croisé avec deux variantes, repas chauds et repas froids — et relève de son propre contrat, `schemas/greve.schema.json`. Il n'est jamais sélectionné automatiquement, et cette garantie n'est pas une garde ajoutée : `greve.json` n'étant pas inscrit au manifeste, et le chargement n'ouvrant que les mois qui y figurent, la porte n'existe pas. Le service worker le précache néanmoins, comme tout `static/data/`, si bien qu'il reste consultable hors ligne.
 
 **Le PDF est un export Excel.** Les métadonnées le disent (`Creator: Microsoft® Excel®`), ce qui laisse espérer une géométrie de cellules régulière — bien plus docile qu'une mise en page libre.
 
