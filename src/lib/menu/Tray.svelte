@@ -34,7 +34,7 @@
 -->
 <div class="tray">
   {#each lignes as { slot, course } (slot)}
-    <PlatCarte {slot} {course} {day} principal={slot === 'plat'} />
+    <PlatCarte {slot} {course} legend={day.legend} principal={slot === 'plat'} />
   {/each}
 </div>
 

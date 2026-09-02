@@ -114,7 +114,7 @@ test('l’écran porte un seul titre, et un seul rang de flèches', async ({ pag
 
 test('la commande de réglages reste muette quand rien n’est coché', async ({ page }) => {
   await page.goto('/');
-  const commande = page.getByRole('link', { name: /^Allergènes à signaler$/ });
+  const commande = page.getByRole('link', { name: /^Réglages$/ });
   await expect(commande).toBeVisible();
   await expect(commande).toHaveText('');
 });
@@ -130,13 +130,13 @@ test('la commande de réglages annonce le nombre d’allergènes surveillés', a
   // Le compte est dans le nom accessible, et pas seulement dans la pastille :
   // ce qu'un œil voit, un lecteur d'écran doit l'entendre.
   await expect(
-    page.getByRole('link', { name: 'Allergènes à signaler — 3 surveillés' })
+    page.getByRole('link', { name: 'Réglages — 3 allergènes surveillés' })
   ).toBeVisible();
 });
 
 test('la commande de réglages ne mène pas là où l’on est déjà', async ({ page }) => {
   await page.goto('/reglages');
-  await expect(page.getByRole('link', { name: /Allergènes à signaler/ })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /^Réglages/ })).toHaveCount(0);
 });
 
 test('la pastille n’occupe aucune place, donc l’hydratation ne déplace rien', async ({ page }) => {
@@ -189,7 +189,7 @@ test('la pastille n’occupe aucune place, donc l’hydratation ne déplace rien
     [STORAGE_KEY]
   );
   await page.reload();
-  await expect(page.getByRole('link', { name: /3 surveillés/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /3 allergènes surveillés/ })).toBeVisible();
   const pleine = await mesurer();
 
   expect(pleine, 'la lecture du stockage a déplacé la mise en page').toEqual(vide);

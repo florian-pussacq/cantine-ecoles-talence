@@ -41,7 +41,8 @@
   const TITRES: Record<string, { titre: string; baseline?: string }> = {
     '/': { titre: 'Menu de la cantine', baseline: 'Bon appétit !' },
     '/semaine': { titre: 'Menu de la cantine', baseline: 'Bon appétit !' },
-    '/reglages': { titre: 'Allergènes à signaler' },
+    '/reglages': { titre: 'Réglages' },
+    '/greve': { titre: 'Menu de grève' },
     '/a-propos': { titre: "D'où viennent ces menus" }
   };
 

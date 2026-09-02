@@ -1,8 +1,7 @@
 <script lang="ts">
   import Illustration from '../illustrations/Illustration.svelte';
   import { classify } from '../illustrations/families.js';
-  import type { ResolvedDay } from '../data/dataset.js';
-  import type { Course } from '../data/schema.js';
+  import type { AllergenLegend, Course } from '../data/schema.js';
   import {
     courseName,
     flaggedAllergenNames,
@@ -37,12 +36,17 @@
   let {
     slot,
     course,
-    day,
+    legend,
     principal = false
   }: {
     slot: Course['slot'];
     course: Course | null;
-    day: ResolvedDay;
+    /*
+      La carte ne reçoit que la légende, et non le jour entier : c'est tout ce
+      dont elle se sert, et un menu sans date — celui de grève — peut alors la
+      rendre sans qu'on ait à lui fabriquer une journée qui n'existe pas.
+    */
+    legend: AllergenLegend;
     principal?: boolean;
   } = $props();
 
@@ -51,7 +55,7 @@
     if (course === null) return null;
     const codes = allergenFilter.matching(course);
     if (codes.length === 0) return null;
-    return { codes, names: flaggedAllergenNames(course, day.legend, codes) };
+    return { codes, names: flaggedAllergenNames(course, legend, codes) };
   });
 
   const nom = $derived(course === null ? null : courseName(course));

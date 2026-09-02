@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '$lib/filter/storage.js';
   import type { PageProps } from './$types.js';
@@ -26,10 +27,12 @@
 </script>
 
 <svelte:head>
-  <title>Allergènes à signaler — menus des écoles de Talence</title>
+  <title>Réglages — menus des écoles de Talence</title>
 </svelte:head>
 
-<div class="panel">
+<section class="panel">
+  <h2>Allergènes</h2>
+
   <p class="intro">
     Les plats contenant l'un des allergènes cochés seront signalés sur les écrans du jour et de la
     semaine. Ce réglage reste sur cet appareil et n'est jamais envoyé nulle part.
@@ -76,9 +79,60 @@
     <strong>Seul le document officiel de la Ville fait foi.</strong> Cette application n'est pas un service
     municipal, ne remplace pas un PAI, et l'absence d'allergène déclaré ne garantit pas l'absence de traces.
   </p>
-</div>
+</section>
+
+<!--
+  Le menu de grève est ici et nulle part ailleurs.
+
+  Il n'a pas de date : l'application ne peut pas savoir qu'il y a grève, donc
+  elle ne doit jamais le servir d'elle-même. Un onglet en ferait une destination
+  quotidienne ; il n'en est pas une. On vient le chercher les rares fois où il
+  sert, et le reste du temps il ne coûte rien à personne.
+-->
+<section class="panel">
+  <h2>Menus</h2>
+
+  <a class="lien" href={resolve('/greve')}>
+    <span class="titre">Menu de grève</span>
+    <span class="detail">Cinq jours de semaine, en repas chauds ou froids</span>
+  </a>
+</section>
 
 <style>
+  .panel + .panel {
+    margin-top: var(--space-3);
+  }
+
+  /* Le patron de titre de section de l'application (a-propos). */
+  h2 {
+    margin: 0;
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  .lien {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-height: var(--touch);
+    justify-content: center;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .lien .titre {
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .lien .detail {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+
   .panel {
     background: var(--carte);
     color: var(--ink);

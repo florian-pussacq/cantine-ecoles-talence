@@ -29,8 +29,8 @@
   */
   const nom = $derived(
     compte === 0
-      ? 'Allergènes à signaler'
-      : `Allergènes à signaler — ${compte} surveillé${compte > 1 ? 's' : ''}`
+      ? 'Réglages'
+      : `Réglages — ${compte} allergène${compte > 1 ? 's' : ''} surveillé${compte > 1 ? 's' : ''}`
   );
 </script>
 

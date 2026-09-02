@@ -224,7 +224,7 @@
             même nature.
           -->
           <button type="button" class="snack" onclick={() => (ouverte = true)}>
-            <PlatCarte slot="gouter" course={snack} {day} />
+            <PlatCarte slot="gouter" course={snack} legend={day.legend} />
           </button>
         {/if}
       </div>

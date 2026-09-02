@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const ECRANS = ['/', '/semaine', '/reglages', '/a-propos'] as const;
+const ECRANS = ['/', '/semaine', '/reglages', '/greve', '/a-propos'] as const;
 
 /**
  * Aucune requête ne doit sortir vers un autre domaine.
