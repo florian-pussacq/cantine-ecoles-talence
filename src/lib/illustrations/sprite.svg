@@ -1,0 +1,512 @@
+<!--
+  La bibliothèque d'illustrations, d'icônes et de glyphes, posée une fois dans
+  la coque HTML.
+
+  Elles sont dessinées à la main plutôt que photographiées : aucune source photo
+  n'existe pour ces plats, et une photo de plat de cantine mal éclairée dessert
+  le menu (design.md, D9). Elles sont intégrées au document, donc sans requête
+  réseau ni police iconographique.
+
+  **Ce fichier n'est pas un composant, et c'est une décision** (design.md, D57).
+  Il l'a été, et son contenu était alors facturé deux fois : une fois dans le
+  bundle JavaScript, une fois dans chaque page pré-rendue. Le budget JS était à
+  92 % avant d'avoir agrandi la bibliothèque d'un seul dessin. Rien ici n'a
+  d'état ni de réactivité — c'est du décor statique — donc rien n'a à traverser
+  Svelte. `vite.config.ts` l'injecte dans `app.html` au moment de la
+  construction, ce qui le pose dans le document sans le faire passer par le
+  bundle. Agrandir la bibliothèque ne coûte désormais plus rien au budget JS.
+
+  Formes pleines et aucun trait fin, pour rester lisibles de 15 à 46 pixels.
+-->
+<svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!--
+      Le volume, déclaré une fois et emprunté par tous (design.md, D58).
+
+      Deux voiles suffisent, et ils sont neutres : un lustre blanc en haut à
+      gauche, une ombre propre en bas. Étant des voiles d'opacité et non des
+      couleurs, ils se posent sur n'importe quelle teinte — un seul jeu sert les
+      trente et un dessins.
+
+      Un dégradé par symbole aurait coûté 1,8 fois plus d'octets pour le même
+      rendu. Un `feDropShadow` aurait coûté du temps de rendu sur sept vignettes
+      simultanées, contre un LCP tenu sous la seconde en 4G bridée : l'ombre est
+      donc une forme posée, pas un filtre calculé.
+    -->
+    <radialGradient id="lustre" cx="34%" cy="26%" r="76%">
+      <stop offset="0" stop-color="#fff" stop-opacity=".55" />
+      <stop offset="0.55" stop-color="#fff" stop-opacity=".08" />
+      <stop offset="1" stop-color="#000" stop-opacity=".14" />
+    </radialGradient>
+
+    <linearGradient id="assise" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.45" stop-color="#000" stop-opacity="0" />
+      <stop offset="1" stop-color="#000" stop-opacity=".16" />
+    </linearGradient>
+
+    <!--
+      Les trente et une illustrations de plat (design.md, D59).
+
+      Chacune est bâtie de la même façon : une ombre de contact posée au sol, un
+      corps en aplats francs, puis un voile de volume emprunté aux dégradés
+      partagés ci-dessus. Les aplats restent lisibles seuls — le voile ajoute du
+      relief, il ne porte jamais la forme.
+    -->
+    <!-- Le pain : une miche dorée, la seule forme qui revienne trente-trois jours sur trente-cinq. -->
+    <symbol id="ill-pain" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="24" cy="27" rx="17" ry="11" fill="#c98a4b"/><ellipse cx="24" cy="24.5" rx="17" ry="10.5" fill="#e2ab6c"/><ellipse cx="17" cy="20" rx="6" ry="4" fill="#eec292"/>
+      <path d="M24 14a17 10.5 0 0 1 17 10.5 17 10.5 0 0 1-34 0A17 10.5 0 0 1 24 14Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-viande" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <rect x="7" y="15" width="34" height="20" rx="10" fill="#9c3a2b"/><rect x="7" y="15" width="34" height="13" rx="6.5" fill="#c25542"/><rect x="16" y="15.5" width="3.4" height="19" rx="1.7" fill="#f0dcbb"/><rect x="28" y="15.5" width="3.4" height="19" rx="1.7" fill="#f0dcbb"/>
+      <path d="M17 15h14a10 10 0 0 1 10 10 10 10 0 0 1-10 10H17A10 10 0 0 1 7 25 10 10 0 0 1 17 15Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-volaille" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M31 12a10 10 0 0 1 0 20 10 10 0 0 1-9.6-7.2l-8.6 8.6a3 3 0 0 1-4.2-4.2l8.6-8.6A10 10 0 0 1 31 12Z" fill="#c98a4b"/><circle cx="31" cy="22" r="8" fill="#e0a765"/><rect x="8" y="30" width="9" height="4" rx="2" transform="rotate(-45 8 30)" fill="#f2e6d2"/>
+      <path d="M31 12a10 10 0 1 1 0 20 10 10 0 0 1 0-20Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-poisson" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M8 24c5-8 13-12 21-12 4 0 8 1.5 11 4l-4 8 4 8c-3 2.5-7 4-11 4-8 0-16-4-21-12Z" fill="#4a90c4"/><path d="M8 24c5-8 13-12 21-12 4 0 8 1.5 11 4l-4 8H8Z" fill="#6fb0dd"/><circle cx="34" cy="21" r="2" fill="#17384f"/>
+      <path d="M8 24c5-8 13-12 21-12 4 0 8 1.5 11 4l-4 8H8Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Les coquillages et céphalopodes : même famille colorée que le poisson, silhouette différente. -->
+    <symbol id="ill-fruits-de-mer" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="24" cy="19" rx="9" ry="11" fill="#e08a76"/><path d="M17 27c-1 6-3 9-5 12m8-11c0 6 0 9-1 12m5-12c0 6 1 9 2 12m4-13c1 6 3 9 5 11" stroke="#e08a76" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="21" cy="15" rx="5" ry="6" fill="#f0ab99"/>
+      <path d="M24 8a9 11 0 0 1 9 11 9 11 0 0 1-18 0A9 11 0 0 1 24 8Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-pates" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M12 22c2-6 6-9 12-9s10 3 12 9" fill="none" stroke="#e0bd6d" stroke-width="4" stroke-linecap="round"/><path d="M15 21c2-4 5-6 9-6s7 2 9 6" fill="none" stroke="#f0d189" stroke-width="3.4" stroke-linecap="round"/><path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#dcd3c0"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#efe9db"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-feculent" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#dcd3c0"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#efe9db"/><ellipse cx="24" cy="21" rx="12" ry="5.4" fill="#f7f4ea"/><ellipse cx="19" cy="20" rx="2.6" ry="1.5" transform="rotate(-20 19 20)" fill="#ddd6c4"/><ellipse cx="25" cy="19" rx="2.6" ry="1.5" transform="rotate(15 25 19)" fill="#ddd6c4"/><ellipse cx="30" cy="21" rx="2.6" ry="1.5" transform="rotate(-10 30 21)" fill="#ddd6c4"/><ellipse cx="22" cy="23" rx="2.4" ry="1.4" transform="rotate(8 22 23)" fill="#ddd6c4"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-oeuf" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="24" cy="26" rx="15" ry="11" fill="#f7f4ec"/><circle cx="24" cy="24" r="6.5" fill="#f0a92e"/><circle cx="22" cy="22" r="3" fill="#f6c463"/>
+      <path d="M24 15a15 11 0 0 1 15 11 15 11 0 0 1-30 0A15 11 0 0 1 24 15Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-chocolat" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <rect x="10" y="13" width="28" height="24" rx="3" fill="#5c3218"/><rect x="10" y="13" width="28" height="12" rx="3" fill="#7a4522"/><path d="M24 13v24M10 25h28" stroke="#43230f" stroke-width="2"/>
+      <path d="M13 13h22a3 3 0 0 1 3 3v9H10v-9a3 3 0 0 1 3-3Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-inconnu" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <circle cx="24" cy="24" r="16" fill="#b3bcb7"/><circle cx="24" cy="24" r="10.5" fill="#d8ded9"/>
+      <path d="M24 8a16 16 0 0 1 16 16H8A16 16 0 0 1 24 8Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Salade composée : plusieurs couleurs dans un bol, ce qui la distingue de la salade verte. -->
+    <symbol id="ill-salade-composee" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><circle cx="17" cy="20" r="3.4" fill="#cf4436"/><circle cx="25" cy="19" r="3.6" fill="#5fa04a"/><circle cx="32" cy="21" r="3.2" fill="#e8a93a"/><circle cx="21" cy="23" r="2.6" fill="#7cb861"/><circle cx="29" cy="23" r="2.4" fill="#d8573f"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-salade-verte" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><ellipse cx="18" cy="19" rx="8" ry="5.5" transform="rotate(-22 18 19)" fill="#4e9142"/><ellipse cx="29" cy="19" rx="8" ry="5.5" transform="rotate(20 29 19)" fill="#68ad55"/><ellipse cx="24" cy="21" rx="7" ry="4.5" fill="#7cbf66"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Crudités râpées : des filaments, pas des morceaux. -->
+    <symbol id="ill-crudite-rapee" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><path d="M13 22c4-3 8-5 12-5s8 2 11 5" stroke="#e2842f" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M15 19c3-2 6-3 9-3s7 1 9 3" stroke="#f09b45" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-tomate" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <circle cx="24" cy="27" r="13" fill="#cf3b2c"/><circle cx="24" cy="27" r="13" fill="url(#assise)"/><path d="M24 15c-3-3-7-3.5-9-2 1 3 4 5 7 5.2m2-3.2c3-3 7-3.5 9-2-1 3-4 5-7 5.2" fill="#4e9142"/><rect x="22.6" y="10" width="2.8" height="6" rx="1.4" fill="#4e9142"/>
+      <path d="M24 14a13 13 0 0 1 13 13 13 13 0 0 1-26 0A13 13 0 0 1 24 14Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-concombre" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="18" cy="28" rx="9.5" ry="9.5" fill="#8bbf5c"/><ellipse cx="18" cy="28" rx="7" ry="7" fill="#d6e9bd"/><ellipse cx="31" cy="22" rx="8.5" ry="8.5" fill="#7cb34f"/><ellipse cx="31" cy="22" rx="6.2" ry="6.2" fill="#c8e2ac"/><circle cx="31" cy="22" r="1.6" fill="#9dc47a"/><circle cx="18" cy="28" r="1.8" fill="#a8cc84"/>
+      <path d="M31 13.5a8.5 8.5 0 0 1 8.5 8.5H22.5A8.5 8.5 0 0 1 31 13.5Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-chou" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="12" cy="30" rx="8" ry="5.5" transform="rotate(-25 12 30)" fill="#5b9448"/><ellipse cx="36" cy="30" rx="8" ry="5.5" transform="rotate(25 36 30)" fill="#5b9448"/><ellipse cx="24" cy="28" rx="13" ry="10" fill="#e6e2cf"/><circle cx="16" cy="24" r="5.5" fill="#f2efe0"/><circle cx="24" cy="21" r="6.5" fill="#f7f5ea"/><circle cx="32" cy="24" r="5.5" fill="#f2efe0"/><circle cx="20" cy="27" r="4.5" fill="#efece0"/><circle cx="29" cy="27" r="4.5" fill="#efece0"/>
+      <path d="M24 15a13 10 0 0 1 13 10 13 10 0 0 1-26 0A13 10 0 0 1 24 15Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-courgette" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M10 32c0-10 7-18 17-18 5 0 9 3 9 8 0 10-7 18-17 18-5 0-9-3-9-8Z" fill="#4e9142"/><path d="M14 30c0-8 6-14 13-14 3 0 5 2 5 5 0 8-6 14-13 14-3 0-5-2-5-5Z" fill="#68ad55"/><rect x="26" y="9" width="3" height="7" rx="1.5" transform="rotate(18 26 9)" fill="#3d7334"/>
+      <path d="M10 32c0-10 7-18 17-18 5 0 9 3 9 8H10Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-poireau" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M24 24c-5-8-9-12-14-14 1 8 6 13 12 16m4 0c6-3 11-8 12-16-5 2-9 6-14 14" fill="#4e9142"/><path d="M24 23c-2-7-3-11-4-14 0 7 1 11 3 15" fill="#68ad55"/><rect x="19" y="22" width="10" height="18" rx="5" fill="#f2f0e2"/><rect x="19" y="22" width="10" height="18" rx="5" fill="url(#assise)"/><path d="M19 27h10M19 32h10" stroke="#ddd9c6" stroke-width="1.6"/>
+      <path d="M24 10c5 4 9 9 10 14H14c1-5 5-10 10-14Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Légumineuses : des grains ronds, distincts des filaments râpés. -->
+    <symbol id="ill-legumineuse" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><circle cx="17" cy="20" r="3" fill="#a6712f"/><circle cx="24" cy="19" r="3.2" fill="#c08b45"/><circle cx="31" cy="20" r="3" fill="#a6712f"/><circle cx="20.5" cy="23" r="2.8" fill="#b57f3a"/><circle cx="27.5" cy="23" r="2.8" fill="#b57f3a"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-courge" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="24" cy="27" rx="14" ry="12" fill="#e08a2a"/><ellipse cx="17" cy="27" rx="6" ry="12" fill="#ec9c3d"/><ellipse cx="31" cy="27" rx="6" ry="12" fill="#ec9c3d"/><rect x="22.5" y="11" width="3" height="6" rx="1.5" fill="#5f7f3a"/>
+      <path d="M24 15a14 12 0 0 1 14 12 14 12 0 0 1-28 0A14 12 0 0 1 24 15Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-legume" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#dcd3c0"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#efe9db"/><circle cx="17" cy="20" r="3.8" fill="#e2842f"/><circle cx="17" cy="20" r="1.8" fill="#f0a45c"/><ellipse cx="26" cy="19" rx="6.5" ry="3.4" transform="rotate(-18 26 19)" fill="#4e9142"/><circle cx="31.5" cy="23" r="3" fill="#7cb861"/><circle cx="22" cy="23" r="2.6" fill="#5fa04a"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Yaourt : un pot, et non une part de fromage — le paquet précédent confondait les deux. -->
+    <symbol id="ill-yaourt" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M14 18h20l-2.4 19a3 3 0 0 1-3 2.6h-9.2a3 3 0 0 1-3-2.6Z" fill="#f4f1e6"/><path d="M14.8 24h18.4l-.7 6H15.5Z" fill="#c9d9e8"/><rect x="11" y="12" width="26" height="7" rx="3.5" fill="#d3ccb8"/><rect x="13" y="13.4" width="22" height="2.6" rx="1.3" fill="#e6e0cf"/>
+      <path d="M14 18h20l-1.2 8H15.2Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-laitage-sucre" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M13 22h22l-2 15a4 4 0 0 1-4 3.4H19a4 4 0 0 1-4-3.4Z" fill="#e8dcc6"/><path d="M13 22h22l-.8 6H13.8Z" fill="#f4ecdc"/><path d="M24 10c-4 0-7 2.6-7 6 0 3 3 5 7 5s7-2 7-5c0-3.4-3-6-7-6Z" fill="#fbf7ef"/>
+      <path d="M17 10h14c0 3.4-3 6-7 6s-7-2.6-7-6Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-fromage" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M8 32V20l32-8v12Z" fill="#e8b93c"/><path d="M8 20 40 12v6L8 26Z" fill="#f2cf62"/><circle cx="18" cy="25" r="2.4" fill="#d9a52c"/><circle cx="29" cy="21" r="2" fill="#d9a52c"/>
+      <path d="M8 20 40 12v6L8 26Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Compote : une purée lisse dans un bol, distincte du fruit entier. -->
+    <symbol id="ill-compote" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><ellipse cx="24" cy="21" rx="12" ry="4.6" fill="#e8b661"/><ellipse cx="21" cy="20" rx="5" ry="2.4" fill="#f2ca85"/>
+      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-melon" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M6 30a18 18 0 0 1 36 0Z" fill="#5c8f3e"/><path d="M10 30a14 14 0 0 1 28 0Z" fill="#f0a75c"/><path d="M14 30a10 10 0 0 1 20 0Z" fill="#f7bd7e"/><circle cx="20" cy="26" r="1.4" fill="#e0904a"/><circle cx="28" cy="26" r="1.4" fill="#e0904a"/>
+      <path d="M10 30a14 14 0 0 1 28 0Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-fruit-sirop" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M11 18h26l-3 19a4 4 0 0 1-4 3.4H18a4 4 0 0 1-4-3.4Z" fill="#f3d9a8" opacity=".85"/><circle cx="19" cy="27" r="3.6" fill="#e8963c"/><circle cx="28" cy="25" r="3.2" fill="#efab55"/><circle cx="24" cy="32" r="3" fill="#e8963c"/><path d="M11 18h26l-.7 5H11.7Z" fill="#f8e9cb"/>
+      <path d="M11 18h26l-1.4 9H12.4Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-fruit" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <circle cx="24" cy="28" r="12" fill="#cf4436"/><path d="M24 16a12 12 0 0 1 12 12H12a12 12 0 0 1 12-12Z" fill="#e05a49"/><rect x="22.8" y="11" width="2.6" height="6" rx="1.3" fill="#7a5a34"/><ellipse cx="29" cy="13" rx="4.5" ry="2.6" transform="rotate(-25 29 13)" fill="#5fa04a"/>
+      <path d="M24 16a12 12 0 0 1 12 12H12a12 12 0 0 1 12-12Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!-- Biscuit sec : rond et piqué, il ne se confond pas avec une part de gâteau. -->
+    <symbol id="ill-biscuit" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <circle cx="24" cy="26" r="13" fill="#c99a58"/><circle cx="24" cy="26" r="13" fill="url(#assise)"/><circle cx="19" cy="22" r="1.8" fill="#8f6a34"/><circle cx="28" cy="24" r="1.8" fill="#8f6a34"/><circle cx="23" cy="30" r="1.8" fill="#8f6a34"/><circle cx="30" cy="30" r="1.5" fill="#8f6a34"/>
+      <path d="M24 13a13 13 0 0 1 13 13 13 13 0 0 1-26 0A13 13 0 0 1 24 13Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-gateau" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M10 38V22l14-8 14 8v16Z" fill="#d8a86a"/><path d="M10 22 24 14l14 8-14 7Z" fill="#eac492"/><path d="M10 27h28v5H10Z" fill="#a9613a"/><circle cx="24" cy="12" r="2.6" fill="#cf4436"/>
+      <path d="M10 22 24 14l14 8-14 7Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <symbol id="ill-mousse" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
+      <path d="M13 20h22l-2.4 17a4 4 0 0 1-4 3.4h-9.2a4 4 0 0 1-4-3.4Z" fill="#c98f5e"/><path d="M13 20h22l-.7 5H13.7Z" fill="#dba876"/><path d="M24 6c-5 0-9 3.4-9 8 0 3.4 4 6 9 6s9-2.6 9-6c0-4.6-4-8-9-8Z" fill="#f2e4d2"/><circle cx="24" cy="7" r="2.2" fill="#cf4436"/>
+      <path d="M15 6h18c0 3.4-4 6-9 6s-9-2.6-9-6Z" fill="url(#lustre)"/>
+    </symbol>
+
+    <!--
+      Les quatorze allergènes réglementaires.
+
+      Chaque forme est distincte en silhouette, pas seulement en teinte : posés
+      côte à côte dans la feuille de détail, ils doivent rester distinguables en
+      niveaux de gris. Ils n'apparaissent jamais seuls, toujours à côté du nom
+      de l'allergène en toutes lettres.
+    -->
+    <symbol id="alg-gluten" viewBox="0 0 48 48">
+      <path d="M24 6v36" stroke="#b07a2e" stroke-width="3" stroke-linecap="round" />
+      <path
+        d="M24 14c-5-1-8-4-9-8 5-1 8 1 9 4zM24 14c5-1 8-4 9-8-5-1-8 1-9 4zM24 25c-5-1-8-4-9-8 5-1 8 1 9 4zM24 25c5-1 8-4 9-8-5-1-8 1-9 4zM24 36c-5-1-8-4-9-8 5-1 8 1 9 4zM24 36c5-1 8-4 9-8-5-1-8 1-9 4z"
+        fill="#dfa868"
+      />
+    </symbol>
+
+    <symbol id="alg-crustaces" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="27" rx="10" ry="12" fill="#d4674a" />
+      <path d="M17 16c-4-3-7-3-9-1 2 3 5 4 8 4zM31 16c4-3 7-3 9-1-2 3-5 4-8 4z" fill="#b34e34" />
+      <path
+        d="M12 30h-5M36 30h5M13 36l-4 3M35 36l4 3"
+        stroke="#b34e34"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+      <circle cx="20" cy="21" r="1.8" fill="#5c2317" />
+      <circle cx="28" cy="21" r="1.8" fill="#5c2317" />
+    </symbol>
+
+    <symbol id="alg-oeufs" viewBox="0 0 48 48">
+      <ellipse
+        cx="24"
+        cy="26"
+        rx="12.5"
+        ry="15.5"
+        fill="#fbf6ea"
+        stroke="#b5ac94"
+        stroke-width="1.8"
+      />
+      <circle cx="24" cy="27" r="6.2" fill="#e08f1b" />
+    </symbol>
+
+    <symbol id="alg-poisson" viewBox="0 0 48 48">
+      <path d="M15 24c0-7 7.5-12 15-12s14 5 14 12-6.5 12-14 12-15-5-15-12z" fill="#5b93b5" />
+      <path d="M15 24 4 14.5v19z" fill="#3d7292" />
+      <circle cx="36.5" cy="21" r="2.2" fill="#16323f" />
+    </symbol>
+
+    <symbol id="alg-arachides" viewBox="0 0 48 48">
+      <path
+        d="M24 8c6 0 9 4 9 8 0 3-2 5-2 8s2 5 2 8c0 4-3 8-9 8s-9-4-9-8c0-3 2-5 2-8s-2-5-2-8c0-4 3-8 9-8z"
+        fill="#c99a5c"
+      />
+      <path d="M17 22c4 2 10 2 14 0" stroke="#9c7238" stroke-width="2.4" fill="none" />
+      <circle cx="21" cy="16" r="1.6" fill="#9c7238" />
+      <circle cx="27" cy="34" r="1.6" fill="#9c7238" />
+    </symbol>
+
+    <symbol id="alg-soja" viewBox="0 0 48 48">
+      <path
+        d="M11 30c0-8 6-14 14-14 7 0 12 4 12 9 0 6-5 9-11 9-5 0-9-2-9-6"
+        stroke="#6a9741"
+        stroke-width="6"
+        fill="none"
+        stroke-linecap="round"
+      />
+      <circle cx="17" cy="30" r="3" fill="#c7dcae" />
+      <circle cx="26" cy="25" r="3" fill="#c7dcae" />
+      <circle cx="33" cy="27" r="3" fill="#c7dcae" />
+    </symbol>
+
+    <symbol id="alg-lait" viewBox="0 0 48 48">
+      <path
+        d="M24 6c7 9.5 11.5 14.5 11.5 21A11.5 11.5 0 0 1 12.5 27C12.5 20.5 17 15.5 24 6z"
+        fill="#2e62a8"
+      />
+      <path
+        d="M20 25c0 3 1.6 5 4 5.6"
+        stroke="#a8c6ec"
+        stroke-width="2.4"
+        fill="none"
+        stroke-linecap="round"
+      />
+    </symbol>
+
+    <symbol id="alg-fruits-a-coque" viewBox="0 0 48 48">
+      <path d="M24 8c9 0 15 7 15 15s-6 17-15 17S9 31 9 23 15 8 24 8z" fill="#a5703c" />
+      <path d="M24 8c4 6 6 12 6 16s-2 10-6 16" stroke="#7d5228" stroke-width="2.6" fill="none" />
+      <path d="M24 8c-4 6-6 12-6 16s2 10 6 16" stroke="#7d5228" stroke-width="2.6" fill="none" />
+    </symbol>
+
+    <symbol id="alg-celeri" viewBox="0 0 48 48">
+      <path
+        d="M18 40c-1-10 0-18 2-26M24 40c0-11 1-19 2-27M30 40c1-10 2-17 4-24"
+        stroke="#5b9440"
+        stroke-width="4.5"
+        stroke-linecap="round"
+        fill="none"
+      />
+      <path d="M14 41h20" stroke="#3f6e2c" stroke-width="5" stroke-linecap="round" />
+      <ellipse cx="21" cy="12" rx="6" ry="4" transform="rotate(-18 21 12)" fill="#7fb95c" />
+      <ellipse cx="33" cy="15" rx="5" ry="3.5" transform="rotate(-30 33 15)" fill="#7fb95c" />
+    </symbol>
+
+    <symbol id="alg-moutarde" viewBox="0 0 48 48">
+      <path d="M18 12h12l2 6H16z" fill="#c9a227" />
+      <path d="M16 18h16l2 20a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3z" fill="#e8c34a" />
+      <path d="M20 8h8v4h-8z" fill="#9c7c14" />
+      <circle cx="24" cy="30" r="4" fill="#9c7c14" />
+    </symbol>
+
+    <symbol id="alg-sesame" viewBox="0 0 48 48">
+      <ellipse
+        cx="17"
+        cy="18"
+        rx="4"
+        ry="6"
+        transform="rotate(-25 17 18)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+      <ellipse
+        cx="31"
+        cy="21"
+        rx="4"
+        ry="6"
+        transform="rotate(20 31 21)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+      <ellipse
+        cx="22"
+        cy="32"
+        rx="4"
+        ry="6"
+        transform="rotate(-10 22 32)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+      <ellipse
+        cx="33"
+        cy="34"
+        rx="4"
+        ry="6"
+        transform="rotate(35 33 34)"
+        fill="#e0cfa4"
+        stroke="#a89468"
+        stroke-width="1.6"
+      />
+    </symbol>
+
+    <symbol id="alg-sulfites" viewBox="0 0 48 48">
+      <path
+        d="M18 6h12v9c0 3 5 6 5 12v16a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V27c0-6 5-9 5-12z"
+        fill="#8e5b8a"
+      />
+      <path d="M13 30h22v13a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3z" fill="#6d3f6a" />
+      <path d="M17 5h14v3H17z" fill="#5a325a" />
+    </symbol>
+
+    <symbol id="alg-lupin" viewBox="0 0 48 48">
+      <path d="M24 42V20" stroke="#5b9440" stroke-width="3.5" stroke-linecap="round" />
+      <ellipse cx="24" cy="12" rx="5" ry="7" fill="#7b6bbd" />
+      <ellipse cx="16" cy="21" rx="5" ry="6" transform="rotate(-25 16 21)" fill="#9b8bd6" />
+      <ellipse cx="32" cy="21" rx="5" ry="6" transform="rotate(25 32 21)" fill="#9b8bd6" />
+      <ellipse cx="18" cy="31" rx="4.5" ry="5.5" transform="rotate(-20 18 31)" fill="#7b6bbd" />
+      <ellipse cx="30" cy="31" rx="4.5" ry="5.5" transform="rotate(20 30 31)" fill="#7b6bbd" />
+    </symbol>
+
+    <symbol id="alg-mollusques" viewBox="0 0 48 48">
+      <path d="M24 40 7 20c0-7 8-12 17-12s17 5 17 12z" fill="#d8b48a" />
+      <path d="M24 40 15 18M24 40l9-22M24 40V15" stroke="#a8834f" stroke-width="2.2" fill="none" />
+    </symbol>
+
+    <!-- Repli : un code que la légende introduirait sans qu'on l'ait dessiné. -->
+    <symbol id="alg-defaut" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="17" fill="#8d7f5f" />
+      <path d="M24 13v14" stroke="#fbf6ea" stroke-width="4" stroke-linecap="round" />
+      <circle cx="24" cy="33.5" r="2.4" fill="#fbf6ea" />
+    </symbol>
+
+    <!--
+      Les sept glyphes de rôle (design.md, D50).
+
+      Ils tiennent du sprite et non d'`Icone` : une icône d'interface nomme une
+      commande que rien d'autre ne nomme à l'écran, alors qu'un glyphe de rôle
+      est posé à côté du mot « Entrée » écrit en toutes lettres. Il est
+      décoratif, comme une illustration, et c'est le contrat de ce fichier.
+
+      Ils s'en distinguent sur un point : ils sont monochromes et peints en
+      `currentColor`, parce qu'ils vivent dans une pastille dont la couleur est
+      celle du rôle. Une illustration, elle, porte ses propres couleurs et ne
+      supporterait pas d'être aplatie en une seule.
+    -->
+    <symbol id="role-entree" viewBox="0 0 48 48">
+      <path d="M7 25h34a17 17 0 0 1-34 0Z" fill="currentColor" />
+      <ellipse cx="19" cy="15" rx="9" ry="5.5" transform="rotate(-22 19 15)" fill="currentColor" />
+      <ellipse cx="31" cy="17" rx="7" ry="4.5" transform="rotate(20 31 17)" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-plat" viewBox="0 0 48 48">
+      <circle cx="24" cy="9" r="3" fill="currentColor" />
+      <path d="M8 30a16 16 0 0 1 32 0Z" fill="currentColor" />
+      <rect x="4" y="32" width="40" height="6" rx="3" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-accompagnement" viewBox="0 0 48 48">
+      <rect x="30" y="20" width="14" height="5" rx="2.5" fill="currentColor" />
+      <path d="M7 17h26v13a13 13 0 0 1-26 0Z" fill="currentColor" />
+      <rect x="5" y="13" width="30" height="5" rx="2.5" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-laitage" viewBox="0 0 48 48">
+      <rect x="12" y="10" width="24" height="6" rx="3" fill="currentColor" />
+      <path d="M13 18h22l-3 20H16Z" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-dessert" viewBox="0 0 48 48">
+      <circle cx="24" cy="10" r="3.2" fill="currentColor" />
+      <path d="M11 24a13 13 0 0 1 26 0Z" fill="currentColor" />
+      <path d="M12 26h24l-3.5 14h-17Z" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-pain" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="27" rx="18" ry="11.5" fill="currentColor" />
+      <ellipse cx="16" cy="19" rx="7" ry="5" fill="currentColor" />
+      <ellipse cx="30" cy="19" rx="7" ry="5" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-gouter" viewBox="0 0 48 48">
+      <path d="M22 12c-2-3-6-4-9-3 1 3 4 5 7 5Z" fill="currentColor" />
+      <path
+        d="M24 15c-3-2-8-2-11 2s-2 12 1 17 6 6 8 5 2-1 4 0 5 0 8-5 4-13 1-17-8-4-11-2Z"
+        fill="currentColor"
+      />
+    </symbol>
+
+    <!--
+      La marque de l'enseigne : une assiette et deux couverts.
+
+      Décorative, comme tout ce que porte ce fichier — « Cantine des écoles de
+      Talence » est écrit juste à côté, et le disque ne dit rien de plus. Elle est
+      en `currentColor` pour la même raison que les glyphes de rôle : c'est le
+      disque qui porte la couleur.
+    -->
+    <symbol id="marque" viewBox="0 0 48 48">
+      <path
+        d="M24 11a13 13 0 1 0 0 26 13 13 0 0 0 0-26Zm0 6a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z"
+        fill="currentColor"
+        fill-rule="evenodd"
+      />
+      <rect x="6" y="8" width="3.4" height="14" rx="1.7" fill="currentColor" />
+      <rect x="12" y="8" width="3.4" height="14" rx="1.7" fill="currentColor" />
+      <rect x="9" y="18" width="3.4" height="22" rx="1.7" fill="currentColor" />
+      <path
+        d="M36 8c3.4 0 5.6 3.6 5.6 8s-2.2 7-4 7v17a1.7 1.7 0 0 1-3.4 0V8.4Z"
+        fill="currentColor"
+      />
+    </symbol>
+  </defs>
+</svg>

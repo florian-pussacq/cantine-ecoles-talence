@@ -98,10 +98,17 @@ describe('le dessin accompagne chaque plat (D51)', () => {
   });
 
   it('accepte deux fois le même dessin le même jour', () => {
-    // Le 1er septembre porte une entrée et un accompagnement tous deux de la
-    // famille des légumes. La règle qui l'interdisait est levée, et rien ne
-    // tente de les différencier.
-    const { container } = trayFor(real, '2026-09-01');
+    /*
+      Le 31 août sert « Panibuns aux fromages » et « Fromage » : deux laitages,
+      un seul dessin. La règle qui l'interdisait est levée, et rien ne tente de
+      les différencier.
+
+      Ce test portait sur le 1er septembre, dont l'entrée et l'accompagnement
+      relevaient tous deux du paquet « légume ». La bibliothèque affinée les a
+      séparés (D59) — c'est le but, et c'est pourquoi le jour de référence a
+      changé plutôt que l'assertion.
+    */
+    const { container } = trayFor(real, '2026-08-31');
     const href = [...container.querySelectorAll('.illustration use')].map((n) =>
       n.getAttribute('href')
     );

@@ -10,21 +10,58 @@
  * porte aucune information relative aux allergènes.
  */
 
-/** Les dessins disponibles. `inconnu` est le repli, jamais une déduction. */
+/**
+ * Les dessins disponibles. `inconnu` est le repli, jamais une déduction.
+ *
+ * La bibliothèque est passée de treize à trente et un dessins (design.md, D59),
+ * et le motif du découpage est mesuré et non deviné : sur les deux mois publiés,
+ * `legume` portait à lui seul **quarante libellés distincts** — « Radis beurre »,
+ * « Taboulé », « Ratatouille » et « Salade grecque » recevaient la même
+ * courgette. La reconnaissance, elle, marchait déjà : 8 % d'échecs seulement.
+ * Ce qui manquait n'était pas la couverture mais la résolution.
+ *
+ * On éclate ce qui collisionne réellement, et l'on ne descend pas jusqu'au plat
+ * nommé : sur 149 libellés distincts, 129 n'apparaissent qu'une seule fois et ne
+ * reviendront jamais. Un dessin par plat serait un dessin jetable par plat.
+ */
 export type Illustration =
+  // Les neuf inchangés : leurs paquets ne dépassaient pas dix libellés.
   | 'pain'
-  | 'fruit'
-  | 'legume'
   | 'viande'
   | 'volaille'
   | 'poisson'
   | 'pates'
   | 'feculent'
-  | 'fromage'
   | 'oeuf'
-  | 'gateau'
   | 'chocolat'
-  | 'inconnu';
+  | 'inconnu'
+  // Ce qui était « legume »
+  | 'salade-composee'
+  | 'salade-verte'
+  | 'crudite-rapee'
+  | 'tomate'
+  | 'concombre'
+  | 'chou'
+  | 'courgette'
+  | 'poireau'
+  | 'legumineuse'
+  | 'courge'
+  | 'legume'
+  // Ce qui était « fromage »
+  | 'yaourt'
+  | 'laitage-sucre'
+  | 'fromage'
+  // Ce qui était « fruit »
+  | 'compote'
+  | 'melon'
+  | 'fruit-sirop'
+  | 'fruit'
+  // Ce qui était « gateau »
+  | 'biscuit'
+  | 'gateau'
+  | 'mousse'
+  // Nouveau
+  | 'fruits-de-mer';
 
 /** Les familles colorées du plat principal. */
 export type Family = 'viande' | 'volaille' | 'poisson' | 'vegetarien' | 'inconnu';
@@ -48,7 +85,17 @@ const TABLE: readonly Entry[] = [
   { keywords: ['chili con carne'], illustration: 'viande', family: 'viande' },
   { keywords: ['bolognaise'], illustration: 'pates', family: 'viande' },
   {
-    keywords: ['agneau', 'boeuf', 'bœuf', 'veau', 'porc', 'kefta', 'paupiette', 'merguez'],
+    keywords: [
+      'agneau',
+      'boeuf',
+      'bœuf',
+      'veau',
+      'porc',
+      'mouton',
+      'kefta',
+      'paupiette',
+      'merguez'
+    ],
     illustration: 'viande',
     family: 'viande'
   },
@@ -72,9 +119,18 @@ const TABLE: readonly Entry[] = [
       'thon',
       'sardine',
       'meuniere',
-      'dieppoise'
+      'dieppoise',
+      'fish'
     ],
     illustration: 'poisson',
+    family: 'poisson'
+  },
+
+  // Coquillages et céphalopodes — même famille colorée que le poisson, dessin
+  // distinct : un encornet ne ressemble pas à un filet.
+  {
+    keywords: ['fruits de mer', 'encornet', 'calamar', 'moule', 'crevette'],
+    illustration: 'fruits-de-mer',
     family: 'poisson'
   },
 
@@ -83,6 +139,7 @@ const TABLE: readonly Entry[] = [
     keywords: [
       'pomme de terre',
       'pommes grenailles',
+      'dauphinois',
       'riz',
       'semoule',
       'boulgour',
@@ -105,19 +162,25 @@ const TABLE: readonly Entry[] = [
   // Œufs
   { keywords: ['omelette', 'oeuf', 'œuf'], illustration: 'oeuf', family: 'vegetarien' },
 
-  // Produits laitiers
+  /*
+    Produits laitiers — trois dessins là où il n'y en avait qu'un.
+
+    Le paquet « fromage » recevait les yaourts à boire et les liégeois : une part
+    de fromage devant un dessert lacté. « fromage blanc » doit primer sur
+    « fromage », et c'est la règle du mot-clé le plus long qui s'en charge.
+  */
   {
-    keywords: [
-      'fromage',
-      'yaourt',
-      'petit suisse',
-      'liegeois',
-      'mozzarella',
-      'feta',
-      'camembert',
-      'brie',
-      'emmental'
-    ],
+    keywords: ['yaourt', 'petit suisse', 'fromage blanc', 'skyr'],
+    illustration: 'yaourt',
+    family: 'vegetarien'
+  },
+  {
+    keywords: ['liegeois', 'creme dessert', 'flan'],
+    illustration: 'laitage-sucre',
+    family: 'vegetarien'
+  },
+  {
+    keywords: ['fromage', 'mozzarella', 'feta', 'camembert', 'brie', 'emmental'],
     illustration: 'fromage',
     family: 'vegetarien'
   },
@@ -125,74 +188,139 @@ const TABLE: readonly Entry[] = [
   // Chocolat — placé avant les gâteaux, un muffin au chocolat reste un gâteau.
   { keywords: ['chocolat'], illustration: 'chocolat', family: 'vegetarien' },
 
-  // Desserts sucrés — « tarte » doit primer sur « pomme » à longueur égale.
+  /*
+    Desserts sucrés — le biscuit sec se distingue du gâteau et de la mousse.
+
+    « barre de céréales » et « petit beurre » se lisaient comme des gâteaux, ce
+    qui donnait une part de tarte devant un biscuit emballé.
+  */
   {
     keywords: [
-      'tarte',
-      'muffin',
+      'biscuit',
+      'petit beurre',
+      'boudoir',
+      'madeleine',
+      'barre',
+      'cereale',
       'cookie',
+      'gaufre',
+      'galette',
+      'sable'
+    ],
+    illustration: 'biscuit',
+    family: 'vegetarien'
+  },
+  {
+    keywords: [
       'gateau',
+      'muffin',
+      'cake',
+      'tarte',
       'clafouti',
       'beignet',
-      'biscuit',
-      'mousse',
-      'flan',
-      'cereale',
+      'moelleux',
+      'brownie',
+      'quatre quarts',
+      // Ce que le document écrit quand il annonce un dessert sans le nommer.
+      // « crème dessert » reste plus long, et part donc vers le laitage sucré.
       'dessert'
     ],
     illustration: 'gateau',
     family: 'vegetarien'
   },
+  // « crème dessert » l'emporte sur « crème » par sa longueur, et
+  // « betteraves crémeuse » sur les deux : c'est bien une crudité.
+  { keywords: ['mousse', 'creme'], illustration: 'mousse', family: 'vegetarien' },
 
-  // Fruits
+  /*
+    Fruits — quatre dessins.
+
+    « Salade de fruits » recevait un légume : « salade » compte six lettres,
+    « fruit » cinq, et la règle du mot-clé le plus long se retournait contre
+    elle-même. Le mot-clé complet la remet à l'endroit.
+  */
+  {
+    keywords: ['compote', 'pate de fruits', 'berlingot'],
+    illustration: 'compote',
+    family: 'vegetarien'
+  },
+  { keywords: ['melon', 'pasteque'], illustration: 'melon', family: 'vegetarien' },
+  {
+    keywords: ['au sirop', 'cocktail de fruits', 'salade de fruits'],
+    illustration: 'fruit-sirop',
+    family: 'vegetarien'
+  },
   {
     keywords: [
       'fruit',
-      'melon',
       'pomme',
       'poire',
       'ananas',
       'peche',
       'banane',
-      'compote',
       'raisin',
       'abricot',
       'orange',
-      'kiwi'
+      'kiwi',
+      'fraise'
     ],
     illustration: 'fruit',
     family: 'vegetarien'
   },
 
-  // Légumes et légumineuses
+  /*
+    Légumes — onze dessins là où il n'y en avait qu'un pour quarante libellés.
+
+    Les crudités râpées, les salades composées et les légumes cuits ne se
+    ressemblent pas dans l'assiette ; ils ne se ressemblaient pourtant qu'à
+    l'écran.
+  */
   {
     keywords: [
-      'legume',
-      'legumineuse',
-      'concombre',
-      'tomate',
-      'salade',
-      'betterave',
-      'radis',
-      'carotte',
-      'macedoine',
+      'salade piemontaise',
+      'salade grecque',
+      'salade de perles',
+      'salade de mais',
+      'salade composee',
+      'piemontaise',
+      'taboule',
       'coleslaw',
-      'celeri',
-      'poireau',
-      'chou',
-      'brocoli',
-      'courgette',
-      'haricot',
-      'ratatouille',
-      'piperade',
-      'epinard',
-      'petits pois',
-      'lentille',
-      'pois chiche',
-      'courge',
-      'artichaut',
-      'poivron'
+      'macedoine'
     ],
+    illustration: 'salade-composee',
+    family: 'vegetarien'
+  },
+  {
+    keywords: ['salade verte', 'salade d endives', 'endive', 'laitue', 'roquette', 'salade'],
+    illustration: 'salade-verte',
+    family: 'vegetarien'
+  },
+  {
+    keywords: ['carottes rapees', 'celeri', 'betterave', 'radis', 'chou blanc'],
+    illustration: 'crudite-rapee',
+    family: 'vegetarien'
+  },
+  { keywords: ['tomate', 'piperade'], illustration: 'tomate', family: 'vegetarien' },
+  { keywords: ['concombre'], illustration: 'concombre', family: 'vegetarien' },
+  {
+    keywords: ['chou fleur', 'romanesco', 'brocoli', 'chou'],
+    illustration: 'chou',
+    family: 'vegetarien'
+  },
+  {
+    keywords: ['courgette', 'ratatouille', 'aubergine'],
+    illustration: 'courgette',
+    family: 'vegetarien'
+  },
+  { keywords: ['poireau'], illustration: 'poireau', family: 'vegetarien' },
+  {
+    keywords: ['lentille', 'pois chiche', 'haricot', 'flageolet', 'legumineuse', 'petits pois'],
+    illustration: 'legumineuse',
+    family: 'vegetarien'
+  },
+  { keywords: ['courge', 'potiron', 'butternut'], illustration: 'courge', family: 'vegetarien' },
+  {
+    keywords: ['legume', 'epinard', 'poivron', 'artichaut', 'navet', 'carotte'],
     illustration: 'legume',
     family: 'vegetarien'
   },

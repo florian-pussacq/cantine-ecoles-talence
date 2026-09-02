@@ -2,7 +2,6 @@
   import '$lib/design/tokens.css';
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
-  import Sprite from '$lib/illustrations/Sprite.svelte';
   import Enseigne from '$lib/ui/Enseigne.svelte';
   import EnTete from '$lib/ui/EnTete.svelte';
   import Onglets from '$lib/ui/Onglets.svelte';
@@ -48,8 +47,6 @@
 
   const entete = $derived(TITRES[page.url.pathname.replace(/(.)\/$/, '$1')]);
 </script>
-
-<Sprite />
 
 <div class="shell">
   <!--

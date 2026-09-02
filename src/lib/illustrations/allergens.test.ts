@@ -5,7 +5,7 @@ import { ALLERGEN_CODES } from '../filter/storage.js';
 import type { MonthMenu } from '../data/schema.js';
 import { ALLERGEN_ICONS, allergenIcon } from './allergens.js';
 
-const SPRITE = readFileSync('src/lib/illustrations/Sprite.svelte', 'utf8');
+const SPRITE = readFileSync('src/lib/illustrations/sprite.svg', 'utf8');
 const SYMBOLES = new Set([...SPRITE.matchAll(/<symbol id="([\w-]+)"/g)].map((m) => m[1]));
 
 describe('pictogrammes des allergènes', () => {

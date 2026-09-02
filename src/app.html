@@ -16,6 +16,21 @@
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">
+    <!--
+      La bibliothèque de formes, posée ici par le hook serveur
+      `src/hooks.server.ts` au moment du pré-rendu (design.md, D57).
+
+      Elle est ici, et non dans un composant, parce qu'elle n'a ni état ni
+      réactivité : la faire traverser Svelte la ferait payer une seconde fois
+      dans le bundle JavaScript. Elle est posée hors du conteneur de
+      l'application pour la même raison — l'hydratation n'a rien à y faire.
+
+      Attention en modifiant ce commentaire : les jetons de substitution de
+      SvelteKit sont remplacés partout dans ce fichier, y compris à l'intérieur
+      d'un commentaire. En nommer un ici injecterait le corps de l'application
+      au milieu de cette phrase, et le document ne s'en relèverait pas.
+    -->
+    <!--sprite-->
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>

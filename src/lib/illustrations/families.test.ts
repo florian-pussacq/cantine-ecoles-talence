@@ -42,12 +42,32 @@ describe('classify', () => {
     it('fait primer le mot-clé le plus long', () => {
       // « pomme » et « pomme de terre » correspondent tous deux.
       expect(classify('Écrasé de pommes de terre').illustration).toBe('feculent');
-      expect(classify('Compote de pommes').illustration).toBe('fruit');
+      // « compote » l'emporte sur « pomme » : une compote n'est pas un fruit
+      // entier, et la bibliothèque distingue désormais les deux (D59).
+      expect(classify('Compote de pommes').illustration).toBe('compote');
     });
 
     it('départage à longueur égale par l’ordre de la table', () => {
       // « tarte » et « pomme » font cinq lettres : le dessert l'emporte.
       expect(classify('Tarte aux pommes').illustration).toBe('gateau');
+    });
+
+    it('ne laisse plus « salade de fruits » tomber chez les légumes', () => {
+      /*
+        Le défaut que la règle du mot-clé le plus long se causait à elle-même :
+        « salade » compte six lettres, « fruit » cinq, et une salade de fruits
+        recevait donc une courgette. Le mot-clé complet la remet à l'endroit.
+      */
+      expect(classify('Salade de fruits').illustration).toBe('fruit-sirop');
+      expect(classify('Salade verte et croûtons').illustration).toBe('salade-verte');
+    });
+
+    it('ne sert plus une part de fromage devant un dessert lacté', () => {
+      // Le paquet « fromage » recevait les liégeois et les yaourts à boire.
+      expect(classify('Liégeois vanille').illustration).toBe('laitage-sucre');
+      expect(classify('Yaourt à boire').illustration).toBe('yaourt');
+      expect(classify('Fromage blanc aromatisé').illustration).toBe('yaourt');
+      expect(classify('Fromage').illustration).toBe('fromage');
     });
 
     it('donne toujours le même résultat pour un libellé donné', () => {

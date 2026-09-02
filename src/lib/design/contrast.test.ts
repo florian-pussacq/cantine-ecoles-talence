@@ -334,7 +334,15 @@ describe('la palette', () => {
  * exigence qui n'est vérifiée qu'à un seul endroit ne l'est pas.
  */
 describe("l'apparence ne dépend d'aucune préférence extérieure", () => {
-  const COMPOSANTS = globSync('src/**/*.svelte');
+  /*
+    Le sprite est joint aux composants, et il faut le dire.
+
+    Il était un `.svelte` et tombait donc dans ce filtre ; il est devenu un
+    `.svg` injecté dans la coque (D57), ce qui l'en a sorti sans bruit. Une
+    exigence qui cesse d'être vérifiée à un endroit n'est plus vérifiée du tout,
+    et c'est précisément le défaut que le bloc précédent existe pour rattraper.
+  */
+  const COMPOSANTS = [...globSync('src/**/*.svelte'), 'src/lib/illustrations/sprite.svg'];
 
   it('trouve bien des composants à contrôler', () => {
     expect(COMPOSANTS.length).toBeGreaterThan(5);
