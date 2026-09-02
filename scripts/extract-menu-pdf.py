@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
-"""Extrait un mois de menus depuis le PDF de la Ville de Talence.
+"""Extrait les menus depuis les PDF de la Ville de Talence.
 
-Le PDF est une grille A3 d'une page : cinq colonnes (lundi→vendredi), une bande
-par semaine, et dans chaque cellule une ligne par plat, le libellé à gauche et
-les codes allergènes alignés à droite. Le parser exploite cette géométrie plutôt
-que le texte à plat : les positions sont stables d'un mois à l'autre, l'ordre de
-lecture ne l'est pas.
+Le PDF est une grille A3 d'une page : cinq colonnes (lundi→vendredi), et dans
+chaque cellule une ligne par plat, le libellé à gauche et les codes allergènes
+alignés à droite. Le parser exploite cette géométrie plutôt que le texte à plat :
+les positions sont stables d'un document à l'autre, l'ordre de lecture ne l'est
+pas.
 
     python3 scripts/extract-menu-pdf.py sources/pdf/09-MENUS-WEB-SEPTEMBRE-2026.pdf \
         --url https://www.talence.fr/.../09-MENUS-WEB-SEPTEMBRE-2026.pdf \
         --merge static/data/2026-09.json \
         --out static/data/2026-09.json
+
+Deux gabarits, un seul cœur. Les mensuels empilent une bande par semaine, ancrée
+sur sa ligne de dates. Le menu de grève (--greve) superpose deux tableaux, repas
+chauds et repas froids, indexés par jour de semaine et sans aucune date. Ce qui
+change est l'ancrage ; l'attribution des rôles, le découpage des lignes et le
+nettoyage des libellés sont rigoureusement les mêmes.
+
+    python3 scripts/extract-menu-pdf.py sources/pdf/00-MENUS-WEB-GREVES.pdf --greve \
+        --url https://www.talence.fr/.../00-MENUS-WEB-GREVES.pdf \
+        --out static/data/greve.json
 
 Ce que le script ne fait pas, et qui reste à la main : le thème « ZOOM SUR » et
 sa note, éditoriaux et rattachés à un jour par jugement humain. --merge les
@@ -47,8 +57,18 @@ LINE_PITCH_RATIO = 0.046  # hauteur d'une ligne de plat
 LINE_TOLERANCE_RATIO = 0.36  # d'une ligne ; le code allergène retombe légèrement plus bas
 WEEK_ROWS = 7.9  # hauteur d'une bande hebdomadaire, en lignes, pied de page exclu
 
+# Le menu de grève n'a pas de dates sur lesquelles s'ancrer. Ses colonnes se
+# lisent sur les cinq bandes verticales de codes d'allergènes, qui marquent le
+# bord droit de chaque cellule au dixième de point ; les en-têtes LUNDI…VENDREDI
+# sont centrés et de largeurs inégales, ils diraient mal où passe la colonne.
+STRIKE_CELL_MARGIN_RATIO = 0.06  # débord à droite de la bande de codes
+STRIKE_ALLERGEN_MIN_RATIO = 0.10  # à gauche de la bande, la marge où plus aucun libellé ne va
+STRIKE_FIRST_ROW_RATIO = 0.10  # du titre de tableau jusqu'à la ligne du pain
+STRIKE_WEEKDAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi"]
+
 DATE_RE = re.compile(r"^(\d{2})/(\d{2})/(\d{4})$")
 ALLERGEN_RE = re.compile(r"^\d{1,2}(?:\+\d{1,2})*\+?$")
+STRIKE_BAND_RE = re.compile(r"^(CHAUDS|FROIDS)$")
 
 # --- vocabulaire du document ------------------------------------------------
 
@@ -185,11 +205,13 @@ def split_flags(label: str) -> tuple[str, list[str]]:
     return clean(" ".join(kept)), sorted(flags, key=order.index)
 
 
-def assign_slots(lines: list[Line], week_y: float, pitch: float) -> tuple[list[tuple[str, Line]], bool]:
+def assign_slots(
+    lines: list[Line], first_row_y: float, pitch: float
+) -> tuple[list[tuple[str, Line]], bool]:
     """Attribue un rôle à chaque ligne d'une cellule d'après sa hauteur.
 
     Les sept lignes d'un jour sont imprimées à des ordonnées fixes, partagées par
-    toute la semaine. Le rang d'une ligne dans cette bande est donc son rôle, et
+    tout le tableau. Le rang d'une ligne dans cette bande est donc son rôle, et
     une ligne absente est un rôle non servi — ce qu'aucun comptage ne dirait,
     puisque rien ne distingue un jour sans laitage d'un jour sans
     accompagnement."""
@@ -197,7 +219,7 @@ def assign_slots(lines: list[Line], week_y: float, pitch: float) -> tuple[list[t
     taken: set[str] = set()
     reliable = True
     for line in lines:
-        rank = round((line.y - week_y) / pitch)
+        rank = round((line.y - first_row_y) / pitch) + 1
         if not 1 <= rank <= len(SLOT_ROWS):
             reliable = False
             continue
@@ -235,7 +257,44 @@ def course(slot: str, line: Line) -> dict:
     }
 
 
-def extract_cells(page) -> dict[str, tuple[list[Line], float, float]]:
+def read_cell(words, left, right, top, bottom, allergen_min_x, tolerance) -> list[Line]:
+    """Découpe une cellule en lignes de plat.
+
+    Une ligne rassemble les mots à la même hauteur ; le code d'allergène, imprimé
+    un point plus bas que le libellé qu'il qualifie, tombe dans la tolérance.
+    C'est la seule lecture commune aux deux gabarits, et la seule qui ait à
+    connaître la façon dont le PDF pose ses mots."""
+    inside = [w for w in words if left <= w[0] < right and top <= w[1] < bottom]
+    inside.sort(key=lambda w: (w[1], w[0]))
+
+    lines: list[Line] = []
+    last_y = None
+    for wx, wy, _, _, text, *_ in inside:
+        if last_y is None or wy - last_y > tolerance:
+            lines.append(Line(y=wy))
+            last_y = wy
+        line = lines[-1]
+        if ALLERGEN_RE.match(text) and wx > allergen_min_x:
+            line.allergens += text
+        else:
+            line.label_words.append((wx, text))
+
+    # Un code allergène trop long déborde sur la ligne suivante : il s'y
+    # retrouve seul, et se recolle à celui qu'il continue.
+    merged: list[Line] = []
+    for line in lines:
+        if not line.label_words and line.allergens and merged:
+            merged[-1].allergens += line.allergens
+        elif line.label_words and not is_furniture(line.label):
+            merged.append(line)
+    return merged
+
+
+def extract_month_cells(page) -> dict[str, tuple[list[Line], float, float]]:
+    """Les cellules d'un PDF mensuel, indexées par date.
+
+    Une bande par semaine, ancrée sur sa ligne de dates ; les colonnes se lisent
+    sur les jetons de date eux-mêmes."""
     words = page.get_text("words")
     dates = [(w[0], w[1], w[4]) for w in words if DATE_RE.match(w[4])]
     if not dates:
@@ -248,7 +307,6 @@ def extract_cells(page) -> dict[str, tuple[list[Line], float, float]]:
     gaps = sorted(b - a for a, b in zip(columns, columns[1:]))
     width = gaps[len(gaps) // 2]
     left_margin = width * COLUMN_LEFT_RATIO
-    allergen_offset = width * ALLERGEN_MIN_RATIO
     pitch = width * LINE_PITCH_RATIO
     tolerance = pitch * LINE_TOLERANCE_RATIO
     bounds = [(x - left_margin, x + width - left_margin) for x in columns]
@@ -262,31 +320,63 @@ def extract_cells(page) -> dict[str, tuple[list[Line], float, float]]:
         if nxt:
             bottom = min(bottom, nxt[0] - pitch * 0.5)
 
-        inside = [w for w in words if left <= w[0] < right and top <= w[1] < bottom]
-        inside.sort(key=lambda w: (w[1], w[0]))
-
-        lines: list[Line] = []
-        last_y = None
-        for wx, wy, _, _, text, *_ in inside:
-            if last_y is None or wy - last_y > tolerance:
-                lines.append(Line(y=wy))
-                last_y = wy
-            line = lines[-1]
-            if ALLERGEN_RE.match(text) and wx > x + allergen_offset:
-                line.allergens += text
-            else:
-                line.label_words.append((wx, text))
-
-        # Un code allergène trop long déborde sur la ligne suivante : il s'y
-        # retrouve seul, et se recolle à celui qu'il continue.
-        merged: list[Line] = []
-        for line in lines:
-            if not line.label_words and line.allergens and merged:
-                merged[-1].allergens += line.allergens
-            elif line.label_words and not is_furniture(line.label):
-                merged.append(line)
+        lines = read_cell(
+            words, left, right, top, bottom, x + width * ALLERGEN_MIN_RATIO, tolerance
+        )
         d, m, yr = DATE_RE.match(raw).groups()
-        cells[f"{yr}-{m}-{d}"] = (merged, y, pitch)
+        # La ligne du pain est une ligne sous celle des dates.
+        cells[f"{yr}-{m}-{d}"] = (lines, y + pitch, pitch)
+    return cells
+
+
+def extract_strike_cells(page) -> list[tuple[str, str, list[Line], float, float]]:
+    """Les cellules du PDF de grève, indexées par variante et jour de semaine.
+
+    Deux tableaux superposés, chacun ancré sur son titre — REPAS CHAUDS, REPAS
+    FROIDS —, et cinq colonnes lues sur les bandes verticales de codes
+    d'allergènes."""
+    words = page.get_text("words")
+    bands = sorted(
+        (w[1], STRIKE_BAND_RE.match(w[4]).group(1)) for w in words if STRIKE_BAND_RE.match(w[4])
+    )
+    if len(bands) != 2:
+        sys.exit("Les deux tableaux « REPAS CHAUDS » et « REPAS FROIDS » n'ont pas été trouvés.")
+
+    # La légende des allergènes, en bas de page, aligne elle aussi des nombres.
+    # Les deux tableaux occupent des hauteurs égales : le second borne la zone.
+    floor = bands[0][0]
+    ceiling = bands[1][0] + (bands[1][0] - bands[0][0])
+    stripes = sorted(
+        {
+            round(w[0])
+            for w in words
+            if ALLERGEN_RE.match(w[4]) and floor <= w[1] < ceiling
+        }
+    )
+    if len(stripes) != len(STRIKE_WEEKDAYS):
+        sys.exit(f"{len(stripes)} colonnes de codes d'allergènes au lieu de 5 : gabarit inattendu.")
+
+    gaps = sorted(b - a for a, b in zip(stripes, stripes[1:]))
+    width = gaps[len(gaps) // 2]
+    margin = width * STRIKE_CELL_MARGIN_RATIO
+    pitch = width * LINE_PITCH_RATIO
+    tolerance = pitch * LINE_TOLERANCE_RATIO
+
+    cells: list[tuple[str, str, list[Line], float, float]] = []
+    for band_y, band in bands:
+        first_row = band_y + width * STRIKE_FIRST_ROW_RATIO
+        temperature = "chaud" if band == "CHAUDS" else "froid"
+        for stripe, weekday in zip(stripes, STRIKE_WEEKDAYS):
+            lines = read_cell(
+                words,
+                stripe - width + margin,
+                stripe + margin,
+                first_row - pitch * 0.5,
+                first_row + pitch * (len(SLOT_ROWS) - 0.5),
+                stripe - width * STRIKE_ALLERGEN_MIN_RATIO,
+                tolerance,
+            )
+            cells.append((temperature, weekday, lines, first_row, pitch))
     return cells
 
 
@@ -308,23 +398,83 @@ def serialize(document: dict) -> str:
     diff de menu illisible, alors que la ligne unique montre d'un coup d'œil ce
     qui a changé. Prettier reformate ensuite les lignes trop longues."""
     inline: dict[str, str] = {}
-    for day in document["days"]:
-        courses = []
-        for c in day["courses"]:
-            token = f"@@{len(inline)}@@"
-            inline[f'"{token}"'] = json.dumps(c, ensure_ascii=False)
-            courses.append(token)
-        day["courses"] = courses
+
+    def fold(node) -> None:
+        """Trouve les plats où qu'ils soient : les deux contrats ne les rangent
+        pas au même endroit, et la mise en forme ne dépend pas de l'arborescence."""
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key == "courses" and isinstance(value, list):
+                    folded = []
+                    for c in value:
+                        token = f"@@{len(inline)}@@"
+                        inline[f'"{token}"'] = json.dumps(c, ensure_ascii=False)
+                        folded.append(token)
+                    node[key] = folded
+                else:
+                    fold(value)
+        elif isinstance(node, list):
+            for item in node:
+                fold(item)
+
+    fold(document)
     text = json.dumps(document, ensure_ascii=False, indent=2)
     for token, course_json in inline.items():
         text = text.replace(token, course_json)
     return text + "\n"
 
 
+def write(document: dict, out: str | None, resume: str, warnings: list[str]) -> None:
+    text = serialize(document)
+    if out:
+        open(out, "w").write(text)
+        print(f"{out} : {resume}", file=sys.stderr)
+    else:
+        sys.stdout.write(text)
+    for w in warnings:
+        print(f"  ⚠ {w}", file=sys.stderr)
+
+
+def build_source(args, blob: bytes, label: str | None, updated_at: str | None) -> dict:
+    return {
+        "pdfUrl": args.url,
+        "pdfSha256": hashlib.sha256(blob).hexdigest(),
+        "updatedLabel": label,
+        "updatedAt": updated_at,
+        "fetchedAt": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "producerVersion": "extract-menu-pdf/1",
+    }
+
+
+def build_strike(page, args, blob: bytes) -> tuple[dict, list[str]]:
+    """Le menu de grève : deux variantes de cinq jours, sans aucune date."""
+    warnings: list[str] = []
+    services: dict[str, list[dict]] = {"chaud": [], "froid": []}
+    for temperature, weekday, lines, first_row, pitch in extract_strike_cells(page):
+        slots, reliable = assign_slots(lines, first_row, pitch)
+        if not reliable:
+            warnings.append(f"{temperature} {weekday} : {len(slots)} plats, structure inhabituelle")
+        services[temperature].append(
+            {"weekday": weekday, "courses": [course(slot, line) for slot, line in slots]}
+        )
+
+    label, updated_at = find_updated(page)
+    document = {
+        "schemaVersion": 1,
+        "source": build_source(args, blob, label, updated_at),
+        "allergenLegend": ALLERGEN_LEGEND,
+        "services": [
+            {"temperature": t, "days": services[t]} for t in ("chaud", "froid")
+        ],
+    }
+    return document, warnings
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("pdf")
     ap.add_argument("--url", required=True, help="URL officielle du PDF")
+    ap.add_argument("--greve", action="store_true", help="gabarit du menu de grève")
     ap.add_argument("--month", help="AAAA-MM ; déduit du mois majoritaire sinon")
     ap.add_argument("--merge", help="fichier existant dont reprendre thème et note")
     ap.add_argument("--out", help="fichier de sortie ; stdout sinon")
@@ -332,13 +482,19 @@ def main() -> None:
 
     blob = open(args.pdf, "rb").read()
     page = fitz.open(stream=blob, filetype="pdf")[0]
-    cells = extract_cells(page)
+
+    if args.greve:
+        document, warnings = build_strike(page, args, blob)
+        write(document, args.out, "10 menus, 5 jours × chaud et froid", warnings)
+        return
+
+    cells = extract_month_cells(page)
 
     days = []
     warnings = []
     for date in sorted(cells):
-        lines, week_y, pitch = cells[date]
-        slots, reliable = assign_slots(lines, week_y, pitch)
+        lines, first_row, pitch = cells[date]
+        slots, reliable = assign_slots(lines, first_row, pitch)
         day = {
             "date": date,
             "kind": "school",
@@ -384,26 +540,12 @@ def main() -> None:
     out = {
         "schemaVersion": 1,
         "month": month,
-        "source": {
-            "pdfUrl": args.url,
-            "pdfSha256": hashlib.sha256(blob).hexdigest(),
-            "updatedLabel": label,
-            "updatedAt": updated_at,
-            "fetchedAt": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "producerVersion": "extract-menu-pdf/1",
-        },
+        "source": build_source(args, blob, label, updated_at),
         "allergenLegend": ALLERGEN_LEGEND,
         "days": days,
     }
 
-    text = serialize(out)
-    if args.out:
-        open(args.out, "w").write(text)
-        print(f"{args.out} : {len(days)} jours, {days[0]['date']} → {days[-1]['date']}", file=sys.stderr)
-    else:
-        sys.stdout.write(text)
-    for w in warnings:
-        print(f"  ⚠ {w}", file=sys.stderr)
+    write(out, args.out, f"{len(days)} jours, {days[0]['date']} → {days[-1]['date']}", warnings)
 
 
 if __name__ == "__main__":

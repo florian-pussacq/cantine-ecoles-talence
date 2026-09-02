@@ -20,7 +20,7 @@ const OUTPUT = 'src/lib/data/schema.d.ts';
 const HEADER = `/**
  * FICHIER GÉNÉRÉ — ne pas modifier à la main.
  *
- * Source : schemas/month.schema.json, schemas/index.schema.json
+ * Source : schemas/month.schema.json, schemas/index.schema.json, schemas/greve.schema.json
  * Régénérer : npm run types
  */
 
@@ -35,7 +35,8 @@ const options = {
 
 const parts = await Promise.all([
   compileFromFile('schemas/month.schema.json', options),
-  compileFromFile('schemas/index.schema.json', options)
+  compileFromFile('schemas/index.schema.json', options),
+  compileFromFile('schemas/greve.schema.json', options)
 ]);
 
 const generated = HEADER + parts.join('\n');

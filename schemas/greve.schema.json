@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://menus-talence.invalid/schemas/greve.schema.json",
+  "title": "StrikeMenu",
+  "description": "Le menu de repli servi les jours de grève, publié sous /data/greve.json. C'est un second contrat, distinct de celui des mois, parce que le document source décrit autre chose : dix menus indexés par jour de la semaine et par variante de service, sans aucune date. Le forcer dans le contrat mensuel imposerait d'inventer des dates, c'est-à-dire de publier des données fausses. Ce fichier n'est jamais inscrit au manifeste : celui-ci ne référence que des mois, et un fichier absent du manifeste est structurellement hors d'atteinte de la résolution du jour — l'application ne pouvant pas savoir qu'il y a grève, elle ne doit jamais servir ce menu d'elle-même.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "source", "allergenLegend", "services"],
+  "properties": {
+    "schemaVersion": {
+      "description": "Version du contrat. Une application refuse un fichier dont la version dépasse celle qu'elle sait lire, plutôt que d'en interpréter une partie.",
+      "const": 1
+    },
+    "source": { "$ref": "#/$defs/StrikeSource" },
+    "allergenLegend": { "$ref": "#/$defs/StrikeAllergenLegend" },
+    "services": {
+      "description": "Les deux variantes de service. Le document dit « selon la possibilité, des repas chauds ou froids peuvent être proposés » : aucune des deux ne prime, et l'application ne peut pas deviner laquelle sera servie.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/StrikeService" }
+    }
+  },
+  "$defs": {
+    "StrikeSource": {
+      "title": "StrikeSource",
+      "description": "D'où viennent ces données et à quel point elles sont fraîches. Mêmes champs et mêmes obligations que la source d'un fichier mensuel : le CRPA impose d'indiquer la source et la date de dernière mise à jour d'une information publique réutilisée. Ce document n'ayant pas été réédité depuis 2023, l'empreinte est ici le seul moyen d'apprendre qu'il a changé.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pdfUrl", "pdfSha256", "fetchedAt"],
+      "properties": {
+        "pdfUrl": {
+          "description": "URL du PDF officiel dont ce fichier dérive.",
+          "type": "string",
+          "format": "uri"
+        },
+        "pdfSha256": {
+          "description": "Empreinte du PDF, qui permet de savoir si la source a changé sans la ré-analyser.",
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "updatedLabel": {
+          "description": "Le libellé de mise à jour tel qu'imprimé sur le document, repris mot pour mot. Nul quand le document n'en porte pas — c'est le cas de celui-ci.",
+          "type": ["string", "null"]
+        },
+        "updatedAt": {
+          "description": "La date de mise à jour extraite du document. Nulle si le document ne la donne pas — il ne faut jamais l'inventer.",
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "fetchedAt": {
+          "description": "Instant de récupération du document, en UTC.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "producerVersion": {
+          "description": "Version du producteur ayant écrit ce fichier. « manual » pour une saisie humaine, un numéro de version pour le parser.",
+          "type": "string"
+        }
+      }
+    },
+    "StrikeAllergenLegend": {
+      "title": "StrikeAllergenLegend",
+      "description": "Les quatorze allergènes réglementaires, du code numérique vers son libellé en clair. La légende est portée par le fichier plutôt que codée en dur : elle est imprimée sur le document source et peut y être formulée autrement.",
+      "type": "object",
+      "propertyNames": { "pattern": "^([1-9]|1[0-4])$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "StrikeService": {
+      "title": "StrikeService",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["temperature", "days"],
+      "properties": {
+        "temperature": {
+          "description": "Variante de service, telle que le document la nomme : « REPAS CHAUDS » ou « REPAS FROIDS ».",
+          "enum": ["chaud", "froid"]
+        },
+        "days": {
+          "description": "Les cinq jours ouvrés, dans l'ordre de la semaine. Contrairement aux fichiers mensuels, aucun jour ne peut manquer : le document est une grille pleine, et un jour absent serait une extraction ratée plutôt qu'un jour non servi.",
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/StrikeDay" }
+        }
+      }
+    },
+    "StrikeDay": {
+      "title": "StrikeDay",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weekday", "courses"],
+      "properties": {
+        "weekday": {
+          "description": "Jour de la semaine couvert. C'est la clé de ce contrat, là où le contrat mensuel a une date : le menu de grève se répète à l'identique tant que le document n'est pas réédité.",
+          "enum": ["lundi", "mardi", "mercredi", "jeudi", "vendredi"]
+        },
+        "courses": {
+          "description": "Les plats du jour, dans l'ordre de service.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/StrikeCourse" }
+        }
+      }
+    },
+    "StrikeCourse": {
+      "title": "StrikeCourse",
+      "description": "Un plat du menu de grève. Même forme qu'un plat de menu mensuel — la duplication est assumée : deux contrats indépendants qui versionnent séparément valent mieux qu'un contrat qui décrit deux documents.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "label", "allergens", "flags"],
+      "properties": {
+        "slot": {
+          "description": "Rôle du plat dans le repas. C'est une valeur sémantique et jamais une position : le document source comporte des cellules vides, ce qui interdit toute déduction par index.",
+          "enum": ["pain", "entree", "plat", "accompagnement", "laitage", "dessert", "gouter"]
+        },
+        "label": {
+          "description": "Libellé du plat, tel qu'imprimé, débarrassé de son suffixe d'allergènes. La borne de 80 caractères est un garde-fou : au-delà, c'est presque toujours le signe de deux cellules fusionnées par erreur.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "allergens": {
+          "description": "Codes des allergènes déclarés pour ce plat. Une liste vide signifie « aucun allergène déclaré sur le document », ce qui ne garantit pas l'absence de traces.",
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 14 },
+          "uniqueItems": true
+        },
+        "flags": {
+          "description": "Labels de qualité imprimés à côté du plat.",
+          "type": "array",
+          "items": {
+            "enum": [
+              "bio",
+              "label-rouge",
+              "vbf",
+              "vpf",
+              "vf",
+              "pf",
+              "msc",
+              "igp",
+              "bbc",
+              "ue-subventionne"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

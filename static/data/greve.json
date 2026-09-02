@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2023/10/00-MENUS-WEB-GREVES.pdf",
+    "pdfSha256": "2e51a293094965fbde158f1a7ea1b495e0655e4c859c0bedbf2c8cc2da8c0037",
+    "updatedLabel": null,
+    "updatedAt": null,
+    "fetchedAt": "2026-09-02T14:16:04Z",
+    "producerVersion": "extract-menu-pdf/1"
+  },
+  "allergenLegend": {
+    "1": "Gluten (blé, seigle, orge, avoine, épeautre, kamut)",
+    "2": "Crustacés",
+    "3": "Œufs",
+    "4": "Poisson",
+    "5": "Arachides",
+    "6": "Soja",
+    "7": "Lait",
+    "8": "Fruits à coques (amandes, noisettes, noix, pistaches)",
+    "9": "Céleri",
+    "10": "Moutarde",
+    "11": "Graines de sésame",
+    "12": "Anhydride sulfureux et sulfites",
+    "13": "Lupin",
+    "14": "Mollusques"
+  },
+  "services": [
+    {
+      "temperature": "chaud",
+      "days": [
+        {
+          "weekday": "lundi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Ravioli bolognaise", "allergens": [1, 9], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "mardi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers sans chair animale",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Ravioli aux légumes", "allergens": [1, 9], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "mercredi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Ravioli bolognaise", "allergens": [1, 9], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "jeudi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Ravioli bolognaise", "allergens": [1, 9], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "vendredi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+            { "slot": "entree", "label": "Tartinable au thon", "allergens": [4, 7], "flags": [] },
+            { "slot": "plat", "label": "Ravioli aux légumes", "allergens": [1, 9], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "temperature": "froid",
+      "days": [
+        {
+          "weekday": "lundi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Salade champêtre", "allergens": [], "flags": [] },
+            { "slot": "accompagnement", "label": "Chips", "allergens": [1], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "mardi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers sans chair animale",
+              "allergens": [10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Taboulé", "allergens": [1], "flags": [] },
+            { "slot": "accompagnement", "label": "Chips", "allergens": [1], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "mercredi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [], "flags": ["label-rouge"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Salade champêtre", "allergens": [], "flags": [] },
+            { "slot": "accompagnement", "label": "Chips", "allergens": [1], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "jeudi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
+            {
+              "slot": "entree",
+              "label": "Salade composée divers",
+              "allergens": [1, 10],
+              "flags": []
+            },
+            { "slot": "plat", "label": "Salade champêtre", "allergens": [], "flags": [] },
+            { "slot": "accompagnement", "label": "Chips", "allergens": [1], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        },
+        {
+          "weekday": "vendredi",
+          "courses": [
+            { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+            { "slot": "entree", "label": "Tartinable au thon", "allergens": [4, 7], "flags": [] },
+            { "slot": "plat", "label": "Salade niçoise", "allergens": [1, 4], "flags": [] },
+            { "slot": "accompagnement", "label": "Chips", "allergens": [1], "flags": [] },
+            { "slot": "dessert", "label": "Compote gourde", "allergens": [], "flags": [] },
+            { "slot": "gouter", "label": "Biscuit", "allergens": [1, 3, 7, 8], "flags": [] }
+          ]
+        }
+      ]
+    }
+  ]
+}

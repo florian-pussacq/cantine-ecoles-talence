@@ -24,6 +24,11 @@ import { argv, exit } from 'node:process';
 const DATA_DIR = 'static/data';
 const MONTH_FILE = /^(\d{4}-\d{2})\.json$/;
 
+// Publié comme les mensuels, mais hors du manifeste : celui-ci ne référence que
+// des mois, et le menu de grève n'en couvre aucun. Ce n'est pas un oubli, c'est
+// ce qui garantit que la résolution du jour ne peut pas le retenir.
+const STRIKE_FILE = 'greve.json';
+
 // Validés comme les fichiers publiés, mais absents du manifeste : ce sont des
 // données de test, elles ne doivent jamais atteindre un utilisateur.
 const FIXTURES = ['fixtures/edge-cases.json'];
@@ -33,8 +38,10 @@ addFormats.default(ajv);
 
 const monthSchema = JSON.parse(readFileSync('schemas/month.schema.json', 'utf8'));
 const indexSchema = JSON.parse(readFileSync('schemas/index.schema.json', 'utf8'));
+const strikeSchema = JSON.parse(readFileSync('schemas/greve.schema.json', 'utf8'));
 const validateMonth = ajv.compile(monthSchema);
 const validateIndex = ajv.compile(indexSchema);
+const validateStrike = ajv.compile(strikeSchema);
 
 /** @type {string[]} */
 const problems = [];
@@ -145,6 +152,56 @@ for (const file of files.sort()) {
   });
 }
 
+/**
+ * Le menu de grève ne se contrôle pas comme un mois : il n'a ni dates à ordonner
+ * ni jours non servis. Ce qu'on lui demande, c'est d'être une grille pleine —
+ * un document de repli auquel il manquerait un jour serait une extraction ratée,
+ * jamais une information.
+ *
+ * @param {string} file
+ * @param {import('../src/lib/data/schema.js').StrikeMenu} data
+ */
+function checkStrikeCoherence(file, data) {
+  const seen = new Set();
+
+  for (const service of data.services) {
+    if (seen.has(service.temperature)) fail(file, `variante « ${service.temperature} » en double`);
+    seen.add(service.temperature);
+
+    for (const day of service.days) {
+      const at = `${file}[${service.temperature}/${day.weekday}]`;
+
+      if (!day.courses.some((c) => c.slot === 'plat')) fail(at, 'aucun plat principal');
+
+      for (const course of day.courses) {
+        for (const code of course.allergens) {
+          if (!(String(code) in data.allergenLegend)) {
+            fail(at, `allergène ${code} de « ${course.label} » absent de la légende`);
+          }
+        }
+      }
+    }
+
+    const weekdays = new Set(service.days.map((d) => d.weekday));
+    if (weekdays.size !== service.days.length) {
+      fail(file, `jours de semaine répétés dans la variante « ${service.temperature} »`);
+    }
+  }
+
+  if (seen.size !== 2) fail(file, 'les deux variantes chaude et froide sont attendues');
+}
+
+const strikePath = join(DATA_DIR, STRIKE_FILE);
+/** @type {import('../src/lib/data/schema.js').StrikeMenu} */
+const strike = JSON.parse(readFileSync(strikePath, 'utf8'));
+if (validateStrike(strike)) {
+  checkStrikeCoherence(strikePath, strike);
+} else {
+  for (const err of validateStrike.errors ?? []) {
+    fail(strikePath, `${err.instancePath || '/'} ${err.message}`);
+  }
+}
+
 for (const path of FIXTURES) {
   /** @type {import('../src/lib/data/schema.js').MonthMenu} */
   const data = JSON.parse(readFileSync(path, 'utf8'));
@@ -173,7 +230,7 @@ if (argv.includes('--write-index')) {
     months
   };
   writeFileSync(indexPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  console.log(`Données : ${files.length} mois valide(s), ${indexPath} régénéré.`);
+  console.log(`Données : ${files.length} mois + le menu de grève valides, ${indexPath} régénéré.`);
 } else {
   /** @type {import('../src/lib/data/schema.js').MenuIndex} */
   const manifest = JSON.parse(readFileSync(indexPath, 'utf8'));
@@ -194,5 +251,5 @@ if (argv.includes('--write-index')) {
     );
     exit(1);
   }
-  console.log(`Données : ${files.length} mois valide(s), manifeste à jour.`);
+  console.log(`Données : ${files.length} mois + le menu de grève valides, manifeste à jour.`);
 }
