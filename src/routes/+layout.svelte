@@ -50,14 +50,12 @@
   const entete = $derived(TITRES[chemin]);
 
   /*
-    Les réglages ne sont pas un troisième onglet, et le choix Jour/Semaine n'a
-    rien à y faire : rien de ce qu'il propose ne s'y consulte. L'écran porte sa
-    propre commande de retour, dans son propre flux (`reglages/+page.svelte`) —
-    le même principe que ce que `Onglets.svelte` documente pour les autres
-    écrans hors onglets, mais nommé plutôt que délégué à une pilule qui n'a pas
-    à connaître le chemin du retour.
+    Le choix Jour/Semaine n'appartient qu'aux deux écrans de menu (D31). Sur
+    tout le reste — réglages, grève, mentions —, rien de ce qu'il propose ne
+    s'y consulte, et chaque écran porte sa propre commande de retour nommée,
+    dans son propre flux : voir `Onglets.svelte` pour ce que ce choix remplace.
   */
-  const montrerOnglets = $derived(chemin !== '/reglages');
+  const montrerOnglets = $derived(chemin === '/' || chemin === '/semaine');
 </script>
 
 <div class="shell">

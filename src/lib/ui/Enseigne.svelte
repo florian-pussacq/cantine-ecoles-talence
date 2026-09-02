@@ -17,21 +17,28 @@
    * glisser avec le jour. `EnTete` vit à l'intérieur du bloc animé depuis D30 ;
    * une enseigne qui rentrerait par la droite à chaque changement de jour
    * affirmerait que l'identité du lieu change avec la date.
+   *
+   * Le disque et le nom mènent au menu. C'est la convention du logo qui ramène
+   * à l'accueil, et elle vaut ici sur cinq écrans qui portent tous, depuis
+   * cette évolution, leur propre commande de retour — l'enseigne est celle qui
+   * ne dépend d'aucun contenu pour savoir où elle mène.
    */
+  import { resolve } from '$app/paths';
   import CommandeReglages from './CommandeReglages.svelte';
 </script>
 
 <div class="enseigne">
-  <!--
-    Le disque est une marque, pas une commande : il n'est ni cliquable ni
-    annoncé, et le nom qu'il accompagne est écrit à côté de lui. C'est la même
-    règle que pour les illustrations de plat, et c'est pourquoi il vit dans le
-    sprite plutôt que dans `Icone`, dont le contrat est l'inverse (D33).
-  -->
-  <span class="marque">
-    <svg width="22" height="22" aria-hidden="true" focusable="false"><use href="#marque" /></svg>
-  </span>
-  <span class="nom">Cantine des écoles de Talence</span>
+  <a class="identite" href={resolve('/')}>
+    <!--
+      Le disque n'est pas annoncé pour lui-même : c'est le même choix que pour
+      les illustrations de plat, où l'image ne redit pas ce que le texte dit
+      déjà (D33). Le nom accessible du lien vient donc du seul texte visible.
+    -->
+    <span class="marque" aria-hidden="true">
+      <svg width="22" height="22" focusable="false"><use href="#marque" /></svg>
+    </span>
+    <span class="nom">Cantine des écoles de Talence</span>
+  </a>
   <!--
     Un réglage d'application appartient à la ligne qui porte l'application, pas
     à l'en-tête d'un contenu daté (D36). La commande garde sa règle inchangée :
@@ -52,6 +59,17 @@
     align-items: center;
     gap: var(--space-2);
     padding-inline: var(--space-2);
+  }
+
+  .identite {
+    flex: 1;
+    min-width: 0;
+    min-height: var(--touch);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: inherit;
+    text-decoration: none;
   }
 
   .marque {

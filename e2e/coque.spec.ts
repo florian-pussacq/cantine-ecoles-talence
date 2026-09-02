@@ -23,6 +23,14 @@ function pied(page: Page) {
   return page.locator('.pied');
 }
 
+test('l’enseigne mène au menu depuis n’importe quel écran', async ({ page }) => {
+  for (const ecran of ['/semaine', '/reglages', '/greve', '/a-propos']) {
+    await page.goto(ecran);
+    await page.getByRole('link', { name: 'Cantine des écoles de Talence' }).click();
+    await expect(page).toHaveURL(/\/$/);
+  }
+});
+
 test('le pied est ancré au bas de la fenêtre', async ({ page }) => {
   await page.goto('/');
   const boite = await pied(page).boundingBox();
@@ -75,27 +83,21 @@ test('les onglets ne portent que des destinations de consultation', async ({ pag
   await expect(liens).toHaveText(['Jour', 'Semaine']);
 });
 
-test('sur un écran hors des onglets qui n’en porte pas de substitut, aucun segment n’est courant', async ({
+test('les onglets ne figurent que sur les deux écrans qu’ils choisissent entre', async ({
   page
 }) => {
-  // Sur la grève on sort en désignant où l'on va, et non par une flèche de
-  // retour dont la destination dépendrait de l'historique.
-  await page.goto('/greve');
-  await expect(onglets(page)).toBeVisible();
-  await expect(onglets(page).locator('a[aria-current="page"]')).toHaveCount(0);
-
-  await onglets(page).getByRole('link', { name: 'Jour' }).click();
-  await expect(page).toHaveURL(/\/$/);
+  for (const ecran of ['/reglages', '/greve', '/a-propos']) {
+    await page.goto(ecran);
+    await expect(onglets(page)).toHaveCount(0);
+  }
 });
 
-test('les réglages n’ont pas d’onglets, rien de ce qu’ils proposent ne s’y consulte', async ({
-  page
-}) => {
-  await page.goto('/reglages');
-  await expect(onglets(page)).toHaveCount(0);
-
-  await page.getByRole('button', { name: 'Retour au menu' }).click();
-  await expect(page).toHaveURL(/\/$/);
+test('un écran hors des onglets porte sa propre sortie, nommée', async ({ page }) => {
+  for (const ecran of ['/reglages', '/greve', '/a-propos']) {
+    await page.goto(ecran);
+    await page.getByRole('button', { name: 'Retour au menu' }).click();
+    await expect(page).toHaveURL(/\/$/);
+  }
 });
 
 test('le contenu réserve la hauteur du pied', async ({ page }) => {
@@ -174,12 +176,12 @@ test('la pastille n’occupe aucune place, donc l’hydratation ne déplace rien
         const b = document.querySelector(s)?.getBoundingClientRect();
         return b ? [Math.round(b.width), Math.round(b.height)] : null;
       };
-      const commande = document.querySelector('.enseigne a')?.getBoundingClientRect();
+      const commande = document.querySelector('.enseigne a.commande')?.getBoundingClientRect();
       return {
         titre: taille('h1'),
         enseigne: taille('.enseigne'),
         cartes: taille('.tray'),
-        commande: taille('.enseigne a'),
+        commande: taille('.enseigne a.commande'),
         /* La commande, comptée depuis le bord droit de l'enseigne. */
         commandeDepuisLaDroite:
           enseigne && commande ? Math.round(enseigne.right - commande.right) : null

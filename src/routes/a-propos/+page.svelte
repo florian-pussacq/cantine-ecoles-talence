@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
+  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import { formatDay } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
@@ -110,6 +113,13 @@
   </p>
   <p>Une fois installée, elle fonctionne sans réseau après une première ouverture connectée.</p>
 </section>
+
+<!--
+  Sans onglets Jour/Semaine sur cet écran (+layout.svelte), la sortie est cette
+  commande nommée plutôt que le pied fixe qui a mené ici : il porte le lien vers
+  cette page depuis les quatre écrans, pas le chemin pour en repartir.
+-->
+<CommandeRetour libelle="Retour au menu" action={() => goto(resolve('/'))} />
 
 <style>
   .disclaimer {

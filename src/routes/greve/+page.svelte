@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import PlatCarte from '$lib/menu/PlatCarte.svelte';
   import { formatDay } from '$lib/menu/labels.js';
+  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import type { PageData } from './$types.js';
 
@@ -106,6 +109,12 @@
     <p>Il reste consultable sur le site de la Ville, à la page des menus des écoles.</p>
   </div>
 {/if}
+
+<!--
+  Sans onglets Jour/Semaine sur cet écran (+layout.svelte), la sortie est cette
+  commande nommée, qu'il y ait un menu à montrer ou non.
+-->
+<CommandeRetour libelle="Retour au menu" action={() => goto(resolve('/'))} />
 
 <style>
   .panel {
