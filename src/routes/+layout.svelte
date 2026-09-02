@@ -46,7 +46,18 @@
     '/a-propos': { titre: "D'où viennent ces menus" }
   };
 
-  const entete = $derived(TITRES[page.url.pathname.replace(/(.)\/$/, '$1')]);
+  const chemin = $derived(page.url.pathname.replace(/(.)\/$/, '$1'));
+  const entete = $derived(TITRES[chemin]);
+
+  /*
+    Les réglages ne sont pas un troisième onglet, et le choix Jour/Semaine n'a
+    rien à y faire : rien de ce qu'il propose ne s'y consulte. L'écran porte sa
+    propre commande de retour, dans son propre flux (`reglages/+page.svelte`) —
+    le même principe que ce que `Onglets.svelte` documente pour les autres
+    écrans hors onglets, mais nommé plutôt que délégué à une pilule qui n'a pas
+    à connaître le chemin du retour.
+  */
+  const montrerOnglets = $derived(chemin !== '/reglages');
 </script>
 
 <div class="shell">
@@ -60,7 +71,9 @@
     <EnTete titre={entete.titre} baseline={entete.baseline} />
   {/if}
 
-  <Onglets />
+  {#if montrerOnglets}
+    <Onglets />
+  {/if}
 
   {#if appUpdate.available}
     <!--

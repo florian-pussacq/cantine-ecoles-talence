@@ -75,14 +75,26 @@ test('les onglets ne portent que des destinations de consultation', async ({ pag
   await expect(liens).toHaveText(['Jour', 'Semaine']);
 });
 
-test('sur un écran hors des onglets, aucun segment n’est courant', async ({ page }) => {
-  // On sort d'un réglage en désignant où l'on va, et non par une flèche de
+test('sur un écran hors des onglets qui n’en porte pas de substitut, aucun segment n’est courant', async ({
+  page
+}) => {
+  // Sur la grève on sort en désignant où l'on va, et non par une flèche de
   // retour dont la destination dépendrait de l'historique.
-  await page.goto('/reglages');
+  await page.goto('/greve');
   await expect(onglets(page)).toBeVisible();
   await expect(onglets(page).locator('a[aria-current="page"]')).toHaveCount(0);
 
   await onglets(page).getByRole('link', { name: 'Jour' }).click();
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test('les réglages n’ont pas d’onglets, rien de ce qu’ils proposent ne s’y consulte', async ({
+  page
+}) => {
+  await page.goto('/reglages');
+  await expect(onglets(page)).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Retour au menu' }).click();
   await expect(page).toHaveURL(/\/$/);
 });
 

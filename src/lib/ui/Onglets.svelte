@@ -13,10 +13,14 @@
    * **Il est en haut, et c'est un retour en arrière assumé.** `navigation-basse`
    * l'avait descendu à portée du pouce, pour une raison qui n'a pas cessé d'être
    * vraie ; elle cède à la fidélité d'une direction visuelle arrêtée sur
-   * maquette. Sur les écrans qui n'y figurent pas — les réglages, les mentions —
-   * aucun segment n'est courant et le choix sert de sortie : on le quitte en
-   * désignant où l'on va, plutôt que par une flèche dont la destination dépend
-   * de l'historique.
+   * maquette. Sur les écrans qui n'y figurent pas et qui n'en portent aucun
+   * substitut — la grève, les mentions — aucun segment n'est courant et le
+   * choix sert de sortie : on le quitte en désignant où l'on va, plutôt que par
+   * une flèche dont la destination dépend de l'historique.
+   *
+   * Les réglages font exception (`+layout.svelte`) : rien de ce que cette
+   * pilule propose ne s'y consulte, et l'écran porte sa propre commande de
+   * retour, nommée, dans son propre flux.
    *
    * Un onglet ne réinitialise pas le jour consulté, et ce n'est pas un oubli
    * (D48) : le partage du jour entre les deux écrans est ce qui fait qu'ouvrir
