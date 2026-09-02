@@ -160,7 +160,7 @@
     max-height: 88dvh;
     overflow-y: auto;
     margin: auto auto 0;
-    background: var(--sheet);
+    background: var(--carte);
     color: var(--ink);
     border-radius: 20px 20px 0 0;
 
@@ -256,7 +256,7 @@
     font-weight: 600;
     color: var(--ink);
     background: none;
-    border: 1px solid var(--edge);
+    border: 1px solid var(--bord);
     border-radius: 999px;
     cursor: pointer;
   }
@@ -280,7 +280,7 @@
     flex-direction: column;
     gap: var(--space-1);
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--edge);
+    border-bottom: 1px solid var(--bord);
   }
 
   .plats > li:last-child {
@@ -322,8 +322,8 @@
     align-items: center;
     gap: var(--space-1);
     background: var(--chip);
-    border: 1px solid var(--edge);
-    border-radius: var(--radius-cell);
+    border: 1px solid var(--bord);
+    border-radius: var(--radius-pastille);
     padding: 0.3rem 0.5rem 0.3rem 0.35rem;
     font-size: var(--text-sm);
     font-weight: 600;
@@ -378,7 +378,7 @@
   }
 
   footer {
-    border-top: 1px solid var(--edge);
+    border-top: 1px solid var(--bord);
     padding-top: var(--space-3);
     display: flex;
     flex-direction: column;
@@ -393,7 +393,7 @@
   }
 
   footer :global(a) {
-    color: var(--table);
+    color: var(--fond);
     font-weight: 700;
     min-height: var(--touch);
     display: inline-flex;

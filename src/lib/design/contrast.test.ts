@@ -6,11 +6,18 @@ import { describe, expect, it } from 'vitest';
  *
  * Ce test lit `tokens.css` : il attrape donc une teinte modifiée à la main, qui
  * est exactement la façon dont une palette accessible cesse de l'être. Deux
- * couleurs ont déjà été assombries à cause de lui (design.md, D15).
+ * couleurs ont déjà été assombries à cause de lui (design.md, D15), et les sept
+ * couleurs de rôle ont été calculées contre lui plutôt que choisies à l'œil
+ * (design.md, D50).
  *
  * Il ne lisait jusqu'ici que des jetons opaques. Or l'application peint aussi
  * des surfaces obtenues par mélange à l'opacité, et l'une d'elles ne tenait pas
  * son seuil depuis l'origine sans que rien puisse le voir (design.md, D27).
+ *
+ * La palette est passée au clair (D49). Ce qui a changé, ce n'est pas la
+ * discipline mais le fond sur lequel elle s'exerce : `--on-table` a disparu avec
+ * l'ardoise, et les transparences qui s'y posaient sont désormais des encres
+ * sombres sur des surfaces claires.
  */
 
 const CSS = readFileSync('src/lib/design/tokens.css', 'utf8');
@@ -29,6 +36,9 @@ function readTokens(): Record<string, string> {
 }
 
 const jetons = readTokens();
+
+/** Les sept rôles du service, dans l'ordre où l'écran les montre (D50). */
+const ROLES = ['entree', 'plat', 'accompagnement', 'laitage', 'dessert', 'pain', 'gouter'] as const;
 
 function canal(valeur: number): number {
   const s = valeur / 255;
@@ -79,22 +89,50 @@ export function compose(source: string, fond: string, alpha: number): string {
  * du seuil strict, y compris sur les compartiments colorés.
  */
 const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
-  { texte: 'ink', fond: 'tray', seuil: 4.5, quoi: 'texte sur le plateau' },
-  { texte: 'ink', fond: 'cell', seuil: 4.5, quoi: 'nom de plat dans une alvéole' },
-  { texte: 'ink', fond: 'cell-empty', seuil: 4.5, quoi: 'texte sur une alvéole vide' },
+  { texte: 'ink', fond: 'fond', seuil: 4.5, quoi: 'texte sur le fond de l’écran' },
+  { texte: 'ink', fond: 'carte', seuil: 4.5, quoi: 'nom de plat sur une carte' },
+  { texte: 'ink', fond: 'creux', seuil: 4.5, quoi: 'texte sur la carte d’un rôle absent' },
   { texte: 'ink', fond: 'chip', seuil: 4.5, quoi: 'pastille d’allergène' },
-  { texte: 'ink', fond: 'sheet', seuil: 4.5, quoi: 'feuille de détail' },
-  { texte: 'ink-muted', fond: 'tray', seuil: 4.5, quoi: 'libellé de rôle' },
-  { texte: 'ink-muted', fond: 'cell', seuil: 4.5, quoi: 'libellé de rôle en alvéole' },
-  { texte: 'ink-muted', fond: 'cell-empty', seuil: 4.5, quoi: 'rôle d’une alvéole vide' },
-  { texte: 'on-table', fond: 'table', seuil: 4.5, quoi: 'en-tête sur la table' },
+  { texte: 'ink-muted', fond: 'fond', seuil: 4.5, quoi: 'mention atténuée sur le fond' },
+  { texte: 'ink-muted', fond: 'carte', seuil: 4.5, quoi: 'mention atténuée sur une carte' },
+  { texte: 'ink-muted', fond: 'creux', seuil: 4.5, quoi: 'énoncé d’une absence' },
+  { texte: 'accent', fond: 'fond', seuil: 4.5, quoi: 'accent sur le fond' },
+  { texte: 'accent', fond: 'carte', seuil: 4.5, quoi: 'accent sur une carte' },
+  { texte: 'on-accent', fond: 'accent', seuil: 4.5, quoi: 'libellé de l’onglet courant' },
   { texte: 'warn-on', fond: 'warn', seuil: 4.5, quoi: 'bandeau d’avertissement' },
+  /*
+    Les sept rôles (D50). Chacun est vérifié trois fois, parce qu'un seul jeton
+    remplit trois emplois : l'aplat de la pastille, le glyphe blanc posé dessus,
+    et l'encre du libellé — laquelle se lit tantôt sur la carte, tantôt sur le
+    fond de l'écran. C'est cette triple exigence qui a fixé les valeurs, et non
+    la maquette : ses quatre teintes, plus pâles, n'en tenaient aucune.
+  */
+  ...ROLES.flatMap((role) => [
+    {
+      texte: `role-${role}`,
+      fond: 'carte',
+      seuil: 4.5,
+      quoi: `libellé du rôle ${role} sur une carte`
+    },
+    {
+      texte: `role-${role}`,
+      fond: 'fond',
+      seuil: 4.5,
+      quoi: `libellé du rôle ${role} sur le fond`
+    },
+    { texte: 'on-role', fond: `role-${role}`, seuil: 4.5, quoi: `glyphe de la pastille ${role}` }
+  ]),
+  /*
+    Les familles ne servent plus que l'écran de la semaine (D54), où aucun rôle
+    n'est à distinguer et où la couleur dit bien ce qui varie d'un jour à
+    l'autre. Elles restent donc mesurées, et sur les mêmes seuils.
+  */
   ...(['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const).flatMap((famille) => [
     {
       texte: `fam-${famille}-on`,
       fond: `fam-${famille}`,
       seuil: 4.5,
-      quoi: `texte sur le compartiment ${famille}`
+      quoi: `texte sur le disque ${famille}`
     },
     {
       texte: 'ink',
@@ -128,69 +166,20 @@ const TRANSPARENCES: {
   ou: string;
 }[] = [
   {
-    source: 'on-table',
-    fond: 'table',
-    alpha: 0.7,
-    seuil: 4.5,
-    quoi: 'lien « Source, mentions et vie privée »',
-    ou: '+layout.svelte, .about a'
-  },
-  {
-    source: 'on-table',
-    fond: 'table',
+    source: 'ink',
+    fond: 'fond',
     alpha: 0.72,
     seuil: 4.5,
-    quoi: 'pied de page du jour, source et date de mise à jour',
-    ou: '+page.svelte, footer'
+    quoi: 'mentions atténuées : nom de l’enseigne, situation du jour, pied de page',
+    ou: 'Enseigne.svelte .nom, EnTete.svelte .quand, +page.svelte footer'
   },
   {
-    source: 'on-table',
-    fond: 'table',
-    alpha: 0.8,
-    seuil: 4.5,
-    quoi: 'avis « menus non rafraîchis »',
-    ou: '+page.svelte, .notice.subtle'
-  },
-  {
-    source: 'on-table',
-    fond: 'table',
-    alpha: 0.72,
-    seuil: 4.5,
-    quoi: 'nom de l’application sur l’enseigne',
-    ou: 'Enseigne.svelte, .nom'
-  },
-  {
-    source: 'on-table',
-    fond: 'table',
-    alpha: 0.72,
-    seuil: 4.5,
-    quoi: 'mention qui situe la date',
-    ou: 'EnTete.svelte, .quand'
-  },
-  {
-    source: 'on-table',
-    fond: 'table',
-    alpha: 0.72,
-    seuil: 4.5,
-    quoi: 'indice « Allergènes de la journée » en pied d’ardoise',
-    ou: '+page.svelte, .indice'
-  },
-  {
-    source: 'on-table',
-    fond: 'table',
-    voile: { source: 'on-table', alpha: 0.12 },
-    alpha: 0.75,
-    seuil: 4.5,
-    quoi: 'libellé d’un onglet non courant, sur le fond translucide de la pilule',
-    ou: '+layout.svelte, .tabs a'
-  },
-  {
-    source: 'on-table',
-    fond: 'table',
-    alpha: 0.4,
+    source: 'ink',
+    fond: 'fond',
+    alpha: 0.55,
     seuil: 3,
-    quoi: 'bordure des boutons de jour et de semaine',
-    ou: '+page.svelte et semaine/+page.svelte, nav button'
+    quoi: 'bordure des boutons de jour, de semaine et de retour',
+    ou: '+page.svelte et semaine/+page.svelte nav button, EnTete.svelte .retour'
   }
 ];
 
@@ -215,6 +204,14 @@ const DECORATIFS: { alpha: number; quoi: string; pourquoi: string }[] = [
       'aplat sans rôle propre — ce qui doit se lire, c’est le libellé posé dessus, et il est mesuré'
   }
 ];
+
+/*
+  Le passage au clair a fait tomber une bordure sous son seuil sans rien casser
+  d'autre (D49). Sur l'ardoise, une encre claire à 40 % tenait 3:1 ; sur le fond
+  crème, la même proportion d'encre sombre n'en donne que 2,32. Elle est passée
+  à 55 %. C'est précisément le genre de régression qu'aucune relecture ne voit et
+  que ce fichier existe pour arrêter.
+*/
 
 describe('la palette', () => {
   for (const { texte, fond, seuil, quoi } of PAIRES) {
@@ -271,11 +268,11 @@ describe('les surfaces peintes par transparence', () => {
  */
 describe('couverture des transparences', () => {
   /*
-    Les écrans, et les composants partagés qui peignent eux aussi sur le fond de
-    la table. La liste ne comportait que les écrans, ce qui laissait une porte
-    ouverte : une transparence introduite dans un composant de `$lib/ui` n'aurait
-    été vue par personne. La barre de navigation et la commande de réglages y
-    vivent désormais, et c'est ce déplacement qui a montré le trou.
+    Les écrans, et les composants partagés qui peignent eux aussi sur le fond.
+    La liste ne comportait que les écrans, ce qui laissait une porte ouverte :
+    une transparence introduite dans un composant de `$lib/ui` n'aurait été vue
+    par personne. Les onglets et la commande de réglages y vivent désormais, et
+    c'est ce déplacement qui a montré le trou.
   */
   const FICHIERS = [
     'src/routes/+layout.svelte',
@@ -299,13 +296,13 @@ describe('couverture des transparences', () => {
     it(`${fichier} ne peint aucune transparence non déclarée`, () => {
       const source = readFileSync(fichier, 'utf8');
       const trouves = [
-        ...source.matchAll(/color-mix\(in srgb, var\(--on-table\) (\d+)%, transparent\)/g)
+        ...source.matchAll(/color-mix\(in srgb, var\(--ink\) (\d+)%, transparent\)/g)
       ].map((m) => Number(m[1]) / 100);
 
       const orphelins = [...new Set(trouves)].filter((alpha) => !connus.has(alpha));
       expect(
         orphelins,
-        'transparence peinte sur le fond de la table sans être ni mesurée ni tenue pour décorative'
+        'transparence peinte sur une surface claire sans être ni mesurée ni tenue pour décorative'
       ).toEqual([]);
     });
   }
@@ -320,8 +317,8 @@ describe('la volaille inverse sa polarité', () => {
   });
 });
 
-describe('le fond de la table', () => {
-  it('ne porte aucune trace de la palette sombre supprimée (D25)', () => {
+describe('la palette', () => {
+  it('ne porte aucune trace d’un thème, clair ou sombre (D25, D49)', () => {
     expect(CSS).not.toContain('--dark-');
     expect(CSS).not.toContain('data-theme');
     expect(CSS).not.toContain('prefers-color-scheme');

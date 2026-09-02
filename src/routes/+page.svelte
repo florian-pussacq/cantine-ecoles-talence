@@ -4,22 +4,13 @@
   import { parisDate, resolveDisplayDay, servedNeighbour } from '$lib/data/resolve.js';
   import DaySheet from '$lib/menu/DaySheet.svelte';
   import Tray from '$lib/menu/Tray.svelte';
-  import {
-    courseName,
-    flaggedAllergenNames,
-    formatDay,
-    slotLabel,
-    targetEyebrow,
-    targetReturnLabel
-  } from '$lib/menu/labels.js';
-  import Illustration from '$lib/illustrations/Illustration.svelte';
-  import AllergenChip from '$lib/menu/AllergenChip.svelte';
+  import PlatCarte from '$lib/menu/PlatCarte.svelte';
+  import { formatDay, targetEyebrow, targetReturnLabel } from '$lib/menu/labels.js';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
-  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
-  import { classify } from '$lib/illustrations/families.js';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
-  import EnTete from '$lib/ui/EnTete.svelte';
+  import RangNavigation from '$lib/ui/RangNavigation.svelte';
+  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -115,27 +106,36 @@
 <svelte:window on:keydown={onKeydown} />
 
 <!--
-  L'en-tête change sous la même horloge que le contenu qu'il annonce (D30).
+  Le rang de navigation porte la date, entre les deux commandes qui la changent
+  (design.md, D55, D56).
 
-  Il était rendu hors du bloc animé : la date passait au jour suivant pendant
-  que le plateau du jour précédent n'avait pas fini de sortir. Un seul
-  changement, deux temps — c'est ce défaut-là que l'œil enregistre, avant même
-  de pouvoir nommer une vitesse.
+  Elle vivait dans l'en-tête, qui est devenu un titre fixe. C'est ici qu'elle est
+  le plus utile : contre le geste qui la fait changer, et non trois blocs plus
+  haut. La maquette la place au même endroit, et dessine par-dessus un second
+  rang de flèches en bas de la liste — redondance de maquette, pas intention :
+  deux jeux de commandes pour une seule action, dont l'un sort du champ dès
+  qu'on défile.
 
-  Deux blocs distincts et non un seul englobant : le contenu du jour vit à
-  l'intérieur de la surface de geste, qui doit rester stable pendant qu'un doigt
-  la touche. Ils partagent la même clé, le même sens et la même durée, ce qui
-  est précisément ce que « une seule horloge » veut dire.
+  Les commandes sont hors de la clé, et leur contenu dedans (D30). Recréer les
+  boutons à chaque changement de jour perdrait le focus du clavier au milieu
+  d'une navigation au clavier — ce que `retour.spec.ts` vérifie. Ce qui se
+  renouvelle sous la même horloge que le contenu, c'est ce qu'ils encadrent.
 -->
-{#key date}
-  <div class="glisse" style:--sens={sens}>
-    <EnTete
-      quand={targetEyebrow(target)}
-      quoi={date === null ? 'Menus des écoles' : formatDay(date)}
-      {retour}
-    />
-  </div>
-{/key}
+<RangNavigation
+  libelle="Navigation entre les jours"
+  precedent={{
+    nom: previous === null ? 'Début des menus' : `Jour précédent : ${formatDay(previous)}`,
+    action: previous === null ? null : () => selection.set(previous, today)
+  }}
+  suivant={{
+    nom: next === null ? 'Fin des menus' : `Jour suivant : ${formatDay(next)}`,
+    action: next === null ? null : () => selection.set(next, today)
+  }}
+  cle={date}
+  {sens}
+  mention={targetEyebrow(target)}
+  principal={date === null ? 'Menus des écoles' : formatDay(date)}
+/>
 
 {#if data.status.kind === 'schema-too-new'}
   <p class="notice">
@@ -211,59 +211,42 @@
         </button>
 
         {#if snack}
-          {@const match = classify(snack.label)}
-          {@const nom = courseName(snack)}
-          {@const codes = allergenFilter.matching(snack)}
           <!--
-            Le goûter n'est pas sur l'ardoise du déjeuner : il n'est pas servi au
+            Le goûter n'est pas dans la liste du déjeuner : il n'est pas servi au
             même moment, et l'y ranger dirait le contraire. Il n'est pas non plus
             une note de bas de page — vingt libellés distincts sur trente-cinq
             jours, c'est la deuxième quantité d'information de l'écran (D29).
 
-            Il emprunte le vocabulaire de la vedette — un disque, une
-            illustration, un nom — parce que c'est le seul qui reste depuis que
-            les compartiments ont disparu (D41). Il mène à la même fiche que le
-            déjeuner : deux chemins d'ouverture, une seule journée à décrire.
+            Il prend la même carte que les rôles du déjeuner, et non plus un
+            vocabulaire à lui. Ce vocabulaire propre existait parce que la vedette
+            était le seul modèle disponible depuis la disparition des
+            compartiments (D41) ; la carte l'a remplacé, et le recopier ferait
+            vivre deux dessins de la même chose.
 
-            La séparation est portée par sa forme et son éloignement, et non par
-            un filet : l'écran en porte déjà un en pied de page, où il signifie
-            « fin du contenu », et un trait sépare deux choses de même nature.
+            Il mène à la même fiche que le déjeuner : deux chemins d'ouverture,
+            une seule journée à décrire. La séparation est portée par sa forme et
+            son éloignement, et non par un filet : un trait sépare deux choses de
+            même nature.
           -->
           <button type="button" class="snack" onclick={() => (ouverte = true)}>
-            <span class="snack-disc"><Illustration name={match.illustration} /></span>
-            <span class="snack-body">
-              <span class="snack-role">{slotLabel('gouter')}</span>
-              <span class="snack-name" class:unknown={nom.kind === 'undisclosed'}>
-                {nom.text}
-              </span>
-              {#if codes.length > 0}
-                <AllergenChip {codes} names={flaggedAllergenNames(snack, day.legend, codes)} />
-              {/if}
-            </span>
+            <PlatCarte slot="gouter" course={snack} {day} />
           </button>
         {/if}
       </div>
     {/key}
   </div>
 
-  <nav aria-label="Navigation entre les jours">
-    <button
-      type="button"
-      onclick={() => previous && selection.set(previous, today)}
-      disabled={previous === null}
-    >
-      <span aria-hidden="true">←</span>
-      {previous === null ? 'Début des menus' : formatDay(previous, { month: 'short' })}
-    </button>
-    <button
-      type="button"
-      onclick={() => next && selection.set(next, today)}
-      disabled={next === null}
-    >
-      {next === null ? 'Fin des menus' : formatDay(next, { month: 'short' })}
-      <span aria-hidden="true">→</span>
-    </button>
-  </nav>
+  <!--
+    La commande de retour a son rang propre, sous les cartes (D55).
+
+    D44 la logeait dans l'en-tête, à la place de la mention, avec une hauteur
+    réservée pour qu'un balayage ne déplace rien. La réservation n'a plus
+    d'objet : la commande apparaît en fin de flux, où son arrivée ne pousse
+    aucun contenu déjà lu.
+  -->
+  {#if retour}
+    <CommandeRetour libelle={retour.libelle} action={retour.action} />
+  {/if}
 
   <footer>
     <span>
@@ -288,9 +271,9 @@
 <style>
   .notice {
     margin: 0;
-    background: var(--tray);
+    background: var(--carte);
     color: var(--ink);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-3);
     font-size: var(--text-sm);
     line-height: 1.5;
@@ -298,7 +281,7 @@
 
   .notice.subtle {
     background: none;
-    color: var(--on-table);
+    color: var(--ink);
     opacity: 0.8;
     padding-inline: var(--space-2);
   }
@@ -307,7 +290,7 @@
     margin: 0;
     background: var(--warn);
     color: var(--warn-on);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -380,7 +363,7 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--on-table) 72%, transparent);
+    color: color-mix(in srgb, var(--ink) 72%, transparent);
   }
 
   .indice::after {
@@ -390,15 +373,15 @@
   }
 
   .cible:focus-visible {
-    outline: 3px solid var(--on-table);
+    outline: 3px solid var(--ink);
     outline-offset: 3px;
-    border-radius: var(--radius-tray);
+    border-radius: var(--radius-carte);
   }
 
   .theme {
-    background: var(--tray);
+    background: var(--carte);
     color: var(--ink);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-3);
   }
 
@@ -417,124 +400,31 @@
   }
 
   /*
-    Le goûter est un second objet, plus petit, posé plus loin sur la table.
+    Le goûter est un second objet, posé plus loin sur la table.
 
-    Il portait jusqu'ici deux cadres emboîtés — une surface claire, un
-    compartiment posé dessus — parce qu'il empruntait la construction des
-    compartiments du plateau. Ces compartiments n'existent plus, et le cadre
-    intérieur ne renvoyait donc plus à rien : il ne restait qu'une bordure de
-    plus à traverser du regard. Il emprunte désormais le vocabulaire de la
-    vedette, seul vocabulaire restant pour dire « ce qui est servi » (D41).
-
-    Ce qui le sépare du déjeuner est la distance : la coque espace déjà ses
+    Il ne porte plus de dessin propre : c'est une carte, comme les rôles du
+    déjeuner, et le bouton n'ajoute autour d'elle qu'une cible (D29, D50). Ce
+    qui le sépare du déjeuner est la distance : la coque espace déjà ses
     enfants, cette marge double l'intervalle, et la rupture se lit sans qu'aucun
-    trait ne soit ajouté (D29).
+    trait ne soit ajouté.
   */
   .snack {
     margin-top: var(--space-3);
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+    display: block;
     width: 100%;
-    padding: var(--space-3);
-    background: var(--tray);
+    padding: 0;
     border: 0;
-    border-radius: var(--radius-tray);
+    background: none;
     font: inherit;
-    color: var(--ink);
+    color: inherit;
     text-align: left;
     cursor: pointer;
   }
 
-  /* Le disque suit l'échelle des illustrations plutôt qu'une valeur fixe : un
-     seul palier de largeur les fait toutes grandir (D23). */
-  /* Le disque prend la teinte des alvéoles, faute de quoi il disparaîtrait :
-     il repose désormais directement sur la surface claire du goûter, et non
-     plus sur un compartiment qui l'en séparait. */
-  .snack-disc {
-    width: calc(var(--ill-cellule) * 1.5);
-    height: calc(var(--ill-cellule) * 1.5);
-    border-radius: 50%;
-    background: var(--cell);
-    display: grid;
-    place-items: center;
-    flex: none;
-  }
-
-  .snack :global(.illustration) {
-    width: var(--ill-cellule);
-    height: var(--ill-cellule);
-  }
-
-  .snack-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    align-items: flex-start;
-    min-width: 0;
-  }
-
-  .snack-role {
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--ink-muted);
-  }
-
-  .snack-name {
-    font-size: var(--text-lg);
-    font-weight: 700;
-    line-height: 1.2;
-    text-wrap: balance;
-  }
-
-  /* Voir Tray.svelte : un détail non publié s'écrit comme une mention, pas
-     comme un titre — et ne se confond pas avec une absence. */
-  .snack-name.unknown {
-    font-style: italic;
-    font-weight: 600;
-    font-size: var(--text-base);
-    color: var(--ink-muted);
-  }
-
-  /* Le liseré rentre dans la carte plutôt que d'en sortir : il vit désormais
-     dans une surface découpée horizontalement, et un décalage vers l'extérieur
-     serait rogné sur ses deux bords. Même choix que les compartiments. */
   .snack:focus-visible {
     outline: 3px solid var(--ink);
-    outline-offset: -3px;
-  }
-
-  nav {
-    display: flex;
-    gap: var(--space-2);
-  }
-
-  nav button {
-    flex: 1;
-    min-height: var(--touch);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-1);
-    font: inherit;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--on-table);
-    background: none;
-    /* 40 % et non 35 % : sur le fond de la table, le mélange à 35 % ne mesure
-       que 2,81:1 alors qu'une bordure délimitant une commande en demande 3
-       (WCAG 1.4.11). À 40 %, elle mesure 3,20:1 — vérifié par `contrast.test.ts`,
-       qui mesure désormais aussi les surfaces obtenues par opacité (D27). */
-    border: 1px solid color-mix(in srgb, var(--on-table) 40%, transparent);
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
-  nav button:disabled {
-    opacity: 0.45;
-    cursor: default;
+    outline-offset: 3px;
+    border-radius: var(--radius-carte);
   }
 
   footer {
@@ -542,14 +432,14 @@
     justify-content: space-between;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-2) 0;
-    border-top: 1px solid color-mix(in srgb, var(--on-table) 22%, transparent);
-    color: var(--on-table);
+    border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+    color: var(--ink);
     opacity: 0.72;
     font-size: var(--text-xs);
   }
 
   footer :global(a) {
-    color: var(--on-table);
+    color: var(--ink);
     font-weight: 700;
     opacity: 1;
     /* Cible tactile : un lien isolé doit être atteignable au pouce. */

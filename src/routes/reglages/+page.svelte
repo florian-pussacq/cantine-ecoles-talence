@@ -1,5 +1,4 @@
 <script lang="ts">
-  import EnTete from '$lib/ui/EnTete.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '$lib/filter/storage.js';
   import type { PageProps } from './$types.js';
@@ -29,8 +28,6 @@
 <svelte:head>
   <title>Allergènes à signaler — menus des écoles de Talence</title>
 </svelte:head>
-
-<EnTete quand="Réglages" quoi="Allergènes à signaler" />
 
 <div class="panel">
   <p class="intro">
@@ -83,9 +80,9 @@
 
 <style>
   .panel {
-    background: var(--tray);
+    background: var(--carte);
     color: var(--ink);
-    border-radius: var(--radius-tray);
+    border-radius: var(--radius-carte);
     padding: var(--space-4);
     display: flex;
     flex-direction: column;
@@ -103,7 +100,7 @@
     margin: 0;
     background: var(--warn);
     color: var(--warn-on);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -119,7 +116,7 @@
   }
 
   li + li {
-    border-top: 1px solid var(--edge);
+    border-top: 1px solid var(--bord);
   }
 
   label {
@@ -136,7 +133,7 @@
     width: 24px;
     height: 24px;
     flex: none;
-    accent-color: var(--table);
+    accent-color: var(--fond);
     cursor: pointer;
   }
 
@@ -150,7 +147,7 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-2);
-    border-top: 1px solid var(--edge);
+    border-top: 1px solid var(--bord);
     padding-top: var(--space-3);
     font-size: var(--text-sm);
     color: var(--ink-muted);
@@ -162,7 +159,7 @@
     font-weight: 600;
     color: var(--ink);
     background: none;
-    border: 1px solid var(--edge);
+    border: 1px solid var(--bord);
     border-radius: 999px;
     min-height: var(--touch);
     padding-inline: var(--space-3);

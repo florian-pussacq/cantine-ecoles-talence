@@ -1,21 +1,31 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Le retour au repère, et ce qui l'entoure (design.md, D44 à D47).
+ * Le retour au repère, et ce qui l'entoure (design.md, D44 à D47, D55).
  *
- * Deux choses se vérifient ici et nulle part ailleurs. Que la commande
+ * Deux choses se vérifient ici et nulle part ailleurs : que la commande
  * apparaisse et disparaisse au bon moment, ce qui dépend d'un état partagé entre
- * deux écrans. Et que l'en-tête ne grandisse pas en le faisant — la moitié du
- * travail de D44 est une réserve de place, et une réserve de place ne se teste
- * qu'en mesurant.
+ * deux écrans, et qu'elle reste atteignable au clavier.
  *
- * L'expiration du choix, elle, n'est pas ici : c'est une fonction pure, et elle
- * s'éprouve à l'unité dans `selection.svelte.test.ts` en passant deux jours
- * civils différents. Ce qui ne se teste qu'ici est ce qui dépend du navigateur.
+ * **Ce que ce fichier ne mesure plus.** D44 avait donné à la mention et à la
+ * commande un emplacement unique dans l'en-tête, avec une hauteur réservée pour
+ * qu'un balayage ne fasse pas sauter l'écran ; deux tests mesuraient cette
+ * réserve. La commande a pris un rang propre sous le contenu (D55) : elle
+ * apparaît en fin de flux, où son arrivée ne pousse aucun contenu déjà lu, et
+ * il n'y a plus de réserve à mesurer. Le risque que ces tests couvraient a
+ * disparu avec la construction qui le créait — ce n'est pas une garantie qu'on
+ * abandonne, c'est un défaut qui ne peut plus se produire.
+ *
+ * L'expiration du choix n'est pas ici : c'est une fonction pure, éprouvée dans
+ * `selection.svelte.test.ts`. Ce qui ne se teste qu'ici dépend du navigateur.
  */
 
-const enTete = (page: Page) => page.locator('header').filter({ has: page.locator('h1') });
-const retour = (page: Page) => enTete(page).getByRole('button');
+/** La commande vit sous le contenu, et elle est la seule de sa classe. */
+const retour = (page: Page) => page.locator('button.retour');
+
+/** Le jour affiché se lit dans le rang de navigation, non plus dans le titre. */
+const designation = (page: Page) => page.locator('nav .designation');
+
 const jourSuivant = (page: Page) =>
   page.locator('nav[aria-label="Navigation entre les jours"] button').nth(1);
 
@@ -28,18 +38,18 @@ test("aucune commande de retour tant que l'on n'a rien choisi", async ({ page })
 
 test('la commande apparaît dès que l’on s’écarte, et ramène en une action', async ({ page }) => {
   await page.goto('/');
-  const titre = page.getByRole('heading', { level: 1 });
-  const depart = await titre.textContent();
+  const jour = designation(page);
+  const depart = await jour.textContent();
 
   await jourSuivant(page).click();
   await jourSuivant(page).click();
-  await expect(titre).not.toHaveText(depart ?? '');
+  await expect(jour).not.toHaveText(depart ?? '');
 
   const commande = retour(page);
   await expect(commande).toBeVisible();
 
   await commande.click();
-  await expect(titre).toHaveText(depart ?? '');
+  await expect(jour).toHaveText(depart ?? '');
   // Elle disparaît en même temps qu'elle devient inutile.
   await expect(retour(page)).toHaveCount(0);
 });
@@ -51,7 +61,7 @@ test("la commande ne dit «·Aujourd'hui·» que si le repère est bien aujourd'
   // vacances scolaires réunis, ce n'est pas le cas environ quarante pour cent
   // des jours de l'année — d'où un libellé qui suit la cible (D45).
   await page.goto('/');
-  const mention = await enTete(page).locator('.quand').textContent();
+  const mention = await page.locator('nav .mention').textContent();
 
   await jourSuivant(page).click();
   const libelle = (await retour(page).textContent())?.trim() ?? '';
@@ -63,51 +73,46 @@ test("la commande ne dit «·Aujourd'hui·» que si le repère est bien aujourd'
   }
 });
 
-test("l'en-tête ne change pas de hauteur quand la commande prend la place", async ({ page }) => {
-  // Sans réserve, l'en-tête grandirait au premier balayage — le temps qu'une
-  // mention de treize pixels cède la place à une cible tactile — et rétrécirait
-  // au retour, faisant sauter tout l'écran deux fois (D44).
+test('la commande suit le contenu, elle ne le précède pas', async ({ page }) => {
+  // C'est ce qui remplace la réserve de hauteur de D44 : posée après les cartes,
+  // son apparition ne peut pas déplacer ce qu'on est en train de lire.
   await page.goto('/');
-  const avant = await enTete(page).boundingBox();
-
   await jourSuivant(page).click();
-  await expect(retour(page)).toBeVisible();
-  const pendant = await enTete(page).boundingBox();
 
-  expect(avant).not.toBeNull();
-  expect(pendant).not.toBeNull();
-  expect(Math.round(pendant?.height ?? 0)).toBe(Math.round(avant?.height ?? 0));
+  const commande = retour(page);
+  await expect(commande).toBeVisible();
+
+  const cartes = await page.locator('.tray').boundingBox();
+  const boite = await commande.boundingBox();
+  expect(boite!.y, 'la commande devrait suivre les cartes').toBeGreaterThanOrEqual(
+    cartes!.y + cartes!.height
+  );
 });
 
-test('la commande ne se replie pas, même sur la date la plus longue', async ({ page }) => {
-  // Le cas qui a fait déplacer la commande sur sa propre ligne.
-  //
-  // À côté du titre, « Mercredi 30 septembre » et « ↩ Prochain service »
-  // occupaient 383 pixels sur 388 : cinq pixels de marge, et un repli garanti
-  // sur toute plateforme dont la police est un peu plus large. Un bouton qui se
-  // replie fait passer l'en-tête de 47 à 78 pixels — précisément le saut que la
-  // réserve existe pour empêcher.
-  await page.goto('/');
-  const titre = page.getByRole('heading', { level: 1 });
+test('la commande ne se replie pas, même sur le libellé le plus long', async ({ page }) => {
+  /*
+    Le libellé le plus long est « Prochain service », et il ne s'obtient pas en
+    naviguant : il dépend du repère, donc de la date du jour. Un mercredi servi,
+    la commande dit « Aujourd'hui » et le cas long ne se produit jamais — la
+    version précédente de ce test l'attendait quand même, et ne le rencontrait
+    que les jours où la machine qui l'exécutait tombait juste.
 
-  for (let pas = 0; pas < 30; pas++) {
-    if ((await titre.textContent())?.includes('Mercredi 30 septembre')) break;
-    await jourSuivant(page).click();
-  }
-  await expect(titre).toContainText('Mercredi 30 septembre');
+    L'horloge est donc fixée à un samedi : le prochain jour servi est le lundi,
+    à deux jours de là, ce qui est exactement la condition sous laquelle
+    `targetReturnLabel` renvoie « Prochain service » (D45).
+  */
+  await page.clock.install({ time: new Date('2026-09-05T10:00:00+02:00') });
+  await page.goto('/');
+
+  await jourSuivant(page).click();
 
   const commande = retour(page);
   await expect(commande).toHaveText(/Prochain service/);
 
-  // Le titre sur sa ligne, la commande sur la sienne, et rien qui déborde.
-  const boiteTitre = await titre.boundingBox();
-  const boiteCommande = await commande.boundingBox();
-  expect(boiteCommande?.y ?? 0).toBeGreaterThanOrEqual(
-    (boiteTitre?.y ?? 0) + (boiteTitre?.height ?? 0)
-  );
-  expect((boiteCommande?.x ?? 0) + (boiteCommande?.width ?? 0)).toBeLessThanOrEqual(
-    page.viewportSize()?.width ?? 0
-  );
+  const boite = await commande.boundingBox();
+  // Une seule ligne, et rien qui déborde de la fenêtre.
+  expect(boite!.height, 'la commande s’est repliée sur deux lignes').toBeLessThan(72);
+  expect(boite!.x + boite!.width).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
 });
 
 test('la commande est atteignable au clavier', async ({ page }) => {
@@ -122,7 +127,7 @@ test('la commande est atteignable au clavier', async ({ page }) => {
   // heuristique plutôt que la commande.
   for (
     let pas = 0;
-    pas < 12 && !(await commande.evaluate((el) => el === document.activeElement));
+    pas < 20 && !(await commande.evaluate((el) => el === document.activeElement));
     pas++
   ) {
     await page.keyboard.press('Tab');
@@ -139,11 +144,11 @@ test("l'écran de la semaine offre le même retour", async ({ page }) => {
   await page.goto('/semaine');
   await expect(retour(page)).toHaveCount(0);
 
-  const titre = page.getByRole('heading', { level: 1 });
-  const depart = await titre.textContent();
+  const semaine = designation(page);
+  const depart = await semaine.textContent();
 
   await page.getByRole('button', { name: /Semaine suivante/ }).click();
-  await expect(titre).not.toHaveText(depart ?? '');
+  await expect(semaine).not.toHaveText(depart ?? '');
 
   const commande = retour(page);
   await expect(commande).toBeVisible();
@@ -151,10 +156,10 @@ test("l'écran de la semaine offre le même retour", async ({ page }) => {
   await expect(commande).not.toHaveText(/Demain/);
 
   await commande.click();
-  await expect(titre).toHaveText(depart ?? '');
+  await expect(semaine).toHaveText(depart ?? '');
 });
 
-test('le jour consulté se partage entre les deux écrans, et la barre ne le remet pas à zéro', async ({
+test('le jour consulté se partage entre les deux écrans, et les onglets ne le remettent pas à zéro', async ({
   page
 }) => {
   // D48 : le partage est délibéré — c'est lui qui fait qu'ouvrir un jour depuis
@@ -162,10 +167,10 @@ test('le jour consulté se partage entre les deux écrans, et la barre ne le rem
   // moitié du contrat pour réparer une gêne qui a sa propre commande.
   await page.goto('/');
   await jourSuivant(page).click();
-  const ecarte = await page.getByRole('heading', { level: 1 }).textContent();
+  const ecarte = await designation(page).textContent();
 
   await page.getByRole('link', { name: 'Semaine' }).click();
   await page.getByRole('link', { name: 'Jour' }).click();
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(ecarte ?? '');
+  await expect(designation(page)).toHaveText(ecarte ?? '');
 });

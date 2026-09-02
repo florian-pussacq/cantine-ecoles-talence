@@ -7,8 +7,10 @@
    * pas la surface de ce qui varie tous les jours. Petit corps, teinte atténuée,
    * la ligne la plus haute de l'écran — une mention, pas un titre.
    *
-   * Ce n'est délibérément pas un titre de premier niveau. Le `h1` reste la date,
-   * qui est ce que l'écran montre et le repère principal d'un lecteur d'écran.
+   * Ce n'est délibérément pas un titre de premier niveau. Le `h1` est le titre
+   * de l'écran, posé juste en dessous par `EnTete` — sur les écrans de menu,
+   * « Menu de la cantine » (D55). Faire de l'enseigne le titre donnerait à un
+   * lecteur d'écran le nom du lieu là où il attend le nom de la page.
    *
    * Elle vit dans la coque et non dans `EnTete` pour deux raisons qui vont dans
    * le même sens : elle est commune aux quatre écrans, et elle ne doit pas
@@ -20,6 +22,15 @@
 </script>
 
 <div class="enseigne">
+  <!--
+    Le disque est une marque, pas une commande : il n'est ni cliquable ni
+    annoncé, et le nom qu'il accompagne est écrit à côté de lui. C'est la même
+    règle que pour les illustrations de plat, et c'est pourquoi il vit dans le
+    sprite plutôt que dans `Icone`, dont le contrat est l'inverse (D33).
+  -->
+  <span class="marque">
+    <svg width="22" height="22" aria-hidden="true" focusable="false"><use href="#marque" /></svg>
+  </span>
   <span class="nom">Cantine des écoles de Talence</span>
   <!--
     Un réglage d'application appartient à la ligne qui porte l'application, pas
@@ -43,6 +54,17 @@
     padding-inline: var(--space-2);
   }
 
+  .marque {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    display: grid;
+    place-items: center;
+  }
+
   /*
     La teinte est peinte par mélange plutôt que par `opacity` : le contrôle de
     couverture de `contrast.test.ts` ne sait lire que cette forme-là, et une
@@ -54,6 +76,6 @@
     font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.01em;
-    color: color-mix(in srgb, var(--on-table) 72%, transparent);
+    color: color-mix(in srgb, var(--ink) 72%, transparent);
   }
 </style>

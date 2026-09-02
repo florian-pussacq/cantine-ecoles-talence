@@ -9,7 +9,7 @@ test('le menu reste consultable après la perte du réseau', async ({ page, cont
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
-  const menu = await page.getByRole('heading', { level: 1 }).textContent();
+  const menu = await page.locator('nav .designation').textContent();
 
   // Attendre que le service worker contrôle la page, sans quoi le hors-ligne
   // testerait seulement le cache HTTP du navigateur.
@@ -25,7 +25,7 @@ test('le menu reste consultable après la perte du réseau', async ({ page, cont
   await context.setOffline(true);
   await page.reload();
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(menu ?? '');
+  await expect(page.locator('nav .designation')).toHaveText(menu ?? '');
   await expect(page.getByText('Une première connexion est nécessaire')).toHaveCount(0);
 });
 

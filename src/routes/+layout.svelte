@@ -4,6 +4,8 @@
   import { resolve } from '$app/paths';
   import Sprite from '$lib/illustrations/Sprite.svelte';
   import Enseigne from '$lib/ui/Enseigne.svelte';
+  import EnTete from '$lib/ui/EnTete.svelte';
+  import Onglets from '$lib/ui/Onglets.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { appUpdate } from '$lib/pwa/update.svelte.js';
@@ -23,29 +25,28 @@
   horloge.suivre();
 
   /*
-    La barre ne porte que ce qui se consulte chaque matin (design.md, D31).
+    Le titre de chaque écran vit ici, et non dans l'écran qu'il nomme.
 
-    Les allergènes en sont sortis : c'est un réglage, coché une fois à
-    l'installation, et lui donner un tiers de la barre revenait à le mettre sur
-    le même plan que les deux vues du menu. L'argument avait déjà servi contre
-    le thème (D22) et contre « À propos » ; il n'avait simplement jamais été
-    retourné contre eux. Ils s'atteignent désormais par la commande d'en-tête.
-  */
-  /*
-    Un onglet ne réinitialise pas le jour consulté, et ce n'est pas un oubli
-    (design.md, D48).
+    C'est un couplage assumé — la coque connaît le nom des quatre écrans — et il
+    achète deux choses qu'aucun autre découpage ne donnait. D'abord la place : le
+    titre est toujours entre l'enseigne et les onglets, alors qu'un titre rendu
+    par la page passait sous les onglets sur deux écrans et au-dessus sur les
+    deux autres. Ensuite l'unicité du titre de premier niveau, qui cesse d'être
+    une consigne à respecter dans quatre fichiers pour devenir une propriété de
+    la structure : il n'existe qu'un seul endroit qui puisse en produire un.
 
-    Depuis un jour éloigné, passer par Semaine puis revenir sur Jour ramène au
-    jour éloigné — ce qui a l'air d'un défaut. Le partage du jour consulté entre
-    les deux écrans est pourtant délibéré : c'est lui qui fait qu'ouvrir un jour
-    depuis la semaine ouvre *ce* jour. Un onglet qui réinitialiserait casserait
-    la moitié du contrat pour réparer une gêne, et cette gêne a sa commande,
-    visible et nommée, dans l'en-tête (D44).
+    « Menu de la cantine » couvre les deux écrans de menu parce qu'il ne dépend
+    ni du jour ni de la vue. Ce qui varie — la date, la période — est descendu
+    dans le rang de navigation, entre les commandes qui le font varier (D55).
   */
-  const tabs = [
-    { path: '/', label: 'Jour' },
-    { path: '/semaine', label: 'Semaine' }
-  ] as const;
+  const TITRES: Record<string, { titre: string; baseline?: string }> = {
+    '/': { titre: 'Menu de la cantine', baseline: 'Bon appétit !' },
+    '/semaine': { titre: 'Menu de la cantine', baseline: 'Bon appétit !' },
+    '/reglages': { titre: 'Allergènes à signaler' },
+    '/a-propos': { titre: "D'où viennent ces menus" }
+  };
+
+  const entete = $derived(TITRES[page.url.pathname.replace(/(.)\/$/, '$1')]);
 </script>
 
 <Sprite />
@@ -56,6 +57,12 @@
     tout bloc animé : le nom du lieu ne change pas avec le jour (D35).
   -->
   <Enseigne />
+
+  {#if entete}
+    <EnTete titre={entete.titre} baseline={entete.baseline} />
+  {/if}
+
+  <Onglets />
 
   {#if appUpdate.available}
     <!--
@@ -69,43 +76,37 @@
   {/if}
 
   {@render children()}
-
-  <!--
-    « À propos » n'est pas un onglet : on le consulte une fois, pas tous les
-    matins. Un quatrième onglet volerait de la place à ce qu'on ouvre chaque jour.
-  -->
-  <footer class="about">
-    <a href={resolve('/a-propos')}>Source, mentions et vie privée</a>
-  </footer>
 </div>
 
 <!--
-  La barre est ancrée au bas de la fenêtre, à portée du pouce (D31).
+  Le pied est ancré au bas de la fenêtre (design.md, D52).
 
-  Elle est hors de la coque parce qu'elle n'appartient pas au flux du contenu :
-  celui-ci lui réserve sa hauteur, elle ne la lui prend pas. Sur les écrans qui
-  n'y figurent pas — les réglages, les mentions — aucun segment n'est courant et
-  la barre sert de sortie : on la quitte en désignant où l'on va, plutôt que par
-  une flèche de retour dont la destination dépend de l'historique.
+  Il est hors de la coque parce qu'il n'appartient pas au flux du contenu :
+  celui-ci lui réserve sa hauteur, il ne la lui prend pas.
+
+  Il ne porte que ce qui ne varie pas d'un écran à l'autre. La date de mise à
+  jour des données et le lien vers le document officiel sont restés dans le flux
+  de l'écran qu'ils qualifient : un pied fixe qui les porterait deviendrait un
+  second en-tête, et affirmerait sur l'écran des réglages une fraîcheur qui ne
+  concerne que les menus.
+
+  « À propos » n'est pas un onglet : on le consulte une fois, pas tous les
+  matins. Il a ici la place qui lui revient — atteignable partout, jamais au
+  premier plan.
 -->
-<nav class="barre" aria-label="Écrans">
-  <span class="tabs">
-    {#each tabs as tab (tab.path)}
-      {@const current = page.url.pathname.replace(/\/$/, '') === tab.path.replace(/\/$/, '')}
-      <a href={resolve(tab.path)} aria-current={current ? 'page' : undefined}>{tab.label}</a>
-    {/each}
-  </span>
-</nav>
+<footer class="pied">
+  <a href={resolve('/a-propos')}>Source, mentions et vie privée</a>
+</footer>
 
 <style>
   .shell {
     max-width: var(--shell);
     margin-inline: auto;
     min-height: 100dvh;
-    /* Le contenu réserve la barre *et* l'encart système sous elle : réserver la
-       seule hauteur de la barre ferait passer le pied de page dessous sur les
-       appareils à indicateur d'accueil, et nulle part ailleurs (D34). */
-    padding: var(--space-3) var(--space-3) calc(var(--space-5) + var(--barre-reservee));
+    /* Le contenu réserve le pied *et* l'encart système sous lui : réserver la
+       seule hauteur du pied ferait passer la dernière carte dessous sur les
+       appareils à indicateur d'accueil, et nulle part ailleurs (D34, D52). */
+    padding: var(--space-3) var(--space-3) calc(var(--space-5) + var(--pied-reserve));
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
@@ -125,69 +126,37 @@
   }
 
   /*
-    La barre reste bornée à la colonne de contenu, et ne s'étire pas sur toute
-    la fenêtre : une barre de 1 400 pixels serait une seconde mise en page qui
-    ne dit pas son nom, alors que D23 n'en admet qu'une. Le pouce n'est de toute
-    façon pas le sujet sur un écran de bureau.
+    Le pied reste borné à la colonne de contenu et ne s'étire pas sur toute la
+    fenêtre : un pied de 1 400 pixels serait une seconde mise en page qui ne dit
+    pas son nom, alors que D23 n'en admet qu'une.
 
-    Son fond est opaque : le contenu défile derrière elle, et un fond translucide
-    laisserait passer le texte qui glisse dessous.
+    Son fond est opaque : le contenu défile derrière lui, et un fond translucide
+    laisserait passer le texte qui glisse dessous. Le filet dit où finit le
+    contenu, maintenant que le défilement est la règle et non l'exception (D53).
   */
-  .barre {
+  .pied {
     position: fixed;
     inset-inline: 0;
     bottom: 0;
     z-index: 1;
     margin-inline: auto;
     max-width: var(--shell);
-    min-height: var(--barre-reservee);
+    min-height: var(--pied-reserve);
     display: flex;
-    align-items: flex-start;
-    /* Le rembourrage bas porte l'encart système en plus du sien : c'est ce qui
-       empêche la moitié basse de la barre de passer sous l'indicateur d'accueil
-       (D34). */
-    padding: 3px var(--space-3) calc(3px + var(--encart-bas));
-    background: var(--table);
-  }
-
-  /* La pilule garde la borne posée en 9.3 de `coque-lisible` — elle ne s'étire
-     pas sur toute la largeur — mais se centre désormais dans la barre : calée à
-     gauche en haut de l'écran, elle s'alignait sur le contenu ; posée en bas et
-     bornée, elle laissait un vide asymétrique à sa droite. */
-  .tabs {
-    display: flex;
-    flex: 1;
-    margin-inline: auto;
-    max-width: 360px;
-    gap: var(--space-1);
-    padding: 3px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--on-table) 12%, transparent);
-  }
-
-  .tabs a {
-    flex: 1;
-    min-height: var(--touch);
-    display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--on-table);
-    text-decoration: none;
-    opacity: 0.75;
+    /* Le rembourrage bas porte l'encart système en plus du sien : c'est ce qui
+       empêche la moitié basse du pied de passer sous l'indicateur d'accueil
+       (D34). */
+    padding: 0 var(--space-3) var(--encart-bas);
+    background: var(--fond);
+    border-top: 1px solid var(--bord);
   }
 
-  .about {
-    margin-top: auto;
-    padding-top: var(--space-4);
-    text-align: center;
-  }
-
-  .about a {
-    color: var(--on-table);
-    opacity: 0.7;
+  /* La cible tactile fait 44 pixels comme toutes les autres : le pied est
+     dimensionné autour d'elle, et non l'inverse. */
+  .pied a {
+    color: var(--ink-muted);
     font-size: var(--text-xs);
     min-height: var(--touch);
     display: inline-flex;
@@ -203,7 +172,7 @@
     gap: var(--space-2);
     background: var(--warn);
     color: var(--warn-on);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -215,18 +184,9 @@
     color: var(--warn-on);
     background: none;
     border: 2px solid currentcolor;
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     min-height: var(--touch);
     padding-inline: var(--space-3);
     cursor: pointer;
-  }
-
-  /* L'onglet courant est signalé par un fond plein autant que par aria-current :
-     ni la couleur ni l'opacité ne portent seules l'information. */
-  .tabs a[aria-current='page'] {
-    background: var(--tray);
-    color: var(--ink);
-    opacity: 1;
-    font-weight: 700;
   }
 </style>

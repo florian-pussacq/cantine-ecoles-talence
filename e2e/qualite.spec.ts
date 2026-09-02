@@ -64,13 +64,13 @@ for (const ecran of ECRANS) {
 
 test('la navigation au clavier atteint et actionne les commandes de jour', async ({ page }) => {
   await page.goto('/');
-  const titreInitial = await page.getByRole('heading', { level: 1 }).textContent();
+  const titreInitial = await page.locator('nav .designation').textContent();
 
   // Les flèches déplacent d'un jour servi à l'autre.
   await page.keyboard.press('ArrowRight');
-  await expect(page.getByRole('heading', { level: 1 })).not.toHaveText(titreInitial ?? '');
+  await expect(page.locator('nav .designation')).not.toHaveText(titreInitial ?? '');
   await page.keyboard.press('ArrowLeft');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(titreInitial ?? '');
+  await expect(page.locator('nav .designation')).toHaveText(titreInitial ?? '');
 
   // La tabulation atteint les commandes, et le focus est visible.
   const suivant = page.locator('nav[aria-label="Navigation entre les jours"] button').last();
@@ -80,7 +80,7 @@ test('la navigation au clavier atteint et actionne les commandes de jour', async
   expect(contour).not.toBe('none');
 
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { level: 1 })).not.toHaveText(titreInitial ?? '');
+  await expect(page.locator('nav .designation')).not.toHaveText(titreInitial ?? '');
 });
 
 test("l'onglet courant est annoncé aux technologies d'assistance", async ({ page }) => {

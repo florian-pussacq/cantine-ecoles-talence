@@ -52,7 +52,7 @@ async function surface(page: Page, selecteur: string) {
 test.describe('écran du jour', () => {
   test('le balayage horizontal change de jour', async ({ page }) => {
     await page.goto('/');
-    const titre = page.getByRole('heading', { level: 1 });
+    const titre = page.locator('nav .designation');
     const initial = await titre.textContent();
 
     const { boite, y } = await surface(page, '.balayage');
@@ -94,7 +94,7 @@ test.describe('écran du jour', () => {
 
   test('un défilement vertical ne change pas de jour', async ({ page }) => {
     await page.goto('/');
-    const titre = page.getByRole('heading', { level: 1 });
+    const titre = page.locator('nav .designation');
     const initial = await titre.textContent();
     const { boite } = await surface(page, '.balayage');
 
@@ -110,7 +110,7 @@ test.describe('écran du jour', () => {
 test.describe('écran de la semaine', () => {
   test('le balayage horizontal change de semaine', async ({ page }) => {
     await page.goto('/semaine');
-    const titre = page.getByRole('heading', { level: 1 });
+    const titre = page.locator('nav .designation');
     const initial = await titre.textContent();
 
     const { boite, y } = await surface(page, '.balayage');
@@ -146,7 +146,7 @@ test.describe('écran de la semaine', () => {
 
   test('les commandes de semaine restent le chemin principal', async ({ page }) => {
     await page.goto('/semaine');
-    const titre = page.getByRole('heading', { level: 1 });
+    const titre = page.locator('nav .designation');
     const initial = await titre.textContent();
 
     await page.getByRole('button', { name: /Semaine suivante/ }).click();

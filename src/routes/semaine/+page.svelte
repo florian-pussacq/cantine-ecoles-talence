@@ -9,7 +9,8 @@
   import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
-  import EnTete from '$lib/ui/EnTete.svelte';
+  import RangNavigation from '$lib/ui/RangNavigation.svelte';
+  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import AllergenChip from '$lib/menu/AllergenChip.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import {
@@ -133,16 +134,21 @@
   <title>La semaine — menus des écoles de Talence</title>
 </svelte:head>
 
-<!-- L'en-tête change sous la même horloge que la semaine qu'il annonce (D30). -->
-{#key first}
-  <div class="glisse" style:--sens={sens}>
-    <EnTete
-      quand={days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine affichée'}
-      quoi={`${formatDay(first, { weekday: undefined })} au ${formatDay(last, { weekday: undefined })}`}
-      {retour}
-    />
-  </div>
-{/key}
+<!--
+  Le rang de navigation porte la période, entre les deux commandes qui la
+  changent — même disposition que l'écran du jour, pour la même raison (D55,
+  D56). Les commandes restent hors de la clé : les recréer perdrait le focus du
+  clavier au milieu d'une navigation au clavier.
+-->
+<RangNavigation
+  libelle="Navigation entre les semaines"
+  precedent={{ nom: 'Semaine précédente', action: () => selection.set(shift(first, -7), today) }}
+  suivant={{ nom: 'Semaine suivante', action: () => selection.set(shift(first, 7), today) }}
+  cle={first}
+  {sens}
+  mention={days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine affichée'}
+  principal={`${formatDay(first, { weekday: undefined })} au ${formatDay(last, { weekday: undefined })}`}
+/>
 
 {#if data.status.kind !== 'ok'}
   <p class="notice">
@@ -220,14 +226,10 @@
     {/key}
   </div>
 
-  <nav class="weeks" aria-label="Navigation entre les semaines">
-    <button type="button" onclick={() => selection.set(shift(first, -7), today)}>
-      <span aria-hidden="true">←</span> Semaine précédente
-    </button>
-    <button type="button" onclick={() => selection.set(shift(first, 7), today)}>
-      Semaine suivante <span aria-hidden="true">→</span>
-    </button>
-  </nav>
+  <!-- La commande de retour a son rang propre, sous la liste (D55). -->
+  {#if retour}
+    <CommandeRetour libelle={retour.libelle} action={retour.action} />
+  {/if}
 
   <footer>
     <span>{source?.updatedLabel ?? 'Source : Ville de Talence'}</span>
@@ -238,9 +240,9 @@
 <style>
   .notice {
     margin: 0;
-    background: var(--tray);
+    background: var(--carte);
     color: var(--ink);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-3);
     font-size: var(--text-sm);
   }
@@ -248,7 +250,7 @@
   .stale {
     margin: 0;
     padding-inline: var(--space-2);
-    color: var(--on-table);
+    color: var(--ink);
     opacity: 0.8;
     font-size: var(--text-sm);
   }
@@ -269,15 +271,15 @@
     list-style: none;
     margin: 0;
     padding: 6px;
-    background: var(--tray);
-    border-radius: var(--radius-tray);
+    background: var(--carte);
+    border-radius: var(--radius-carte);
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
 
   li + li {
-    box-shadow: 0 -1px 0 var(--edge);
+    box-shadow: 0 -1px 0 var(--bord);
   }
 
   li.today + li {
@@ -327,8 +329,8 @@
   }
 
   .disc.muted {
-    background: var(--cell-empty);
-    border-color: var(--edge);
+    background: var(--creux);
+    border-color: var(--bord);
   }
 
   .body {
@@ -367,7 +369,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     background: var(--ink);
-    color: var(--tray);
+    color: var(--carte);
     border-radius: 999px;
     padding: 0.12rem 0.42rem;
   }
@@ -402,41 +404,19 @@
     margin-top: 0.22rem;
   }
 
-  .weeks {
-    display: flex;
-    gap: var(--space-2);
-  }
-
-  .weeks button {
-    flex: 1;
-    min-height: var(--touch);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-1);
-    font: inherit;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--on-table);
-    background: none;
-    border: 1px solid color-mix(in srgb, var(--on-table) 40%, transparent);
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
   footer {
     display: flex;
     justify-content: space-between;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-2) 0;
-    border-top: 1px solid color-mix(in srgb, var(--on-table) 22%, transparent);
-    color: var(--on-table);
+    border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+    color: var(--ink);
     opacity: 0.72;
     font-size: var(--text-xs);
   }
 
   footer :global(a) {
-    color: var(--on-table);
+    color: var(--ink);
     font-weight: 700;
     opacity: 1;
     /* Cible tactile : un lien isolé doit être atteignable au pouce. */

@@ -62,7 +62,7 @@
     height: var(--touch);
     display: grid;
     place-items: center;
-    color: var(--on-table);
+    color: var(--ink);
     border-radius: 999px;
   }
 
@@ -74,7 +74,7 @@
     height: 17px;
     padding-inline: 4px;
     border-radius: 999px;
-    background: var(--tray);
+    background: var(--carte);
     color: var(--ink);
     font-size: 0.625rem;
     font-weight: 800;
@@ -83,6 +83,6 @@
     /* Un anneau de fond, parce que la pastille se pose sur les dents de la roue
        et que les deux formes se confondaient à la taille réelle. Il sépare, il
        ne porte rien : c'est le fond de la page, pas une couleur de plus. */
-    box-shadow: 0 0 0 2px var(--table);
+    box-shadow: 0 0 0 2px var(--fond);
   }
 </style>

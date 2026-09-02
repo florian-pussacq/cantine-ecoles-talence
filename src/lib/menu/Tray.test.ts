@@ -15,7 +15,7 @@ function trayFor(dataset: typeof edges, date: string) {
   return render(Tray, { props: { day } });
 }
 
-describe("l'ardoise ne se referme pas", () => {
+describe('la liste ne se referme pas', () => {
   it("dit explicitement qu'il n'y a pas d'entrée", () => {
     // Le 2 janvier du fixture n'a ni entrée ni laitage ni goûter.
     trayFor(edges, '2099-01-02');
@@ -31,7 +31,14 @@ describe("l'ardoise ne se referme pas", () => {
     expect(roles).toEqual(['Entrée', 'Plat', 'Accompagnement', 'Laitage', 'Dessert', 'Pain']);
   });
 
-  it("suit l'ordre du service, le pain fermant l'ardoise", () => {
+  it('donne une carte à chaque rôle, servi ou non', () => {
+    const { container } = trayFor(edges, '2099-01-02');
+    expect(container.querySelectorAll('.carte')).toHaveLength(6);
+    // Un creux se distingue d'un contenu autrement que par son absence.
+    expect(container.querySelectorAll('.carte.vide').length).toBeGreaterThan(0);
+  });
+
+  it("suit l'ordre du service, le pain fermant la liste", () => {
     // Le pain n'est pas servi à un moment du repas : il est sur la table du
     // début à la fin, et trente-trois jours sur trente-cinq il s'appelle
     // « Pain » (design.md, D39).
@@ -41,65 +48,94 @@ describe("l'ardoise ne se referme pas", () => {
     expect(roles.at(-1)).toBe('Pain');
   });
 
-  it("n'affiche pas le goûter dans l'ardoise", () => {
+  it("n'affiche pas le goûter dans le déjeuner", () => {
     // Le 7 janvier en comporte un : il est rendu ailleurs, hors du déjeuner.
     trayFor(edges, '2099-01-07');
     expect(screen.queryByText('Pain + chocolat')).not.toBeInTheDocument();
   });
 });
 
-describe('couleur de famille du plat principal', () => {
-  it('applique la famille déduite du libellé', () => {
+describe('la couleur dit le rôle, et non le contenu (D50)', () => {
+  it('donne à chaque carte le jeton de son rôle', () => {
     const { container } = trayFor(real, '2026-09-03');
-    const vedette = container.querySelector('.vedette');
-    expect(vedette?.getAttribute('style')).toContain('--fam: var(--fam-volaille)');
+    const jetons = [...container.querySelectorAll('.carte')].map((carte) =>
+      carte.getAttribute('style')
+    );
+    expect(jetons).toEqual([
+      '--role: var(--role-entree);',
+      '--role: var(--role-plat);',
+      '--role: var(--role-accompagnement);',
+      '--role: var(--role-laitage);',
+      '--role: var(--role-dessert);',
+      '--role: var(--role-pain);'
+    ]);
   });
 
-  it('prend le repli neutre quand la famille est indéduisible', () => {
-    // « Gumbo de Tiana » n'est couvert par aucun mot-clé.
-    const { container } = trayFor(edges, '2099-01-06');
-    const vedette = container.querySelector('.vedette');
-    expect(vedette?.getAttribute('style')).toContain('--fam: var(--fam-inconnu)');
+  it('donne la même couleur au même rôle deux jours de suite', () => {
+    // C'est toute la raison du changement : un repère qui bouge d'un jour à
+    // l'autre n'est pas un repère (D50). La famille du plat, elle, change.
+    const lundi = trayFor(real, '2026-09-01').container.querySelector('.carte.principal');
+    const jeudi = trayFor(real, '2026-09-03').container.querySelector('.carte.principal');
+    expect(lundi?.getAttribute('style')).toBe(jeudi?.getAttribute('style'));
+  });
+
+  it("ne porte plus aucune couleur de famille sur l'écran du jour (D54)", () => {
+    // Les jetons de famille survivent, mais pour l'écran de la semaine seul.
+    const { container } = trayFor(real, '2026-09-03');
+    expect(container.innerHTML).not.toContain('--fam-');
   });
 });
 
-describe('le dessin ne reste que là où il distingue (D40)', () => {
-  it("n'illustre que le plat principal", () => {
-    // Mesuré sur les trente-cinq jours publiés : le dessin du pain est le même
-    // 35 fois sur 35, celui du laitage 23 fois sur 25. Une illustration qui ne
-    // change ni d'un jour à l'autre ni d'une ligne à sa voisine n'est pas une
-    // information.
+describe('le dessin accompagne chaque plat (D51)', () => {
+  it('illustre tous les rôles servis', () => {
+    // D40 réservait le dessin au plat principal, pour qu'il signifie « c'est le
+    // plat du jour ». Ce sens est abandonné : l'illustration ne hiérarchise
+    // plus, elle ancre le regard dans une liste devenue longue.
     const { container } = trayFor(real, '2026-09-03');
+    const cartes = container.querySelectorAll('.carte');
     const dessins = container.querySelectorAll('.illustration');
-    expect(dessins).toHaveLength(1);
-    expect(container.querySelector('.vedette .illustration')).not.toBeNull();
+    expect(dessins).toHaveLength(cartes.length);
   });
 
-  it('ne répète jamais le même dessin deux fois dans la journée', () => {
+  it('accepte deux fois le même dessin le même jour', () => {
     // Le 1er septembre porte une entrée et un accompagnement tous deux de la
-    // famille des légumes : la grille y montrait deux fois le même dessin.
+    // famille des légumes. La règle qui l'interdisait est levée, et rien ne
+    // tente de les différencier.
     const { container } = trayFor(real, '2026-09-01');
-    expect(container.querySelectorAll('.illustration').length).toBeLessThanOrEqual(1);
+    const href = [...container.querySelectorAll('.illustration use')].map((n) =>
+      n.getAttribute('href')
+    );
+    expect(href.length).toBeGreaterThan(new Set(href).size);
+  });
+
+  it("n'illustre pas un rôle sans plat", () => {
+    // Poser le repli « inconnu » sur une absence signalerait une donnée là où il
+    // n'y en a pas — l'inverse de ce que la carte vide est là pour dire.
+    const { container } = trayFor(edges, '2099-01-02');
+    for (const vide of container.querySelectorAll('.carte.vide')) {
+      expect(vide.querySelector('.illustration')).toBeNull();
+    }
   });
 
   it('laisse chaque plat identifiable par son libellé et son rôle', () => {
-    // Les illustrations sont décoratives : elles sont masquées aux technologies
-    // d'assistance, et le menu doit rester complet sans elles.
+    // Les illustrations comme les glyphes de rôle sont décoratifs : ils sont
+    // masqués aux technologies d'assistance, et le menu doit rester complet
+    // sans eux.
     const { container } = trayFor(real, '2026-09-03');
     for (const svg of container.querySelectorAll('svg')) {
       expect(svg.getAttribute('aria-hidden')).toBe('true');
     }
     expect(screen.getByText('Blanc de poulet au jus')).toBeInTheDocument();
-    expect(container.querySelector('.vedette .role')?.textContent).toBe('Plat');
+    expect(container.querySelector('.carte.principal .role')?.textContent).toBe('Plat');
     expect(screen.getByText('Écrasé de pommes de terre')).toBeInTheDocument();
   });
 });
 
-describe("l'ardoise n'est pas actionnable (D38)", () => {
+describe("la liste n'est pas actionnable (D38)", () => {
   it("ne porte aucune cible : c'est la journée qui en est une", () => {
     // Chaque plat était une cible, ce qui lui imposait 44 pixels de hauteur et
     // rendait le déjeuner incompressible. La cible vit désormais dans l'écran,
-    // autour de cette ardoise.
+    // autour de cette liste.
     const { container } = trayFor(real, '2026-09-03');
     expect(container.querySelectorAll('button, a')).toHaveLength(0);
   });

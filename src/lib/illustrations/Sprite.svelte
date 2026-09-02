@@ -319,5 +319,84 @@
       <path d="M24 13v14" stroke="#fbf6ea" stroke-width="4" stroke-linecap="round" />
       <circle cx="24" cy="33.5" r="2.4" fill="#fbf6ea" />
     </symbol>
+
+    <!--
+      Les sept glyphes de rôle (design.md, D50).
+
+      Ils tiennent du sprite et non d'`Icone` : une icône d'interface nomme une
+      commande que rien d'autre ne nomme à l'écran, alors qu'un glyphe de rôle
+      est posé à côté du mot « Entrée » écrit en toutes lettres. Il est
+      décoratif, comme une illustration, et c'est le contrat de ce fichier.
+
+      Ils s'en distinguent sur un point : ils sont monochromes et peints en
+      `currentColor`, parce qu'ils vivent dans une pastille dont la couleur est
+      celle du rôle. Une illustration, elle, porte ses propres couleurs et ne
+      supporterait pas d'être aplatie en une seule.
+    -->
+    <symbol id="role-entree" viewBox="0 0 48 48">
+      <path d="M7 25h34a17 17 0 0 1-34 0Z" fill="currentColor" />
+      <ellipse cx="19" cy="15" rx="9" ry="5.5" transform="rotate(-22 19 15)" fill="currentColor" />
+      <ellipse cx="31" cy="17" rx="7" ry="4.5" transform="rotate(20 31 17)" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-plat" viewBox="0 0 48 48">
+      <circle cx="24" cy="9" r="3" fill="currentColor" />
+      <path d="M8 30a16 16 0 0 1 32 0Z" fill="currentColor" />
+      <rect x="4" y="32" width="40" height="6" rx="3" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-accompagnement" viewBox="0 0 48 48">
+      <rect x="30" y="20" width="14" height="5" rx="2.5" fill="currentColor" />
+      <path d="M7 17h26v13a13 13 0 0 1-26 0Z" fill="currentColor" />
+      <rect x="5" y="13" width="30" height="5" rx="2.5" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-laitage" viewBox="0 0 48 48">
+      <rect x="12" y="10" width="24" height="6" rx="3" fill="currentColor" />
+      <path d="M13 18h22l-3 20H16Z" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-dessert" viewBox="0 0 48 48">
+      <circle cx="24" cy="10" r="3.2" fill="currentColor" />
+      <path d="M11 24a13 13 0 0 1 26 0Z" fill="currentColor" />
+      <path d="M12 26h24l-3.5 14h-17Z" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-pain" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="27" rx="18" ry="11.5" fill="currentColor" />
+      <ellipse cx="16" cy="19" rx="7" ry="5" fill="currentColor" />
+      <ellipse cx="30" cy="19" rx="7" ry="5" fill="currentColor" />
+    </symbol>
+
+    <symbol id="role-gouter" viewBox="0 0 48 48">
+      <path d="M22 12c-2-3-6-4-9-3 1 3 4 5 7 5Z" fill="currentColor" />
+      <path
+        d="M24 15c-3-2-8-2-11 2s-2 12 1 17 6 6 8 5 2-1 4 0 5 0 8-5 4-13 1-17-8-4-11-2Z"
+        fill="currentColor"
+      />
+    </symbol>
+
+    <!--
+      La marque de l'enseigne : une assiette et deux couverts.
+
+      Décorative, comme tout ce que porte ce fichier — « Cantine des écoles de
+      Talence » est écrit juste à côté, et le disque ne dit rien de plus. Elle est
+      en `currentColor` pour la même raison que les glyphes de rôle : c'est le
+      disque qui porte la couleur.
+    -->
+    <symbol id="marque" viewBox="0 0 48 48">
+      <path
+        d="M24 11a13 13 0 1 0 0 26 13 13 0 0 0 0-26Zm0 6a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z"
+        fill="currentColor"
+        fill-rule="evenodd"
+      />
+      <rect x="6" y="8" width="3.4" height="14" rx="1.7" fill="currentColor" />
+      <rect x="12" y="8" width="3.4" height="14" rx="1.7" fill="currentColor" />
+      <rect x="9" y="18" width="3.4" height="22" rx="1.7" fill="currentColor" />
+      <path
+        d="M36 8c3.4 0 5.6 3.6 5.6 8s-2.2 7-4 7v17a1.7 1.7 0 0 1-3.4 0V8.4Z"
+        fill="currentColor"
+      />
+    </symbol>
   </defs>
 </svg>

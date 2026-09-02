@@ -118,7 +118,7 @@ test("l'ouverture de la couche ne fait pas remonter la page", async ({ page }) =
 
 test('les commandes de navigation entre jours sont sans effet couche ouverte', async ({ page }) => {
   await page.goto('/');
-  const titre = page.getByRole('heading', { level: 1 });
+  const titre = page.locator('nav .designation');
   const initial = await titre.textContent();
 
   await ouvrirLeDetail(page);

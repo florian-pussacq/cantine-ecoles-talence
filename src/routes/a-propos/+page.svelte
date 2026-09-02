@@ -1,5 +1,4 @@
 <script lang="ts">
-  import EnTete from '$lib/ui/EnTete.svelte';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import { formatDay } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
@@ -23,8 +22,6 @@
 <svelte:head>
   <title>À propos — menus des écoles de Talence</title>
 </svelte:head>
-
-<EnTete quand="À propos" quoi="D'où viennent ces menus" />
 
 <!--
   L'avertissement vient en premier et n'est pas repliable. Une donnée allergène
@@ -119,16 +116,16 @@
     margin: 0;
     background: var(--warn);
     color: var(--warn-on);
-    border-radius: var(--radius-cell);
+    border-radius: var(--radius-pastille);
     padding: var(--space-3);
     font-size: var(--text-sm);
     line-height: 1.5;
   }
 
   .panel {
-    background: var(--tray);
+    background: var(--carte);
     color: var(--ink);
-    border-radius: var(--radius-tray);
+    border-radius: var(--radius-carte);
     padding: var(--space-4);
     display: flex;
     flex-direction: column;
@@ -164,7 +161,7 @@
   }
 
   dl div + div {
-    border-top: 1px solid var(--edge);
+    border-top: 1px solid var(--bord);
   }
 
   dt {
@@ -178,7 +175,7 @@
   }
 
   .panel :global(a) {
-    color: var(--table);
+    color: var(--fond);
     font-weight: 700;
   }
 
