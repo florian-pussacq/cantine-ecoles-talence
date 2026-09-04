@@ -1,10 +1,6 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { resolve } from '$app/paths';
   import PlatCarte from '$lib/menu/PlatCarte.svelte';
-  import { formatDay } from '$lib/menu/labels.js';
-  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
-  import ExternalLink from '$lib/ui/ExternalLink.svelte';
+  import PiedSource from '$lib/ui/PiedSource.svelte';
   import type { PageData } from './$types.js';
 
   let { data }: { data: PageData } = $props();
@@ -94,27 +90,17 @@
     </section>
   {/each}
 
-  <footer>
-    <span>
-      {menu.source.updatedLabel ??
-        (menu.source.updatedAt
-          ? `Mis à jour le ${formatDay(menu.source.updatedAt)}`
-          : 'Source : Ville de Talence')}
-    </span>
-    <ExternalLink href={menu.source.pdfUrl}>PDF officiel</ExternalLink>
-  </footer>
+  <PiedSource
+    updatedLabel={menu.source.updatedLabel}
+    updatedAt={menu.source.updatedAt}
+    pdfUrl={menu.source.pdfUrl}
+  />
 {:else}
   <div class="panel">
     <p class="warn">Le menu de grève n'a pas pu être chargé.</p>
     <p>Il reste consultable sur le site de la Ville, à la page des menus des écoles.</p>
   </div>
 {/if}
-
-<!--
-  Sans onglets Jour/Semaine sur cet écran (+layout.svelte), la sortie est cette
-  commande nommée, qu'il y ait un menu à montrer ou non.
--->
-<CommandeRetour libelle="Retour au menu" action={() => goto(resolve('/'))} />
 
 <style>
   .panel {
@@ -193,26 +179,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-  }
-
-  footer {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-2) 0;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-    color: var(--ink);
-    opacity: 0.72;
-    font-size: var(--text-xs);
-  }
-
-  footer :global(a) {
-    color: var(--ink);
-    font-weight: 700;
-    opacity: 1;
-    /* Cible tactile : un lien isolé doit être atteignable au pouce. */
-    min-height: var(--touch);
-    display: inline-flex;
-    align-items: center;
   }
 </style>

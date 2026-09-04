@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page } from '$app/state';
   import { resolve } from '$app/paths';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import Icone from './Icone.svelte';
@@ -14,11 +13,15 @@
    *
    * Voir l'état et aller le corriger sont donc le même geste : le compte est
    * porté par la commande qui mène au réglage, et non affiché à côté d'elle.
+   *
+   * Elle ne décide plus elle-même de son absence (D62). Elle se masquait sur sa
+   * propre destination — « une commande qui mène là où l'on est déjà ne mène
+   * nulle part » —, ce qui était juste et devenu insuffisant : elle ne mène pas
+   * non plus là où l'on cherche à aller depuis le menu de grève ou les mentions.
+   * La règle est désormais celle de l'emplacement, tenue par la coque, qui est
+   * le seul endroit à connaître les écrans.
    */
   const DESTINATION = '/reglages';
-
-  /* Une commande qui mène là où l'on est déjà ne mène nulle part. */
-  const surPlace = $derived(page.url.pathname.replace(/\/$/, '') === DESTINATION);
 
   const compte = $derived(allergenFilter.codes.size);
 
@@ -34,25 +37,23 @@
   );
 </script>
 
-{#if !surPlace}
-  <a class="commande" href={resolve(DESTINATION)} aria-label={nom}>
-    <Icone name="reglages" />
-    <!--
-      Rien lorsque la sélection est vide : un « 0 » serait exactement
-      l'« invitation insistante à en configurer un » que la spécification du
-      filtre interdit déjà.
+<a class="commande" href={resolve(DESTINATION)} aria-label={nom}>
+  <Icone name="reglages" />
+  <!--
+    Rien lorsque la sélection est vide : un « 0 » serait exactement
+    l'« invitation insistante à en configurer un » que la spécification du
+    filtre interdit déjà.
 
-      La pastille est posée en absolu dans une commande de taille fixe : elle ne
-      participe pas à la mise en page, donc sa place est réservée qu'elle soit
-      occupée ou non. C'est ce qui permet de la lire du stockage local après
-      l'hydratation sans rien déplacer — et d'éviter le script bloquant que D21
-      avait dû introduire pour le thème, et que D25 vient de supprimer.
-    -->
-    {#if compte > 0}
-      <span class="compte" aria-hidden="true">{compte}</span>
-    {/if}
-  </a>
-{/if}
+    La pastille est posée en absolu dans une commande de taille fixe : elle ne
+    participe pas à la mise en page, donc sa place est réservée qu'elle soit
+    occupée ou non. C'est ce qui permet de la lire du stockage local après
+    l'hydratation sans rien déplacer — et d'éviter le script bloquant que D21
+    avait dû introduire pour le thème, et que D25 vient de supprimer.
+  -->
+  {#if compte > 0}
+    <span class="compte" aria-hidden="true">{compte}</span>
+  {/if}
+</a>
 
 <style>
   .commande {

@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { resolve } from '$app/paths';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
-  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import { formatDay } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
@@ -114,13 +111,6 @@
   <p>Une fois installée, elle fonctionne sans réseau après une première ouverture connectée.</p>
 </section>
 
-<!--
-  Sans onglets Jour/Semaine sur cet écran (+layout.svelte), la sortie est cette
-  commande nommée plutôt que le pied fixe qui a mené ici : il porte le lien vers
-  cette page depuis les quatre écrans, pas le chemin pour en repartir.
--->
-<CommandeRetour libelle="Retour au menu" action={() => goto(resolve('/'))} />
-
 <style>
   .disclaimer {
     margin: 0;
@@ -184,8 +174,21 @@
     font-weight: 600;
   }
 
+  /*
+    L'accent, et non l'encre (design.md, D64).
+
+    Ces liens étaient peints en `--fond` sur un panneau blanc : 1,17:1, quand le
+    seuil est 4,5. Survivance de l'apparence sombre supprimée par D25, où
+    `--fond` était la couleur claire et un lien clair sur un panneau sombre était
+    juste ; D49 a retourné la palette sans retourner ces deux déclarations.
+
+    `--ink` passerait le seuil de très loin, mais rendrait le lien indistinct du
+    texte qui l'entoure et laisserait le soulignement porter seul sa nature de
+    commande. L'accent tient 5,77:1 sur la carte, et son jeton est défini pour
+    cet emploi.
+  */
   .panel :global(a) {
-    color: var(--fond);
+    color: var(--accent);
     font-weight: 700;
   }
 
@@ -201,12 +204,16 @@
     Une requête média sur le thème du système vivait ici, survivante de
     l'apparence sombre supprimée par D25. Elle repeignait ces liens en clair
     lorsque le système de l'utilisateur était en sombre — ce que l'exigence
-    d'apparence unique interdit depuis, et qui les rendait de toute façon
-    illisibles sur le panneau clair où ils vivent.
+    d'apparence unique interdit depuis.
 
     Elle est retirée plutôt que laissée. Le contrôle qui vérifiait cette
     interdiction ne lisait que `tokens.css` ; deux composants la violaient encore
     sans que rien ne le voie. Il lit désormais tous les composants, et c'est lui
     qui a trouvé celui-ci.
+
+    Ce qu'il n'a pas trouvé, c'est que la couleur restée en place était de toute
+    façon illisible sur le panneau clair où elle vit : la correction était juste
+    à moitié, et il a fallu D64 pour voir l'autre moitié. Une exigence peut être
+    vérifiée et manquer sa voisine.
   */
 </style>

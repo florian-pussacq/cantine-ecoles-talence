@@ -392,8 +392,11 @@
     color: var(--ink);
   }
 
+  /* L'accent, et non le fond : ce lien était peint en `--fond` sur la couche
+     blanche, à 1,17:1 — même survivance de l'apparence sombre que sur l'écran
+     des mentions, trouvée par le même contrôle (D64). */
   footer :global(a) {
-    color: var(--fond);
+    color: var(--accent);
     font-weight: 700;
     min-height: var(--touch);
     display: inline-flex;

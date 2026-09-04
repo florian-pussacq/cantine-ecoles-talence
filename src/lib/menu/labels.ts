@@ -1,5 +1,5 @@
 import type { Course } from '../data/schema.js';
-import type { DisplayTarget } from '../data/resolve.js';
+import { daysBetween, type DisplayTarget } from '../data/resolve.js';
 
 /**
  * Les rôles du déjeuner, dans l'ordre où l'écran les montre.
@@ -166,10 +166,14 @@ export function dayNumber(date: string): string {
 }
 
 /**
- * Le surtitre qui dit de quel jour l'écran parle.
+ * Le surtitre du jour que le système a choisi — il dit *pourquoi* ce jour-là.
  *
  * L'écran ne montre pas toujours aujourd'hui, et le taire serait le pire des
  * cas : un parent lisant le menu de lundi en croyant lire celui de vendredi.
+ *
+ * Il ne vaut que tant que l'utilisateur n'a pas navigué. Passé ce point, la
+ * raison du choix initial ne décrit plus ce qui est à l'écran, et c'est
+ * `browsedEyebrow` qui prend la suite (D60).
  */
 export function targetEyebrow(target: DisplayTarget): string {
   switch (target.status) {
@@ -181,6 +185,32 @@ export function targetEyebrow(target: DisplayTarget): string {
     case 'not-published':
       return 'Menu non publié';
   }
+}
+
+/**
+ * Le surtitre du jour que l'utilisateur a demandé — il dit à quelle distance.
+ *
+ * `targetEyebrow` est calculé sur la cible résolue, qui ne dépend que de
+ * l'horloge : il ne bouge pas quand on change de jour. L'écran affichait donc
+ * « Aujourd'hui » sur n'importe quel jour parcouru — et, un dimanche,
+ * « Prochain service · dans 3 jours » sur tous. C'est la confusion que D45
+ * ferme d'un côté, rouverte de l'autre.
+ *
+ * Dès qu'on a navigué, il n'y a plus de raison à énoncer : le jour affiché est
+ * celui qu'on a demandé. Ce qui reste utile est sa distance au jour courant, et
+ * c'est tout ce que cette fonction dit.
+ *
+ * Aucun singulier à traiter : les écarts de un sont captés par « Demain » et
+ * « Hier », donc le compte vaut toujours au moins deux (D60).
+ */
+export function browsedEyebrow(date: string, today: string): string {
+  const ecart = daysBetween(today, date);
+
+  if (ecart === 0) return "Aujourd'hui";
+  if (ecart === 1) return 'Demain';
+  if (ecart === -1) return 'Hier';
+
+  return ecart > 0 ? `Dans ${ecart} jours` : `Il y a ${-ecart} jours`;
 }
 
 /**

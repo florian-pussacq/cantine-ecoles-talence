@@ -26,21 +26,23 @@
   /*
     Le titre de chaque écran vit ici, et non dans l'écran qu'il nomme.
 
-    C'est un couplage assumé — la coque connaît le nom des quatre écrans — et il
+    C'est un couplage assumé — la coque connaît le nom de ses écrans — et il
     achète deux choses qu'aucun autre découpage ne donnait. D'abord la place : le
-    titre est toujours entre l'enseigne et les onglets, alors qu'un titre rendu
+    titre est toujours entre l'enseigne et le contenu, alors qu'un titre rendu
     par la page passait sous les onglets sur deux écrans et au-dessus sur les
     deux autres. Ensuite l'unicité du titre de premier niveau, qui cesse d'être
-    une consigne à respecter dans quatre fichiers pour devenir une propriété de
-    la structure : il n'existe qu'un seul endroit qui puisse en produire un.
+    une consigne à respecter dans plusieurs fichiers pour devenir une propriété
+    de la structure.
 
-    « Menu de la cantine » couvre les deux écrans de menu parce qu'il ne dépend
-    ni du jour ni de la vue. Ce qui varie — la date, la période — est descendu
-    dans le rang de navigation, entre les commandes qui le font varier (D55).
+    Les deux écrans de menu n'y figurent plus (D61). « Menu de la cantine »
+    nommait l'application à l'intérieur de l'application, et « Bon appétit ! »
+    occupait d'une politesse la ligne où il fallait de l'information. Leur titre
+    de premier niveau est désormais ce que le rang de navigation désigne — la
+    date, la période —, qui est la seule chose que ces écrans doivent dire avant
+    tout le reste. L'unicité est conservée : un écran est ici ou il est là,
+    jamais dans les deux.
   */
-  const TITRES: Record<string, { titre: string; baseline?: string }> = {
-    '/': { titre: 'Menu de la cantine', baseline: 'Bon appétit !' },
-    '/semaine': { titre: 'Menu de la cantine', baseline: 'Bon appétit !' },
+  const TITRES: Record<string, { titre: string }> = {
     '/reglages': { titre: 'Réglages' },
     '/greve': { titre: 'Menu de grève' },
     '/a-propos': { titre: "D'où viennent ces menus" }
@@ -50,12 +52,42 @@
   const entete = $derived(TITRES[chemin]);
 
   /*
+    Où mène la sortie de chaque écran secondaire (design.md, D62).
+
+    Elle remonte d'un cran, et non toujours à l'accueil. Le menu de grève ne
+    s'atteint que par les réglages : une commande d'en-tête qui sauterait
+    par-dessus l'écran d'où l'on vient contredirait la place qu'elle occupe.
+
+    Elle n'est pas calculée sur l'historique du navigateur. Il rendrait la
+    destination indevinable depuis le libellé, et un écran ouvert directement —
+    depuis un signet, depuis un lien partagé — n'a pas d'historique à remonter.
+  */
+  const MENU = { vers: '/', nom: 'Menu', libelle: 'Retour au menu' } as const;
+
+  const SORTIES: Record<string, typeof MENU | { vers: '/reglages'; nom: string; libelle: string }> =
+    {
+      '/reglages': MENU,
+      '/a-propos': MENU,
+      '/greve': { vers: '/reglages', nom: 'Réglages', libelle: 'Retour aux réglages' }
+    };
+
+  /*
     Le choix Jour/Semaine n'appartient qu'aux deux écrans de menu (D31). Sur
     tout le reste — réglages, grève, mentions —, rien de ce qu'il propose ne
     s'y consulte, et chaque écran porte sa propre commande de retour nommée,
     dans son propre flux : voir `Onglets.svelte` pour ce que ce choix remplace.
   */
   const montrerOnglets = $derived(chemin === '/' || chemin === '/semaine');
+
+  /*
+    L'emplacement de commande de l'enseigne porte l'un ou l'autre, jamais rien.
+
+    Sur les écrans de menu, la roue crantée ; partout ailleurs, la sortie. Le
+    repli sur « Menu » couvre un écran qu'aucune table ne nomme — une page
+    d'erreur, une route à venir : il vaut mieux une sortie de trop qu'un écran
+    dont on ne repart pas.
+  */
+  const sortie = $derived(montrerOnglets ? null : (SORTIES[chemin] ?? MENU));
 </script>
 
 <div class="shell">
@@ -63,10 +95,10 @@
     L'enseigne est la première ligne de tous les écrans, et elle est hors de
     tout bloc animé : le nom du lieu ne change pas avec le jour (D35).
   -->
-  <Enseigne />
+  <Enseigne {sortie} />
 
   {#if entete}
-    <EnTete titre={entete.titre} baseline={entete.baseline} />
+    <EnTete titre={entete.titre} />
   {/if}
 
   {#if montrerOnglets}
@@ -114,8 +146,15 @@
     min-height: 100dvh;
     /* Le contenu réserve le pied *et* l'encart système sous lui : réserver la
        seule hauteur du pied ferait passer la dernière carte dessous sur les
-       appareils à indicateur d'accueil, et nulle part ailleurs (D34, D52). */
-    padding: var(--space-3) var(--space-3) calc(var(--space-5) + var(--pied-reserve));
+       appareils à indicateur d'accueil, et nulle part ailleurs (D34, D52).
+
+       L'intervalle ajouté à cette réserve est celui de la coque, et non un cran
+       au-dessus (D63). `--pied-reserve` dimensionne déjà la barre et sa zone
+       sûre ; le `--space-5` qui s'y ajoutait n'avait pas de motif écrit, et
+       c'est lui qu'on lisait comme un grand vide au-dessus des mentions. Le
+       pied fixe est séparé du contenu comme deux enfants de la coque le sont
+       entre eux. */
+    padding: var(--space-3) var(--space-3) calc(var(--space-3) + var(--pied-reserve));
     display: flex;
     flex-direction: column;
     gap: var(--space-3);

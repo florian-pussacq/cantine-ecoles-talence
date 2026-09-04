@@ -11,6 +11,16 @@
    * « aujourd'hui » quand le repère n'est pas aujourd'hui : quarante pour cent
    * des jours de l'année ne sont pas servis, et un libellé fixe rouvrirait par
    * l'autre bout le trou que `targetEyebrow` a été écrit pour fermer (D45).
+   *
+   * **Elle ne sert plus que les deux écrans de menu** (D62). Les écrans
+   * secondaires s'en servaient comme sortie, ce qui a longtemps masqué qu'il
+   * s'agit de deux commandes distinctes sous un même nom : celle-ci ramène à un
+   * jour, dépend du contenu et paraît quand il y a lieu ; l'autre quitte un
+   * écran, est permanente, et son libellé ne se calcule pas. La seconde est
+   * remontée dans l'enseigne, où sa place était vacante — voir
+   * `CommandeSortie.svelte`.
+   *
+   * D55 n'en est pas annulé, il est restreint à ce qu'il décrivait déjà.
    */
   let { libelle, action }: { libelle: string; action: () => void } = $props();
 </script>

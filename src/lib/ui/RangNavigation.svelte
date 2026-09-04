@@ -17,6 +17,17 @@
    *
    * Une commande dont l'action est `null` est une borne du jeu de données : elle
    * reste présente, désactivée, et son nom accessible dit pourquoi.
+   *
+   * **Ce que le rang désigne est le titre de premier niveau de l'écran** (D61).
+   * Sur ces deux écrans, la période affichée est la seule chose à dire avant
+   * tout le reste ; le titre constant qui vivait plus haut nommait
+   * l'application à l'intérieur de l'application.
+   *
+   * Le titre est dans la clé, et se remonte donc à chaque changement. C'est sans
+   * conséquence sur son unicité : `{#key}` remplace de façon synchrone, et
+   * l'animation qui suit est une animation CSS d'entrée, non une transition de
+   * sortie. Il n'existe à aucun instant zéro ni deux titres de premier niveau —
+   * ce que `qualite.spec.ts` mesure.
    */
   type Commande = { nom: string; action: (() => void) | null };
 
@@ -52,10 +63,12 @@
   </button>
 
   {#key cle}
-    <span class="quand glisse" style:--sens={sens}>
+    <!-- Un `div` et non un `span` : il contient désormais un titre, qui est du
+         contenu de flux et n'a rien à faire dans un élément de phrasé. -->
+    <div class="quand glisse" style:--sens={sens}>
       <span class="mention">{mention}</span>
-      <span class="designation">{principal}</span>
-    </span>
+      <h1 class="designation">{principal}</h1>
+    </div>
   {/key}
 
   <button
@@ -128,10 +141,15 @@
   }
 
   /* Ce que le rang désigne ne se coupe jamais : c'est la seule chose que l'écran
-     doit dire avant tout le reste. */
+     doit dire avant tout le reste — et c'est, à ce titre, son titre de premier
+     niveau (D61). Le corps reste celui d'une désignation dans un rang de
+     commandes, et non celui d'un titre de page : le `h1` dit le rang dans le
+     document, pas la taille à l'écran. */
   .designation {
+    margin: 0;
     font-size: var(--text-base);
     font-weight: 700;
+    line-height: 1.35;
     color: var(--ink);
     white-space: nowrap;
   }

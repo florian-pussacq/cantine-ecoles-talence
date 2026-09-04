@@ -76,4 +76,30 @@ describe('le rang porte ce que ses commandes changent (D55)', () => {
       screen.getByRole('navigation', { name: 'Navigation entre les semaines' })
     ).toBeInTheDocument();
   });
+
+  it("désigne la période comme titre de premier niveau de l'écran (D61)", () => {
+    const { container } = render(RangNavigation, { props: base });
+
+    const titres = container.querySelectorAll('h1');
+    expect(titres).toHaveLength(1);
+    expect(titres[0]?.textContent).toBe('mercredi 2 septembre');
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'mercredi 2 septembre' })
+    ).toBeInTheDocument();
+  });
+
+  it("garde la mention hors du titre, où elle n'est pas le nom de l'écran", () => {
+    // La mention situe, elle ne nomme pas. La faire entrer dans le `h1`
+    // ajouterait « Aujourd'hui » au nom accessible de l'écran, qui changerait
+    // alors de sens d'un jour à l'autre sans que l'écran ait changé.
+    const { container } = render(RangNavigation, { props: base });
+    expect(container.querySelector('h1')?.textContent).not.toContain("Aujourd'hui");
+  });
+
+  it('ne loge pas de contenu de flux dans un élément de phrasé', () => {
+    // Le titre est du contenu de flux : son conteneur ne peut pas être un
+    // `span`, qui n'en admet pas.
+    const { container } = render(RangNavigation, { props: base });
+    expect(container.querySelector('span h1')).toBeNull();
+  });
 });

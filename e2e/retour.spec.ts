@@ -54,6 +54,44 @@ test('la commande apparaît dès que l’on s’écarte, et ramène en une actio
   await expect(retour(page)).toHaveCount(0);
 });
 
+test("la mention suit le jour consulté, et cesse de dire «·Aujourd'hui·»", async ({ page }) => {
+  /*
+    Le défaut que ce test ferme (D60).
+
+    La mention se calculait sur la cible résolue, qui ne dépend que de
+    l'horloge : elle ne bougeait pas quand on changeait de jour. L'écran
+    affirmait « Aujourd'hui » de n'importe quel jour parcouru — et, un dimanche,
+    « Prochain service · dans 3 jours » de tous.
+
+    L'horloge est fixée à un mercredi servi, ce qui est la seule condition sous
+    laquelle la mention d'ouverture est « Aujourd'hui ». Sans cela, le test ne
+    rencontrerait le cas que les jours où la machine qui l'exécute tombe juste.
+  */
+  await page.clock.install({ time: new Date('2026-09-02T10:00:00+02:00') });
+  await page.goto('/');
+
+  const mention = page.locator('nav .mention');
+  await expect(mention).toHaveText("Aujourd'hui");
+
+  await jourSuivant(page).click();
+  await expect(mention).not.toHaveText("Aujourd'hui");
+  await expect(mention).toHaveText(/Demain|Dans \d+ jours/);
+
+  await jourSuivant(page).click();
+  await expect(mention).toHaveText(/Dans \d+ jours/);
+});
+
+test('la mention situe aussi vers le passé', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-09-02T10:00:00+02:00') });
+  await page.goto('/');
+
+  const mention = page.locator('nav .mention');
+  const jourPrecedent = page.locator('nav[aria-label="Navigation entre les jours"] button').nth(0);
+
+  await jourPrecedent.click();
+  await expect(mention).toHaveText(/Hier|Il y a \d+ jours/);
+});
+
 test("la commande ne dit «·Aujourd'hui·» que si le repère est bien aujourd'hui", async ({
   page
 }) => {

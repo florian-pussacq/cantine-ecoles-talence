@@ -24,6 +24,21 @@ test('les réglages y mènent, en une action', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Menu de grève' })).toBeVisible();
 });
 
+test("la sortie de l'écran ramène aux réglages, d'où l'on vient", async ({ page }) => {
+  /*
+    Elle ne saute pas par-dessus l'écran d'origine (D62). Le menu de grève ne
+    s'atteint que par les réglages : une sortie qui mènerait au menu ferait
+    perdre la place à qui parcourt les réglages, et contredirait la lecture
+    « remonter d'un cran » que sa position dans l'en-tête impose.
+  */
+  await page.goto('/reglages');
+  await page.getByRole('link', { name: /Menu de grève/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Menu de grève' })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Retour aux réglages' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Réglages' })).toBeVisible();
+});
+
 test("l'écran énonce que l'application ne sait pas s'il y a grève", async ({ page }) => {
   // Sans cette phrase, l'écran se lirait comme une annonce. C'est une garantie
   // de véracité, pas une formule de politesse.

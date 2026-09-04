@@ -26,7 +26,18 @@ export type DisplayTarget =
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-function daysBetween(from: string, to: string): number {
+/**
+ * L'écart en jours civils entre deux dates AAAA-MM-JJ, signé.
+ *
+ * Les deux bornes sont interprétées en UTC : elles ne désignent pas des instants
+ * mais des jours civils, et les faire passer par le fuseau local produirait un
+ * écart faux d'une unité aux abords d'un changement d'heure.
+ *
+ * Exportée parce que la mise en forme en a besoin autant que la résolution : le
+ * surtitre qui situe le jour consulté se calcule sur cet écart, et une seconde
+ * arithmétique des jours civils finirait par diverger de celle-ci (D60).
+ */
+export function daysBetween(from: string, to: string): number {
   return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY_MS);
 }
 

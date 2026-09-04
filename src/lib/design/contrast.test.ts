@@ -268,23 +268,20 @@ describe('les surfaces peintes par transparence', () => {
  */
 describe('couverture des transparences', () => {
   /*
-    Les écrans, et les composants partagés qui peignent eux aussi sur le fond.
-    La liste ne comportait que les écrans, ce qui laissait une porte ouverte :
-    une transparence introduite dans un composant de `$lib/ui` n'aurait été vue
-    par personne. Les onglets et la commande de réglages y vivent désormais, et
-    c'est ce déplacement qui a montré le trou.
+    Tous les composants, et non une liste tenue à la main.
+
+    La liste ne comportait d'abord que les écrans, ce qui laissait une porte
+    ouverte : une transparence introduite dans un composant de `$lib/ui`
+    n'aurait été vue par personne. On y a donc ajouté des composants, un par un
+    — et une liste qu'il faut penser à compléter est une liste qui finit
+    incomplète : trois fichiers portant des transparences n'y ont jamais figuré,
+    et l'extraction du pied de source aurait fait sortir deux taux de la seule
+    couverture qui les voyait (D63, D64).
+
+    Le glob supprime la question. C'est le même remède que le contrôle
+    d'apparence unique, plus bas, a déjà appliqué pour la même raison.
   */
-  const FICHIERS = [
-    'src/routes/+layout.svelte',
-    'src/routes/+page.svelte',
-    'src/routes/semaine/+page.svelte',
-    'src/routes/reglages/+page.svelte',
-    'src/routes/a-propos/+page.svelte',
-    'src/lib/ui/EnTete.svelte',
-    'src/lib/ui/Enseigne.svelte',
-    'src/lib/ui/CommandeReglages.svelte',
-    'src/lib/ui/Icone.svelte'
-  ];
+  const FICHIERS = globSync('src/**/*.svelte');
 
   const connus = new Set([
     ...TRANSPARENCES.map(({ alpha }) => alpha),
@@ -333,6 +330,117 @@ describe('la palette', () => {
  * par D25 — dont l'une repeignait des liens en clair sur un panneau clair. Une
  * exigence qui n'est vérifiée qu'à un seul endroit ne l'est pas.
  */
+/**
+ * La partition des jetons : ce qui peint du texte, et ce qui peint dessous.
+ *
+ * `PAIRES` mesure des paires nommées ici. Elle ne dit rien des paires que les
+ * composants forment réellement : une encre qui est en fait une surface
+ * n'apparaît dans aucune ligne de sa table, donc n'existe pas pour elle. Deux
+ * liens ont vécu peints en `--fond` sur une carte blanche — 1,17:1 — sans que
+ * rien ne s'en aperçoive (design.md, D64).
+ *
+ * Ce sont des survivants de l'apparence sombre supprimée par D25 : `--fond`
+ * était alors la couleur claire, et un lien clair sur un panneau sombre était
+ * juste. D49 a retourné la palette, les déclarations sont restées.
+ *
+ * Le contrôle ci-dessous est structurel et non numérique : il ne vérifie pas la
+ * paire formée, il refuse qu'une surface serve d'encre. Vérifier la paire
+ * réellement peinte demanderait de remonter la surface depuis le composant,
+ * donc de résoudre la cascade, donc un moteur CSS — un coût sans commune mesure
+ * avec ce qu'il attraperait en plus.
+ *
+ * Ce qu'il ne voit pas, et qu'il faut dire : une encre licite posée sur une
+ * surface où elle ne tient pas son seuil. Il ferme la classe d'erreur constatée
+ * deux fois, pas toutes.
+ */
+const SURFACES = ['fond', 'carte', 'chip', 'creux', 'bord'] as const;
+
+/**
+ * Les inversions : les endroits où une surface peint bien du texte, et pourquoi.
+ *
+ * L'étiquette du jour courant est blanche sur encre. Elle emploie `--carte` là
+ * où l'on attendrait une encre, et c'est juste : ce qui est dessous est `--ink`,
+ * pas une carte. La partition ci-dessus ne peut pas le voir — elle lit une
+ * déclaration, pas la surface qui la porte.
+ *
+ * Elles ne sont donc **pas exemptées, mais déclarées et mesurées** : chacune est
+ * une paire de plus dans le contrôle numérique. Une exemption ferait sortir la
+ * couleur de toute vérification, ce qui est exactement l'état d'où l'on vient.
+ * Le prix est une ligne à écrire pour chaque inversion — et c'est le prix juste,
+ * puisque c'est aussi ce qui force à dire sur quel fond elle se pose.
+ */
+const INVERSIONS: {
+  fichier: string;
+  texte: string;
+  fond: string;
+  seuil: number;
+  quoi: string;
+}[] = [
+  {
+    fichier: 'src/routes/semaine/+page.svelte',
+    texte: 'carte',
+    fond: 'ink',
+    seuil: 4.5,
+    quoi: 'étiquette « Aujourd’hui » de la ligne du jour courant'
+  }
+];
+
+describe('les inversions tiennent leur seuil', () => {
+  for (const { texte, fond, seuil, quoi, fichier } of INVERSIONS) {
+    it(`${quoi} tient ${seuil}:1`, () => {
+      const avant = jetons[texte];
+      const arriere = jetons[fond];
+      expect(avant, `jeton --${texte} absent`).toBeDefined();
+      expect(arriere, `jeton --${fond} absent`).toBeDefined();
+
+      const rapport = contraste(avant as string, arriere as string);
+      expect(
+        Number(rapport.toFixed(2)),
+        `--${texte} sur --${fond} : ${rapport.toFixed(2)}:1 (${fichier})`
+      ).toBeGreaterThanOrEqual(seuil);
+    });
+  }
+});
+
+describe('un jeton de surface ne peint jamais du texte', () => {
+  const COMPOSANTS = globSync('src/**/*.svelte');
+
+  it('trouve bien des composants à contrôler', () => {
+    expect(COMPOSANTS.length).toBeGreaterThan(5);
+  });
+
+  it('ne partitionne que des jetons qui existent', () => {
+    for (const surface of SURFACES) {
+      expect(jetons[surface], `jeton --${surface} absent`).toBeDefined();
+    }
+  });
+
+  for (const fichier of COMPOSANTS) {
+    it(`${fichier} n'emploie aucune surface comme encre`, () => {
+      const source = readFileSync(fichier, 'utf8');
+
+      /*
+        `color:` seul, et non `accent-color:` ni `background-color:`. Le premier
+        peint la coche d'une case dont le navigateur choisit lui-même le
+        contraste ; le second peint une surface, ce qui est le rôle du jeton.
+      */
+      const declarees = new Set(
+        INVERSIONS.filter((inversion) => inversion.fichier === fichier).map(({ texte }) => texte)
+      );
+
+      const fautes = [...source.matchAll(/(?<![\w-])color:\s*var\(--([\w-]+)\)/g)]
+        .map((m) => m[1] as string)
+        .filter((jeton) => (SURFACES as readonly string[]).includes(jeton))
+        .filter((jeton) => !declarees.has(jeton));
+
+      expect(
+        [...new Set(fautes)],
+        'jeton de surface employé comme couleur de texte : il n’est pas calculé pour porter du texte, et la paire ainsi formée échappe à toute mesure'
+      ).toEqual([]);
+    });
+  }
+});
+
 describe("l'apparence ne dépend d'aucune préférence extérieure", () => {
   /*
     Le sprite est joint aux composants, et il faut le dire.

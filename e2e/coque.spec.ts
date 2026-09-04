@@ -92,12 +92,70 @@ test('les onglets ne figurent que sur les deux écrans qu’ils choisissent entr
   }
 });
 
-test('un écran hors des onglets porte sa propre sortie, nommée', async ({ page }) => {
-  for (const ecran of ['/reglages', '/greve', '/a-propos']) {
+test('un écran hors des onglets porte sa sortie dans l’en-tête, nommée', async ({ page }) => {
+  // La sortie a quitté la fin du flux pour l'emplacement de commande de
+  // l'enseigne (D62). Elle remonte d'un cran : le menu de grève ne s'atteint que
+  // par les réglages, et y ramène.
+  const sorties = [
+    { ecran: '/reglages', nom: 'Retour au menu', vers: /\/$/ },
+    { ecran: '/a-propos', nom: 'Retour au menu', vers: /\/$/ },
+    { ecran: '/greve', nom: 'Retour aux réglages', vers: /\/reglages\/?$/ }
+  ];
+
+  for (const { ecran, nom, vers } of sorties) {
     await page.goto(ecran);
-    await page.getByRole('button', { name: 'Retour au menu' }).click();
-    await expect(page).toHaveURL(/\/$/);
+    const sortie = page.getByRole('link', { name: nom });
+
+    // Dans l'en-tête, et non après le contenu : elle précède tout ce que
+    // l'écran montre.
+    const boite = await sortie.boundingBox();
+    const contenu = await page.locator('.shell > :nth-child(2)').boundingBox();
+    expect(boite!.y, `${ecran} : la sortie devrait précéder le contenu`).toBeLessThan(contenu!.y);
+
+    await sortie.click();
+    await expect(page).toHaveURL(vers);
   }
+});
+
+test('l’emplacement de commande de l’enseigne porte toujours une commande, et une seule', async ({
+  page
+}) => {
+  /*
+    La roue crantée sur les deux écrans de menu, la sortie partout ailleurs
+    (D62). L'emplacement n'est jamais vide — un écran dont on ne repart pas
+    n'existe pas — et ne porte jamais les deux : une roue qui mène ailleurs que
+    là où l'on cherche à aller n'est pas une sortie.
+  */
+  const attendus = [
+    { ecran: '/', roue: 1 },
+    { ecran: '/semaine', roue: 1 },
+    { ecran: '/reglages', roue: 0 },
+    { ecran: '/greve', roue: 0 },
+    { ecran: '/a-propos', roue: 0 }
+  ];
+
+  for (const { ecran, roue } of attendus) {
+    await page.goto(ecran);
+    const enseigne = page.locator('.enseigne');
+
+    await expect(enseigne.locator('.commande'), `${ecran} : roue`).toHaveCount(roue);
+    await expect(enseigne.locator('.sortie'), `${ecran} : sortie`).toHaveCount(1 - roue);
+  }
+});
+
+test('l’en-tête ne change pas de hauteur d’un écran à l’autre', async ({ page }) => {
+  // La commande change de largeur — une roue de 44 pixels, une pilule nommée —
+  // mais l'enseigne réserve sa hauteur, et le nom du lieu se tronque plutôt que
+  // de se replier (D62).
+  const hauteurs: number[] = [];
+
+  for (const ecran of ['/', '/semaine', '/reglages', '/greve', '/a-propos']) {
+    await page.goto(ecran);
+    const boite = await page.locator('.enseigne').boundingBox();
+    hauteurs.push(boite!.height);
+  }
+
+  expect(new Set(hauteurs), `hauteurs relevées : ${hauteurs.join(', ')}`).toHaveProperty('size', 1);
 });
 
 test('le contenu réserve la hauteur du pied', async ({ page }) => {

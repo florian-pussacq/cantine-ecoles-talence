@@ -25,6 +25,51 @@ test('aucune requête vers un domaine tiers', async ({ page, baseURL }) => {
   expect(etrangeres).toEqual([]);
 });
 
+test('le pied de source aligne sa mention sur sa cible tactile', async ({ page }) => {
+  /*
+    Le défaut que ce test ferme (design.md, D63).
+
+    Le lien impose 44 pixels à la ligne — sa cible tactile. Sans
+    `align-items: center`, le texte voisin s'étirait par défaut à cette hauteur
+    et se posait en haut, tandis que le lien posait le sien au centre : quatorze
+    pixels séparaient les deux lignes de base, ce qui se lisait comme un
+    chevauchement.
+
+    **Ce sont les glyphes qui sont mesurés, et non les boîtes.** C'est la seule
+    mesure qui voie le défaut : sous `align-items: stretch`, la boîte du texte
+    fait déjà 44 pixels et son centre coïncide donc avec celui du lien. Ce qui se
+    décale, c'est le texte à l'intérieur. Un `Range` posé sur le nœud de texte
+    donne le rectangle des glyphes.
+  */
+  for (const ecran of ['/', '/semaine', '/greve']) {
+    await page.goto(ecran);
+    await expect(page.locator('.shell footer')).toBeVisible();
+
+    const ecart = await page.evaluate(() => {
+      const glyphes = (element: Element) => {
+        const portee = document.createRange();
+        portee.selectNodeContents(element);
+        const boite = portee.getBoundingClientRect();
+        return boite.y + boite.height / 2;
+      };
+
+      const pied = document.querySelector('.shell footer');
+      if (pied === null) throw new Error('pied de source introuvable');
+
+      const mention = pied.querySelector('span');
+      const lien = pied.querySelector('a');
+      if (mention === null || lien === null) throw new Error('pied de source incomplet');
+
+      return Math.abs(glyphes(mention) - glyphes(lien));
+    });
+
+    expect(
+      ecart,
+      `${ecran} : la mention et le lien du pied ne sont pas alignés`
+    ).toBeLessThanOrEqual(1);
+  }
+});
+
 test('aucun cookie déposé', async ({ page, context }) => {
   for (const ecran of ECRANS) await page.goto(ecran);
   expect(await context.cookies()).toEqual([]);

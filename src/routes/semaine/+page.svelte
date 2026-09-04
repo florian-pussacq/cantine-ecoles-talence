@@ -10,9 +10,9 @@
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
+  import PiedSource from '$lib/ui/PiedSource.svelte';
   import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import AllergenChip from '$lib/menu/AllergenChip.svelte';
-  import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import {
     allergenNames,
     dayNumber,
@@ -139,6 +139,9 @@
   changent — même disposition que l'écran du jour, pour la même raison (D55,
   D56). Les commandes restent hors de la clé : les recréer perdrait le focus du
   clavier au milieu d'une navigation au clavier.
+
+  Ce rang porte aussi le titre de premier niveau de l'écran : la période
+  affichée, et non un titre constant nommant l'application (D61).
 -->
 <RangNavigation
   libelle="Navigation entre les semaines"
@@ -231,10 +234,13 @@
     <CommandeRetour libelle={retour.libelle} action={retour.action} />
   {/if}
 
-  <footer>
-    <span>{source?.updatedLabel ?? 'Source : Ville de Talence'}</span>
-    {#if source}<ExternalLink href={source.pdfUrl}>PDF officiel</ExternalLink>{/if}
-  </footer>
+  {#if source}
+    <PiedSource
+      updatedLabel={source.updatedLabel}
+      updatedAt={source.updatedAt}
+      pdfUrl={source.pdfUrl}
+    />
+  {/if}
 {/if}
 
 <style>
@@ -402,26 +408,5 @@
 
   .chips {
     margin-top: 0.22rem;
-  }
-
-  footer {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-2) 0;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-    color: var(--ink);
-    opacity: 0.72;
-    font-size: var(--text-xs);
-  }
-
-  footer :global(a) {
-    color: var(--ink);
-    font-weight: 700;
-    opacity: 1;
-    /* Cible tactile : un lien isolé doit être atteignable au pouce. */
-    min-height: var(--touch);
-    display: inline-flex;
-    align-items: center;
   }
 </style>

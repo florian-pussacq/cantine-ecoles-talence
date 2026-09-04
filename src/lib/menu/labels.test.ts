@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   allergenNames,
+  browsedEyebrow,
   courseName,
   dayNumber,
   formatDay,
@@ -51,6 +52,43 @@ describe('targetEyebrow', () => {
 
   it('dit explicitement qu’un menu n’est pas publié', () => {
     expect(targetEyebrow({ status: 'not-published' })).toBe('Menu non publié');
+  });
+});
+
+describe('browsedEyebrow', () => {
+  const AUJOURD_HUI = '2026-09-10';
+
+  it('nomme aujourd’hui', () => {
+    expect(browsedEyebrow('2026-09-10', AUJOURD_HUI)).toBe("Aujourd'hui");
+  });
+
+  it('dit « demain » et « hier » plutôt que de compter jusqu’à un', () => {
+    expect(browsedEyebrow('2026-09-11', AUJOURD_HUI)).toBe('Demain');
+    expect(browsedEyebrow('2026-09-09', AUJOURD_HUI)).toBe('Hier');
+  });
+
+  it('compte les jours au-delà, dans les deux sens', () => {
+    expect(browsedEyebrow('2026-09-12', AUJOURD_HUI)).toBe('Dans 2 jours');
+    expect(browsedEyebrow('2026-09-08', AUJOURD_HUI)).toBe('Il y a 2 jours');
+    expect(browsedEyebrow('2026-09-20', AUJOURD_HUI)).toBe('Dans 10 jours');
+    expect(browsedEyebrow('2026-08-31', AUJOURD_HUI)).toBe('Il y a 10 jours');
+  });
+
+  it('franchit les mois et les années sans se tromper d’un jour', () => {
+    expect(browsedEyebrow('2026-10-01', '2026-09-30')).toBe('Demain');
+    expect(browsedEyebrow('2027-01-01', '2026-12-31')).toBe('Demain');
+    expect(browsedEyebrow('2026-03-30', '2026-03-28')).toBe('Dans 2 jours');
+  });
+
+  it('ne compte jamais un seul jour', () => {
+    /*
+      Le pluriel de « Dans n jours » n'est pas traité, et ne peut pas l'être à
+      tort : les écarts de un sont captés plus haut. Ce contrôle est là pour que
+      la suppression de l'une de ces deux branches soit vue (D60).
+    */
+    for (const date of ['2026-09-11', '2026-09-09']) {
+      expect(browsedEyebrow(date, AUJOURD_HUI)).not.toMatch(/1 jours/);
+    }
   });
 });
 

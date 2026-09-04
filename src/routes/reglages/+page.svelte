@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '$lib/filter/storage.js';
-  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -99,14 +97,6 @@
     <span class="detail">Cinq jours de semaine, en repas chauds ou froids</span>
   </a>
 </section>
-
-<!--
-  Sans onglets Jour/Semaine sur cet écran (+layout.svelte), sortir des réglages
-  exige une commande nommée plutôt qu'une pilule qui n'a rien à y proposer. La
-  destination est fixe — « le » menu, pas celui qu'on regardait avant — donc pas
-  besoin de l'historique du navigateur pour la désigner.
--->
-<CommandeRetour libelle="Retour au menu" action={() => goto(resolve('/'))} />
 
 <style>
   .panel + .panel {

@@ -5,11 +5,12 @@
   import DaySheet from '$lib/menu/DaySheet.svelte';
   import Tray from '$lib/menu/Tray.svelte';
   import PlatCarte from '$lib/menu/PlatCarte.svelte';
-  import { formatDay, targetEyebrow, targetReturnLabel } from '$lib/menu/labels.js';
+  import { browsedEyebrow, formatDay, targetEyebrow, targetReturnLabel } from '$lib/menu/labels.js';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
+  import PiedSource from '$lib/ui/PiedSource.svelte';
   import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
   import type { PageProps } from './$types.js';
 
@@ -41,13 +42,32 @@
   const day = $derived(date === null ? null : (data.dataset.byDate.get(date) ?? null));
 
   /**
-   * Qui a choisi le jour affiché — c'est ce qui décide de tout l'en-tête (D44).
+   * Qui a choisi le jour affiché — c'est ce qui décide de la mention et du
+   * retour (D44, D60).
    *
-   * Si c'est le système, l'en-tête situe. Si c'est l'utilisateur, il offre le
-   * retour. La constante « Menu du jour », qui occupait ce cas, disait la même
-   * chose tous les jours, dans les deux directions et à toutes les distances.
+   * Si c'est le système, la mention dit pourquoi ce jour-là, et il n'y a nulle
+   * part où revenir. Si c'est l'utilisateur, la mention dit la distance, et le
+   * retour est offert. La constante « Menu du jour », qui occupait ce cas,
+   * disait la même chose tous les jours, dans les deux directions et à toutes
+   * les distances.
    */
   const ecarte = $derived(chosen !== null && chosen !== repere);
+
+  /**
+   * Ce que la mention dit, et qui le lui fait dire (design.md, D60).
+   *
+   * Tant que l'écran montre ce que le système a choisi, elle en donne la raison.
+   * Dès qu'on a navigué, cette raison ne décrit plus rien de ce qui est là, et
+   * la seule chose qui reste utile est la distance au jour courant.
+   *
+   * Aucune garde à ajouter pour le cas sans date : `date` ne vaut `null` que si
+   * `repere` et `chosen` sont tous deux nuls, ce qui rend `ecarte` faux. Le
+   * second membre est donc le seul atteignable, et il annonce « Menu non
+   * publié ».
+   */
+  const mention = $derived(
+    ecarte && date !== null ? browsedEyebrow(date, today) : targetEyebrow(target)
+  );
 
   const retourLibelle = $derived(targetReturnLabel(target));
   const retour = $derived(
@@ -109,8 +129,10 @@
   Le rang de navigation porte la date, entre les deux commandes qui la changent
   (design.md, D55, D56).
 
-  Elle vivait dans l'en-tête, qui est devenu un titre fixe. C'est ici qu'elle est
-  le plus utile : contre le geste qui la fait changer, et non trois blocs plus
+  Elle vivait dans l'en-tête, qui a d'abord porté un titre fixe, puis disparu de
+  cet écran : la date est devenue son titre de premier niveau, portée par ce rang
+  (D61). C'est ici qu'elle est le plus utile : contre le geste qui la fait
+  changer, et non trois blocs plus
   haut. La maquette la place au même endroit, et dessine par-dessus un second
   rang de flèches en bas de la liste — redondance de maquette, pas intention :
   deux jeux de commandes pour une seule action, dont l'un sort du champ dès
@@ -133,7 +155,7 @@
   }}
   cle={date}
   {sens}
-  mention={targetEyebrow(target)}
+  {mention}
   principal={date === null ? 'Menus des écoles' : formatDay(date)}
 />
 
@@ -243,15 +265,11 @@
     <CommandeRetour libelle={retour.libelle} action={retour.action} />
   {/if}
 
-  <footer>
-    <span>
-      {day.source.updatedLabel ??
-        (day.source.updatedAt
-          ? `Mis à jour le ${formatDay(day.source.updatedAt)}`
-          : 'Source : Ville de Talence')}
-    </span>
-    <ExternalLink href={day.source.pdfUrl}>PDF officiel</ExternalLink>
-  </footer>
+  <PiedSource
+    updatedLabel={day.source.updatedLabel}
+    updatedAt={day.source.updatedAt}
+    pdfUrl={day.source.pdfUrl}
+  />
 {/if}
 
 {#if ouverte && day}
@@ -393,26 +411,5 @@
     outline: 3px solid var(--ink);
     outline-offset: 3px;
     border-radius: var(--radius-carte);
-  }
-
-  footer {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-2) 0;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-    color: var(--ink);
-    opacity: 0.72;
-    font-size: var(--text-xs);
-  }
-
-  footer :global(a) {
-    color: var(--ink);
-    font-weight: 700;
-    opacity: 1;
-    /* Cible tactile : un lien isolé doit être atteignable au pouce. */
-    min-height: var(--touch);
-    display: inline-flex;
-    align-items: center;
   }
 </style>

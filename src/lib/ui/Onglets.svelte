@@ -18,10 +18,10 @@
    * Ce choix n'apparaît que sur les deux écrans qu'il choisit entre
    * (`+layout.svelte`). Un temps, les écrans qui n'y figuraient pas s'en
    * servaient comme sortie — on les quittait en désignant où l'on allait, faute
-   * de mieux. Chacun porte désormais sa propre commande de retour, nommée, dans
-   * son propre flux : rien de ce que cette pilule propose ne s'y consulte, et
-   * une pilule muette sur ce qu'elle quitte n'est pas une sortie, c'est un
-   * détour.
+   * de mieux. Chacun porte désormais sa propre sortie, nommée, dans l'en-tête,
+   * à la place qu'y occupe la roue crantée sur les écrans de menu (D62) : rien
+   * de ce que cette pilule propose ne s'y consulte, et une pilule muette sur ce
+   * qu'elle quitte n'est pas une sortie, c'est un détour.
    *
    * Un onglet ne réinitialise pas le jour consulté, et ce n'est pas un oubli
    * (D48) : le partage du jour entre les deux écrans est ce qui fait qu'ouvrir
