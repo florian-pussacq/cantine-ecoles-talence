@@ -22,6 +22,9 @@ npm run validate && npm run build
 et `npm run test:e2e` dès qu'un commit touche l'interface ou les données
 servies.
 
+Les messages de commit sont concis : un titre, un corps court si nécessaire. Pas
+de ligne `Co-Authored-By` ni `Claude-Session`.
+
 Un commit rouge ne se commite pas. Un commit vert reste local jusqu'à ce qu'on
 te demande de pousser — et alors seulement, tu pousses.
 
