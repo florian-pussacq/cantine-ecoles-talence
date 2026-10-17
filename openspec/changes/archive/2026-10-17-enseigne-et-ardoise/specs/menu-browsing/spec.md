@@ -1,3 +1,8 @@
+## RENAMED Requirements
+
+- FROM: `### Requirement: Couche modale de détail d'un plat`
+- TO: `### Requirement: Couche modale de détail de la journée`
+
 ## REMOVED Requirements
 
 ### Requirement: Grille compartimentée de l'écran Aujourd'hui

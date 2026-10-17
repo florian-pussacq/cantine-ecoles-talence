@@ -62,7 +62,7 @@
 - [x] 8.1 Faire passer le test de 1.1 et relever la hauteur obtenue
 - [x] 8.2 Faire tourner `large.spec.ts` : la structure doit rester identique à une autre échelle, sans seconde mise en page (D23)
 - [x] 8.3 Faire tourner `balayage.spec.ts` et `couche-modale.spec.ts` : la cible a changé de nature, ces deux fichiers la touchent
-- [ ] 8.4 Vérifier au doigt, sur un téléphone, ce qu'aucun test ne dira : qu'un appui destiné à faire défiler n'ouvre pas la fiche — **reste à faire, aucune machine de développement ne le montrera**
+- [x] 8.4 Vérifier au doigt, sur un téléphone, ce qu'aucun test ne dira : qu'un appui destiné à faire défiler n'ouvre pas la fiche — vérifié à la main par le mainteneur (17 octobre 2026)
 - [x] 8.5 `npm run validate && npm run build && npm run test:e2e` au vert avant tout commit
 
 ## 9. Ce que l'implémentation a trouvé en chemin

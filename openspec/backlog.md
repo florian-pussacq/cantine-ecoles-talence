@@ -100,3 +100,23 @@ En coupant la publication automatique de Netlify, pour qu'elle ne parte que du
 hook appelé par la CI une fois verte, la production ne recevrait plus que des
 commits vérifiés. Ce serait aussi un seul déploiement par lot de commits poussés.
 
+## 10. Archiver les changements restés ouverts, dans l'ordre
+
+Une exigence MODIFIED remplace le bloc entier dans la spec principale : archiver
+dans le désordre fait régresser la spec sans que rien ne le signale. Ordre réel,
+lu dans la numérotation des décisions :
+
+1. `menus-jour-semaine` (80/82) — le socle. **Ne jamais synchroniser tel quel** :
+   ses exigences d'origine écraseraient tout ce qui a suivi. L'archiver sans
+   synchroniser, après avoir vérifié que chaque exigence ADDED est déjà dans
+   `openspec/specs/`.
+2. ~~`enseigne-et-ardoise`~~ et ~~`retour-au-jour`~~ — archivés le 17 octobre.
+   Il a fallu déclarer deux renommages (`RENAMED`) que le delta faisait sans les
+   dire.
+3. `menu-en-cartes` (39/42), puis `illustrations-en-volume` (26/27), puis
+   `menu-de-greve` (0/23 cochées alors qu'il est en ligne : cocher d'après le
+   code avant d'archiver), puis `coque-et-mentions` (37/38).
+
+D'ici là, `openspec/specs/menu-browsing/spec.md` décrit l'en-tête tel que
+`retour-au-jour` l'avait laissé : en retard sur le code (D55, D61, D62).
+

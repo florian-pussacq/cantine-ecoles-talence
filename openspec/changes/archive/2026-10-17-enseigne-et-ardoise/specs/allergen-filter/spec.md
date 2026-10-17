@@ -1,3 +1,8 @@
+## RENAMED Requirements
+
+- FROM: `### Requirement: Détail des allergènes d'un plat`
+- TO: `### Requirement: Détail des allergènes de la journée`
+
 ## MODIFIED Requirements
 
 ### Requirement: Détail des allergènes de la journée
