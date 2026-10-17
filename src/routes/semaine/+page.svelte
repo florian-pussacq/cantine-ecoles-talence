@@ -15,6 +15,7 @@
   import AllergenChip from '$lib/menu/AllergenChip.svelte';
   import {
     allergenNames,
+    allergensUndeclared,
     dayNumber,
     formatDay,
     formatWeekday,
@@ -195,6 +196,10 @@
                   </span>
                   <span class="main">{course.label}</span>
                   {#if rest(day)}<span class="rest">{rest(day)}</span>{/if}
+                  {#if allergensUndeclared(day.source)}
+                    <!-- Le filtre ne peut rien signaler ce jour-là : le dire (allergenes-non-communiques). -->
+                    <span class="rest">Allergènes non précisés</span>
+                  {/if}
                   {#if flagged(day).codes.length > 0}
                     <span class="chips">
                       <AllergenChip {...flagged(day)} count={flaggedCount(day)} compact />

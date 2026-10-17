@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "month": "2099-02",
+  "source": {
+    "pdfUrl": "https://example.invalid/fixture-synthetique.pdf",
+    "pdfSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "updatedLabel": null,
+    "updatedAt": null,
+    "fetchedAt": "2099-01-01T00:00:00Z",
+    "producerVersion": "fixture",
+    "allergensDeclared": false
+  },
+  "allergenLegend": {
+    "1": "Gluten",
+    "3": "Œufs",
+    "4": "Poisson",
+    "7": "Lait",
+    "9": "Céleri"
+  },
+  "days": [
+    {
+      "date": "2099-02-02",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Lasagnes bolognaise",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage blanc",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Compote",
+          "allergens": [],
+          "flags": []
+        }
+      ]
+    }
+  ]
+}

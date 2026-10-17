@@ -555,10 +555,23 @@ def main() -> None:
         ordered["courses"] = day["courses"]
         days[i] = ordered
 
+    source = build_source(args, blob, label, updated_at)
+    # Un document qui ne code que le gluten du pain ne précise pas les allergènes
+    # de ses plats : la Toussaint 2026 est ainsi. Ses listes vides ne disent alors
+    # rien, et l'application doit le savoir (allergenes-non-communiques, D2).
+    if not any(
+        course["allergens"]
+        for day in days
+        for course in day["courses"]
+        if course["slot"] != "pain"
+    ):
+        source["allergensDeclared"] = False
+        warnings.append("aucun allergène hors du pain : le document ne les précise pas")
+
     out = {
         "schemaVersion": 1,
         "month": month,
-        "source": build_source(args, blob, label, updated_at),
+        "source": source,
         "allergenLegend": ALLERGEN_LEGEND,
         "days": days,
     }

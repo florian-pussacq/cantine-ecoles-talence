@@ -59,6 +59,10 @@
         "producerVersion": {
           "description": "Version du producteur ayant écrit ce fichier. « manual » pour une saisie humaine, un numéro de version pour le parser.",
           "type": "string"
+        },
+        "allergensDeclared": {
+          "description": "Faux si le document ne précise pas les allergènes de ses plats — aucun plat autre que le pain n'y porte de code. Une liste d'allergènes vide ne dit alors rien : l'application ne doit présenter aucun plat comme n'ayant pas d'allergène déclaré. Absent, il vaut vrai.",
+          "type": "boolean"
         }
       }
     },

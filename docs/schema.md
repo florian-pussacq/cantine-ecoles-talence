@@ -46,6 +46,8 @@ Documentés au §4 du PRD, constatés sur des extractions réelles. Ils ne sont 
 
 **Un jour férié prend la place d'un jour servi.** Sa colonne porte la date, puis `JOUR` et `FÉRIÉ` sur deux lignes, là où seraient les plats. Lu par rang, il donne un plat « JOUR » et un accompagnement « FÉRIÉ ». Le producteur reconnaît la cellule entière et produit un jour `public-holiday` sans plats ; la validation refuse en outre tout jour servi portant l'un de ces deux libellés.
 
+**Un document peut ne pas préciser les allergènes.** Le menu des vacances de la Toussaint 2026 ne code que le gluten du pain. Ses listes vides ne disent alors rien, et `source.allergensDeclared` le dit : faux quand aucun plat hors du pain ne porte de code, absent sinon. L'application ne présente alors aucun plat comme « sans allergène déclaré », et le filtre dit qu'il ne peut rien signaler.
+
 **Le PDF est un export Excel.** Les métadonnées le disent (`Creator: Microsoft® Excel®`), ce qui laisse espérer une géométrie de cellules régulière — bien plus docile qu'une mise en page libre.
 
 ## Ce que le producteur ne décide pas
@@ -58,4 +60,4 @@ Documentés au §4 du PRD, constatés sur des extractions réelles. Ils ne sont 
 
 `schemaVersion` vaut `1`. L'application refuse un fichier dont la version dépasse celle qu'elle sait lire, plutôt que d'en interpréter une partie.
 
-Un ajout de champ facultatif ne change pas la version. L'ajout de la nature `public-holiday` non plus, et pour une raison qu'il faut garder vraie : l'application ne lit `kind` que par égalité avec `school`. Une version en cache lit donc un férié comme un jour non servi, ce qui est exact. Le jour où un traitement exhaustif de `kind` apparaît, une nouvelle valeur exigera une nouvelle version. Un retrait, un renommage ou un changement de sens en exigent une nouvelle. Tant qu'il n'existe qu'un seul consommateur, ce coût est proche de zéro : ne pas hésiter à incrémenter plutôt qu'à tordre un champ existant.
+Un ajout de champ facultatif ne change pas la version. L'ajout de la nature `public-holiday` non plus, et pour une raison qu'il faut garder vraie : l'application ne lit `kind` que par égalité avec `school`. Une version en cache lit donc un férié comme un jour non servi, ce qui est exact. Le jour où un traitement exhaustif de `kind` apparaît, une nouvelle valeur exigera une nouvelle version. `source.allergensDeclared` est un champ facultatif ajouté : une version qui l'ignore écrit « Aucun allergène déclaré », ce qui reste littéralement vrai. Un retrait, un renommage ou un changement de sens en exigent une nouvelle. Tant qu'il n'existe qu'un seul consommateur, ce coût est proche de zéro : ne pas hésiter à incrémenter plutôt qu'à tordre un champ existant.

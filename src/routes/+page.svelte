@@ -5,7 +5,15 @@
   import DaySheet from '$lib/menu/DaySheet.svelte';
   import Tray from '$lib/menu/Tray.svelte';
   import PlatCarte from '$lib/menu/PlatCarte.svelte';
-  import { browsedEyebrow, formatDay, targetEyebrow, targetReturnLabel } from '$lib/menu/labels.js';
+  import {
+    allergensUndeclared,
+    browsedEyebrow,
+    formatDay,
+    targetEyebrow,
+    targetReturnLabel,
+    undeclaredNotice
+  } from '$lib/menu/labels.js';
+  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
@@ -185,6 +193,18 @@
   {#if day.confidence === 'low'}
     <p class="warn">
       Données incertaines pour ce jour.
+      <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
+    </p>
+  {/if}
+
+  {#if allergensUndeclared(day.source)}
+    <!--
+      Le filtre se tairait sur chaque plat : rien n'est signalé parce que rien
+      n'est connu. Le dire est le seul cas où il parle sans correspondance
+      (allergenes-non-communiques, D3).
+    -->
+    <p class="warn">
+      {undeclaredNotice(allergenFilter.codes.size > 0)}
       <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
     </p>
   {/if}

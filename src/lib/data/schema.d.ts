@@ -52,6 +52,10 @@ export interface Source {
    * Version du producteur ayant écrit ce fichier. « manual » pour une saisie humaine, un numéro de version pour le parser.
    */
   producerVersion?: string;
+  /**
+   * Faux si le document ne précise pas les allergènes de ses plats — aucun plat autre que le pain n'y porte de code. Une liste d'allergènes vide ne dit alors rien : l'application ne doit présenter aucun plat comme n'ayant pas d'allergène déclaré. Absent, il vaut vrai.
+   */
+  allergensDeclared?: boolean;
 }
 /**
  * Les quatorze allergènes réglementaires, du code numérique vers son libellé en clair. La légende est portée par le fichier plutôt que codée en dur : elle est imprimée sur le document source et peut y être formulée autrement.

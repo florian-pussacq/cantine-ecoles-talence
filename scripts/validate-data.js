@@ -31,7 +31,7 @@ const STRIKE_FILE = 'greve.json';
 
 // Validés comme les fichiers publiés, mais absents du manifeste : ce sont des
 // données de test, elles ne doivent jamais atteindre un utilisateur.
-const FIXTURES = ['fixtures/edge-cases.json'];
+const FIXTURES = ['fixtures/edge-cases.json', 'fixtures/sans-allergenes.json'];
 
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats.default(ajv);
@@ -88,6 +88,22 @@ function normalize(label) {
 function checkCoherence(file, data) {
   const { min, max } = dateBounds(data.month);
   let previous = '';
+
+  // Un document qui se dit muet sur les allergènes ne peut pas en porter hors du
+  // pain : l'un des deux est faux, et c'est le parent qui paierait l'erreur
+  // (allergenes-non-communiques).
+  if (data.source.allergensDeclared === false) {
+    for (const day of data.days) {
+      for (const course of day.courses) {
+        if (course.slot !== 'pain' && course.allergens.length > 0) {
+          fail(
+            `${file}[${day.date}]`,
+            `« ${course.label} » porte des allergènes, alors que le document se dit sans allergènes précisés`
+          );
+        }
+      }
+    }
+  }
 
   for (const day of data.days) {
     const at = `${file}[${day.date}]`;

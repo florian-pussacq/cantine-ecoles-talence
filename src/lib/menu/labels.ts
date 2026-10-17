@@ -1,4 +1,4 @@
-import type { Course } from '../data/schema.js';
+import type { Course, Source } from '../data/schema.js';
 import { daysBetween, type DisplayTarget } from '../data/resolve.js';
 
 /**
@@ -306,4 +306,33 @@ export function flaggedAllergenNames(
   return allergenNames({ ...course, allergens: codes }, legend).map((allergen) =>
     shortAllergenName(allergen.name)
   );
+}
+
+/**
+ * Le document de ce jour ne précise pas les allergènes de ses plats
+ * (allergenes-non-communiques).
+ *
+ * Ses listes vides ne disent alors rien. Absent, le champ vaut vrai : c'est
+ * l'état de tous les mensuels.
+ */
+export function allergensUndeclared(source: Source): boolean {
+  return source.allergensDeclared === false;
+}
+
+/**
+ * L'avertissement d'un jour dont le document ne précise pas les allergènes.
+ *
+ * Quand des allergènes sont surveillés, il dit ce que le silence du filtre
+ * voudrait autrement dire : rien n'est signalé parce que rien n'est connu, pas
+ * parce que rien n'est présent (D3).
+ */
+export function undeclaredNotice(watching: boolean): string {
+  return watching
+    ? 'Ce menu ne précise pas les allergènes : ceux que vous surveillez ne peuvent pas être signalés ce jour-là.'
+    : 'Ce menu ne précise pas les allergènes de ses plats.';
+}
+
+/** Le libellé d'un plat sans code, selon que son document précise ou non les allergènes. */
+export function noAllergenLabel(source: Source): string {
+  return allergensUndeclared(source) ? 'Allergènes non communiqués' : 'Aucun allergène déclaré';
 }

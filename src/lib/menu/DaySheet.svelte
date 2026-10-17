@@ -7,7 +7,9 @@
     formatDay,
     LUNCH_SLOTS,
     qualityLabel,
-    slotLabel
+    slotLabel,
+    allergensUndeclared,
+    noAllergenLabel
   } from './labels.js';
   import ExternalLink from '../ui/ExternalLink.svelte';
   import { allergenIcon } from '../illustrations/allergens.js';
@@ -116,7 +118,7 @@
               déclaré » n'est pas « sans allergène », et l'écrire autrement
               serait une promesse qu'aucune donnée ne permet de tenir.
             -->
-            <p class="none">Aucun allergène déclaré</p>
+            <p class="none">{noAllergenLabel(day.source)}</p>
           {/if}
 
           {#if course.porkFree}
@@ -132,10 +134,17 @@
         <strong>Seul le document officiel de la Ville fait foi.</strong> Cette application n'est pas un
         service municipal et ne remplace pas un PAI.
       </span>
-      <span>
-        « Aucun allergène déclaré » signifie que le document source n'en mentionne aucun pour ce
-        plat. Cela ne garantit pas l'absence de traces.
-      </span>
+      {#if allergensUndeclared(day.source)}
+        <span>
+          « Allergènes non communiqués » : le document de ce jour ne précise pas les allergènes de
+          ses plats.
+        </span>
+      {:else}
+        <span>
+          « Aucun allergène déclaré » signifie que le document source n'en mentionne aucun pour ce
+          plat. Cela ne garantit pas l'absence de traces.
+        </span>
+      {/if}
       <ExternalLink href={day.source.pdfUrl}>Voir le PDF officiel</ExternalLink>
     </footer>
   </div>

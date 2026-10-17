@@ -12,7 +12,10 @@ import {
   slotLabel,
   targetEyebrow,
   targetReturnLabel,
-  weekReturnLabel
+  weekReturnLabel,
+  allergensUndeclared,
+  noAllergenLabel,
+  undeclaredNotice
 } from './labels.js';
 import type { Course } from '../data/schema.js';
 
@@ -299,5 +302,26 @@ describe('le libellé de la commande de retour', () => {
     expect(
       weekReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1, skipped: null })
     ).toBe('Prochain service');
+  });
+});
+
+describe('allergènes non communiqués', () => {
+  const declared = { pdfUrl: 'x', pdfSha256: '0'.repeat(64), fetchedAt: 'x' };
+  const undeclared = { ...declared, allergensDeclared: false };
+
+  it('tient un document muet pour muet, et tout autre pour précis', () => {
+    expect(allergensUndeclared(undeclared)).toBe(true);
+    expect(allergensUndeclared(declared)).toBe(false);
+    expect(allergensUndeclared({ ...declared, allergensDeclared: true })).toBe(false);
+  });
+
+  it('ne présente jamais un plat d’un document muet comme sans allergène déclaré', () => {
+    expect(noAllergenLabel(undeclared)).toBe('Allergènes non communiqués');
+    expect(noAllergenLabel(declared)).toBe('Aucun allergène déclaré');
+  });
+
+  it('dit au parent qui surveille des allergènes que le filtre ne peut rien signaler', () => {
+    expect(undeclaredNotice(true)).toMatch(/ne peuvent pas être signalés/);
+    expect(undeclaredNotice(false)).not.toMatch(/surveillez/);
   });
 });
