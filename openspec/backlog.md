@@ -85,7 +85,7 @@ page, comparer les empreintes et ouvrir une issue — ou une PR produite par le
 script — quand un PDF change ou quand le corpus couvre moins de deux semaines à
 venir. À concevoir après `ci-github`, dont il réutilise le socle.
 
-## 8. Jour figé au pré-rendu — proposé : `jour-au-premier-rendu`
+## 8. Jour figé au pré-rendu — `jour-au-premier-rendu`, archivé le 17 octobre 2026
 
 La reconstruction quotidienne d'abord envisagée ne règle rien : le service worker
 sert le HTML de la version installée sans le revalider, et chaque build crée une
