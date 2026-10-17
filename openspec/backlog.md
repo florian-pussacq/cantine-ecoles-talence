@@ -131,31 +131,12 @@ Toutes sont à faire. Décisions déjà prises avec l'humain le 17 octobre 2026 
 Étape 1 (alerte distincte de la volaille, allergènes cochés sur la fiche) :
 `alerte-et-fiche-cochee`, archivé le 17 octobre 2026.
 
-## 12. Fermer les échelles — à proposer
+## 12. Fermer les échelles — `fermer-les-echelles`, en cours
 
-`audit-design-system` a traité les tailles, les rayons et le voile de la fiche.
-Il reste :
-
-- **graisses** : 45 occurrences de trois valeurs (600 ×19, 700 ×15, 800 ×11)
-  → `--poids-moyen`, `--poids-fort`, `--poids-titre`, et `font-weight` surveillé
-  par `design-tokens.test.ts` ;
-- **voiles** : six `color-mix(--ink …)` ad hoc à 12, 22, 55 et 72 %
-  (`Onglets`, `greve`, `PiedSource`, `CommandeSortie`, `RangNavigation`,
-  `Enseigne`) → trois jetons (fond, trait, modale) ; `contrast.test.ts` les
-  mesure alors une fois au lieu d'un par un ;
-- **ombres** (5) et **courbe** de transition (`ease-out` en dur dans
-  `DaySheet`) ;
-- **trous du garde-fou** relevés à la vérification de l'audit : `tokens.css` est
-  exclu en entier, alors que ses règles de base portent `body { font-size: 16px }`
-  (hors échelle, ne suit pas le palier large — vérifier si du texte en hérite)
-  et `border-radius: 4px` sur le focus ; les raccourcis `border:`, `outline:`,
-  `box-shadow:`, `font:` et les attributs `style=` ne sont pas lus ;
-  `line-height: 17px` dans `CommandeReglages` ; deux `4px` qui doublent
-  `--space-1` (`Onglets`, `CommandeReglages`), et le commentaire du test qui
-  dit les espacements « sans échelle » ;
-- **à trancher** : l'audit recommandait un plancher à 11 px ;
-  `audit-design-system` (D3) a retenu `--text-2xs` à 10 px pour ne pas faire
-  passer les cartes sur deux lignes à 320 px. Confirmer ou relever.
+Graisses, voiles, mouvement, règles de base de `tokens.css` et trous du
+garde-fou. Décisions du 17 octobre 2026 : plancher gardé à 10 px, nouveaux
+jetons nommés en français, le texte à 72 % passe à `--ink-muted`, espacement
+minimal (les deux `4px` seulement). Voir `openspec/changes/fermer-les-echelles/`.
 
 ## 13. Composant Bandeau et « Aujourd'hui » unifié — à proposer
 
