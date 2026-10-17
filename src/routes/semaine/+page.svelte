@@ -312,7 +312,7 @@
     align-items: center;
     padding: var(--space-2) 0.55rem;
     border: 0;
-    border-radius: 11px;
+    border-radius: var(--radius-pastille);
     background: none;
     font: inherit;
     color: inherit;
@@ -381,13 +381,13 @@
   }
 
   .now {
-    font-size: 0.5625rem;
+    font-size: var(--text-2xs);
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     background: var(--ink);
     color: var(--carte);
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     padding: 0.12rem 0.42rem;
   }
 
@@ -412,7 +412,7 @@
   }
 
   .rest {
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
     color: var(--ink-muted);
     line-height: 1.35;
   }

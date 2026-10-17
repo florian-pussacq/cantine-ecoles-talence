@@ -254,7 +254,7 @@ describe('les surfaces peintes par transparence', () => {
  * été manquée à la lecture. Le contrôle lit les composants et refuse tout taux
  * qui ne serait ni mesuré ni explicitement tenu pour décoratif.
  *
- * Il ne couvre que `color-mix(… var(--on-table) N%, transparent)`, la forme
+ * Il ne couvre que `color-mix(in srgb, var(--ink) N%, transparent)`, la forme
  * mécaniquement reconnaissable. Les opacités appliquées à un élément entier ne
  * disent pas sur quel fond elles se posent, et resteraient à déclarer à la main.
  */

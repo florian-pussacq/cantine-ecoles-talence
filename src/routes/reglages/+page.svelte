@@ -214,7 +214,7 @@
     color: var(--ink);
     background: none;
     border: 1px solid var(--bord);
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     min-height: var(--touch);
     padding-inline: var(--space-3);
     cursor: pointer;
@@ -222,7 +222,7 @@
 
   .legal {
     margin: 0;
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     color: var(--ink-muted);
     line-height: 1.45;
   }

@@ -210,7 +210,7 @@
 
   .tags em {
     font-style: normal;
-    font-size: 0.5625rem;
+    font-size: var(--text-2xs);
     font-weight: 800;
     letter-spacing: 0.09em;
     text-transform: uppercase;

@@ -47,7 +47,7 @@
     align-self: flex-start;
     background: var(--chip);
     border: 2px solid var(--ink);
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     padding: 0.12rem 0.5rem 0.12rem 0.2rem;
     font-size: var(--text-xs);
     font-weight: 700;
@@ -57,7 +57,7 @@
 
   .chip.compact {
     border-width: 2px;
-    font-size: 0.625rem;
+    font-size: var(--text-2xs);
     padding: 0.06rem 0.4rem 0.06rem 0.16rem;
   }
 

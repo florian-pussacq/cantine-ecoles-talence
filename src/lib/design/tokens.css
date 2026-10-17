@@ -101,9 +101,17 @@
   --warn: #e89406;
   --warn-on: #2a1b00;
 
+  /* Le voile posé derrière la fiche du jour : il assourdit l'écran sans le
+     cacher, et ne porte aucun texte (audit-design-system, D2). */
+  --voile: rgb(0 0 0 / 0.45);
+
   /* Typographie : pile système, aucune requête réseau (PRD §8) */
   --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
+  /* Le plus petit cran : les étiquettes en capitales serrées dans une carte
+     (« Bio », « Aujourd'hui »), et les pastilles de compte. Aucun texte ne
+     descend plus bas (audit-design-system, D3). */
+  --text-2xs: 0.625rem;
   --text-xs: 0.6875rem;
   --text-sm: 0.8125rem;
   --text-base: 0.9375rem;
@@ -121,6 +129,8 @@
   --radius-carte: 16px;
   --radius-pastille: 10px;
   --radius-pilule: 999px;
+  /* Le haut de la fiche du jour, qui monte du bas de l'écran. */
+  --radius-feuille: 20px;
 
   /* Cible tactile minimale (WCAG 2.1 AA) */
   --touch: 44px;
@@ -169,6 +179,7 @@
   :root {
     --shell: 720px;
 
+    --text-2xs: 0.6875rem;
     --text-xs: 0.75rem;
     --text-sm: 0.875rem;
     --text-base: 1rem;

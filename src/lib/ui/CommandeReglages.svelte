@@ -64,7 +64,7 @@
     display: grid;
     place-items: center;
     color: var(--ink);
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
   }
 
   .compte {
@@ -74,10 +74,10 @@
     min-width: 17px;
     height: 17px;
     padding-inline: 4px;
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     background: var(--carte);
     color: var(--ink);
-    font-size: 0.625rem;
+    font-size: var(--text-2xs);
     font-weight: 800;
     line-height: 17px;
     text-align: center;

@@ -24,6 +24,8 @@ Une valeur qui n'a pas d'équivalent et qui a un sens reçoit un jeton nommé pa
 
 Les capsules de qualité et la marque « Aujourd'hui » sont des étiquettes en capitales, serrées dans une carte. Les passer à `--text-xs` (11 px) risque de faire passer une carte sur deux lignes à 320 px ; les laisser à 9 px laisse un texte qu'on lit mal.
 
-**Retenu :** un cran `--text-2xs`, `0.625rem` (10 px), et `0.6875rem` au palier large, pour qu'il suive l'échelle comme les autres. Les cinq usages à 9 et 10 px le prennent ; les trois à `0.75rem` prennent `--text-xs`, dont c'est la valeur au palier large et dont ils doivent suivre le palier.
+**Retenu :** un cran `--text-2xs`, `0.625rem` (10 px), et `0.6875rem` au palier large, pour qu'il suive l'échelle comme les autres. Les cinq usages à 9 et 10 px le prennent.
+
+*Corrigé à l'application.* Les trois `0.75rem` ne valent `--text-xs` qu'au palier large : sur téléphone, `--text-xs` fait 11 px et eux 12. Aucun cran ne tombe juste ; le choix se fait par ce que dit le texte. Le pied de la fiche et les mentions légales des réglages prennent `--text-sm` (13 px) : un texte qui porte « seul le document officiel fait foi » ne rétrécit pas. La ligne secondaire de la semaine prend `--text-xs` (11 px) : elle est serrée et d'appoint.
 
 À vérifier à l'œil à 320 px, avec les libellés les plus longs du corpus.

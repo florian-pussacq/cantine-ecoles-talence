@@ -171,7 +171,7 @@
     margin: auto auto 0;
     background: var(--carte);
     color: var(--ink);
-    border-radius: 20px 20px 0 0;
+    border-radius: var(--radius-feuille) var(--radius-feuille) 0 0;
 
     opacity: 0;
     translate: 0 12px;
@@ -208,14 +208,14 @@
   }
 
   dialog::backdrop {
-    background: rgb(0 0 0 / 0.45);
+    background: var(--voile);
   }
 
   @media (min-width: 640px) {
     dialog {
       max-width: 520px;
       margin: auto;
-      border-radius: 16px;
+      border-radius: var(--radius-carte);
     }
   }
 
@@ -266,7 +266,7 @@
     color: var(--ink);
     background: none;
     border: 1px solid var(--bord);
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     cursor: pointer;
   }
 
@@ -367,12 +367,12 @@
 
   .tags em {
     font-style: normal;
-    font-size: 0.5625rem;
+    font-size: var(--text-2xs);
     font-weight: 800;
     letter-spacing: 0.09em;
     text-transform: uppercase;
     border: 1.5px solid currentColor;
-    border-radius: 999px;
+    border-radius: var(--radius-pilule);
     padding: 0.08rem 0.4rem;
   }
 
@@ -392,7 +392,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    font-size: 0.75rem;
+    font-size: var(--text-sm);
     color: var(--ink-muted);
     line-height: 1.45;
   }
