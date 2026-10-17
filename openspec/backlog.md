@@ -67,11 +67,7 @@ Ce qu'on sait déjà :
   loisirs et non de cantine scolaire ? Probablement oui, la population servie
   n'étant pas la même.
 
-## 5. `ci-github` — appliqué le 17 octobre 2026, sauf la plateforme
-
-Voir `openspec/changes/ci-github/`. Restent les tâches 4.1, 4.2 et 5.2 : relier
-Netlify à GitHub, protéger `main`, constater une PR verte. Elles attendent l'accès
-en écriture à GitHub et une action humaine dans les deux interfaces.
+## 5. `ci-github` — archivé le 17 octobre 2026
 
 ## 6. Mention de l'écran du jour : week-end et vacances
 
@@ -104,4 +100,10 @@ construction). Le HTML a alors au plus quelques heures. À trancher : le service
 worker sert-il le HTML en cache avant de revalider ? Si oui, la reconstruction
 ne suffit pas, et la première peinture d'une application installée reste celle
 de sa dernière mise à jour. Ce workflow est aussi le socle de l'entrée 7.
+
+Le même build hook peut rétablir une barrière sans PR. On développe sur le tronc
+et Netlify publie à la poussée : un `e2e` rouge signale un défaut déjà en ligne.
+En coupant la publication automatique de Netlify, pour qu'elle ne parte que du
+hook appelé par la CI une fois verte, la production ne recevrait plus que des
+commits vérifiés. Ce serait aussi un seul déploiement par lot de commits poussés.
 
