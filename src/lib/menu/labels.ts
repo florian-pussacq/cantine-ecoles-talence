@@ -315,6 +315,54 @@ export function flaggedAllergenNames(
 }
 
 /**
+ * Le résumé de la fiche : pour chaque allergène surveillé, les plats qui le
+ * déclarent (alerte-et-fiche-cochee, D4).
+ *
+ * Les allergènes suivent l'ordre de la légende, les plats celui qu'on leur
+ * donne — celui de l'écran. Une liste vide se lit « aucun plat ne le déclare »,
+ * jamais « la journée en est exempte ».
+ *
+ * Un plat s'y nomme par son libellé et non par `courseName` : dans une phrase,
+ * le pain du jour est « Pain », pas « Bio », qualité que l'écran du jour
+ * promeut au rang de nom parce que le rôle la précède.
+ */
+export function watchedSummary(
+  courses: Course[],
+  legend: Record<string, string>,
+  codes: Iterable<number>
+): { code: number; name: string; courses: string[] }[] {
+  return [...codes]
+    .sort((a, b) => a - b)
+    .map((code) => ({
+      code,
+      name: shortAllergenName(legend[String(code)] ?? `Allergène ${code}`),
+      courses: courses
+        .filter((course) => course.allergens.includes(code))
+        .map((course) => course.label)
+    }));
+}
+
+/** Les allergènes d'un plat, ceux qu'on surveille en tête, chacun à sa place sinon. */
+export function watchedFirst<T extends { code: number }>(
+  allergens: T[],
+  watched: ReadonlySet<number>
+): (T & { watched: boolean })[] {
+  const marked = allergens.map((allergen) => ({
+    ...allergen,
+    watched: watched.has(allergen.code)
+  }));
+  return [...marked.filter((a) => a.watched), ...marked.filter((a) => !a.watched)];
+}
+
+/**
+ * L'avertissement de la fiche, un jour dont le document ne précise pas les
+ * allergènes et où l'on en surveille : il nomme ce qu'on ne peut pas vérifier.
+ */
+export function undeclaredWatched(names: string[]): string {
+  return `Ce menu ne précise pas les allergènes de ses plats : impossible de vérifier ${names.join(', ')} pour ce jour.`;
+}
+
+/**
  * Le document de ce jour ne précise pas les allergènes de ses plats
  * (allergenes-non-communiques).
  *

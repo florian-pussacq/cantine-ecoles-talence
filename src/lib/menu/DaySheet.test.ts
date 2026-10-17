@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/svelte';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import september from '../../../static/data/2026-09.json' with { type: 'json' };
+import toussaint from '../../../static/data/2026-10-vacances.json' with { type: 'json' };
+import { allergenFilter } from '../filter/allergens.svelte.js';
 import type { ResolvedDay } from '../data/dataset.js';
 import type { MonthMenu } from '../data/schema.js';
 import DaySheet from './DaySheet.svelte';
@@ -9,14 +11,14 @@ const menu = september as MonthMenu;
 const legend = menu.allergenLegend;
 
 /** Un jour réel du corpus, augmenté de ce que l'affichage attend. */
-function jour(date: string): ResolvedDay {
-  const day = menu.days.find((d) => d.date === date);
+function jour(date: string, source: MonthMenu = menu): ResolvedDay {
+  const day = source.days.find((d) => d.date === date);
   if (day === undefined) throw new Error(`jour absent du corpus : ${date}`);
   return {
     ...day,
-    month: menu.month,
-    legend,
-    source: { ...menu.source, pdfUrl: 'https://exemple.test/menus.pdf' },
+    month: source.month,
+    legend: source.allergenLegend,
+    source: { ...source.source, pdfUrl: 'https://exemple.test/menus.pdf' },
     sourceKind: 'monthly',
     title: null
   };
@@ -33,9 +35,16 @@ function jourComplet(): string {
   return day.date;
 }
 
-function sheetFor(date: string, onClose = () => {}) {
-  return render(DaySheet, { props: { day: jour(date), onClose } });
+function sheetFor(date: string, onClose = () => {}, source: MonthMenu = menu) {
+  return render(DaySheet, { props: { day: jour(date, source), onClose } });
 }
+
+/** Le filtre est un état partagé : chaque test le règle, et le rend vide. */
+function surveiller(...codes: number[]) {
+  for (const code of codes) allergenFilter.toggle(code);
+}
+
+afterEach(() => allergenFilter.clear());
 
 describe('la feuille est une couche modale', () => {
   it("s'ouvre modalement dès son montage", () => {
@@ -138,5 +147,82 @@ describe('les pictogrammes ne portent aucune information seuls', () => {
     const svgs = [...container.querySelectorAll('svg')];
     expect(svgs.length).toBeGreaterThan(0);
     for (const svg of svgs) expect(svg.getAttribute('aria-hidden')).toBe('true');
+  });
+});
+
+/*
+  Le 31 août : pain [gluten], panibuns [gluten, œufs, lait], moussaka [gluten,
+  lait, céleri], fromage [lait], fruit [rien], goûter [gluten, œufs, lait,
+  fruits à coques]. Le filtre se règle avant le rendu, comme à l'ouverture
+  réelle de la fiche.
+*/
+describe('la fiche met en avant ce que le parent surveille (alerte-et-fiche-cochee)', () => {
+  it("s'ouvre sur un résumé qui associe chaque allergène surveillé à ses plats", () => {
+    surveiller(7, 1);
+    const { container } = sheetFor('2026-08-31');
+    const resume = container.querySelector('.resume');
+    expect(resume).not.toBeNull();
+
+    // L'ordre est celui de la légende, et les plats celui de l'écran.
+    const lignes = [...(resume?.querySelectorAll('li') ?? [])].map((li) => li.textContent?.trim());
+    expect(lignes).toEqual([
+      expect.stringMatching(
+        /^Gluten\s*Panibuns aux fromages, Moussaka, Pain, Pain au lait Bio \+ Lingotin$/
+      ),
+      expect.stringMatching(
+        /^Lait\s*Panibuns aux fromages, Moussaka, Fromage, Pain au lait Bio \+ Lingotin$/
+      )
+    ]);
+  });
+
+  it("dit qu'aucun plat ne déclare un allergène surveillé, sans promettre son absence", () => {
+    surveiller(5);
+    const { container } = sheetFor('2026-08-31');
+    const resume = container.querySelector('.resume');
+    expect(resume?.textContent).toMatch(/Arachides\s*Aucun plat ne le déclare/);
+    expect(resume?.textContent).not.toMatch(/sans arachide|ne contient pas/i);
+  });
+
+  it('place les allergènes surveillés en tête de chaque plat, marqués en toutes lettres', () => {
+    surveiller(7);
+    const { container } = sheetFor('2026-08-31');
+    const panibuns = [...container.querySelectorAll('.plats > li')].find((li) =>
+      li.textContent?.includes('Panibuns aux fromages')
+    );
+    const pastilles = [...(panibuns?.querySelectorAll('.allergens li') ?? [])];
+
+    expect(pastilles.map((li) => li.querySelector('.nom')?.textContent)).toEqual([
+      'Lait',
+      legend['1'],
+      'Œufs'
+    ]);
+    // La marque est un texte, que lit un lecteur d'écran et qui tient en gris.
+    expect(pastilles[0]?.textContent).toMatch(/surveillé/);
+    expect(pastilles[0]?.classList.contains('surveille')).toBe(true);
+    expect(pastilles[1]?.textContent).not.toMatch(/surveillé/);
+  });
+
+  it('reste inchangée quand rien n’est surveillé', () => {
+    const { container } = sheetFor('2026-08-31');
+    expect(container.querySelector('.resume')).toBeNull();
+    expect(container.querySelector('.surveille')).toBeNull();
+    expect(screen.queryByText(/surveillé/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/réglages/i)).not.toBeInTheDocument();
+  });
+
+  it('avertit, un jour sans allergènes précisés, de ce qui ne peut pas être vérifié', () => {
+    surveiller(7);
+    const { container } = sheetFor('2026-10-19', () => {}, toussaint as MonthMenu);
+    expect(container.querySelector('.resume')).toBeNull();
+
+    const alerte = container.querySelector('.non-precise');
+    expect(alerte?.textContent).toMatch(/ne précise pas/);
+    expect(alerte?.textContent).toMatch(/Lait/);
+    expect(alerte?.querySelector('a')).toHaveAttribute('href', 'https://exemple.test/menus.pdf');
+  });
+
+  it("n'avertit pas un jour sans allergènes précisés si rien n'est surveillé", () => {
+    const { container } = sheetFor('2026-10-19', () => {}, toussaint as MonthMenu);
+    expect(container.querySelector('.non-precise')).toBeNull();
   });
 });

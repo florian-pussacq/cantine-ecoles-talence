@@ -41,6 +41,8 @@ La forme retenue est « résumé puis détail », celle de l'audit (piste 5). La
 
 **Résumé**, présent seulement si la sélection n'est pas vide. Une ligne par allergène surveillé, dans l'ordre de la légende. Chaque ligne donne le nom de l'allergène, puis soit les plats du jour qui le déclarent, dans l'ordre de l'écran, soit « Aucun plat ne le déclare ». La formulation garde le mot « déclare » : elle constate une déclaration, elle ne promet pas une absence.
 
+*Corrigé à l'application.* Un plat se nomme dans le résumé par son libellé, et non par le nom que lui donne l'écran du jour. Celui-ci promeut la qualité au rang de nom quand le libellé répète le rôle, ce qui faisait écrire « Bio » à la place du pain.
+
 **Détail**, dans chaque plat. Les allergènes surveillés passent en tête. Ils sont marqués par trois signaux qui tiennent en niveaux de gris : la graisse forte, un contour appuyé et le mot « surveillé » en toutes lettres, restitué au lecteur d'écran. Les autres prennent l'encre atténuée, `--ink-muted`, qui garde 4,5:1 : un allergène atténué reste lisible, il n'est pas masqué.
 
 **Jour non précisé**, quand `allergensUndeclared(day.source)` est vrai et la sélection non vide. Le résumé est remplacé par un message au ton d'alerte (`--warn` / `--warn-on`), qui nomme les allergènes surveillés qu'on ne peut pas vérifier et renvoie au document officiel. C'est l'application de la règle d'`allergenes-non-communiques` : l'incertitude se voit autant qu'une alerte, jamais moins.
@@ -50,7 +52,7 @@ La forme retenue est « résumé puis détail », celle de l'audit (piste 5). La
 ```
  ┌ Mercredi 14 octobre ─────────────── Fermer ┐
  │ Allergènes déclarés, plat par plat         │
- │ ┌ Vos allergènes ────────────────────────┐ │
+ │ ┌ Allergènes surveillés ─────────────────┐ │
  │ │ Gluten   Clafoutis aux fruits          │ │
  │ │ Lait     Salade grecque, Clafoutis     │ │
  │ └────────────────────────────────────────┘ │

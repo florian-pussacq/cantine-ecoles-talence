@@ -40,6 +40,9 @@ const jetons = readTokens();
 /** Les sept rôles du service, dans l'ordre où l'écran les montre (D50). */
 const ROLES = ['entree', 'plat', 'accompagnement', 'laitage', 'dessert', 'pain', 'gouter'] as const;
 
+/** Les familles de plat de l'écran de la semaine (D54). */
+const FAMILLES = ['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const;
+
 function canal(valeur: number): number {
   const s = valeur / 255;
   return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
@@ -127,11 +130,22 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
     n'est à distinguer et où la couleur dit bien ce qui varie d'un jour à
     l'autre. Elles restent donc mesurées, et sur les mêmes seuils.
   */
-  ...(['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const).map((famille) => ({
+  ...FAMILLES.map((famille) => ({
     texte: 'ink',
     fond: `fam-${famille}-pale`,
     seuil: 4.5,
     quoi: `texte sur la teinte pâle ${famille}`
+  })),
+  /*
+    L'anneau du disque de la semaine : c'est lui qui dit la famille. Élément
+    graphique porteur de sens, donc 3:1 (WCAG 1.4.11). La volaille n'y tenait
+    que 2,07 sans que rien ne le mesure (alerte-et-fiche-cochee, D2).
+  */
+  ...FAMILLES.map((famille) => ({
+    texte: `fam-${famille}`,
+    fond: `fam-${famille}-pale`,
+    seuil: 3,
+    quoi: `anneau ${famille} sur sa teinte pâle`
   }))
 ];
 
@@ -293,6 +307,56 @@ describe('couverture des transparences', () => {
         orphelins,
         'transparence peinte sur une surface claire sans être ni mesurée ni tenue pour décorative'
       ).toEqual([]);
+    });
+  }
+});
+
+/** Une couleur dans OKLab, où une distance euclidienne suit à peu près l'écart perçu. */
+function oklab(hex: string): [number, number, number] {
+  const [r, g, b] = composantes(hex).map(canal) as [number, number, number];
+  const [l, m, s] = [
+    0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+    0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+    0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b
+  ].map(Math.cbrt) as [number, number, number];
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+  ];
+}
+
+function ecartPercu(a: string, b: string): number {
+  return Math.hypot(...oklab(a).map((v, i) => v - (oklab(b)[i] as number)));
+}
+
+/**
+ * L'alerte ne ressemble à aucun plat (alerte-et-fiche-cochee, D2).
+ *
+ * `--warn` et `--fam-volaille` ont longtemps eu la même valeur : le bandeau
+ * « allergènes non précisés » avait la couleur du disque d'un jour de dinde. Un
+ * contrôle d'égalité ne suffit pas — `#e99507` le passerait et tromperait tout
+ * autant —, d'où une distance perçue.
+ *
+ * Le seuil de 0,15 est calé sur l'écart le plus faible de la palette, la viande
+ * à 0,19, avec une marge. Il refuse une famille qui ne différerait de l'alerte
+ * que par la clarté : `#b86e00`, envisagé pour la volaille, n'est qu'à 0,13.
+ */
+const ECART_ALERTE = 0.15;
+
+describe("l'alerte se distingue de chaque famille", () => {
+  for (const famille of FAMILLES) {
+    it(`--warn s'écarte de --fam-${famille}`, () => {
+      const alerte = jetons['warn'];
+      const couleur = jetons[`fam-${famille}`];
+      expect(alerte, 'jeton --warn absent').toBeDefined();
+      expect(couleur, `jeton --fam-${famille} absent`).toBeDefined();
+
+      const ecart = ecartPercu(alerte as string, couleur as string);
+      expect(
+        Number(ecart.toFixed(3)),
+        `--warn et --fam-${famille} ne sont qu'à ${ecart.toFixed(3)} dans OKLab`
+      ).toBeGreaterThanOrEqual(ECART_ALERTE);
     });
   }
 });

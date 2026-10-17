@@ -9,9 +9,13 @@
     qualityLabel,
     slotLabel,
     allergensUndeclared,
-    noAllergenLabel
+    noAllergenLabel,
+    undeclaredWatched,
+    watchedFirst,
+    watchedSummary
   } from './labels.js';
   import ExternalLink from '../ui/ExternalLink.svelte';
+  import { allergenFilter } from '../filter/allergens.svelte.js';
   import { allergenIcon } from '../illustrations/allergens.js';
 
   let { day, onClose }: { day: ResolvedDay; onClose: () => void } = $props();
@@ -35,6 +39,18 @@
       day.courses.find((course) => course.slot === 'gouter') ?? null
     ].filter((course): course is Course => course !== null)
   );
+
+  /**
+   * Ce que le parent surveille, en tête de la fiche (alerte-et-fiche-cochee, D4).
+   *
+   * Le résumé ne se montre qu'avec une sélection : sans elle, il n'y a rien à
+   * mettre en avant, et la fiche reste ce qu'elle était. Un jour dont le
+   * document ne précise pas les allergènes, il cède la place à un avertissement
+   * — un résumé fait de listes vides dirait « aucun plat ne le déclare » là où
+   * l'on ne sait rien.
+   */
+  const surveilles = $derived(watchedSummary(plats, day.legend, allergenFilter.codes));
+  const nonPrecise = $derived(allergensUndeclared(day.source));
 
   /**
    * La couche est un `<dialog>` natif (design.md, D16).
@@ -80,10 +96,33 @@
       <button type="button" class="close" onclick={() => dialog?.close()}>Fermer</button>
     </div>
 
-    <ul class="plats">
+    {#if surveilles.length > 0}
+      {#if nonPrecise}
+        <p class="non-precise">
+          {undeclaredWatched(surveilles.map(({ name }) => name))}
+          <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
+        </p>
+      {:else}
+        <section class="resume" aria-labelledby="resume-titre">
+          <h3 id="resume-titre">Allergènes surveillés</h3>
+          <ul>
+            {#each surveilles as { code, name, courses } (code)}
+              <li>
+                <strong>{name}</strong>
+                <span class:aucun={courses.length === 0}>
+                  {courses.length > 0 ? courses.join(', ') : 'Aucun plat ne le déclare'}
+                </span>
+              </li>
+            {/each}
+          </ul>
+        </section>
+      {/if}
+    {/if}
+
+    <ul class="plats" class:filtre={surveilles.length > 0}>
       {#each plats as course (course.slot)}
         {@const nom = courseName(course)}
-        {@const allergens = allergenNames(course, day.legend)}
+        {@const allergens = watchedFirst(allergenNames(course, day.legend), allergenFilter.codes)}
         <li>
           <span class="plat-role">{slotLabel(course.slot)}</span>
           <span class="plat-ligne">
@@ -104,11 +143,16 @@
           {#if allergens.length > 0}
             <ul class="allergens">
               {#each allergens as allergen (allergen.code)}
-                <li>
+                <!--
+                  Trois signaux, dont aucun n'est une couleur : la graisse, le
+                  contour appuyé, et le mot écrit — que le lecteur d'écran lit.
+                -->
+                <li class:surveille={allergen.watched}>
                   <svg width="21" height="21" aria-hidden="true" focusable="false" class="alg-icon">
                     <use href={`#${allergenIcon(allergen.code)}`} />
                   </svg>
-                  <span>{allergen.name}</span>
+                  <span class="nom">{allergen.name}</span>
+                  {#if allergen.watched}<span class="marque">surveillé</span>{/if}
                 </li>
               {/each}
             </ul>
@@ -341,6 +385,75 @@
   .alg-icon {
     display: block;
     flex: none;
+  }
+
+  /*
+    Un filtre actif : ce qu'on surveille se lit en premier, le reste s'efface
+    sans disparaître. `--ink-muted` garde 4,5:1 sur la pastille — un allergène
+    atténué reste un allergène lisible.
+  */
+  .plats.filtre .allergens li:not(.surveille) {
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+
+  .allergens li.surveille {
+    border: 2px solid var(--ink);
+    font-weight: 800;
+  }
+
+  .marque {
+    font-size: var(--text-2xs);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .resume {
+    background: var(--creux);
+    border-radius: var(--radius-pastille);
+    padding: var(--space-3);
+  }
+
+  .resume h3 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--ink-muted);
+  }
+
+  .resume ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .resume li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .resume .aucun {
+    color: var(--ink-muted);
+  }
+
+  .non-precise {
+    margin: 0;
+    background: var(--warn);
+    color: var(--warn-on);
+    border-radius: var(--radius-pastille);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .non-precise :global(a) {
+    color: currentcolor;
+    font-weight: 700;
   }
 
   .none {
