@@ -21,6 +21,7 @@ Un mois saisi à la main est donc deux choses à la fois : de la donnée de prod
 - un jour sans entrée, et un autre sans accompagnement — la grille ne se referme pas (design.md, D12) ;
 - un jour `confidence: "low"` — le chemin de rendu dégradé doit exister avant que le parser ne produise le premier ;
 - un jour de vacances et un jour de week-end, sans plats ;
+- un jour férié entre deux jours servis, que la navigation doit enjamber ;
 - un plat dont la famille n'est déductible d'aucun mot-clé — le repli neutre (D11) ;
 - un plat sans allergène déclaré, qui n'est pas un plat sans allergène ;
 - un libellé long, proche de la borne des 80 caractères que le schéma refuse.

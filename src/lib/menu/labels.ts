@@ -180,6 +180,13 @@ export function targetEyebrow(target: DisplayTarget): string {
     case 'today':
       return "Aujourd'hui";
     case 'next-served':
+      // Le férié se nomme ; le week-end et les vacances n'ont pas encore leur
+      // mention propre, et gardent la générique.
+      if (target.skipped === 'public-holiday') {
+        return target.daysAhead === 1
+          ? 'Férié · service demain'
+          : `Férié · service dans ${target.daysAhead} jours`;
+      }
       if (target.daysAhead === 1) return 'Demain';
       return `Prochain service · dans ${target.daysAhead} jours`;
     case 'not-published':

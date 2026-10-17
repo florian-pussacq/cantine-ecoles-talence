@@ -28,15 +28,30 @@
       "kind": "school",
       "confidence": "high",
       "courses": [
-        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
         {
           "slot": "plat",
           "label": "Filet de colin sauce citron",
           "allergens": [4],
           "flags": ["msc"]
         },
-        { "slot": "accompagnement", "label": "Riz créole", "allergens": [], "flags": [] },
-        { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] }
+        {
+          "slot": "accompagnement",
+          "label": "Riz créole",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        }
       ]
     },
     {
@@ -50,15 +65,30 @@
       "kind": "school",
       "confidence": "high",
       "courses": [
-        { "slot": "entree", "label": "Melon", "allergens": [], "flags": [] },
+        {
+          "slot": "entree",
+          "label": "Melon",
+          "allergens": [],
+          "flags": []
+        },
         {
           "slot": "plat",
           "label": "Rôti de dinde au thym et sa garniture de légumes anciens du marché",
           "allergens": [9],
           "flags": []
         },
-        { "slot": "laitage", "label": "Yaourt nature", "allergens": [7], "flags": [] },
-        { "slot": "dessert", "label": "Compote", "allergens": [], "flags": [] }
+        {
+          "slot": "laitage",
+          "label": "Yaourt nature",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Compote",
+          "allergens": [],
+          "flags": []
+        }
       ]
     },
     {
@@ -66,8 +96,18 @@
       "kind": "school",
       "confidence": "low",
       "courses": [
-        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": [] },
-        { "slot": "plat", "label": "Gumbo de Tiana", "allergens": [7], "flags": [] }
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Gumbo de Tiana",
+          "allergens": [7],
+          "flags": []
+        }
       ]
     },
     {
@@ -75,13 +115,85 @@
       "kind": "school",
       "confidence": "high",
       "courses": [
-        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": [] },
-        { "slot": "entree", "label": "Salade verte", "allergens": [], "flags": [] },
-        { "slot": "plat", "label": "Omelette", "allergens": [3, 7], "flags": ["bio"] },
-        { "slot": "accompagnement", "label": "Épinards à la crème", "allergens": [7], "flags": [] },
-        { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": [] },
-        { "slot": "dessert", "label": "Gâteau au yaourt", "allergens": [1, 3, 7], "flags": [] },
-        { "slot": "gouter", "label": "Pain + chocolat", "allergens": [1, 7], "flags": [] }
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "entree",
+          "label": "Salade verte",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Omelette",
+          "allergens": [3, 7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Épinards à la crème",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Gâteau au yaourt",
+          "allergens": [1, 3, 7],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + chocolat",
+          "allergens": [1, 7],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2099-01-08",
+      "kind": "public-holiday",
+      "confidence": "high",
+      "courses": []
+    },
+    {
+      "date": "2099-01-09",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Poisson pané",
+          "allergens": [1, 4],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Riz",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Compote",
+          "allergens": [],
+          "flags": []
+        }
       ]
     }
   ]

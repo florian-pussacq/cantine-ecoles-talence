@@ -82,8 +82,8 @@
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         },
         "kind": {
-          "description": "Nature du jour. « school » est un jour servi ; les autres ne le sont pas et n'ont pas de plats.",
-          "enum": ["school", "holiday", "weekend", "strike-fallback"]
+          "description": "Nature du jour. « school » est un jour servi ; les autres ne le sont pas et n'ont pas de plats. « public-holiday » est un jour férié, que le document marque « JOUR FÉRIÉ » à la place des plats.",
+          "enum": ["school", "holiday", "public-holiday", "weekend", "strike-fallback"]
         },
         "theme": {
           "description": "Thème du jour, issu de l'encart « ZOOM SUR » du document. Nul la plupart du temps.",

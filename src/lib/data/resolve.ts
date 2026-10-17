@@ -1,4 +1,5 @@
 import type { MenuDataset } from './dataset.js';
+import type { Day } from './schema.js';
 
 /**
  * Le jour civil à Talence pour un instant donné.
@@ -21,7 +22,17 @@ export function parisDate(instant: Date): string {
  */
 export type DisplayTarget =
   | { readonly status: 'today'; readonly date: string }
-  | { readonly status: 'next-served'; readonly date: string; readonly daysAhead: number }
+  | {
+      readonly status: 'next-served';
+      readonly date: string;
+      readonly daysAhead: number;
+      /**
+       * Pourquoi aujourd'hui n'est pas montré : la nature du jour courant telle
+       * que les données la connaissent, ou `null` s'il n'y figure pas. Calculée
+       * ici et non par l'écran, pour la même raison que l'écart (D60).
+       */
+      readonly skipped: Day['kind'] | null;
+    }
   | { readonly status: 'not-published' };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -51,14 +62,15 @@ export function daysBetween(from: string, to: string): number {
 export function resolveDisplayDay(dataset: MenuDataset, now: Date): DisplayTarget {
   const today = parisDate(now);
 
-  if (dataset.byDate.get(today)?.kind === 'school') {
+  const kind = dataset.byDate.get(today)?.kind ?? null;
+  if (kind === 'school') {
     return { status: 'today', date: today };
   }
 
   const next = dataset.servedDates.find((date) => date > today);
   if (next === undefined) return { status: 'not-published' };
 
-  return { status: 'next-served', date: next, daysAhead: daysBetween(today, next) };
+  return { status: 'next-served', date: next, daysAhead: daysBetween(today, next), skipped: kind };
 }
 
 /**

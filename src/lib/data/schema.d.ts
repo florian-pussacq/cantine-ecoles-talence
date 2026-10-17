@@ -65,9 +65,9 @@ export interface Day {
    */
   date: string;
   /**
-   * Nature du jour. « school » est un jour servi ; les autres ne le sont pas et n'ont pas de plats.
+   * Nature du jour. « school » est un jour servi ; les autres ne le sont pas et n'ont pas de plats. « public-holiday » est un jour férié, que le document marque « JOUR FÉRIÉ » à la place des plats.
    */
-  kind: 'school' | 'holiday' | 'weekend' | 'strike-fallback';
+  kind: 'school' | 'holiday' | 'public-holiday' | 'weekend' | 'strike-fallback';
   /**
    * Thème du jour, issu de l'encart « ZOOM SUR » du document. Nul la plupart du temps.
    */

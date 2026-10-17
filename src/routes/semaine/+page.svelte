@@ -215,10 +215,15 @@
                 Deux absences très différentes. « Pas d'école » est une donnée :
                 la Ville a dit qu'il n'y avait pas de service. « Pas encore
                 publié » est un silence. Les confondre ferait croire à une
-                information là où il n'y en a aucune.
+                information là où il n'y en a aucune. Le férié est une donnée
+                plus précise que la première, et se nomme.
               -->
                   <span class="main quiet-label">
-                    {day === null ? 'Menu pas encore publié' : "Pas d'école ce jour"}
+                    {day === null
+                      ? 'Menu pas encore publié'
+                      : day.kind === 'public-holiday'
+                        ? 'Jour férié'
+                        : "Pas d'école ce jour"}
                   </span>
                 </span>
               </div>

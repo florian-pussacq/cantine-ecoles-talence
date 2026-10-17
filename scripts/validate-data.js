@@ -69,6 +69,18 @@ function dateBounds(month) {
   return { min: first - week, max: last + week };
 }
 
+/** Les deux mots qu'un PDF met à la place des plats un jour férié. */
+const HOLIDAY_WORDS = new Set(['jour', 'ferie']);
+
+/** @param {string} label */
+function normalize(label) {
+  return label
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .trim()
+    .toLowerCase();
+}
+
 /**
  * @param {string} file
  * @param {import('../src/lib/data/schema.js').MonthMenu} data
@@ -99,6 +111,14 @@ function checkCoherence(file, data) {
       }
       if (!day.courses.some((c) => c.slot === 'plat')) {
         breaches.push('aucun plat principal');
+      }
+      // Un férié lu comme un repas : « JOUR » en plat, « FÉRIÉ » en
+      // accompagnement. Refusé même en confiance faible, parce que la bannière
+      // d'incertitude n'excuse pas un repas qui n'existe pas.
+      for (const course of day.courses) {
+        if (HOLIDAY_WORDS.has(normalize(course.label))) {
+          fail(at, `jour servi portant le plat « ${course.label} » : férié mal extrait`);
+        }
       }
     } else if (day.courses.length > 0) {
       breaches.push(`jour non servi (${day.kind}) portant ${day.courses.length} plats`);
