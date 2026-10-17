@@ -178,7 +178,7 @@ export function dayNumber(date: string): string {
 export function targetEyebrow(target: DisplayTarget): string {
   switch (target.status) {
     case 'today':
-      return "Aujourd'hui";
+      return target.vacation ? "Vacances · aujourd'hui" : "Aujourd'hui";
     case 'next-served':
       // Le férié se nomme ; le week-end et les vacances n'ont pas encore leur
       // mention propre, et gardent la générique.
@@ -186,6 +186,12 @@ export function targetEyebrow(target: DisplayTarget): string {
         return target.daysAhead === 1
           ? 'Férié · service demain'
           : `Férié · service dans ${target.daysAhead} jours`;
+      }
+      // Les vacances aussi : tous les enfants n'y déjeunent pas (menus-vacances, D5).
+      if (target.vacation) {
+        return target.daysAhead === 1
+          ? 'Vacances · demain'
+          : `Vacances · dans ${target.daysAhead} jours`;
       }
       if (target.daysAhead === 1) return 'Demain';
       return `Prochain service · dans ${target.daysAhead} jours`;

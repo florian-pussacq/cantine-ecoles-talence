@@ -61,6 +61,32 @@ describe('targetEyebrow', () => {
     );
   });
 
+  it('nomme les vacances quand le jour présenté en est un', () => {
+    expect(targetEyebrow({ status: 'today', date: '2026-10-20', vacation: true })).toBe(
+      "Vacances · aujourd'hui"
+    );
+    const cible = {
+      status: 'next-served',
+      date: '2026-10-19',
+      skipped: null,
+      vacation: true
+    } as const;
+    expect(targetEyebrow({ ...cible, daysAhead: 1 })).toBe('Vacances · demain');
+    expect(targetEyebrow({ ...cible, daysAhead: 2 })).toBe('Vacances · dans 2 jours');
+  });
+
+  it('nomme le férié avant les vacances, puisque c’est la raison du saut', () => {
+    expect(
+      targetEyebrow({
+        status: 'next-served',
+        date: '2026-12-28',
+        daysAhead: 3,
+        skipped: 'public-holiday',
+        vacation: true
+      })
+    ).toBe('Férié · service dans 3 jours');
+  });
+
   it('garde la mention générique pour le week-end et les vacances', () => {
     const cible = { status: 'next-served', date: '2026-09-14', daysAhead: 2 } as const;
     expect(targetEyebrow({ ...cible, skipped: 'weekend' })).toBe('Prochain service · dans 2 jours');

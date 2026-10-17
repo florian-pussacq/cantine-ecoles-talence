@@ -27,3 +27,14 @@ Le parser lit `VACANCES DE …` dans l'en-tête et en fait l'intitulé, en casse
 ### D4 — Un jour de vacances se nomme
 
 Le jour résolu porte la nature et l'intitulé de son document. L'écran du jour affiche l'intitulé en tête de contenu, l'écran de la semaine le marque sur chaque jour concerné. Un jour de vacances reste un jour servi : la navigation et la résolution du jour le traitent comme tel.
+
+### D5 — La mention dit que c'est les vacances
+
+Décidé le 17 octobre 2026, en exploration. Un jour de vacances est servi pour tous, mais tous les enfants n'y déjeunent pas. L'intitulé seul, posé sous le rang de navigation, laissait la mention dire « Demain » à un parent dont l'enfant reste à la maison.
+
+**Retenu :** quand le jour que le système présente est un jour de vacances, la mention le dit — « Vacances · aujourd'hui », « Vacances · demain », « Vacances · dans N jours ». La cible résolue porte `vacation`, comme elle porte déjà la raison d'un saut (`skipped`, `jours-feries`). Un férié reste nommé en premier : c'est la raison du saut.
+
+**Écarté :** un réglage « mon enfant déjeune à la restauration municipale pendant les vacances ». Personne ne sait quelle valeur par défaut serait la bonne ; un réglage dont on ignore la valeur par défaut déplace la question sans y répondre.
+
+**Écarté :** ne jamais faire d'un jour de vacances le jour proposé. Le parent qui en a besoin devrait le chercher.
+

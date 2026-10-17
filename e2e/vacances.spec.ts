@@ -24,6 +24,7 @@ test('un jour de vacances se nomme et dit qu’il ne précise pas ses allergène
   await ouvrir(page, '2026-10-20T12:00:00+02:00');
 
   await expect(designation(page)).toHaveText('Mardi 20 octobre');
+  await expect(page.locator('nav .mention')).toHaveText("Vacances · aujourd'hui");
   await expect(page.getByText('Vacances de Toussaint')).toBeVisible();
   await expect(page.getByText('Ce menu ne précise pas les allergènes de ses plats.')).toBeVisible();
 });
@@ -34,6 +35,9 @@ test('la veille des vacances, l’écran présente le premier jour servi des vac
   await ouvrir(page, '2026-10-17T12:00:00+02:00');
 
   await expect(designation(page)).toHaveText('Lundi 19 octobre');
+  // Tous les enfants ne déjeunent pas à la restauration municipale pendant les
+  // vacances : la mention le dit (menus-vacances, D5).
+  await expect(page.locator('nav .mention')).toHaveText('Vacances · dans 2 jours');
   await expect(page.getByText('Vacances de Toussaint')).toBeVisible();
 });
 

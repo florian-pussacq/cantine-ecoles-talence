@@ -21,7 +21,12 @@ export function parisDate(instant: Date): string {
  * l'interface puisse toujours dire de quel jour elle parle (design.md, D15).
  */
 export type DisplayTarget =
-  | { readonly status: 'today'; readonly date: string }
+  | {
+      readonly status: 'today';
+      readonly date: string;
+      /** Posé, et seulement alors, quand le jour présenté est un jour de vacances (menus-vacances, D5). */
+      readonly vacation?: true;
+    }
   | {
       readonly status: 'next-served';
       readonly date: string;
@@ -32,6 +37,7 @@ export type DisplayTarget =
        * ici et non par l'écran, pour la même raison que l'écart (D60).
        */
       readonly skipped: Day['kind'] | null;
+      readonly vacation?: true;
     }
   | { readonly status: 'not-published' };
 
@@ -62,15 +68,26 @@ export function daysBetween(from: string, to: string): number {
 export function resolveDisplayDay(dataset: MenuDataset, now: Date): DisplayTarget {
   const today = parisDate(now);
 
+  // Un jour de vacances est servi, mais pas à tous les enfants : la mention doit
+  // pouvoir le dire. Le champ n'est posé que lorsqu'il est vrai.
+  const vacation = (date: string) =>
+    dataset.byDate.get(date)?.sourceKind === 'vacation' ? { vacation: true as const } : {};
+
   const kind = dataset.byDate.get(today)?.kind ?? null;
   if (kind === 'school') {
-    return { status: 'today', date: today };
+    return { status: 'today', date: today, ...vacation(today) };
   }
 
   const next = dataset.servedDates.find((date) => date > today);
   if (next === undefined) return { status: 'not-published' };
 
-  return { status: 'next-served', date: next, daysAhead: daysBetween(today, next), skipped: kind };
+  return {
+    status: 'next-served',
+    date: next,
+    daysAhead: daysBetween(today, next),
+    skipped: kind,
+    ...vacation(next)
+  };
 }
 
 /**

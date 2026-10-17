@@ -18,6 +18,8 @@
 - [x] 4.1 Écran du jour : intitulé des vacances en tête de contenu
 - [x] 4.2 Écran de la semaine : intitulé sur chaque jour de vacances
 
+- [x] 4.3 Mention : « Vacances · … » quand le jour présenté par le système est un jour de vacances (D5)
+
 ## 5. Vérification et documentation
 
 - [x] 5.1 e2e sur la Toussaint réelle : jour de vacances nommé, veille des vacances, semaine ; allergènes non précisés (`allergenes-non-communiques`, 3.1)

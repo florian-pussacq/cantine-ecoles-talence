@@ -218,6 +218,19 @@ describe('buildDataset', () => {
     ).toBe('Version mensuelle');
   });
 
+  it('signale à la résolution un jour de vacances, et seulement celui-là', () => {
+    const vacances = { ...variant('Vacances'), title: 'Vacances de Toussaint' };
+    const dataset = buildDataset([{ menu: vacances, kind: 'vacation' }]);
+    expect(resolveDisplayDay(dataset, new Date('2026-09-10T10:00:00Z'))).toEqual({
+      status: 'today',
+      date: '2026-09-10',
+      vacation: true
+    });
+    expect(
+      resolveDisplayDay(buildDataset([{ menu: monthly }]), new Date('2026-09-10T10:00:00Z'))
+    ).toEqual({ status: 'today', date: '2026-09-10' });
+  });
+
   it('dit d’un jour mensuel qu’il n’a pas d’intitulé', () => {
     const jour = buildDataset([{ menu: monthly }]).byDate.get('2026-09-10');
     expect(jour?.sourceKind).toBe('monthly');
