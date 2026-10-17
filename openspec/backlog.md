@@ -131,12 +131,13 @@ Toutes sont à faire. Décisions déjà prises avec l'humain le 17 octobre 2026 
 Étape 1 (alerte distincte de la volaille, allergènes cochés sur la fiche) :
 `alerte-et-fiche-cochee`, archivé le 17 octobre 2026.
 
-## 12. Fermer les échelles — `fermer-les-echelles`, en cours
+## 12. Fermer les échelles — `fermer-les-echelles`, archivé le 17 octobre 2026
 
 Graisses, voiles, mouvement, règles de base de `tokens.css` et trous du
 garde-fou. Décisions du 17 octobre 2026 : plancher gardé à 10 px, nouveaux
 jetons nommés en français, le texte à 72 % passe à `--ink-muted`, espacement
-minimal (les deux `4px` seulement). Voir `openspec/changes/fermer-les-echelles/`.
+minimal (les deux `4px` seulement). Voir
+`openspec/changes/archive/2026-10-17-fermer-les-echelles/`.
 
 ## 13. Composant Bandeau et « Aujourd'hui » unifié — à proposer
 
