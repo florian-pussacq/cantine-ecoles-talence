@@ -18,7 +18,9 @@ const MOBILE_SEULEMENT = [/balayage\.spec\.ts/, /couche-modale\.spec\.ts/, /haut
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
-  reporter: process.env.CI ? 'github' : 'list',
+  // En CI, les annotations dans la PR, et un rapport HTML que le workflow
+  // conserve sur échec : sans lui, l'artefact serait vide.
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: 'http://localhost:4173',
     locale: 'fr-FR',
