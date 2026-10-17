@@ -155,3 +155,39 @@ Le système SHALL refuser de publier un fichier de grève ne comportant pas les 
 #### Scenario: Empreinte du PDF de grève
 - **WHEN** le PDF officiel de grève est republié par la Ville sous une empreinte différente
 - **THEN** la comparaison d'empreinte le signale, le fichier étant par ailleurs stable depuis 2023
+
+### Requirement: Document ne précisant pas les allergènes
+
+Un fichier de menu SHALL pouvoir déclarer, dans ses métadonnées de source, que le document dont il dérive ne précise pas les allergènes de ses plats. En l'absence de cette déclaration, le document SHALL être réputé les préciser.
+
+L'extraction SHALL faire cette déclaration lorsque aucun plat autre que le pain ne porte de code d'allergène. La validation SHALL refuser un fichier qui fait cette déclaration tout en portant un code d'allergène sur un plat autre que le pain.
+
+#### Scenario: Document sans allergènes hors du pain
+- **WHEN** l'extraction lit un document dont seuls les pains portent un code d'allergène
+- **THEN** le fichier produit déclare que le document ne précise pas les allergènes
+
+#### Scenario: Document qui déclare ses allergènes
+- **WHEN** l'extraction lit un document dont des plats autres que le pain portent des codes
+- **THEN** le fichier produit ne fait aucune déclaration, et le document est réputé préciser ses allergènes
+
+#### Scenario: Déclaration contradictoire
+- **WHEN** un fichier déclare ne pas préciser les allergènes mais porte un code sur un plat principal
+- **THEN** la validation échoue et la publication est refusée
+
+### Requirement: Menus de vacances
+
+Le système SHALL publier les menus de vacances de la Ville comme des fichiers de menu datés, conformes au même schéma que les mensuels, portant l'intitulé du document dont ils dérivent.
+
+Le manifeste SHALL les inscrire avec une nature propre et le nom de leur fichier. Lorsqu'un menu de vacances et un mensuel couvrent une même date, la version du menu de vacances SHALL être retenue.
+
+#### Scenario: Deux documents pour un même mois
+- **WHEN** octobre 2026 a un mensuel et un menu de vacances
+- **THEN** le manifeste inscrit les deux, chacun avec son fichier, et les jours de chacun sont disponibles
+
+#### Scenario: Menu de vacances à cheval sur deux mois
+- **WHEN** le menu de Noël couvre du 21 décembre au 1er janvier
+- **THEN** il est publié en un seul fichier, et ses jours de janvier sont disponibles comme ceux de décembre
+
+#### Scenario: Version antérieure de l'application
+- **WHEN** une version qui ne connaît pas les menus de vacances lit le manifeste
+- **THEN** elle les ignore et affiche les mensuels comme auparavant

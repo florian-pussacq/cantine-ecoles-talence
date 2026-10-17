@@ -16,7 +16,7 @@ script échoue sans lui), et le script importe `fitz`, dont PyMuPDF annonce le
 retrait au profit de `import pymupdf`. Déclarer la dépendance (un
 `requirements.txt` sous `scripts/`) et migrer l'import.
 
-## 3. `allergenes-non-communiques` — proposé le 17 octobre 2026, prérequis de l'entrée 4
+## 3. `allergenes-non-communiques` — archivé le 17 octobre 2026
 
 Le PDF des vacances de la Toussaint ne porte **aucun** code allergène. Le parser
 écrit alors `allergens: []`, que le filtre lit « ne contient rien » : un parent
@@ -35,7 +35,7 @@ Le contrat ne distingue pas « aucun allergène » de « allergènes non communi
 - `schemaVersion` : contrairement à `public-holiday`, `null` là où un tableau
   était garanti casse les clients en cache. Montée de version probable.
 
-## 4. `menus-vacances` — proposé le 17 octobre 2026
+## 4. `menus-vacances` — archivé le 17 octobre 2026
 
 Périmètre accepté le 16 octobre 2026 : les menus « restauration municipale —
 vacances » entrent dans l'application. Deux PDF en ligne :
