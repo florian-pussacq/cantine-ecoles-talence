@@ -100,28 +100,17 @@ En coupant la publication automatique de Netlify, pour qu'elle ne parte que du
 hook appelé par la CI une fois verte, la production ne recevrait plus que des
 commits vérifiés. Ce serait aussi un seul déploiement par lot de commits poussés.
 
-## 10. Archiver les changements restés ouverts, dans l'ordre
+## 10. Archiver les changements restés ouverts — fait le 17 octobre 2026
 
-Une exigence MODIFIED remplace le bloc entier dans la spec principale : archiver
-dans le désordre fait régresser la spec sans que rien ne le signale. Ordre réel,
-lu dans la numérotation des décisions :
+Tous archivés, dans l'ordre de leurs décisions ; `openspec list` n'en montre plus
+aucun. Ce qu'il faut retenir pour les suivants :
 
-1. `menus-jour-semaine` (80/82) — le socle. **Ne jamais synchroniser tel quel** :
-   ses exigences d'origine écraseraient tout ce qui a suivi. L'archiver sans
-   synchroniser, après avoir vérifié que chaque exigence ADDED est déjà dans
-   `openspec/specs/`.
-2. ~~`enseigne-et-ardoise`~~ et ~~`retour-au-jour`~~ — archivés le 17 octobre.
-   Il a fallu déclarer deux renommages (`RENAMED`) que le delta faisait sans les
-   dire.
-3. ~~`menu-de-greve`~~ — archivé le 17 octobre ; ses 23 tâches, toutes faites,
-   n'avaient jamais été cochées.
-4. ~~`menu-en-cartes`~~ puis ~~`coque-et-mentions`~~ — archivés le 17 octobre.
-   Le CLI ne sait pas retirer un scénario : les huit scénarios devenus faux ont
-   été retirés à la main de la spec principale, chacun justifié dans le design
-   de son changement ; les autres ont été recopiés dans les deltas.
-5. `illustrations-en-volume` (4.5) et `menus-jour-semaine` (12.4) — attendent
-   une vérification sur un vrai téléphone ; 12.3 est remplacée par l'entrée 7.
-
-La spec principale décrit de nouveau l'en-tête et l'accès aux écrans tels que le
-code les fait.
-
+- une exigence MODIFIED remplace le bloc entier : archiver dans l'ordre, et
+  recopier dans le delta les scénarios ajoutés entre-temps par un autre
+  changement ;
+- un renommage d'exigence se déclare (`RENAMED`), sinon l'archive est refusée ;
+- le CLI ne sait pas retirer un scénario : le retirer à la main de la spec
+  principale, et en écrire la raison dans le design du changement ;
+- `menus-jour-semaine`, le socle, est archivé sans synchronisation : ses
+  exigences sont toutes dans `openspec/specs/`, renommées ou retirées depuis par
+  des changements archivés.

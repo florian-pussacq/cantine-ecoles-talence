@@ -32,6 +32,8 @@ Le coût d'une illustration supplémentaire NE SHALL PAS peser sur le budget de 
 
 Les illustrations SHALL être traitées comme décoratives par les technologies d'assistance : elles NE SHALL PAS porter d'information absente du texte, et leur absence NE SHALL PAS empêcher la compréhension du menu.
 
+Le retrait d'une illustration d'un élément NE SHALL PAS retirer d'information de l'écran : le libellé et le rôle SHALL suffire à identifier tout plat.
+
 Le relief éventuel d'une illustration SHALL être un ornement posé sur une forme qui se lit sans lui. La forme NE SHALL PAS être portée par un dégradé, une ombre ou un filtre.
 
 #### Scenario: Restitution par un lecteur d'écran
@@ -45,3 +47,7 @@ Le relief éventuel d'une illustration SHALL être un ornement posé sur une for
 #### Scenario: Relief non rendu
 - **WHEN** les effets de relief ne sont pas rendus
 - **THEN** chaque illustration reste identifiable par ses seuls aplats
+
+#### Scenario: Rôle privé d'illustration
+- **WHEN** un rôle cesse d'être illustré
+- **THEN** aucune information disponible auparavant ne disparaît de l'écran

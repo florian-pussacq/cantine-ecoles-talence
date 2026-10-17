@@ -35,4 +35,4 @@
 - [x] 4.2 `npm run test:e2e` vert, LCP médian sous la seconde en 4G bridée
 - [x] 4.3 Vérifier que le sprite est absent de tout JavaScript construit
 - [x] 4.4 Vérifier l'absence d'erreur de console à l'hydratation
-- [ ] 4.5 Contrôler sur un téléphone réel que le relief se lit à la taille de la vignette
+- [x] 4.5 Contrôler sur un téléphone réel que le relief se lit à la taille de la vignette — vérifié à la main par le mainteneur (17 octobre 2026)

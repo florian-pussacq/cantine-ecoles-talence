@@ -116,5 +116,5 @@
 
 - [x] 12.1 Écrire le pipeline GitLab CI de vérification, la publication étant faite par Netlify (D2)
 - [x] 12.2 Vérifier la résolution des fichiers de données, servis à la racine du domaine
-- [ ] 12.3 Ajouter un contrôle post-déploiement vérifiant que le manifeste est bien servi — supprimé avec la publication GitHub Pages, à réintroduire comme pipeline planifié GitLab
-- [ ] 12.4 Vérifier l'installation et le fonctionnement hors ligne sur un appareil réel
+- [x] 12.3 ~~Ajouter un contrôle post-déploiement vérifiant que le manifeste est bien servi~~ — sans objet ici : repris par la veille planifiée du backlog (entrée 7), sur GitHub Actions
+- [x] 12.4 Vérifier l'installation et le fonctionnement hors ligne sur un appareil réel — vérifié à la main par le mainteneur (17 octobre 2026)
