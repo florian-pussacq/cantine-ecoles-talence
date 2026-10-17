@@ -15,7 +15,7 @@ La vérification de l'audit (17 octobre 2026) a aussi trouvé des trous dans le 
 ## What Changes
 
 - **Graisses** : `--poids-moyen` (600), `--poids-fort` (700), `--poids-titre` (800). Le mot-clé `normal` (400) est admis comme exception, au même titre que `inherit`.
-- **Voiles** : `--voile-fond` (12 %, l'aplat de la pilule d'onglets), `--voile-trait` (55 %, la bordure des commandes) ; `--voile` devient `--voile-modale`. Le texte atténué à 72 % passe à `--ink-muted`, et le filet décoratif à 22 % passe à `--bord`.
+- **Voiles** : `--voile-fond` (12 %, l'aplat de la pilule d'onglets), `--voile-trait` (55 %, la bordure des commandes) ; `--voile` devient `--voile-modale`. Les textes atténués par transparence (72, 75 et 80 %) passent à `--ink-muted`, et le filet décoratif à 22 % passe à `--bord`.
 - **Mouvement** : `--courbe` (`ease-out`) et `--apparition` (180 ms), à côté de `--glisse`.
 - **Règles de base** : `body` prend `var(--text-base)`, et le focus prend un nouveau rayon `--radius-focus`.
 - **Espacements** : les deux `4px` prennent `--space-1`. Le reste, sous `--space-1`, reste permis, et le commentaire du test dit pourquoi.
@@ -43,7 +43,7 @@ Aucune.
 - **Composants** : environ quinze fichiers `.svelte` pour les graisses. Pour les voiles : `Onglets`, `greve`, `PiedSource`, `CommandeSortie`, `RangNavigation`, `Enseigne`, `DaySheet`. Pour les espacements : `Onglets`, `CommandeReglages`.
 - **Tests** : `design-tokens.test.ts`, qui surveille plus de propriétés et lit plus de sources, et `contrast.test.ts`, où les voiles sont lus dans les jetons et la ligne des 72 % disparaît.
 - **Rendu** : trois écarts visibles, tous mineurs.
-  - L'enseigne, la situation du jour et le pied de page passent du gris d'encre transparente au brun de `--ink-muted`.
+  - Le nom de l'enseigne, le pied de source, le détail non publié et deux mentions passent du gris d'encre transparente au brun de `--ink-muted` (design, D2). Le lien du pied de source reprend l'encre pleine.
   - Le filet du pied de source s'éclaircit (de `#c8c0b2` environ à `--bord`, `#ddd0b8`).
   - Le lien « Menu de grève » passe de 16 à 15 px sur téléphone.
 

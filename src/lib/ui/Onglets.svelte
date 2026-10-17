@@ -56,9 +56,9 @@
     margin-inline: auto;
     max-width: 360px;
     gap: var(--space-1);
-    padding: 4px;
+    padding: var(--space-1);
     border-radius: var(--radius-pilule);
-    background: color-mix(in srgb, var(--ink) 12%, transparent);
+    background: var(--voile-fond);
   }
 
   .tabs a {
@@ -69,7 +69,7 @@
     justify-content: center;
     border-radius: var(--radius-pilule);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink);
     text-decoration: none;
   }
@@ -79,6 +79,6 @@
   .tabs a[aria-current='page'] {
     background: var(--accent);
     color: var(--on-accent);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
   }
 </style>

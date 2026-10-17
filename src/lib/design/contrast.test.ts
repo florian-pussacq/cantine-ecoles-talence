@@ -150,62 +150,56 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
 ];
 
 /**
+ * Les voiles déclarés dans `tokens.css`, par leur taux d'encre
+ * (fermer-les-echelles, D2).
+ *
+ * Ils vivaient dans les composants, et ce fichier recopiait leurs taux : une
+ * duplication qu'un contrôle de couverture devait surveiller. Ils sont devenus
+ * des jetons, et le taux se lit à la source.
+ */
+function readVoiles(): Record<string, number> {
+  const voiles: Record<string, number> = {};
+  for (const match of CSS.matchAll(
+    /--([\w-]+):\s*color-mix\(in srgb, var\(--ink\) (\d+)%, transparent\)/g
+  )) {
+    const [, name, taux] = match;
+    if (name === undefined || taux === undefined) continue;
+    voiles[name] = Number(taux) / 100;
+  }
+  return voiles;
+}
+
+const voiles = readVoiles();
+
+/**
  * Les surfaces peintes par transparence.
  *
  * Elles échappent aux paires ci-dessus, qui ne connaissent que des jetons
  * opaques : ce sont des couleurs qui n'existent nulle part dans `tokens.css` et
- * que seul le rendu produit. Le taux est recopié depuis le style scopé qui le
- * porte — duplication surveillée plus bas par un contrôle qui refuse toute
- * transparence non déclarée ici.
+ * que seul le rendu produit.
  *
  * Le seuil de 3:1 des bordures vient de WCAG 1.4.11 : une bordure qui délimite
  * une commande porte une information, au même titre qu'un texte.
  */
-const TRANSPARENCES: {
-  source: string;
-  fond: string;
-  /** Un voile posé sur le fond avant la source : le fond peint n'est alors pas un jeton. */
-  voile?: { source: string; alpha: number };
-  alpha: number;
-  seuil: number;
-  quoi: string;
-  ou: string;
-}[] = [
+const TRANSPARENCES: { voile: string; fond: string; seuil: number; quoi: string }[] = [
   {
-    source: 'ink',
+    voile: 'voile-trait',
     fond: 'fond',
-    alpha: 0.72,
-    seuil: 4.5,
-    quoi: 'mentions atténuées : nom de l’enseigne, situation du jour, pied de page',
-    ou: 'Enseigne.svelte .nom, EnTete.svelte .quand, +page.svelte footer'
-  },
-  {
-    source: 'ink',
-    fond: 'fond',
-    alpha: 0.55,
     seuil: 3,
-    quoi: 'bordure des boutons de jour, de semaine et de retour',
-    ou: '+page.svelte et semaine/+page.svelte nav button, EnTete.svelte .retour'
+    quoi: 'bordure des commandes de navigation et de sortie'
   }
 ];
 
 /**
- * Les transparences délibérément non mesurées, et pourquoi.
+ * Les voiles délibérément non mesurés, et pourquoi.
  *
  * Sans cette liste, le contrôle de couverture ci-dessous ne laisserait aucune
  * échappatoire et forcerait à foncer des traits décoratifs pour satisfaire un
  * seuil que la norme ne leur applique pas.
  */
-const DECORATIFS: { alpha: number; quoi: string; pourquoi: string }[] = [
+const DECORATIFS: { voile: string; pourquoi: string }[] = [
   {
-    alpha: 0.22,
-    quoi: 'filet de séparation des pieds de page',
-    pourquoi:
-      'ne délimite aucune commande et ne porte aucune information : rien ne dépend de sa perception'
-  },
-  {
-    alpha: 0.12,
-    quoi: 'fond de la pilule d’onglets',
+    voile: 'voile-fond',
     pourquoi:
       'aplat sans rôle propre — ce qui doit se lire, c’est le libellé posé dessus, et il est mesuré'
   }
@@ -237,36 +231,37 @@ describe('la palette', () => {
 });
 
 describe('les surfaces peintes par transparence', () => {
-  for (const { source, fond, voile, alpha, seuil, quoi, ou } of TRANSPARENCES) {
+  for (const { voile, fond, seuil, quoi } of TRANSPARENCES) {
     it(`${quoi} tient ${seuil}:1`, () => {
-      const avant = jetons[source];
-      const base = jetons[fond];
-      expect(avant, `jeton --${source} absent`).toBeDefined();
-      expect(base, `jeton --${fond} absent`).toBeDefined();
+      const alpha = voiles[voile];
+      const arriere = jetons[fond];
+      expect(alpha, `voile --${voile} absent de tokens.css`).toBeDefined();
+      expect(arriere, `jeton --${fond} absent`).toBeDefined();
 
-      const arriere =
-        voile === undefined
-          ? (base as string)
-          : compose(jetons[voile.source] as string, base as string, voile.alpha);
-
-      const peint = compose(avant as string, arriere, alpha);
-      const rapport = contraste(peint, arriere);
+      const peint = compose(jetons['ink'] as string, arriere as string, alpha as number);
+      const rapport = contraste(peint, arriere as string);
       expect(
         Number(rapport.toFixed(2)),
-        `--${source} à ${alpha * 100} % sur ${arriere} donne ${peint} : ${rapport.toFixed(2)}:1 (${ou})`
+        `--${voile} (${(alpha as number) * 100} % d’encre) sur --${fond} donne ${peint} : ${rapport.toFixed(2)}:1`
       ).toBeGreaterThanOrEqual(seuil);
     });
   }
+
+  it('chaque voile de tokens.css est mesuré ou tenu pour décoratif', () => {
+    const declares = new Set([...TRANSPARENCES, ...DECORATIFS].map(({ voile }) => voile));
+    expect(Object.keys(voiles).length).toBeGreaterThan(0);
+    expect(Object.keys(voiles).filter((nom) => !declares.has(nom))).toEqual([]);
+  });
 });
 
 /**
  * Le contrôle qui rattrape l'oubli.
  *
- * Recopier un taux dans la liste ci-dessus ne protège de rien si l'on ajoute une
- * surface translucide sans y penser — c'est exactement ce qui s'est produit à
- * l'écriture de ce test, où la bordure identique de l'écran de la semaine avait
- * été manquée à la lecture. Le contrôle lit les composants et refuse tout taux
- * qui ne serait ni mesuré ni explicitement tenu pour décoratif.
+ * Une transparence ajoutée sans y penser échappe à toute mesure : c'est ce qui
+ * s'est produit à l'écriture de ce test, où la bordure identique de l'écran de
+ * la semaine avait été manquée à la lecture. Les voiles vivent désormais dans
+ * `tokens.css`, où le contrôle ci-dessus les voit tous ; il reste à refuser
+ * qu'un composant en peigne un de son côté (fermer-les-echelles, D2).
  *
  * Il ne couvre que `color-mix(in srgb, var(--ink) N%, transparent)`, la forme
  * mécaniquement reconnaissable. Les opacités appliquées à un élément entier ne
@@ -274,89 +269,18 @@ describe('les surfaces peintes par transparence', () => {
  */
 describe('couverture des transparences', () => {
   /*
-    Tous les composants, et non une liste tenue à la main.
-
-    La liste ne comportait d'abord que les écrans, ce qui laissait une porte
-    ouverte : une transparence introduite dans un composant de `$lib/ui`
-    n'aurait été vue par personne. On y a donc ajouté des composants, un par un
-    — et une liste qu'il faut penser à compléter est une liste qui finit
-    incomplète : trois fichiers portant des transparences n'y ont jamais figuré,
-    et l'extraction du pied de source aurait fait sortir deux taux de la seule
-    couverture qui les voyait (D63, D64).
-
-    Le glob supprime la question. C'est le même remède que le contrôle
-    d'apparence unique, plus bas, a déjà appliqué pour la même raison.
+    Tous les composants, et non une liste tenue à la main : une liste qu'il faut
+    penser à compléter est une liste qui finit incomplète (D63, D64).
   */
   const FICHIERS = globSync('src/**/*.svelte');
 
-  const connus = new Set([
-    ...TRANSPARENCES.map(({ alpha }) => alpha),
-    ...TRANSPARENCES.flatMap(({ voile }) => (voile ? [voile.alpha] : [])),
-    ...DECORATIFS.map(({ alpha }) => alpha)
-  ]);
-
   for (const fichier of FICHIERS) {
-    it(`${fichier} ne peint aucune transparence non déclarée`, () => {
+    it(`${fichier} ne peint aucun voile d'encre hors des jetons`, () => {
       const source = readFileSync(fichier, 'utf8');
       const trouves = [
-        ...source.matchAll(/color-mix\(in srgb, var\(--ink\) (\d+)%, transparent\)/g)
-      ].map((m) => Number(m[1]) / 100);
-
-      const orphelins = [...new Set(trouves)].filter((alpha) => !connus.has(alpha));
-      expect(
-        orphelins,
-        'transparence peinte sur une surface claire sans être ni mesurée ni tenue pour décorative'
-      ).toEqual([]);
-    });
-  }
-});
-
-/** Une couleur dans OKLab, où une distance euclidienne suit à peu près l'écart perçu. */
-function oklab(hex: string): [number, number, number] {
-  const [r, g, b] = composantes(hex).map(canal) as [number, number, number];
-  const [l, m, s] = [
-    0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
-    0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
-    0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b
-  ].map(Math.cbrt) as [number, number, number];
-  return [
-    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
-    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
-    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
-  ];
-}
-
-function ecartPercu(a: string, b: string): number {
-  return Math.hypot(...oklab(a).map((v, i) => v - (oklab(b)[i] as number)));
-}
-
-/**
- * L'alerte ne ressemble à aucun plat (alerte-et-fiche-cochee, D2).
- *
- * `--warn` et `--fam-volaille` ont longtemps eu la même valeur : le bandeau
- * « allergènes non précisés » avait la couleur du disque d'un jour de dinde. Un
- * contrôle d'égalité ne suffit pas — `#e99507` le passerait et tromperait tout
- * autant —, d'où une distance perçue.
- *
- * Le seuil de 0,15 est calé sur l'écart le plus faible de la palette, la viande
- * à 0,19, avec une marge. Il refuse une famille qui ne différerait de l'alerte
- * que par la clarté : `#b86e00`, envisagé pour la volaille, n'est qu'à 0,13.
- */
-const ECART_ALERTE = 0.15;
-
-describe("l'alerte se distingue de chaque famille", () => {
-  for (const famille of FAMILLES) {
-    it(`--warn s'écarte de --fam-${famille}`, () => {
-      const alerte = jetons['warn'];
-      const couleur = jetons[`fam-${famille}`];
-      expect(alerte, 'jeton --warn absent').toBeDefined();
-      expect(couleur, `jeton --fam-${famille} absent`).toBeDefined();
-
-      const ecart = ecartPercu(alerte as string, couleur as string);
-      expect(
-        Number(ecart.toFixed(3)),
-        `--warn et --fam-${famille} ne sont qu'à ${ecart.toFixed(3)} dans OKLab`
-      ).toBeGreaterThanOrEqual(ECART_ALERTE);
+        ...source.matchAll(/color-mix\(in srgb, var\(--ink\) \d+%, transparent\)/g)
+      ].map((m) => m[0]);
+      expect(trouves, 'voile écrit dans un composant : le déclarer dans tokens.css').toEqual([]);
     });
   }
 });

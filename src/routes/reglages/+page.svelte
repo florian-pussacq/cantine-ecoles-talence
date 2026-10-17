@@ -109,7 +109,7 @@
     font-size: var(--text-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink-muted);
   }
 
@@ -124,7 +124,7 @@
   }
 
   .lien .titre {
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     text-decoration: underline;
   }
 
@@ -157,7 +157,7 @@
     border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     line-height: 1.4;
   }
 
@@ -210,7 +210,7 @@
   .foot button {
     font: inherit;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink);
     background: none;
     border: 1px solid var(--bord);

@@ -319,8 +319,7 @@
 
   .notice.subtle {
     background: none;
-    color: var(--ink);
-    opacity: 0.8;
+    color: var(--ink-muted);
     padding-inline: var(--space-2);
   }
 
@@ -331,14 +330,14 @@
     border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     line-height: 1.35;
   }
 
   .warn :global(a),
   .notice :global(a) {
     color: currentcolor;
-    font-weight: 700;
+    font-weight: var(--poids-fort);
   }
 
   /*
@@ -399,7 +398,7 @@
   .theme h2 {
     margin: 0;
     font-size: var(--text-base);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: -0.01em;
   }
 

@@ -46,7 +46,7 @@
     padding-inline: var(--space-4);
     font: inherit;
     font-size: var(--text-sm);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     color: var(--on-accent);
     background: var(--accent);
     border: none;

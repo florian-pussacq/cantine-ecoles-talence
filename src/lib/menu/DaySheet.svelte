@@ -220,10 +220,10 @@
     opacity: 0;
     translate: 0 12px;
     transition:
-      opacity 180ms ease-out,
-      translate 180ms ease-out,
-      display 180ms allow-discrete,
-      overlay 180ms allow-discrete;
+      opacity var(--apparition) var(--courbe),
+      translate var(--apparition) var(--courbe),
+      display var(--apparition) allow-discrete,
+      overlay var(--apparition) allow-discrete;
   }
 
   /*
@@ -252,7 +252,7 @@
   }
 
   dialog::backdrop {
-    background: var(--voile);
+    background: var(--voile-modale);
   }
 
   @media (min-width: 640px) {
@@ -287,14 +287,14 @@
     font-size: var(--text-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink-muted);
   }
 
   h2 {
     margin: 0;
     font-size: var(--text-lg);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: -0.03em;
     line-height: 1.15;
   }
@@ -306,7 +306,7 @@
     padding-inline: var(--space-3);
     font: inherit;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink);
     background: none;
     border: 1px solid var(--bord);
@@ -345,13 +345,13 @@
     font-size: var(--text-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink-muted);
   }
 
   .plat-nom {
     font-size: var(--text-base);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     line-height: 1.25;
   }
 
@@ -359,7 +359,7 @@
      comme un titre — et ne se confond pas avec une absence. */
   .plat-nom.unknown {
     font-style: italic;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink-muted);
   }
 
@@ -379,7 +379,7 @@
     border-radius: var(--radius-pastille);
     padding: 0.3rem 0.5rem 0.3rem 0.35rem;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
   }
 
   .alg-icon {
@@ -394,17 +394,17 @@
   */
   .plats.filtre .allergens li:not(.surveille) {
     color: var(--ink-muted);
-    font-weight: 400;
+    font-weight: normal;
   }
 
   .allergens li.surveille {
     border: 2px solid var(--ink);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
   }
 
   .marque {
     font-size: var(--text-2xs);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -420,7 +420,7 @@
     font-size: var(--text-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     color: var(--ink-muted);
   }
 
@@ -448,12 +448,12 @@
     border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
   }
 
   .non-precise :global(a) {
     color: currentcolor;
-    font-weight: 700;
+    font-weight: var(--poids-fort);
   }
 
   .none {
@@ -481,7 +481,7 @@
   .tags em {
     font-style: normal;
     font-size: var(--text-2xs);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: 0.09em;
     text-transform: uppercase;
     border: 1.5px solid currentColor;
@@ -496,7 +496,7 @@
   }
 
   .pork span {
-    font-weight: 700;
+    font-weight: var(--poids-fort);
   }
 
   footer {
@@ -519,7 +519,7 @@
      des mentions, trouvée par le même contrôle (D64). */
   footer :global(a) {
     color: var(--accent);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     min-height: var(--touch);
     display: inline-flex;
     align-items: center;

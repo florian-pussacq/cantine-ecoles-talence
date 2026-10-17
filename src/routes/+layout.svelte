@@ -241,12 +241,12 @@
     border-radius: var(--radius-pastille);
     padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
   }
 
   .update button {
     font: inherit;
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     color: var(--warn-on);
     background: none;
     border: 2px solid currentcolor;

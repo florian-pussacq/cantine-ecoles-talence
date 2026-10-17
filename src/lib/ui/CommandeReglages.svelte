@@ -73,12 +73,12 @@
     right: 2px;
     min-width: 17px;
     height: 17px;
-    padding-inline: 4px;
+    padding-inline: var(--space-1);
     border-radius: var(--radius-pilule);
     background: var(--carte);
     color: var(--ink);
     font-size: var(--text-2xs);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     line-height: 17px;
     text-align: center;
     /* Un anneau de fond, parce que la pastille se pose sur les dents de la roue

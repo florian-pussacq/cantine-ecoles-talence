@@ -267,8 +267,7 @@
   .stale {
     margin: 0;
     padding-inline: var(--space-2);
-    color: var(--ink);
-    opacity: 0.8;
+    color: var(--ink-muted);
     font-size: var(--text-sm);
   }
 
@@ -366,7 +365,7 @@
 
   .dow {
     font-size: var(--text-sm);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--ink);
@@ -374,7 +373,7 @@
 
   .num {
     font-size: var(--text-lg);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: -0.02em;
     color: var(--ink);
     font-variant-numeric: tabular-nums;
@@ -382,7 +381,7 @@
 
   .now {
     font-size: var(--text-2xs);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     background: var(--ink);
@@ -393,7 +392,7 @@
 
   .main {
     font-size: var(--text-base);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     color: var(--ink);
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -401,12 +400,12 @@
 
   li.today .main {
     font-size: var(--text-lg);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: -0.02em;
   }
 
   .quiet-label {
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     font-style: italic;
     color: var(--ink-muted);
   }

@@ -40,7 +40,7 @@
   h1 {
     margin: 0;
     font-size: var(--text-2xl);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: -0.03em;
     line-height: 1.1;
     color: var(--ink);

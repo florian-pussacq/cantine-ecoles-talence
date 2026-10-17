@@ -65,13 +65,13 @@
     gap: var(--space-1);
     padding-inline: var(--space-3);
     font-size: var(--text-sm);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     color: var(--ink);
     background: var(--carte);
     /* Une bordure qui délimite une commande porte une information et tient donc
        3:1 (WCAG 1.4.11). L'encre à 55 % mesure 3,46:1 sur le fond crème, taux
        déjà mesuré par `contrast.test.ts` pour les flèches (D27, D49). */
-    border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
+    border: 1px solid var(--voile-trait);
     border-radius: var(--radius-pilule);
     text-decoration: none;
     white-space: nowrap;

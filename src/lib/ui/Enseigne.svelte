@@ -122,9 +122,9 @@
     flex: 1;
     min-width: 0;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     letter-spacing: 0.01em;
-    color: color-mix(in srgb, var(--ink) 72%, transparent);
+    color: var(--ink-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -105,9 +105,21 @@
   --warn: #e89406;
   --warn-on: #2a1b00;
 
-  /* Le voile posé derrière la fiche du jour : il assourdit l'écran sans le
-     cacher, et ne porte aucun texte (audit-design-system, D2). */
-  --voile: rgb(0 0 0 / 0.45);
+  /*
+   * Les voiles : de l'encre posée par transparence (fermer-les-echelles, D2).
+   *
+   * La forme `color-mix(in srgb, var(--ink) N%, transparent)` est celle que
+   * `contrast.test.ts` sait lire : il mesure chaque voile depuis sa déclaration
+   * ici, et non plus depuis un taux recopié dans un composant.
+   */
+  /* L'aplat de la pilule d'onglets : décoratif, c'est le libellé posé dessus
+     qui se lit. */
+  --voile-fond: color-mix(in srgb, var(--ink) 12%, transparent);
+  /* La bordure d'une commande : elle porte une information, donc 3:1. */
+  --voile-trait: color-mix(in srgb, var(--ink) 55%, transparent);
+  /* Derrière la fiche du jour : il assourdit l'écran sans le cacher, et ne
+     porte aucun texte (audit-design-system, D2). */
+  --voile-modale: rgb(0 0 0 / 0.45);
 
   /* Typographie : pile système, aucune requête réseau (PRD §8) */
   --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -123,6 +135,12 @@
   --text-xl: 1.375rem;
   --text-2xl: 1.5rem;
 
+  /* Graisses. Elles ne changent pas au palier large : une graisse n'a pas à
+     grandir avec l'écran (fermer-les-echelles, D3). */
+  --poids-moyen: 600;
+  --poids-fort: 700;
+  --poids-titre: 800;
+
   /* Espacements */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -135,6 +153,8 @@
   --radius-pilule: 999px;
   /* Le haut de la fiche du jour, qui monte du bas de l'écran. */
   --radius-feuille: 20px;
+  /* L'indicateur de focus, qui épouse sans les recouvrir les coins d'une commande. */
+  --radius-focus: 4px;
 
   /* Cible tactile minimale (WCAG 2.1 AA) */
   --touch: 44px;
@@ -161,6 +181,15 @@
      entier sous une seule horloge : l'en-tête qui annonce le jour ne change pas
      selon un temps différent du contenu qu'il annonce (D30). */
   --glisse: 260ms;
+  /* L'ouverture de la fiche du jour : plus brève qu'un changement de jour,
+     parce qu'elle ne déplace rien, elle pose une couche. */
+  --apparition: 180ms;
+  /* La courbe de tout mouvement de l'application : rapide au départ, posée à
+     l'arrivée (fermer-les-echelles, D6). */
+  --courbe: ease-out;
+  /* Le délai au-delà duquel une page périmée se montre sans attendre
+     l'hydratation (jour-au-premier-rendu, D4). */
+  --secours: 3s;
 
   /* Largeur de la colonne de contenu. Elle grandit sur écran large, mais reste
      bornée : un texte étiré sur toute la largeur d'un écran de bureau ne se lit
@@ -216,7 +245,7 @@ body {
   background: var(--fond);
   color: var(--ink);
   font-family: var(--font);
-  font-size: 16px;
+  font-size: var(--text-base);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -230,7 +259,7 @@ body {
  * et `prefers-reduced-motion` la supprime plus bas.
  */
 .glisse {
-  animation: glisser var(--glisse) ease-out;
+  animation: glisser var(--glisse) var(--courbe);
 }
 
 @keyframes glisser {
@@ -249,7 +278,7 @@ body {
 :where(a, button):focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-focus);
 }
 
 /* La zone qui dépend du jour, sur une page rendue un autre jour
@@ -260,7 +289,7 @@ body {
    réduit ci-dessous n'abrège que la durée, pas ce délai. */
 html[data-perime]:not([data-hydrate]) .selon-le-jour {
   visibility: hidden;
-  animation: reveler 0s 3s forwards;
+  animation: reveler 0s var(--secours) forwards;
 }
 
 @keyframes reveler {

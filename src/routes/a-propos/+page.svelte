@@ -137,7 +137,7 @@
     font-size: var(--text-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink-muted);
   }
 
@@ -171,7 +171,7 @@
 
   dd {
     margin: 0;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
   }
 
   /*
@@ -189,7 +189,7 @@
   */
   .panel :global(a) {
     color: var(--accent);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
   }
 
   /* Les liens d'un tableau de définitions sont isolés, pas au fil d'une phrase :

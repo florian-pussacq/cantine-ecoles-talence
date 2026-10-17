@@ -50,7 +50,7 @@
     border-radius: var(--radius-pilule);
     padding: 0.12rem 0.5rem 0.12rem 0.2rem;
     font-size: var(--text-xs);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     color: var(--ink);
     line-height: 1.3;
   }

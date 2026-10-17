@@ -113,7 +113,7 @@
        3:1 (WCAG 1.4.11). Sur le fond crème, l'encre à 40 % ne mesure que 2,32:1
        — le taux qui suffisait sur l'ardoise ne suffit plus. À 55 %, elle mesure
        3,46:1, vérifié par `contrast.test.ts` (D27, D49). */
-    border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
+    border: 1px solid var(--voile-trait);
     border-radius: 50%;
     cursor: pointer;
   }
@@ -134,7 +134,7 @@
 
   .mention {
     font-size: var(--text-xs);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
@@ -148,7 +148,7 @@
   .designation {
     margin: 0;
     font-size: var(--text-base);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     line-height: 1.35;
     color: var(--ink);
     white-space: nowrap;

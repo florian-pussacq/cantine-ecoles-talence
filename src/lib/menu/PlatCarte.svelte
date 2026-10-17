@@ -164,7 +164,7 @@
     font-size: var(--text-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     color: var(--role);
   }
 
@@ -174,7 +174,7 @@
 
   .nom {
     font-size: var(--text-base);
-    font-weight: 700;
+    font-weight: var(--poids-fort);
     line-height: 1.25;
     text-wrap: balance;
   }
@@ -191,8 +191,8 @@
      n'annonce aucun plat du tout. */
   .unknown {
     font-style: italic;
-    font-weight: 600;
-    opacity: 0.75;
+    font-weight: var(--poids-moyen);
+    color: var(--ink-muted);
   }
 
   .absent {
@@ -211,7 +211,7 @@
   .tags em {
     font-style: normal;
     font-size: var(--text-2xs);
-    font-weight: 800;
+    font-weight: var(--poids-titre);
     letter-spacing: 0.09em;
     text-transform: uppercase;
     border: 1.5px solid currentColor;

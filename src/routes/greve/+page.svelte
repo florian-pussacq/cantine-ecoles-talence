@@ -140,7 +140,7 @@
     font-size: var(--text-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     color: var(--ink-muted);
   }
 
@@ -153,7 +153,7 @@
     gap: var(--space-1);
     margin-top: var(--space-3);
     padding: var(--space-1);
-    background: color-mix(in srgb, var(--ink) 12%, transparent);
+    background: var(--voile-fond);
     border-radius: var(--radius-pilule);
   }
 
@@ -166,7 +166,7 @@
     color: var(--ink);
     font: inherit;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--poids-moyen);
     cursor: pointer;
   }
 

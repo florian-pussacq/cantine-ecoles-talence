@@ -58,16 +58,14 @@
     padding: var(--space-3) var(--space-2) 0;
     /* Filet décoratif : il ne délimite aucune commande et ne porte aucune
        information, donc WCAG 1.4.11 ne lui applique pas de seuil (D27). */
-    border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
-    color: var(--ink);
-    opacity: 0.72;
+    border-top: 1px solid var(--bord);
+    color: var(--ink-muted);
     font-size: var(--text-xs);
   }
 
   footer :global(a) {
     color: var(--ink);
-    font-weight: 700;
-    opacity: 1;
+    font-weight: var(--poids-fort);
     /* Cible tactile : un lien isolé doit être atteignable au pouce. */
     min-height: var(--touch);
     display: inline-flex;

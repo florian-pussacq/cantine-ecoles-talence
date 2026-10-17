@@ -26,6 +26,8 @@ Le 72 % est du texte, et l'application a un jeton pour le texte atténué. Le ga
 
 Le 22 % est un filet décoratif, et `--bord` est déclaré dans `tokens.css` comme « séparation décorative ». Ce choix n'a pas été posé à l'humain : il suit la même logique que le 72 %. Le filet s'éclaircit légèrement, ce qui se défait en une ligne si l'œil le refuse.
 
+*Corrigé à l'application.* Le relevé ne cherchait que `color-mix`, et il a manqué les voiles posés par `opacity`. Le pied de source en portait un à 72 %, sur le texte : c'est lui que mesurait la ligne des 72 % de `contrast.test.ts`, et la retirer l'aurait laissé sans mesure. Trois autres textes étaient atténués de la même façon, sans être mesurés : le détail non publié (`.unknown`, 75 %), et deux mentions (`.stale` et `.notice.subtle`, 80 %). Les quatre passent à `--ink-muted`, comme l'enseigne. Le lien du pied de source reprend l'encre pleine : son `opacity: 1` ne pouvait pas défaire l'opacité de son parent, et le lien restait à 72 % sans qu'on le veuille. `design-tokens.test.ts` refuse désormais toute opacité partielle qui n'est pas déclarée. Une seule l'est : la flèche désactivée, à 45 %, une commande inactive que WCAG exempte du seuil.
+
 Les voiles se déclarent dans `tokens.css` sous la forme `color-mix(in srgb, var(--ink) N%, transparent)`, que `contrast.test.ts` connaît déjà. Le test lit donc les taux dans les jetons et non plus dans les composants. Sa liste `TRANSPARENCES` nomme le jeton au lieu de recopier le taux. Le contrôle de couverture continue de lire les composants, pour refuser qu'un nouveau `color-mix` d'encre y revienne en dur.
 
 ### D3 — Graisses : trois jetons et une exception
@@ -58,11 +60,14 @@ Je l'avais relevé comme un défaut à la vérification de l'audit. Ce n'en est 
 
 Le test refuse une durée (`\d+m?s`) ou une courbe nommée (`ease`, `ease-in`, `ease-out`, `ease-in-out`, `linear`, `cubic-bezier(`) écrite en dur dans `transition`, `animation` et leurs propriétés détaillées. Un seul cas est admis : `0.01ms !important`, dans la règle `prefers-reduced-motion` de `tokens.css`. C'est une neutralisation, pas une durée choisie, et l'exception le dit.
 
+*Corrigé à l'application.* Les règles de base de `tokens.css` portaient un troisième mouvement en dur : `reveler 0s 3s`, le secours du premier rendu (jour-au-premier-rendu, D4). Le `0s` est une absence de durée, et les durées nulles sont retirées avant le contrôle. Le `3s` est un délai qui a un sens, et il devient `--secours`.
+
 ### D7 — Ce que le test lit en plus
 
 - **Les règles de base de `tokens.css`.** Le fichier entre dans la lecture. Les déclarations de jetons (`--nom: valeur`) ne sont pas des propriétés surveillées et passent d'elles-mêmes ; seules les règles `body`, `:focus-visible`, `.glisse` et `prefers-reduced-motion` sont réellement contrôlées.
 - **Les raccourcis.** `border`, `border-top`, `border-right`, `border-bottom`, `border-left`, `outline` et `box-shadow` sont contrôlés pour la couleur littérale. `font` n'admet que `inherit`.
 - **Les attributs de balisage.** `style="…"` et `style:propriété="…"` dans le balisage des composants, pour les mêmes propriétés et les mêmes règles.
+- **Les jetons inconnus.** Tout `var(--…)` doit être déclaré dans `tokens.css`, sauf deux cas. Les quatre jetons posés en ligne par les composants (`--role`, `--sens`, `--pale`, `--ring`) sont connus du composant qui les pose. Les noms construits (`var(--fam-${famille})`) sont lus coupés à leur partie fixe, et leurs valeurs viennent d'un type fermé que le compilateur vérifie.
 
 ### D8 — Espacements : le minimum
 
