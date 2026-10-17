@@ -1,5 +1,9 @@
 # Dish Illustration Specification
 
+## Purpose
+
+Donner à chaque plat une illustration déduite de son libellé, qui aide à lire le menu sans jamais en affirmer davantage que le document source.
+
 ## Requirements
 
 ### Requirement: Bibliothèque d'illustrations par famille d'aliment

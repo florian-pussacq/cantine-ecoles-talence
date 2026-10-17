@@ -1,5 +1,9 @@
 # Allergen Filter Specification
 
+## Purpose
+
+Permettre à un parent de choisir les allergènes qui le concernent et de voir signalés, en toutes lettres, les plats qui en contiennent.
+
 ## Requirements
 
 ### Requirement: Réglage local des allergènes à signaler

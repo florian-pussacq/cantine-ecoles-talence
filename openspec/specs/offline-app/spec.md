@@ -1,5 +1,9 @@
 # Offline App Specification
 
+## Purpose
+
+Garder l'application installable, légère et consultable sans réseau, et dire de quand datent les menus qu'elle montre.
+
 ## Requirements
 
 ### Requirement: Fonctionnement hors ligne complet

@@ -7,7 +7,7 @@ alors cette liste. Les entrées restent ici, et non en changements vides, pour q
 
 Relevé du 16 octobre 2026, sur la page de la Ville et ses PDF.
 
-## 1. `jours-feries` — appliqué, à archiver
+## 1. `jours-feries` — archivé le 17 octobre 2026
 
 ## 2. Mise à jour des menus d'octobre à janvier — faite le 17 octobre 2026
 
