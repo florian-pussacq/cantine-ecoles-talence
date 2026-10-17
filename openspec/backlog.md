@@ -67,31 +67,9 @@ Ce qu'on sait déjà :
   loisirs et non de cantine scolaire ? Probablement oui, la population servie
   n'étant pas la même.
 
-## 5. `ci-github` — à proposer
+## 5. `ci-github` — proposé le 17 octobre 2026
 
-Le dépôt vient de GitLab et vit désormais sur GitHub. `.gitlab-ci.yml` n'est plus
-exécuté par personne : aujourd'hui, **rien ne vérifie une branche ni une PR**, et
-les tests de bout en bout ne tournent nulle part — Netlify ne rejoue que
-`validate` et `build`.
-
-À faire :
-
-- Porter le pipeline en GitHub Actions : un job `verifier`
-  (`npm run validate && npm run build`), un job `e2e` (Chromium installé à la
-  demande, rapport Playwright en artefact sur échec). Mêmes déclencheurs : PR et
-  poussée de branche, sans double exécution.
-- `actions/setup-node` lit `.nvmrc` (`node-version-file`) : la duplication de la
-  version de Node que `.gitlab-ci.yml` assumait disparaît.
-- Côté Netlify : vérifier que le site est relié au dépôt GitHub et non plus à
-  l'ancien dépôt GitLab, et que les prévisualisations se font sur les PR.
-  Opération dans l'interface Netlify, à faire par un humain.
-- Décider si `e2e` rouge doit bloquer la publication. Aujourd'hui non (prix de
-  l'intégration Git native de Netlify, assumé dans D2 de `menus-jour-semaine`).
-  Avec GitHub, une protection de branche sur `main` exigeant les deux jobs le
-  permet sans changer de mode de déploiement — à condition de passer par des PR.
-- Supprimer `.gitlab-ci.yml`, et reprendre le vocabulaire « merge request » dans
-  `netlify.toml` et dans D2 de `menus-jour-semaine` (archive : on ajoute une note,
-  on ne réécrit pas l'histoire).
+Voir `openspec/changes/ci-github/`. Il absorbe l'entrée 7.
 
 ## 6. Mention de l'écran du jour : week-end et vacances
 
@@ -101,15 +79,10 @@ propre au week-end et aux vacances. L'écran dit aujourd'hui « Demain » ou
 champ `skipped` sur la cible résolue et ne traite que le férié ; il ne restera
 qu'à lire ce champ pour les autres natures.
 
-## 7. Les tests de bout en bout dépendent de l'horloge réelle
+## 7. Veille planifiée des PDF de la Ville
 
-Une partie de `e2e/retour.spec.ts` (et deux tests de `qualite`, `balayage`,
-`hauteur`) lit l'horloge de la machine. Du 16 au 17 octobre 2026, le corpus
-s'arrêtait au 16 : plus aucun jour servi à venir, l'écran disait « menu non
-publié », et quatorze tests tombaient — sans qu'aucun code n'ait changé. Le même
-écueil reviendra à chaque fin de corpus, donc à chaque fois que la Ville tarde à
-publier.
-
-Fixer l'horloge (`page.clock.install`) dans chacun de ces tests, sur une date
-dont ils ont besoin, comme le font déjà les autres tests de `retour`.
-
+Le 16 octobre, le corpus s'est épuisé alors que la Ville avait publié novembre
+dès septembre. Un workflow planifié (quotidien) pourrait relever les liens de la
+page, comparer les empreintes et ouvrir une issue — ou une PR produite par le
+script — quand un PDF change ou quand le corpus couvre moins de deux semaines à
+venir. À concevoir après `ci-github`, dont il réutilise le socle.
