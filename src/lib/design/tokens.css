@@ -84,23 +84,18 @@
    */
   --fam-viande: #d93b2b;
   --fam-viande-pale: #faded9;
-  --fam-viande-on: #ffffff;
 
   --fam-volaille: #e89406;
   --fam-volaille-pale: #fcebce;
-  --fam-volaille-on: #2a1b00;
 
   --fam-poisson: #1479be;
   --fam-poisson-pale: #d7e9f8;
-  --fam-poisson-on: #ffffff;
 
   --fam-vegetarien: #23803e;
   --fam-vegetarien-pale: #d8eddf;
-  --fam-vegetarien-on: #ffffff;
 
   --fam-inconnu: #5f6b66;
   --fam-inconnu-pale: #e3e6e4;
-  --fam-inconnu-on: #ffffff;
 
   /* Sémantique — distincte des rôles comme des familles, jamais un accent */
   --warn: #e89406;
@@ -160,7 +155,6 @@
 
   /* Échelle des illustrations, pour qu'elles suivent la colonne. */
   --ill-plat: 46px;
-  --ill-cellule: 34px;
   --ill-disque: 68px;
 }
 
@@ -183,7 +177,6 @@
     --text-2xl: 1.75rem;
 
     --ill-plat: 58px;
-    --ill-cellule: 42px;
     --ill-disque: 84px;
   }
 }

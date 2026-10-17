@@ -127,20 +127,12 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
     n'est à distinguer et où la couleur dit bien ce qui varie d'un jour à
     l'autre. Elles restent donc mesurées, et sur les mêmes seuils.
   */
-  ...(['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const).flatMap((famille) => [
-    {
-      texte: `fam-${famille}-on`,
-      fond: `fam-${famille}`,
-      seuil: 4.5,
-      quoi: `texte sur le disque ${famille}`
-    },
-    {
-      texte: 'ink',
-      fond: `fam-${famille}-pale`,
-      seuil: 4.5,
-      quoi: `texte sur la teinte pâle ${famille}`
-    }
-  ])
+  ...(['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const).map((famille) => ({
+    texte: 'ink',
+    fond: `fam-${famille}-pale`,
+    seuil: 4.5,
+    quoi: `texte sur la teinte pâle ${famille}`
+  }))
 ];
 
 /**
@@ -303,15 +295,6 @@ describe('couverture des transparences', () => {
       ).toEqual([]);
     });
   }
-});
-
-describe('la volaille inverse sa polarité', () => {
-  it('porte du texte sombre, parce que son ambre est trop clair pour du blanc', () => {
-    // Documenté en D15 : assombrir l'ambre jusqu'à la lisibilité du blanc
-    // l'aurait viré au marron, ce que la palette refuse.
-    expect(contraste('#ffffff', jetons['fam-volaille'] as string)).toBeLessThan(4.5);
-    expect(jetons['fam-volaille-on']).not.toBe('#ffffff');
-  });
 });
 
 describe('la palette', () => {

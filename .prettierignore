@@ -1,9 +1,7 @@
 .svelte-kit/
-.npm/
 build/
 node_modules/
 sources/
-.remember/
 package-lock.json
 
 # La documentation est de la prose relue à la main : Prettier la réécrirait

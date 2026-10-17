@@ -38,6 +38,6 @@ export default ts.config(
     }
   },
   {
-    ignores: ['build/', '.svelte-kit/', 'node_modules/', 'sources/', '.remember/', 'openspec/']
+    ignores: ['build/', '.svelte-kit/', 'node_modules/', 'sources/', 'openspec/']
   }
 );
