@@ -114,3 +114,97 @@ aucun. Ce qu'il faut retenir pour les suivants :
 - `menus-jour-semaine`, le socle, est archivé sans synchronisation : ses
   exigences sont toutes dans `openspec/specs/`, renommées ou retirées depuis par
   des changements archivés.
+
+## 11. Plan de l'audit du système de design — feuille de route
+
+Source : artefact « Audit design de la cantine » (17 octobre 2026), plan d'action.
+Chaque étape est un changement OpenSpec à part, livrable seul, dans cet ordre.
+Toutes sont à faire. Décisions déjà prises avec l'humain le 17 octobre 2026 :
+
+- direction de l'écran du jour : **Affinée**, avec les cartes vides et le goûter
+  en lignes compactes empruntées à Express ;
+- code couleur : **la famille seule**, sur le plat principal ;
+- jetons `--role-*` : **supprimés** une fois le code unique en place ;
+- mode sombre : **suivre le système** (`prefers-color-scheme`), sans réglage ;
+- renommage : **jetons et composants**, tout en français.
+
+Étape 1 (alerte distincte de la volaille, allergènes cochés sur la fiche) :
+`alerte-et-fiche-cochee`, en cours.
+
+## 12. Fermer les échelles — à proposer
+
+`audit-design-system` a traité les tailles, les rayons et le voile de la fiche.
+Il reste :
+
+- **graisses** : 45 occurrences de trois valeurs (600 ×19, 700 ×15, 800 ×11)
+  → `--poids-moyen`, `--poids-fort`, `--poids-titre`, et `font-weight` surveillé
+  par `design-tokens.test.ts` ;
+- **voiles** : six `color-mix(--ink …)` ad hoc à 12, 22, 55 et 72 %
+  (`Onglets`, `greve`, `PiedSource`, `CommandeSortie`, `RangNavigation`,
+  `Enseigne`) → trois jetons (fond, trait, modale) ; `contrast.test.ts` les
+  mesure alors une fois au lieu d'un par un ;
+- **ombres** (5) et **courbe** de transition (`ease-out` en dur dans
+  `DaySheet`) ;
+- **trous du garde-fou** relevés à la vérification de l'audit : `tokens.css` est
+  exclu en entier, alors que ses règles de base portent `body { font-size: 16px }`
+  (hors échelle, ne suit pas le palier large — vérifier si du texte en hérite)
+  et `border-radius: 4px` sur le focus ; les raccourcis `border:`, `outline:`,
+  `box-shadow:`, `font:` et les attributs `style=` ne sont pas lus ;
+  `line-height: 17px` dans `CommandeReglages` ; deux `4px` qui doublent
+  `--space-1` (`Onglets`, `CommandeReglages`), et le commentaire du test qui
+  dit les espacements « sans échelle » ;
+- **à trancher** : l'audit recommandait un plancher à 11 px ;
+  `audit-design-system` (D3) a retenu `--text-2xs` à 10 px pour ne pas faire
+  passer les cartes sur deux lignes à 320 px. Confirmer ou relever.
+
+## 13. Composant Bandeau et « Aujourd'hui » unifié — à proposer
+
+Les styles `.notice`, `.warn` et `.stale` sont redéfinis dans quatre pages
+(`+page`, `semaine`, `reglages`, `greve`), plus le layout et « À propos ». Un
+jour de vacances empile trois messages dans trois styles, sans hiérarchie.
+
+- un composant `Bandeau` à trois tons : info (menus périmés, hors ligne),
+  événement (Semaine du goût, vacances), alerte (allergènes non précisés,
+  grève) ; l'orange n'appartient qu'à l'alerte ; ordre : événement, alerte,
+  info en dernier et en discret ;
+- le titre du jour (`.theme`, « Semaine du goût ») devient un bandeau
+  « événement » : il a la surface d'une carte de plat sans en être une ;
+- « Aujourd'hui » : une seule pastille à l'accent sur les deux écrans, et une
+  ligne teintée sur la semaine au lieu du contour noir de 2 px, qui ressemble à
+  un focus clavier ;
+- nouveaux jetons `--info`/`--info-on`, `--fete`/`--fete-on`, mesurés par
+  `contrast.test.ts`.
+
+## 14. Un seul code couleur : la famille — à proposer
+
+Le même rôti de bœuf est brun-orangé sur l'écran du jour (`--role-plat`) et rouge
+sur la semaine (`--fam-viande`). Décision : la famille seule, sur le **plat
+principal** seulement ; les autres rôles gardent glyphe et libellé, en encre.
+`classify()` range une salade grecque et un clafoutis en « végétarien » :
+colorer toutes les cartes repeindrait la moitié du menu en vert.
+
+- révision de D50 et D54, retrait des aplats de rôle et des sept `--role-*` ;
+- `contrast.test.ts` : glyphe blanc et libellé à 4,5:1 sur chaque famille
+  (la volaille à `#9a5c00` y est déjà calculée, entrée 11) ; `Tray.test.ts` ;
+- direction Affinée, avec les cartes vides et le goûter en lignes compactes ;
+- la pastille allergène de la semaine (`AllergenChip`) ne montre que le
+  pictogramme du premier code (`codes[0]`) : un pictogramme par allergène
+  surveillé, deux ou trois au plus, ou aucun.
+
+## 15. Renommage en français — à proposer
+
+Jetons : `--ink` → `--encre`, `--ink-muted` → `--encre-douce`, `--chip` →
+`--pastille`, `--shell` → `--colonne`, `--touch` → `--cible`, `--warn` →
+`--alerte`, `--on-*` → `--sur-*`. Composants : `DaySheet` → `FicheJour`,
+`Tray` → `ListeDuJour` (le plateau n'existe plus dans l'interface),
+`AllergenChip` → `PastilleAllergene`, `ExternalLink`. Mécanique mais transverse :
+seul dans son commit, sans autre changement. Après l'entrée 14, pour ne pas
+renommer des jetons qu'on supprime.
+
+## 16. Mode sombre — à proposer
+
+Rouvre D25 et D49. Décision : suivre `prefers-color-scheme`, sans réglage ni
+stockage. `contrast.test.ts` mesure les deux palettes au lieu d'interdire la
+seconde (il refuse aujourd'hui toute dépendance à une préférence système).
+Après l'entrée 14 : cinq familles à décliner au lieu de sept rôles et cinq
+familles. Palette sombre de départ dans l'artefact d'audit (piste 6).
