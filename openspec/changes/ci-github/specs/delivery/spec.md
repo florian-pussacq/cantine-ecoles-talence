@@ -1,24 +1,24 @@
 ## ADDED Requirements
 
-### Requirement: Vérification de chaque proposition de changement
+### Requirement: Vérification de chaque poussée sur la production
 
-Toute pull request visant `main` SHALL être vérifiée par l'intégration continue avec les contrôles exécutés en local et par Netlify — formatage, lint, types, validité des données, tests unitaires, construction et budgets — ainsi que par les tests de bout en bout.
+Toute poussée sur `main`, et toute pull request qui la viserait, SHALL être vérifiée par l'intégration continue avec les contrôles exécutés en local et par Netlify — formatage, lint, types, validité des données, tests unitaires, construction et budgets — ainsi que par les tests de bout en bout.
 
-#### Scenario: PR conforme
-- **WHEN** une pull request est ouverte ou mise à jour et que tous les contrôles passent
-- **THEN** les deux vérifications `verifier` et `e2e` sont rapportées en succès sur son dernier commit
+#### Scenario: Poussée conforme
+- **WHEN** des commits sont poussés sur `main` et que tous les contrôles passent
+- **THEN** les deux vérifications `verifier` et `e2e` sont rapportées en succès sur le dernier commit poussé
 
 #### Scenario: Test de bout en bout en échec
-- **WHEN** un test de bout en bout échoue sur une pull request
+- **WHEN** un test de bout en bout échoue sur un commit poussé
 - **THEN** la vérification `e2e` est rapportée en échec et le rapport Playwright est conservé en artefact
 
-### Requirement: La production ne reçoit qu'un commit vérifié
+### Requirement: Rien ne part sans vérification locale
 
-La branche `main`, que Netlify publie, SHALL n'accepter que des commits dont les vérifications `verifier` et `e2e` ont réussi, et NE SHALL PAS accepter de poussée directe.
+Le développement se faisant sur `main`, que Netlify publie à chaque poussée, aucun commit NE SHALL être poussé sans que `npm run validate`, `npm run build` et, pour un commit qui touche l'interface ou les données servies, `npm run test:e2e` aient réussi en local. L'intégration continue sur `main` constate après coup ; elle ne retient pas la publication.
 
-#### Scenario: Fusion d'une PR rouge
-- **WHEN** une pull request porte une vérification en échec
-- **THEN** sa fusion dans `main` est refusée
+#### Scenario: Commit rouge en local
+- **WHEN** une vérification locale échoue sur un commit
+- **THEN** ce commit n'est ni créé ni poussé
 
 ### Requirement: Des vérifications indépendantes du jour d'exécution
 

@@ -12,7 +12,7 @@ Ces quatorze tests ont aussi montré une faiblesse : ils lisent l'horloge de la 
 - La version de Node est lue dans `.nvmrc` : la duplication assumée dans `.gitlab-ci.yml` disparaît.
 - Les tests de bout en bout qui dépendent de l'horloge réelle la fixent, sur une date du corpus dont ils ont besoin.
 - `.gitlab-ci.yml` est supprimé ; le vocabulaire « merge request » de `netlify.toml` suit.
-- Côté plateforme, hors du dépôt et à faire par un humain : relier le site Netlify au dépôt GitHub, et protéger `main` en exigeant les deux jobs.
+- Côté plateforme, hors du dépôt et à faire par un humain : relier le site Netlify au dépôt GitHub. La protection de `main` envisagée d'abord est abandonnée avec le passage au tronc (design, D1).
 
 Hors périmètre : publier depuis GitHub Actions (voir design, D1), et une veille planifiée des PDF de la Ville (consignée au backlog).
 
@@ -27,5 +27,5 @@ Hors périmètre : publier depuis GitHub Actions (voir design, D1), et une veill
 - **Nouveaux fichiers** : `.github/workflows/verifier.yml`.
 - **Supprimés** : `.gitlab-ci.yml`.
 - **Tests** : `e2e/retour.spec.ts`, `qualite.spec.ts`, `balayage.spec.ts`, `hauteur.spec.ts` fixent leur horloge ; leur comportement n'est plus lié au jour où ils tournent.
-- **Mode de travail** : une fois `main` protégée, on n'y pousse plus directement, on y fusionne une PR verte. C'est un changement d'habitude, et c'est voulu.
+- **Mode de travail** : développement sur le tronc, sans PR. La CI sur `main` constate après la publication ; la barrière est la vérification locale.
 - **Risque** : la protection de branche et le lien Netlify se règlent dans des interfaces que le dépôt ne versionne pas. Le design en donne la liste, pour qu'elle ne vive pas seulement dans une mémoire.

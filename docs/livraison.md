@@ -1,25 +1,31 @@
 # La livraison
 
 Ce document décrit le chemin d'un commit jusqu'à la production, et surtout ce qui
-ne vit pas dans le dépôt : deux réglages de plateforme sans lesquels la garantie
-ne tient pas. Ils ne sont pas versionnables ; ils sont donc écrits ici.
+ne vit pas dans le dépôt : un réglage de plateforme sans lequel rien ne se
+publie. Il n'est pas versionnable ; il est donc écrit ici.
 
 ## Le chemin
 
 ```
-branche ──► pull request ──► verifier + e2e verts ──► fusion dans main ──► Netlify publie
-                 │
-                 └──► Netlify : prévisualisation de la PR
+commits sur main, en local ──► vérification locale ──► poussée groupée ──► Netlify publie
+                                                              │
+                                                              └──► GitHub Actions : verifier + e2e
 ```
 
-- **GitHub Actions vérifie** (`.github/workflows/verifier.yml`) : `verifier`
-  rejoue `npm run validate && npm run build`, `e2e` les tests de bout en bout.
-- **Netlify publie** `main`, par son intégration Git, et rejoue lui aussi
+- **On travaille sur `main`** (développement sur le tronc). Les commits restent
+  en local et partent ensemble : chaque poussée déclenche un déploiement.
+- **La vérification locale est la barrière** : `npm run validate && npm run
+build`, et `npm run test:e2e` dès que l'interface ou les données servies
+  changent (`CLAUDE.md`).
+- **Netlify publie** `main` à chaque poussée, par son intégration Git, et rejoue
   `npm run validate && npm run build` (`netlify.toml`). Il n'exécute pas les
   tests de bout en bout.
-- **Personne ne pousse sur `main`.** On y fusionne une pull request verte.
+- **GitHub Actions vérifie** chaque poussée sur `main`
+  (`.github/workflows/verifier.yml`). Il constate après la publication ; il ne la
+  retient pas. Un `e2e` rouge sur `main` signale donc un défaut déjà en ligne.
 
-Pourquoi Netlify publie plutôt que GitHub Actions : `ci-github`, D1.
+Pourquoi ce compromis, et comment rétablir une barrière sans PR : `ci-github`,
+D1 et sa révision.
 
 ## Réglage 1 — Netlify relié au dépôt GitHub
 
@@ -32,18 +38,6 @@ _Site configuration → Build & deploy → Continuous deployment_ :
 
 Symptôme d'un lien resté sur GitLab : une fusion dans `main` ne déclenche aucun
 déploiement, et le site garde ses anciens menus.
-
-## Réglage 2 — `main` protégée
-
-Dans GitHub, _Settings → Rules → Rulesets_ (ou _Branches → Branch protection
-rules_), une règle ciblant `main` :
-
-- pull request obligatoire avant fusion ;
-- vérifications exigées : `verifier` et `e2e`, à jour avec `main` ;
-- poussée directe et réécriture d'historique interdites.
-
-Sans cette règle, un `e2e` rouge n'empêche rien : Netlify publie tout ce qui
-arrive sur `main`.
 
 ## L'instant des tests
 

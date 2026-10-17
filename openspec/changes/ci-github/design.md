@@ -14,6 +14,8 @@ GitHub change une donnée du problème : la protection de branche peut exiger qu
 
 Le prix : la garantie ne tient que tant que la protection est active, et elle se règle hors du dépôt. Elle n'est pas versionnable ; elle est donc listée en tâche et décrite dans `docs/`, pas seulement dans cette conversation.
 
+*Révision du 17 octobre 2026 — passage au développement sur le tronc.* Le travail se fait désormais sur `main`, sans PR. La protection de branche, qui aurait exigé une PR, est abandonnée. Conséquence assumée : la séquence stricte disparaît de nouveau. Netlify publie à la poussée, et la CI sur `main` constate après coup au lieu de retenir. La barrière redevient la vérification locale avant commit, que `CLAUDE.md` impose. Pour rétablir une barrière sans PR, on peut couper la publication automatique de Netlify et la déclencher par un build hook depuis la CI une fois verte. C'est consigné au backlog, avec la reconstruction quotidienne qui utilise le même hook.
+
 ### D2 — Les déclencheurs : PR et `main`, pas chaque branche
 
 **Retenu :** `pull_request` et `push` sur `main`, avec un groupe de concurrence qui annule l'exécution périmée d'une même référence.
