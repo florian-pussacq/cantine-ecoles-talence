@@ -115,15 +115,13 @@ lu dans la numérotation des décisions :
    dire.
 3. ~~`menu-de-greve`~~ — archivé le 17 octobre ; ses 23 tâches, toutes faites,
    n'avaient jamais été cochées.
-4. `menu-en-cartes`, puis `coque-et-mentions` — tâches terminées, mais l'archive
-   est refusée : leurs blocs MODIFIED omettent des scénarios de la spec
-   principale (« Zone sûre inférieure », « Une seule horloge », « Le contenu
-   n'attend pas l'animation », « La mention cède la place à la commande »…).
-   Pour chacun, décider d'après le code et les tests s'il est remplacé (le
-   retirer explicitement) ou toujours vrai (le recopier dans le bloc).
+4. ~~`menu-en-cartes`~~ puis ~~`coque-et-mentions`~~ — archivés le 17 octobre.
+   Le CLI ne sait pas retirer un scénario : les huit scénarios devenus faux ont
+   été retirés à la main de la spec principale, chacun justifié dans le design
+   de son changement ; les autres ont été recopiés dans les deltas.
 5. `illustrations-en-volume` (4.5) et `menus-jour-semaine` (12.4) — attendent
    une vérification sur un vrai téléphone ; 12.3 est remplacée par l'entrée 7.
 
-D'ici là, `openspec/specs/menu-browsing/spec.md` décrit l'en-tête tel que
-`retour-au-jour` l'avait laissé : en retard sur le code (D55, D61, D62).
+La spec principale décrit de nouveau l'en-tête et l'accès aux écrans tels que le
+code les fait.
 

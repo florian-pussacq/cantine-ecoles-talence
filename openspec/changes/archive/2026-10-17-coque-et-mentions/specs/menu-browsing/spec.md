@@ -34,6 +34,18 @@ Cette mention NE SHALL en aucun cas désigner comme le jour courant une période
 - **WHEN** l'utilisateur navigue vers un jour antérieur au jour courant
 - **THEN** la mention le situe dans le passé
 
+#### Scenario: La mention accompagne les commandes qui la changent
+- **WHEN** l'écran du jour affiche un jour choisi par le système
+- **THEN** la mention qui situe ce jour est rendue dans le rang de navigation, et non dans l'en-tête
+
+#### Scenario: L'en-tête ne bouge pas d'un écran à l'autre
+- **WHEN** l'utilisateur passe de l'écran du jour à l'écran de la semaine
+- **THEN** l'en-tête énonce la même chose et conserve la même hauteur
+
+#### Scenario: Période de la semaine
+- **WHEN** l'écran de la semaine est affiché
+- **THEN** la période énoncée tient sur une seule ligne et n'est pas coupée
+
 ### Requirement: Accès aux écrans
 
 Le système SHALL rendre atteignables depuis les écrans de consultation d'un menu, sans défiler ni ouvrir de menu, les deux destinations consultées quotidiennement — l'écran du jour et l'écran de la semaine.
@@ -78,6 +90,22 @@ Sur un écran large, le pied de page SHALL rester borné à la colonne de conten
 #### Scenario: Pied de page sur écran large
 - **WHEN** l'application est ouverte sur un écran de bureau
 - **THEN** le pied de page reste borné à la largeur de la colonne de contenu et ne s'étire pas sur toute la fenêtre
+
+#### Scenario: Deux écrans, un actif
+- **WHEN** l'écran du jour est affiché
+- **THEN** le choix présente exactement deux entrées, et celle du jour est restituée comme active
+
+#### Scenario: Le choix survit au changement d'écran
+- **WHEN** l'utilisateur a choisi un jour puis passe à l'écran de la semaine et revient
+- **THEN** le jour choisi est toujours affiché
+
+#### Scenario: Barre sur écran large
+- **WHEN** l'application est ouverte sur un écran de bureau
+- **THEN** le choix entre les deux écrans reste borné à la largeur de la colonne de contenu et ne s'étire pas sur toute la fenêtre
+
+#### Scenario: Aucun réglage dans la barre
+- **WHEN** le choix entre les deux écrans est affiché
+- **THEN** il ne contient que des destinations de consultation, à l'exclusion de tout écran de réglage
 
 ### Requirement: Accessibilité des écrans de consultation
 

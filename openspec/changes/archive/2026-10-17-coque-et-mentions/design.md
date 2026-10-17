@@ -135,3 +135,11 @@ Ce que la règle retenue ne voit pas, il faut le dire : une encre licite sur une
 Une exemption ferait sortir la couleur de toute vérification, c'est-à-dire l'état d'où l'on vient. Une inversion se déclare donc avec le fond sur lequel elle se pose, et devient une paire de plus dans le contrôle numérique. Le prix est une ligne par inversion — et c'est le prix juste, puisque c'est ce qui force à dire sur quoi elle se pose.
 
 **Le glob remplace la liste tenue à la main.** Le contrôle de couverture des transparences lisait neuf fichiers énumérés, complétés un par un au fil des découvertes. Trois fichiers portant des transparences n'y ont jamais figuré, et l'extraction du pied de source aurait fait sortir deux taux de la seule couverture qui les voyait. Une liste qu'il faut penser à compléter est une liste qui finit incomplète ; le contrôle d'apparence unique avait déjà tiré cette conclusion, deux blocs plus bas, pour la même raison.
+
+## Scénarios retirés de la spec principale
+
+Ajouté à l'archivage, le 17 octobre 2026. Ces scénarios décrivaient un état que ce changement abandonne, et sont retirés délibérément ; les autres ont été recopiés dans le delta, deux d'entre eux reformulés pour parler du « choix entre les deux écrans » plutôt que de « la barre ».
+
+- **Accès aux écrans — « Destinations quotidiennes atteignables partout », « Écran hors de la barre »** : le choix entre les deux écrans n'est plus affiché sur un écran secondaire. Remplacés par « Destinations quotidiennes atteignables » et « Écran secondaire ».
+- **Accès aux écrans — « Le réglage s'atteint depuis l'enseigne »** : sur un écran secondaire, l'emplacement de l'enseigne porte la sortie (D62). Remplacé par la règle de l'emplacement unique.
+
