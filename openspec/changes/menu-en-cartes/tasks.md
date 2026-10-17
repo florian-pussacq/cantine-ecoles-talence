@@ -57,6 +57,6 @@
 
 ## 7. Ce que seul un téléphone montre
 
-- [ ] 7.1 Vérifier au doigt qu'un appui destiné à faire défiler n'ouvre pas la fiche du jour — le risque augmente avec le défilement (D53)
-- [ ] 7.2 Vérifier que le balayage entre jours survit au défilement vertical
-- [ ] 7.3 Vérifier que le pied fixe ne recouvre pas la dernière carte, indicateur d'accueil compris
+- [x] 7.1 Vérifier au doigt qu'un appui destiné à faire défiler n'ouvre pas la fiche du jour — le risque augmente avec le défilement (D53) — vérifié à la main par le mainteneur sur l'application actuelle (17 octobre 2026)
+- [x] 7.2 Vérifier que le balayage entre jours survit au défilement vertical — `balayage.spec.ts` : « un défilement vertical ne change pas de jour »
+- [x] 7.3 Vérifier que le pied fixe ne recouvre pas la dernière carte, indicateur d'accueil compris — `hauteur.spec.ts` : « le pied ne recouvre jamais la dernière carte »

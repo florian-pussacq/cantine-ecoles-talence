@@ -51,7 +51,7 @@
 - [x] 6.5 Ajouter à `retour.spec.ts` le contrôle de la mention après navigation — elle ne doit plus dire « Aujourd'hui »
 - [x] 6.6 Vérifier les contrôles de titre de premier niveau de `smoke`, `offline` et `qualite` : le compte ne change pas, le texte oui
 - [x] 6.7 Ajouter à `qualite.spec.ts` le contrôle d'alignement du pied de source
-- [ ] 6.8 Passer `npm run validate`, `npm run build` et `npm run test:e2e`
+- [x] 6.8 Passer `npm run validate`, `npm run build` et `npm run test:e2e` — verts le 17 octobre 2026 (408 unitaires, 137 e2e)
 
 ## 7. Documentation
 

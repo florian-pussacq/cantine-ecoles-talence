@@ -113,9 +113,16 @@ lu dans la numérotation des décisions :
 2. ~~`enseigne-et-ardoise`~~ et ~~`retour-au-jour`~~ — archivés le 17 octobre.
    Il a fallu déclarer deux renommages (`RENAMED`) que le delta faisait sans les
    dire.
-3. `menu-en-cartes` (39/42), puis `illustrations-en-volume` (26/27), puis
-   `menu-de-greve` (0/23 cochées alors qu'il est en ligne : cocher d'après le
-   code avant d'archiver), puis `coque-et-mentions` (37/38).
+3. ~~`menu-de-greve`~~ — archivé le 17 octobre ; ses 23 tâches, toutes faites,
+   n'avaient jamais été cochées.
+4. `menu-en-cartes`, puis `coque-et-mentions` — tâches terminées, mais l'archive
+   est refusée : leurs blocs MODIFIED omettent des scénarios de la spec
+   principale (« Zone sûre inférieure », « Une seule horloge », « Le contenu
+   n'attend pas l'animation », « La mention cède la place à la commande »…).
+   Pour chacun, décider d'après le code et les tests s'il est remplacé (le
+   retirer explicitement) ou toujours vrai (le recopier dans le bloc).
+5. `illustrations-en-volume` (4.5) et `menus-jour-semaine` (12.4) — attendent
+   une vérification sur un vrai téléphone ; 12.3 est remplacée par l'entrée 7.
 
 D'ici là, `openspec/specs/menu-browsing/spec.md` décrit l'en-tête tel que
 `retour-au-jour` l'avait laissé : en retard sur le code (D55, D61, D62).
