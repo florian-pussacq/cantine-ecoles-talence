@@ -139,23 +139,13 @@ jetons nommés en français, le texte à 72 % passe à `--ink-muted`, espacement
 minimal (les deux `4px` seulement). Voir
 `openspec/changes/archive/2026-10-17-fermer-les-echelles/`.
 
-## 13. Composant Bandeau et « Aujourd'hui » unifié — à proposer
+## 13. Composant Bandeau et « Aujourd'hui » unifié — `bandeau-et-aujourdhui`, en cours
 
-Les styles `.notice`, `.warn` et `.stale` sont redéfinis dans quatre pages
-(`+page`, `semaine`, `reglages`, `greve`), plus le layout et « À propos ». Un
-jour de vacances empile trois messages dans trois styles, sans hiérarchie.
-
-- un composant `Bandeau` à trois tons : info (menus périmés, hors ligne),
-  événement (Semaine du goût, vacances), alerte (allergènes non précisés,
-  grève) ; l'orange n'appartient qu'à l'alerte ; ordre : événement, alerte,
-  info en dernier et en discret ;
-- le titre du jour (`.theme`, « Semaine du goût ») devient un bandeau
-  « événement » : il a la surface d'une carte de plat sans en être une ;
-- « Aujourd'hui » : une seule pastille à l'accent sur les deux écrans, et une
-  ligne teintée sur la semaine au lieu du contour noir de 2 px, qui ressemble à
-  un focus clavier ;
-- nouveaux jetons `--info`/`--info-on`, `--fete`/`--fete-on`, mesurés par
-  `contrast.test.ts`.
+Décisions du 17 octobre 2026 : le stockage indisponible, « ne sait pas s'il y a
+grève » et l'avertissement légal passent en info ; sur l'écran du jour, la
+pastille « Aujourd'hui » n'apparaît que le jour même ; sur la semaine, un fond
+teinté à l'accent remplace le contour noir. Voir
+`openspec/changes/bandeau-et-aujourdhui/`.
 
 ## 14. Un seul code couleur : la famille — à proposer
 
