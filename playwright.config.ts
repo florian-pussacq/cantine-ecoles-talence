@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { INSTANT_PAR_DEFAUT } from './e2e/instant';
 
 /**
  * Deux profils, parce qu'une mise en page qu'aucun test ne visite n'est pas
@@ -33,6 +34,10 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run build && npm run preview',
+    // Le pré-rendu énonce le même jour que le navigateur des tests (ci-github,
+    // D6). Un serveur réutilisé, construit sans cette variable, ne le garantit
+    // pas : l'arrêter avant de lancer la suite.
+    env: { CANTINE_INSTANT: INSTANT_PAR_DEFAUT.toISOString() },
     port: 4173,
     reuseExistingServer: !process.env.CI
   }

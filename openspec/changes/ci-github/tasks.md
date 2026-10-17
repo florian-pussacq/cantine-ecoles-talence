@@ -1,8 +1,10 @@
 ## 1. Tests indépendants de l'horloge
 
-- [ ] 1.1 Recenser les tests de bout en bout qui ouvrent un écran sans fixer l'horloge et supposent un jour servi
-- [ ] 1.2 Fixer l'horloge de chacun sur une date du corpus qui lui donne son cas (D5)
-- [ ] 1.3 Vérifier la suite sous une horloge système postérieure au corpus (`faketime` ou date forcée du navigateur pour tous les tests) : même résultat qu'à une date couverte
+- [x] 1.1 Recenser les tests qui dépendent de l'horloge réelle : suite complète sous un instant postérieur au corpus
+- [x] 1.2 Fixture automatique `e2e/test.ts` fixant l'horloge du navigateur ; specs migrées ; import direct interdit par ESLint (D5)
+- [x] 1.3 `CANTINE_INSTANT` lu au pré-rendu par `horloge.svelte.ts`, posé par le `webServer` de Playwright ; absent du build livré (D6)
+- [x] 1.4 Marqueur `data-hydrate` posé par la coque ; `hydratee(page)` avant la première touche du test clavier (D7)
+- [x] 1.5 Vérifier : suite verte deux fois à l'instant par défaut ; sous un instant postérieur au corpus, les échecs du recensement reviennent — le résultat ne dépend plus que de l'instant fixé
 
 ## 2. Workflow
 

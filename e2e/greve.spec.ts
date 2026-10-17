@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 /**
  * Le menu de grève : consultable, jamais au premier plan.

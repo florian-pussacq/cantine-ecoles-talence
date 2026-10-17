@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 
 /**
  * Le retour au repère, et ce qui l'entoure (design.md, D44 à D47, D55).

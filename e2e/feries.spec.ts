@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 
 /**
  * Le jour férié, sur le 11 novembre 2026 réel (jours-feries).

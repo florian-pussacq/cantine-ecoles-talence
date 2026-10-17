@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 /**
  * Mesure du LCP dans les conditions du PRD §8 : 4G et mobile milieu de gamme.

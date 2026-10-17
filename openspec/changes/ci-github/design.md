@@ -30,12 +30,33 @@ Les actions tierces sont épinglées par version majeure (`actions/checkout@v4`,
 
 `npx playwright install --with-deps chromium`, plutôt qu'une image `mcr.microsoft.com/playwright` dont l'étiquette doit suivre `@playwright/test`. Le raisonnement de `.gitlab-ci.yml` tient toujours ; il est repris en commentaire.
 
-### D5 — Une horloge fixée pour chaque test qui suppose un jour servi
+### D5 — Une horloge fixée par défaut pour tous les tests
 
-Un test qui ouvre `/` sans fixer l'horloge teste « le jour où il tourne ». Quand ce jour n'a pas de suivant servi, l'écran dit « menu non publié » et le test échoue pour une raison qui n'est pas la sienne.
+Un test qui ouvre `/` sans fixer l'horloge teste « le jour où il tourne ». Quand ce jour n'a pas de suivant servi, l'écran dit « menu non publié » et le test échoue pour une raison qui n'est pas la sienne. Mesuré : une horloge postérieure au corpus fait tomber 41 tests sur 129.
 
-Chaque test concerné installe une horloge sur une date du corpus qui lui donne le cas qu'il vérifie, comme le font déjà trois tests de `retour.spec.ts`. Les tests dont c'est précisément l'objet de lire l'état réel — il n'y en a pas aujourd'hui — en seraient exemptés et le diraient.
+**Retenu :** une fixture automatique, dans `e2e/test.ts`, installe l'horloge du navigateur sur `INSTANT_PAR_DEFAUT` (un mercredi servi du corpus) avant chaque test. Un test qui a besoin d'un autre jour réinstalle l'horloge ; Playwright accepte la seconde installation et elle remplace la première. ESLint interdit aux specs d'importer `test` depuis `@playwright/test`.
 
-Ce n'est pas figer une date pour faire passer un test : la date est l'entrée du test, au même titre que l'URL.
+**Écarté :** fixer l'horloge test par test, ce que prévoyait la première version de ce design. Le test suivant qui l'oublierait rouvrirait le défaut ; le défaut doit être la sûreté, pas la vigilance.
 
-Conséquence connue : ces dates vivent dans le corpus. Le jour où un mois quitte `static/data/`, les tests qui s'y ancrent tombent, et c'est un échec qui dit la vérité.
+Ce n'est pas figer une date pour faire passer un test : la date est l'entrée du test, au même titre que l'URL. Les dates vivent dans le corpus ; le jour où un mois quitte `static/data/`, les tests qui s'y ancrent tombent, et c'est un échec qui dit la vérité.
+
+### D6 — Le pré-rendu reçoit le même instant que le navigateur
+
+Le site est pré-rendu : le HTML livré énonce le jour résolu **au build**, puis l'hydratation résout de nouveau avec l'horloge du navigateur. Fixer seulement la seconde a fait tomber huit tests : ceux qui lisent l'écran avant l'hydratation, et `coque.spec.ts`, qui mesure précisément que l'hydratation ne déplace rien — vrai seulement si les deux résolutions tombent le même jour.
+
+**Retenu :** au pré-rendu seulement, `horloge.svelte.ts` lit l'instant de départ dans `CANTINE_INSTANT` s'il est posé. La configuration Playwright le pose dans l'environnement de son `webServer`, à partir de la même constante que la fixture. Le build de production ne le pose pas ; la variable est absente du JavaScript livré.
+
+**Écarté :** faire attendre l'hydratation aux tests. Cela ne répare pas le test qui mesure l'hydratation elle-même, et cela masquerait le défaut suivant au lieu de le nommer.
+
+**Défaut produit révélé, hors périmètre :** en production, le build n'a lieu qu'à la poussée. Tout visiteur d'un jour postérieur voit d'abord le menu du jour du build, puis l'écran change à l'hydratation. Il est consigné au backlog ; une reconstruction quotidienne en est la piste.
+
+### D7 — Un marqueur d'hydratation, pour ne rien envoyer dans le vide
+
+Une fois le pré-rendu aligné, un dernier test tombait sous la charge de la suite complète, et jamais isolé (20 passages sur 20) : il pressait une flèche avant que l'écouteur clavier soit branché. Le HTML pré-rendu est complet et visible avant l'hydratation, et une touche envoyée dans cet intervalle est perdue sans erreur.
+
+**Retenu :** la coque pose `data-hydrate` sur `<html>` à son montage, qui suit celui de l'écran. `e2e/test.ts` exporte `hydratee(page)`, que les tests appellent avant une première interaction clavier.
+
+**Écarté :** une attente fixe. Elle masque la course au lieu de la fermer, et rougit de nouveau sur une machine plus lente.
+
+**Écarté :** attendre l'hydratation dans chaque `goto`. `coque.spec.ts` mesure justement l'avant et l'après ; l'attente doit rester un choix du test.
+
