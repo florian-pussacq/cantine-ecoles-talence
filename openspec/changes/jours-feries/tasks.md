@@ -26,7 +26,7 @@
 
 ## 5. Vérification
 
-- [ ] 5.1 Test de bout en bout : semaine contenant un férié, ouverture un jour férié, navigation par-dessus. Les données sont cuites au pré-rendu : intercepter `/data/` ne change rien à l'écran. Écrit avec la mise à jour des menus, sur le 11 novembre réel et l'horloge fixée
+- [x] 5.1 Test de bout en bout : semaine contenant un férié, ouverture un jour férié, navigation par-dessus. Les données sont cuites au pré-rendu : intercepter `/data/` ne change rien à l'écran. Écrit avec la mise à jour des menus, sur le 11 novembre réel et l'horloge fixée
 - [x] 5.2 Passer `npm run validate`, `npm run build` et `npm run test:e2e`
 
 ## 6. Documentation

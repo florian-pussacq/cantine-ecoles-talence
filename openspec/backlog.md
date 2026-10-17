@@ -7,36 +7,14 @@ alors cette liste. Les entrées restent ici, et non en changements vides, pour q
 
 Relevé du 16 octobre 2026, sur la page de la Ville et ses PDF.
 
-## 1. `jours-feries` — en cours
+## 1. `jours-feries` — appliqué, à archiver
 
-Proposition rédigée. Bloque l'entrée 2.
+## 2. Mise à jour des menus d'octobre à janvier — faite le 17 octobre 2026
 
-## 2. Mise à jour des menus d'octobre à janvier
-
-Production de données par le skill `menus-talence`, pas un changement OpenSpec.
-À lancer une fois `jours-feries` appliqué.
-
-| Document | Empreinte en ligne | Ce qui l'attend |
-|---|---|---|
-| Octobre 2026 | `fa9498fd…` (`/uploads/2026/10/`) | réédité le 30 septembre — voir ci-dessous |
-| Novembre 2026 | `6d1c81a5…` | nouveau ; 11/11 férié |
-| Décembre 2026 | `6de53767…` | nouveau ; le PDF ne porte pas de date de mise à jour (`updatedAt` nul) |
-| Janvier 2027 | `0ad452fa…` | nouveau |
-| Grève | `2e51a293…` | inchangé |
-
-Réédition d'octobre, à dire dans le commit :
-
-- 1er octobre, cake maison : allergènes `1+3+7+8` → `1+2+3+4+7+8` (crustacés et poisson ajoutés).
-- 8 octobre, accompagnement : boulgour → quinoa.
-- 12 octobre, accompagnement : quinoa bio → gnocchis à la crème (allergènes `1+7`).
-
-Août et septembre ont disparu de la page de la Ville. Leurs fichiers restent : ils
-sont l'archive, pas un miroir de la page.
-
-Outillage : PyMuPDF n'est pas déclaré comme dépendance du dépôt (le script échoue
-sans lui), et le script importe `fitz`, dont PyMuPDF annonce le retrait au profit
-de `import pymupdf`. Petite tâche à faire en passant : déclarer la dépendance
-(un `requirements.txt` sous `scripts/`) et migrer l'import.
+Reste l'outillage : PyMuPDF n'est pas déclaré comme dépendance du dépôt (le
+script échoue sans lui), et le script importe `fitz`, dont PyMuPDF annonce le
+retrait au profit de `import pymupdf`. Déclarer la dépendance (un
+`requirements.txt` sous `scripts/`) et migrer l'import.
 
 ## 3. `allergenes-inconnus` — à proposer, prérequis de l'entrée 4
 
@@ -122,3 +100,16 @@ propre au week-end et aux vacances. L'écran dit aujourd'hui « Demain » ou
 « Prochain service · dans N jours » dans tous les cas. `jours-feries` pose le
 champ `skipped` sur la cible résolue et ne traite que le férié ; il ne restera
 qu'à lire ce champ pour les autres natures.
+
+## 7. Les tests de bout en bout dépendent de l'horloge réelle
+
+Une partie de `e2e/retour.spec.ts` (et deux tests de `qualite`, `balayage`,
+`hauteur`) lit l'horloge de la machine. Du 16 au 17 octobre 2026, le corpus
+s'arrêtait au 16 : plus aucun jour servi à venir, l'écran disait « menu non
+publié », et quatorze tests tombaient — sans qu'aucun code n'ait changé. Le même
+écueil reviendra à chaque fin de corpus, donc à chaque fois que la Ville tarde à
+publier.
+
+Fixer l'horloge (`page.clock.install`) dans chacun de ces tests, sur une date
+dont ils ont besoin, comme le font déjà les autres tests de `retour`.
+
