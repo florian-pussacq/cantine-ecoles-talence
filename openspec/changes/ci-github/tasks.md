@@ -21,11 +21,11 @@
 
 ## 4. Plateforme (humain)
 
-- [ ] 4.1 Netlify : vérifier que le site est relié au dépôt GitHub, branche de production `main`, prévisualisations sur PR
+- [x] 4.1 Netlify : vérifier que le site est relié au dépôt GitHub, branche de production `main`, prévisualisations sur PR
 - [ ] 4.2 GitHub : protéger `main` — PR obligatoire, vérifications `verifier` et `e2e` exigées
 - [x] 4.3 Consigner ces réglages dans `docs/` (`docs/livraison.md`), puisque le dépôt ne peut pas les versionner
 
 ## 5. Vérification
 
 - [x] 5.1 Passer `npm run validate`, `npm run build` et `npm run test:e2e` en local
-- [ ] 5.2 Ouvrir une PR et constater les deux vérifications en succès sur GitHub
+- [x] 5.2 Ouvrir une PR et constater les deux vérifications en succès sur GitHub

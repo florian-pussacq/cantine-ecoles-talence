@@ -8,9 +8,11 @@ maintenable dans le temps, performant, resilient et compréhensible.
 
 **Ne pousse jamais de toi-même. La poussée est la décision de l'humain.**
 
-Netlify publie sur `main` : une poussée met en ligne. Ce déclenchement
-appartient à celui qui l'assume, pas à l'agent. Tu commites, tu t'arrêtes là,
-tu dis ce qui est prêt à partir.
+Développement sur le tronc : on travaille directement sur `main`, sans branche
+ni pull request. Netlify publie `main` : une poussée met en ligne. Les commits
+s'accumulent donc en local et partent ensemble, quand l'humain le décide — une
+poussée par commit déclencherait un déploiement par commit. Tu commites, tu
+t'arrêtes là, tu dis ce qui est prêt à partir.
 
 Ce que tu fais en revanche systématiquement, avant tout commit : la
 vérification, celle de la CI et de Netlify, ni plus ni moins :
@@ -22,8 +24,13 @@ npm run validate && npm run build
 et `npm run test:e2e` dès qu'un commit touche l'interface ou les données
 servies.
 
-Les messages de commit sont concis : un titre, un corps court si nécessaire. Pas
-de ligne `Co-Authored-By` ni `Claude-Session`.
+Les messages de commit suivent les Conventional Commits, en français :
+`type(portée): description`. Le type est `feat`, `fix`, `docs`, `ci`, `test`,
+`refactor`… ; la portée nomme la zone (`ui`, `données`, `openspec`, `github`…).
+La description est fonctionnelle — ce qui change pour l'utilisateur ou le projet,
+pas le détail technique — au présent, en minuscule : par exemple
+`ci(github): met en place la CI pour GitHub`. Un corps court si nécessaire.
+Jamais de ligne `Co-Authored-By` ni `Claude-Session`.
 
 Un commit rouge ne se commite pas. Un commit vert reste local jusqu'à ce qu'on
 te demande de pousser — et alors seulement, tu pousses.
