@@ -58,7 +58,8 @@ export async function loadDataset(fetch: Fetcher, base: string): Promise<LoadRes
   const settled = await Promise.all(
     wanted.map(async (entry) => {
       try {
-        const response = await fetch(`${base}/data/${entry.month}.json`);
+        // Un menu de vacances partage son mois avec un mensuel : il nomme son fichier.
+        const response = await fetch(`${base}/data/${entry.file ?? `${entry.month}.json`}`);
         if (!response.ok) return null;
         return { entry, raw: await response.json() };
       } catch {

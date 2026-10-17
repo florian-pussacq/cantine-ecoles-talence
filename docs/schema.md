@@ -48,6 +48,8 @@ Documentés au §4 du PRD, constatés sur des extractions réelles. Ils ne sont 
 
 **Un document peut ne pas préciser les allergènes.** Le menu des vacances de la Toussaint 2026 ne code que le gluten du pain. Ses listes vides ne disent alors rien, et `source.allergensDeclared` le dit : faux quand aucun plat hors du pain ne porte de code, absent sinon. L'application ne présente alors aucun plat comme « sans allergène déclaré », et le filtre dit qu'il ne peut rien signaler.
 
+**Un menu de vacances partage son mois avec un mensuel.** La Toussaint et octobre couvrent le même mois ; Noël déborde sur janvier. Un menu de vacances est un fichier de menu ordinaire, nommé `AAAA-MM-vacances.json` d'après son mois majoritaire, avec un `title` repris du document. Le manifeste l'inscrit avec `kind: "vacation"` et son `file`. Une version antérieure de l'application ignore ces entrées : elle ne connaît pas leur nature.
+
 **Le PDF est un export Excel.** Les métadonnées le disent (`Creator: Microsoft® Excel®`), ce qui laisse espérer une géométrie de cellules régulière — bien plus docile qu'une mise en page libre.
 
 ## Ce que le producteur ne décide pas

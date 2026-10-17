@@ -11,12 +11,15 @@ export const SUPPORTED_SCHEMA_VERSION = 1;
  * automatiquement, parce que l'application ne peut pas savoir qu'il y a grève.
  * Il ne s'affiche que sur action explicite.
  */
-export type SourceKind = 'monthly' | 'transition' | 'event' | 'strike';
+export type SourceKind = 'monthly' | 'transition' | 'vacation' | 'event' | 'strike';
 
 const PRIORITY: Record<SourceKind, number> = {
   strike: 0,
   monthly: 1,
   transition: 2,
+  // Au-dessus du mensuel : si un mensuel marquait un jour de vacances comme non
+  // servi, le menu de vacances, qui le sert, l'emporte (menus-vacances, D2).
+  vacation: 2,
   event: 3
 };
 
@@ -25,6 +28,10 @@ export type ResolvedDay = Day & {
   readonly month: string;
   readonly legend: AllergenLegend;
   readonly source: Source;
+  /** La nature du document dont vient ce jour : un jour de vacances se nomme (D4). */
+  readonly sourceKind: SourceKind;
+  /** L'intitulé de ce document, s'il en a un — « Vacances de Toussaint ». */
+  readonly title: string | null;
 };
 
 export type MenuDataset = {
@@ -84,13 +91,15 @@ export function buildDataset(inputs: readonly MonthInput[], generatedAt = null a
 
   const byDate = new Map<string, ResolvedDay>();
 
-  for (const { menu } of ordered) {
+  for (const { menu, kind } of ordered) {
     for (const day of menu.days) {
       byDate.set(day.date, {
         ...day,
         month: menu.month,
         legend: menu.allergenLegend,
-        source: menu.source
+        source: menu.source,
+        sourceKind: kind ?? 'monthly',
+        title: menu.title ?? null
       });
     }
   }

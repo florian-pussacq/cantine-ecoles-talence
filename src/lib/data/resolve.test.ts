@@ -200,6 +200,30 @@ describe('buildDataset', () => {
     return buildDataset(inputs).byDate.get(date)?.courses[0]?.label;
   }
 
+  it('fait primer le menu de vacances sur le mensuel, et en porte la nature et l’intitulé', () => {
+    const dataset = buildDataset([
+      { menu: monthly, kind: 'monthly' },
+      { menu: { ...variant('Version vacances'), title: 'Vacances de Toussaint' }, kind: 'vacation' }
+    ]);
+    const jour = dataset.byDate.get('2026-09-10');
+    expect(jour?.courses[0]?.label).toBe('Version vacances');
+    expect(jour?.sourceKind).toBe('vacation');
+    expect(jour?.title).toBe('Vacances de Toussaint');
+  });
+
+  it('écarte une nature de document qu’il ne connaît pas, comme le ferait une version antérieure', () => {
+    const inconnue = 'future' as unknown as 'monthly';
+    expect(
+      labelAt([{ menu: monthly }, { menu: variant('Inconnue'), kind: inconnue }], '2026-09-10')
+    ).toBe('Version mensuelle');
+  });
+
+  it('dit d’un jour mensuel qu’il n’a pas d’intitulé', () => {
+    const jour = buildDataset([{ menu: monthly }]).byDate.get('2026-09-10');
+    expect(jour?.sourceKind).toBe('monthly');
+    expect(jour?.title).toBeNull();
+  });
+
   it('fait primer le fichier de transition sur le mensuel', () => {
     expect(
       labelAt(

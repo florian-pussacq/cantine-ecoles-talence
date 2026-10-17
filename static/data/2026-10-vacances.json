@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "month": "2026-10",
+  "title": "Vacances de Toussaint",
+  "source": {
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/10/10-MENUS-WEB-TOUSSAINT-2026-1.pdf",
+    "pdfSha256": "afcdb0ed7a08a9d5d300f9610756ae9f095c91fb932f856e9fea3dbca9c54715",
+    "updatedLabel": "Menus mis à jour le 12 octobre 2026",
+    "updatedAt": "2026-10-12",
+    "fetchedAt": "2026-10-17T20:33:53Z",
+    "producerVersion": "extract-menu-pdf/1",
+    "allergensDeclared": false
+  },
+  "allergenLegend": {
+    "1": "Gluten (blé, seigle, orge, avoine, épeautre, kamut)",
+    "2": "Crustacés",
+    "3": "Œufs",
+    "4": "Poisson",
+    "5": "Arachides",
+    "6": "Soja",
+    "7": "Lait",
+    "8": "Fruits à coques (amandes, noisettes, noix, pistaches)",
+    "9": "Céleri",
+    "10": "Moutarde",
+    "11": "Graines de sésame",
+    "12": "Anhydride sulfureux et sulfites",
+    "13": "Lupin",
+    "14": "Mollusques"
+  },
+  "days": [
+    {
+      "date": "2026-10-19",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Maïs aux poivrons", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Blanc de poulet au jus", "allergens": [], "flags": [] },
+        { "slot": "accompagnement", "label": "Poêlée automnale", "allergens": [], "flags": [] },
+        { "slot": "laitage", "label": "Yaourt aromatisé", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Fruit", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Potage de légumes", "allergens": [], "flags": [] },
+        { "slot": "plat", "label": "Tarte au fromage", "allergens": [], "flags": [] },
+        {
+          "slot": "accompagnement",
+          "label": "Salade verte vinaigrette",
+          "allergens": [],
+          "flags": []
+        },
+        { "slot": "dessert", "label": "Salade de fruits", "allergens": [], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Pamplemousse et sucre", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Lasagne bolognaise", "allergens": [], "flags": [] },
+        { "slot": "laitage", "label": "Fromage blanc au miel", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Compote de pommes", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Concombre et fêta", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Cordon bleu", "allergens": [], "flags": [] },
+        { "slot": "accompagnement", "label": "Petits pois", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Pêches façon Melba", "allergens": [], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Salade de choux", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Aiguillettes de poisson pané", "allergens": [], "flags": [] },
+        {
+          "slot": "accompagnement",
+          "label": "Haricots beurre persillés",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        { "slot": "laitage", "label": "Fromage", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Salade de tomates", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Kefta d'agneau", "allergens": [], "flags": [] },
+        { "slot": "accompagnement", "label": "Pâtes", "allergens": [], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Fromage", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Cocktail de fruits", "allergens": [], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-27",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Endives au bleu", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Gratin de légumineuses", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Crêpe aux champignons", "allergens": [], "flags": [] },
+        { "slot": "plat", "label": "Sauté de veau Marengo", "allergens": [], "flags": [] },
+        { "slot": "accompagnement", "label": "Haricots plats", "allergens": [], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Petit Suisse", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Coleslaw", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Hachis Parmentier", "allergens": [], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Fromage", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [], "flags": ["bio"] },
+        { "slot": "entree", "label": "Betteraves crémeuses", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Poêlée de poissons", "allergens": [], "flags": [] },
+        { "slot": "accompagnement", "label": "Blé", "allergens": [], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Fromage", "allergens": [], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [], "flags": [] }
+      ]
+    }
+  ]
+}

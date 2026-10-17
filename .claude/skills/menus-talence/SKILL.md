@@ -29,6 +29,9 @@ semaine croisés avec deux variantes, sans dates. Il se traite à l'étape 3, av
 `--greve`. En pratique il n'a pas bougé depuis 2023 : ce qu'on vérifie est son
 empreinte, pas son contenu.
 
+Les menus de vacances (`…-TOUSSAINT-…`, `…-NOEL-…`) sont sur la même page et se
+traitent comme les mensuels, avec leur propre fichier : voir l'étape 3.
+
 L'affichage de l'origine des viandes n'est pas un menu et ne se traite pas ici.
 
 ## 2. Télécharger et comparer les empreintes
@@ -65,6 +68,17 @@ python3 scripts/extract-menu-pdf.py sources/pdf/00-MENUS-WEB-GREVES.pdf --greve 
   --out static/data/greve.json
 ```
 
+Un menu de vacances se produit sous `static/data/<AAAA-MM>-vacances.json`, d'après
+son mois majoritaire — Noël 2026, du 21 décembre au 1er janvier, est
+`2026-12-vacances.json`. Le script lit l'intitulé (« Vacances de Noël ») dans
+l'en-tête ; sans lui, la validation refuse le fichier.
+
+```bash
+python3 scripts/extract-menu-pdf.py sources/pdf/12-MENUS-WEB-NOEL-2026.pdf \
+  --url <url officielle> \
+  --out static/data/2026-12-vacances.json
+```
+
 Le script écrit ses avertissements sur la sortie d'erreur. Un `⚠` sur un jour
 signale une structure inhabituelle, et ce jour part en `confidence: "low"` :
 le relire dans le PDF avant d'aller plus loin.
@@ -72,6 +86,10 @@ le relire dans le PDF avant d'aller plus loin.
 ```bash
 pdftotext -layout sources/pdf/<nom>.pdf - | less
 ```
+
+L'avertissement « aucun allergène hors du pain » signale un document qui ne précise
+pas ses allergènes : le fichier le déclare (`allergensDeclared: false`), et
+l'application le dit aux parents. Le vérifier dans le PDF, puis le laisser.
 
 Un jour férié — la cellule ne porte que `JOUR FÉRIÉ` — sort en `public-holiday`,
 sans plats et sans avertissement. Un `⚠` sur une cellule qui mentionne « férié »

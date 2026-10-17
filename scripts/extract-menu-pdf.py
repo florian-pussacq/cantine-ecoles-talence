@@ -393,6 +393,32 @@ def extract_strike_cells(page) -> list[tuple[str, str, list[Line], float, float]
     return cells
 
 
+# L'intitulé d'un menu de vacances, en capitales dans l'en-tête : « VACANCES DE
+# TOUSSAINT ». En capitales seulement : la prose du « ZOOM SUR » dit parfois
+# « avant les vacances », et ce n'est pas un intitulé (menus-vacances, D3).
+VACATION_RE = re.compile(r"VACANCES DE ([A-ZÉÈÊËÀÂÎÏÔÛÙÇ]+)")
+
+# L'export perd les accents des capitales, comme il perd les ligatures. On ne
+# rétablit que les périodes connues ; une inconnue passe en casse de phrase.
+VACATION_NAMES = {
+    "TOUSSAINT": "Toussaint",
+    "NOEL": "Noël",
+    "HIVER": "hiver",
+    "FEVRIER": "février",
+    "PRINTEMPS": "printemps",
+    "PAQUES": "Pâques",
+    "ETE": "été",
+}
+
+
+def find_vacation_title(page) -> str | None:
+    match = VACATION_RE.search(page.get_text())
+    if not match:
+        return None
+    word = match.group(1)
+    return f"Vacances de {VACATION_NAMES.get(word, word.capitalize())}"
+
+
 def find_updated(page) -> tuple[str | None, str | None]:
     match = UPDATED_RE.search(clean(page.get_text()))
     if not match:
@@ -568,9 +594,11 @@ def main() -> None:
         source["allergensDeclared"] = False
         warnings.append("aucun allergène hors du pain : le document ne les précise pas")
 
-    out = {
-        "schemaVersion": 1,
-        "month": month,
+    out = {"schemaVersion": 1, "month": month}
+    title = find_vacation_title(page)
+    if title:
+        out["title"] = title
+    out |= {
         "source": source,
         "allergenLegend": ALLERGEN_LEGEND,
         "days": days,

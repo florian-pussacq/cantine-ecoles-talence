@@ -17,6 +17,10 @@ export interface MonthMenu {
    * Mois couvert, au format AAAA-MM.
    */
   month: string;
+  /**
+   * Intitulé du document quand il n'est pas un mensuel scolaire — « Vacances de Toussaint ». Repris du document, jamais inventé. Absent pour un mensuel.
+   */
+  title?: string;
   source: Source;
   allergenLegend: AllergenLegend;
   /**
@@ -138,17 +142,21 @@ export interface MenuIndex {
 }
 export interface MonthEntry {
   /**
-   * Mois couvert, au format AAAA-MM. Le fichier correspondant est /data/<mois>.json.
+   * Mois couvert, au format AAAA-MM. Le fichier correspondant est /data/<mois>.json, sauf si `file` en nomme un autre.
    */
   month: string;
+  /**
+   * Nom du fichier sous /data/, quand ce n'est pas <mois>.json : un menu de vacances partage son mois avec un mensuel. Absent pour un mensuel.
+   */
+  file?: string;
   /**
    * Empreinte du fichier mensuel. L'application ne le retélécharge que si cette empreinte diffère de celle qu'elle a en cache.
    */
   contentHash: string;
   /**
-   * Nature du fichier, qui fixe sa priorité quand plusieurs couvrent la même date : « event » l'emporte sur « transition », qui l'emporte sur « monthly ». Un fichier « strike » n'est jamais retenu automatiquement, l'application ne pouvant pas savoir qu'il y a grève. Absent, la valeur est « monthly ».
+   * Nature du fichier, qui fixe sa priorité quand plusieurs couvrent la même date : « event » l'emporte sur « transition » et « vacation », qui l'emportent sur « monthly ». « vacation » est un menu de vacances. Un fichier « strike » n'est jamais retenu automatiquement, l'application ne pouvant pas savoir qu'il y a grève. Absent, la valeur est « monthly ».
    */
-  kind?: 'monthly' | 'transition' | 'event' | 'strike';
+  kind?: 'monthly' | 'transition' | 'vacation' | 'event' | 'strike';
   /**
    * Date de mise à jour de la source de ce mois, recopiée depuis le fichier mensuel pour permettre un affichage sans le télécharger.
    */

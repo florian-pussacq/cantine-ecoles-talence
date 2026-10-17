@@ -16,7 +16,9 @@ function jour(date: string): ResolvedDay {
     ...day,
     month: menu.month,
     legend,
-    source: { ...menu.source, pdfUrl: 'https://exemple.test/menus.pdf' }
+    source: { ...menu.source, pdfUrl: 'https://exemple.test/menus.pdf' },
+    sourceKind: 'monthly',
+    title: null
   };
 }
 

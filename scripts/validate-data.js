@@ -22,7 +22,8 @@ import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 
 const DATA_DIR = 'static/data';
-const MONTH_FILE = /^(\d{4}-\d{2})\.json$/;
+// Un mensuel, ou un menu de vacances qui partage son mois avec lui (menus-vacances).
+const MONTH_FILE = /^(\d{4}-\d{2})(-vacances)?\.json$/;
 
 // Publié comme les mensuels, mais hors du manifeste : celui-ci ne référence que
 // des mois, et le menu de grève n'en couvre aucun. Ce n'est pas un oubli, c'est
@@ -160,7 +161,7 @@ const files = readdirSync(DATA_DIR).filter((f) => MONTH_FILE.test(f));
 
 if (files.length === 0) fail(DATA_DIR, 'aucun fichier mensuel');
 
-/** @type {{ month: string, contentHash: string, updatedAt: string | null }[]} */
+/** @type {{ month: string, file?: string, kind?: 'vacation', contentHash: string, updatedAt: string | null }[]} */
 const months = [];
 
 for (const file of files.sort()) {
@@ -176,13 +177,18 @@ for (const file of files.sort()) {
     continue;
   }
 
-  const expected = file.replace('.json', '');
+  const [, expected, vacances] = /** @type {RegExpMatchArray} */ (file.match(MONTH_FILE));
   if (data.month !== expected) fail(file, `déclare month "${data.month}"`);
+  // Un menu de vacances se nomme d'après son document ; un mensuel ne porte pas
+  // d'intitulé, son mois suffit.
+  if (vacances && !data.title) fail(file, 'menu de vacances sans intitulé');
+  if (!vacances && data.title) fail(file, `mensuel portant un intitulé « ${data.title} »`);
 
   checkCoherence(file, data);
 
   months.push({
     month: data.month,
+    ...(vacances ? { file, kind: 'vacation' } : {}),
     contentHash: createHash('sha256').update(raw).digest('hex'),
     updatedAt: data.source.updatedAt ?? null
   });
@@ -278,7 +284,7 @@ if (argv.includes('--write-index')) {
     exit(1);
   }
   const stale = months.filter((m) => {
-    const entry = manifest.months.find((e) => e.month === m.month);
+    const entry = manifest.months.find((e) => e.month === m.month && e.file === m.file);
     return !entry || entry.contentHash !== m.contentHash;
   });
   if (stale.length > 0 || manifest.months.length !== months.length) {

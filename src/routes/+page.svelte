@@ -190,6 +190,11 @@
     </p>
   {/if}
 
+  {#if day.title}
+    <!-- Un jour de vacances n'est pas un jour d'école : il se nomme (menus-vacances, D4). -->
+    <p class="notice subtle">{day.title}</p>
+  {/if}
+
   {#if day.confidence === 'low'}
     <p class="warn">
       Données incertaines pour ce jour.

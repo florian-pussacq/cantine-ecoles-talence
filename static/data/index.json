@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T08:23:42Z",
+  "generatedAt": "2026-10-17T20:33:54Z",
   "months": [
     {
       "month": "2026-08",
@@ -14,6 +14,13 @@
     },
     {
       "month": "2026-10",
+      "file": "2026-10-vacances.json",
+      "kind": "vacation",
+      "contentHash": "4aba277dc02145d95fc67dd10c0717b43e96deb39bfad233a91f7592fc465d85",
+      "updatedAt": "2026-10-12"
+    },
+    {
+      "month": "2026-10",
       "contentHash": "30fc8c163f4d588e167a7c1a1da1b2ea5908e4967c850267eac9ce268a107947",
       "updatedAt": "2026-09-30"
     },
@@ -21,6 +28,13 @@
       "month": "2026-11",
       "contentHash": "140dd3e9d73caf758a9e9dc97c032c6fffc1a42fee4272f943ab4c0ef243481f",
       "updatedAt": "2026-09-02"
+    },
+    {
+      "month": "2026-12",
+      "file": "2026-12-vacances.json",
+      "kind": "vacation",
+      "contentHash": "ef197377953eb360651619072e410579c8516e2deaba56342f364e6bd6950ec6",
+      "updatedAt": "2026-10-12"
     },
     {
       "month": "2026-12",

@@ -13,6 +13,6 @@
 
 ## 3. Vérification et documentation
 
-- [ ] 3.1 Tests unitaires du libellé ; e2e sur la Toussaint réelle, une fois publiée par `menus-vacances`
+- [x] 3.1 Tests unitaires du libellé ; e2e sur la Toussaint réelle, une fois publiée par `menus-vacances`
 - [x] 3.2 `docs/schema.md` : le champ et pourquoi il ne monte pas `schemaVersion`
-- [ ] 3.3 Passer `npm run validate`, `npm run build` et `npm run test:e2e`
+- [x] 3.3 Passer `npm run validate`, `npm run build` et `npm run test:e2e`

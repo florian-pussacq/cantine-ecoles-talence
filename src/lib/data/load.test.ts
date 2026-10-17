@@ -90,6 +90,38 @@ describe('loadDataset', () => {
     expect(result.status).toEqual({ kind: 'schema-too-new', version: 3 });
   });
 
+  it('charge un menu de vacances par le fichier qu’il nomme, à côté du mensuel', async () => {
+    const vacances = {
+      ...(september as unknown as Body),
+      title: 'Vacances de Toussaint',
+      days: [
+        {
+          date: '2026-10-19',
+          kind: 'school',
+          confidence: 'high',
+          courses: [{ slot: 'plat', label: 'Blanc de poulet', allergens: [], flags: [] }]
+        }
+      ]
+    };
+    const result = await loadDataset(
+      stubFetch({
+        '/data/index.json': manifest([
+          entry(),
+          entry({ file: '2026-09-vacances.json', kind: 'vacation' })
+        ]),
+        '/data/2026-09.json': september as unknown as Body,
+        '/data/2026-09-vacances.json': vacances
+      }),
+      ''
+    );
+
+    expect(result.status).toEqual({ kind: 'ok' });
+    expect(result.dataset.servedDates).toHaveLength(21);
+    const jour = result.dataset.byDate.get('2026-10-19');
+    expect(jour?.sourceKind).toBe('vacation');
+    expect(jour?.title).toBe('Vacances de Toussaint');
+  });
+
   it('ignore le menu de grève annoncé par le manifeste', async () => {
     const result = await loadDataset(
       stubFetch({

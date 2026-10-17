@@ -29,9 +29,14 @@
       "required": ["month", "contentHash"],
       "properties": {
         "month": {
-          "description": "Mois couvert, au format AAAA-MM. Le fichier correspondant est /data/<mois>.json.",
+          "description": "Mois couvert, au format AAAA-MM. Le fichier correspondant est /data/<mois>.json, sauf si `file` en nomme un autre.",
           "type": "string",
           "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+        },
+        "file": {
+          "description": "Nom du fichier sous /data/, quand ce n'est pas <mois>.json : un menu de vacances partage son mois avec un mensuel. Absent pour un mensuel.",
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-vacances\\.json$"
         },
         "contentHash": {
           "description": "Empreinte du fichier mensuel. L'application ne le retélécharge que si cette empreinte diffère de celle qu'elle a en cache.",
@@ -39,8 +44,8 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "kind": {
-          "description": "Nature du fichier, qui fixe sa priorité quand plusieurs couvrent la même date : « event » l'emporte sur « transition », qui l'emporte sur « monthly ». Un fichier « strike » n'est jamais retenu automatiquement, l'application ne pouvant pas savoir qu'il y a grève. Absent, la valeur est « monthly ».",
-          "enum": ["monthly", "transition", "event", "strike"]
+          "description": "Nature du fichier, qui fixe sa priorité quand plusieurs couvrent la même date : « event » l'emporte sur « transition » et « vacation », qui l'emportent sur « monthly ». « vacation » est un menu de vacances. Un fichier « strike » n'est jamais retenu automatiquement, l'application ne pouvant pas savoir qu'il y a grève. Absent, la valeur est « monthly ».",
+          "enum": ["monthly", "transition", "vacation", "event", "strike"]
         },
         "updatedAt": {
           "description": "Date de mise à jour de la source de ce mois, recopiée depuis le fichier mensuel pour permettre un affichage sans le télécharger.",

@@ -196,6 +196,7 @@
                   </span>
                   <span class="main">{course.label}</span>
                   {#if rest(day)}<span class="rest">{rest(day)}</span>{/if}
+                  {#if day.title}<span class="rest">{day.title}</span>{/if}
                   {#if allergensUndeclared(day.source)}
                     <!-- Le filtre ne peut rien signaler ce jour-là : le dire (allergenes-non-communiques). -->
                     <span class="rest">Allergènes non précisés</span>

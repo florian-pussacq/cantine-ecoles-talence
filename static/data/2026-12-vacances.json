@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "month": "2026-12",
+  "title": "Vacances de Noël",
+  "source": {
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/10/12-MENUS-WEB-NOEL-2026.pdf",
+    "pdfSha256": "7fcb0215a5338ce1c55b820008fe9febf832645fa09ca0a276f3817610f6f6ef",
+    "updatedLabel": "Menus mis à jour le 12 octobre 2026",
+    "updatedAt": "2026-10-12",
+    "fetchedAt": "2026-10-17T20:33:53Z",
+    "producerVersion": "extract-menu-pdf/1"
+  },
+  "allergenLegend": {
+    "1": "Gluten (blé, seigle, orge, avoine, épeautre, kamut)",
+    "2": "Crustacés",
+    "3": "Œufs",
+    "4": "Poisson",
+    "5": "Arachides",
+    "6": "Soja",
+    "7": "Lait",
+    "8": "Fruits à coques (amandes, noisettes, noix, pistaches)",
+    "9": "Céleri",
+    "10": "Moutarde",
+    "11": "Graines de sésame",
+    "12": "Anhydride sulfureux et sulfites",
+    "13": "Lupin",
+    "14": "Mollusques"
+  },
+  "days": [
+    {
+      "date": "2026-12-21",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Friand au fromage", "allergens": [1, 3, 7], "flags": [] },
+        { "slot": "plat", "label": "Escalope viennoise", "allergens": [1, 3, 7], "flags": [] },
+        {
+          "slot": "accompagnement",
+          "label": "Poêlée de légumes",
+          "allergens": [1, 9],
+          "flags": ["bio"]
+        },
+        { "slot": "laitage", "label": "Mousse au chocolat", "allergens": [3, 7], "flags": [] },
+        { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-22",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        { "slot": "entree", "label": "Potage de légumes", "allergens": [7, 9], "flags": ["bio"] },
+        { "slot": "plat", "label": "Carré de seitan", "allergens": [1, 7], "flags": ["bio"] },
+        {
+          "slot": "accompagnement",
+          "label": "Boulgour à la tomate",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-23",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        {
+          "slot": "entree",
+          "label": "Salade aux deux lentilles",
+          "allergens": [10, 12],
+          "flags": ["bio"]
+        },
+        { "slot": "plat", "label": "Poulet fermier au jus", "allergens": [9], "flags": [] },
+        { "slot": "accompagnement", "label": "Brocolis", "allergens": [9], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Yaourt aromatisé", "allergens": [7], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [1, 3, 7, 8], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-24",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [], "flags": ["bio"] },
+        {
+          "slot": "entree",
+          "label": "Salade poire gorgonzola",
+          "allergens": [7, 10, 12],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Daube de bœuf aux pruneaux",
+          "allergens": [1, 9, 10, 12],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Écrasé de pommes de terre",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [1, 3, 7, 8], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-25",
+      "kind": "public-holiday",
+      "confidence": "high",
+      "courses": []
+    },
+    {
+      "date": "2026-12-28",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        {
+          "slot": "entree",
+          "label": "Céleri rémoulade",
+          "allergens": [3, 7, 9, 10],
+          "flags": ["bio"]
+        },
+        { "slot": "plat", "label": "Kefta d'agneau au jus", "allergens": [1, 6, 12], "flags": [] },
+        { "slot": "accompagnement", "label": "Semoule", "allergens": [1], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Compote", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-29",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        {
+          "slot": "entree",
+          "label": "Salade verte et dés de fromage",
+          "allergens": [7, 10, 12],
+          "flags": []
+        },
+        { "slot": "plat", "label": "Tarte méridionale", "allergens": [1, 3, 7], "flags": [] },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [1, 3, 7, 8], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-30",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["bio"] },
+        {
+          "slot": "entree",
+          "label": "Houmous et petits toasts",
+          "allergens": [1, 7, 11],
+          "flags": ["bio"]
+        },
+        { "slot": "plat", "label": "Rôti de veau", "allergens": [9], "flags": [] },
+        {
+          "slot": "accompagnement",
+          "label": "Haricots beurre persillés",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        { "slot": "laitage", "label": "Fromage blanc au miel", "allergens": [7], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2026-12-31",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        { "slot": "pain", "label": "Pain", "allergens": [], "flags": ["bio"] },
+        {
+          "slot": "entree",
+          "label": "Salade de radis",
+          "allergens": [7, 10, 12],
+          "flags": ["bio"]
+        },
+        { "slot": "plat", "label": "Pâtes bolognaise", "allergens": [1, 7], "flags": ["bio"] },
+        { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
+        { "slot": "dessert", "label": "Dessert maison", "allergens": [1, 3, 7, 8], "flags": [] },
+        { "slot": "gouter", "label": "Goûter", "allergens": [1, 3, 7, 8], "flags": [] }
+      ]
+    },
+    {
+      "date": "2027-01-01",
+      "kind": "public-holiday",
+      "confidence": "high",
+      "courses": []
+    }
+  ]
+}

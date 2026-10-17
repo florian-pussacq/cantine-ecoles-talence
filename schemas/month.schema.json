@@ -16,6 +16,11 @@
       "type": "string",
       "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
     },
+    "title": {
+      "description": "Intitulé du document quand il n'est pas un mensuel scolaire — « Vacances de Toussaint ». Repris du document, jamais inventé. Absent pour un mensuel.",
+      "type": "string",
+      "minLength": 1
+    },
     "source": { "$ref": "#/$defs/Source" },
     "allergenLegend": { "$ref": "#/$defs/AllergenLegend" },
     "days": {
