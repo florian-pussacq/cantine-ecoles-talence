@@ -67,9 +67,11 @@ Ce qu'on sait déjà :
   loisirs et non de cantine scolaire ? Probablement oui, la population servie
   n'étant pas la même.
 
-## 5. `ci-github` — proposé le 17 octobre 2026
+## 5. `ci-github` — appliqué le 17 octobre 2026, sauf la plateforme
 
-Voir `openspec/changes/ci-github/`. Il absorbe l'entrée 7.
+Voir `openspec/changes/ci-github/`. Restent les tâches 4.1, 4.2 et 5.2 : relier
+Netlify à GitHub, protéger `main`, constater une PR verte. Elles attendent l'accès
+en écriture à GitHub et une action humaine dans les deux interfaces.
 
 ## 6. Mention de l'écran du jour : week-end et vacances
 
@@ -86,3 +88,20 @@ dès septembre. Un workflow planifié (quotidien) pourrait relever les liens de 
 page, comparer les empreintes et ouvrir une issue — ou une PR produite par le
 script — quand un PDF change ou quand le corpus couvre moins de deux semaines à
 venir. À concevoir après `ci-github`, dont il réutilise le socle.
+
+## 8. `reconstruction-quotidienne` — à proposer, juste après `ci-github`
+
+Défaut révélé par `ci-github` (D6). Le pré-rendu cuit dans le HTML le jour
+résolu au build. Netlify ne reconstruit qu'à la poussée, souvent des semaines
+avant la visite : chaque visiteur voit d'abord le menu du jour du build, puis
+l'écran change sous ses yeux à l'hydratation. C'est aussi un décalage de mise en
+page, que `coque.spec.ts` ne voit pas puisque ses tests alignent les deux
+instants.
+
+Piste : un workflow planifié, peu après minuit à Paris, qui appelle un build
+hook Netlify (secret `NETLIFY_BUILD_HOOK`, qui ne peut que déclencher une
+construction). Le HTML a alors au plus quelques heures. À trancher : le service
+worker sert-il le HTML en cache avant de revalider ? Si oui, la reconstruction
+ne suffit pas, et la première peinture d'une application installée reste celle
+de sa dernière mise à jour. Ce workflow est aussi le socle de l'entrée 7.
+
