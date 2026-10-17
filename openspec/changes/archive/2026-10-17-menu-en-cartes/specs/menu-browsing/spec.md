@@ -111,6 +111,10 @@ qui sont communes à tous les écrans vivent sur l'enseigne.
 - **WHEN** l'utilisateur passe de l'écran du jour à l'écran de la semaine
 - **THEN** l'en-tête énonce la même chose et conserve la même hauteur
 
+#### Scenario: Période de la semaine
+- **WHEN** l'écran de la semaine est affiché
+- **THEN** la période énoncée tient sur une seule ligne et n'est pas coupée
+
 ### Requirement: Accès aux écrans
 
 Le système SHALL offrir un accès permanent aux écrans du jour et de la semaine, présenté comme
@@ -128,6 +132,26 @@ Le passage d'un écran à l'autre NE SHALL PAS réinitialiser le jour choisi par
 #### Scenario: Le choix survit au changement d'écran
 - **WHEN** l'utilisateur a choisi un jour puis passe à l'écran de la semaine et revient
 - **THEN** le jour choisi est toujours affiché
+
+#### Scenario: Destinations quotidiennes atteignables partout
+- **WHEN** l'utilisateur se trouve sur un écran quelconque de l'application
+- **THEN** l'écran du jour et l'écran de la semaine sont atteignables sans défiler ni ouvrir de menu
+
+#### Scenario: Écran hors de la barre
+- **WHEN** l'utilisateur consulte le réglage des allergènes ou les mentions
+- **THEN** la barre reste affichée, aucun de ses segments n'est marqué comme courant, et elle permet de rejoindre l'écran du jour ou celui de la semaine
+
+#### Scenario: Le réglage s'atteint depuis l'enseigne
+- **WHEN** l'utilisateur se trouve sur un écran autre que le réglage des allergènes
+- **THEN** l'enseigne porte la commande qui y mène
+
+#### Scenario: Barre sur écran large
+- **WHEN** l'application est ouverte sur un écran de bureau
+- **THEN** la barre reste bornée à la largeur de la colonne de contenu et ne s'étire pas sur toute la fenêtre
+
+#### Scenario: Aucun réglage dans la barre
+- **WHEN** la barre est affichée
+- **THEN** elle ne contient que des destinations de consultation, à l'exclusion de tout écran de réglage
 
 ### Requirement: Navigation entre jours
 
@@ -183,3 +207,11 @@ l'accompagne SHALL gouverner l'écran entier sous une seule et même durée.
 #### Scenario: Reprise après plusieurs jours de veille
 - **WHEN** l'application installée est reprise alors que le jour civil a changé
 - **THEN** le jour choisi lors de la session précédente ne s'applique plus
+
+#### Scenario: Une seule horloge
+- **WHEN** l'utilisateur change de jour et qu'une transition accompagne le changement
+- **THEN** la désignation du jour et le contenu du jour changent sous la même durée, et non l'un avant l'autre
+
+#### Scenario: Le contenu n'attend pas l'animation
+- **WHEN** une transition est en cours après un changement de jour
+- **THEN** le menu du jour atteint est déjà présent dans le document et actionnable

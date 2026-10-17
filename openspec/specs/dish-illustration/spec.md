@@ -88,28 +88,31 @@ Le retrait d'une illustration d'un élément NE SHALL PAS retirer d'information 
 - **WHEN** un rôle cesse d'être illustré
 - **THEN** aucune information disponible auparavant ne disparaît de l'écran
 
-### Requirement: Portée de l'illustration à l'écran
+### Requirement: Illustration de chaque plat
 
-Le système NE SHALL PAS afficher d'illustration sur un plat dont le rôle rend cette illustration constante d'un jour à l'autre. Une illustration affichée SHALL distinguer le jour affiché des autres jours.
+Chaque plat affiché sur l'écran du jour SHALL porter l'illustration déduite de son libellé.
 
-Sur l'écran Aujourd'hui, l'illustration SHALL être réservée au plat principal du déjeuner et au goûter. Les autres rôles SHALL être identifiés par leur libellé seul.
+Deux plats d'un même écran MAY porter la même illustration lorsque leurs libellés relèvent de la
+même famille. Le système NE SHALL PAS tenter de les différencier.
 
-Deux éléments d'un même écran NE SHALL PAS porter la même illustration.
+Un rôle sans plat publié NE SHALL PAS porter d'illustration : il n'y a pas de libellé d'où la
+déduire, et l'illustration de repli signalerait une donnée là où il n'y en a pas.
 
-Cette portée SHALL être une règle explicite et non un effet de la mise en page, afin qu'un composant nouveau ne repose pas d'illustration partout par analogie.
+L'illustration NE SHALL PAS être une photographie : le système NE SHALL PAS charger d'image
+depuis le réseau pour représenter un plat.
 
-#### Scenario: Rôle à illustration constante
-- **WHEN** l'écran du jour affiche le pain, dont l'illustration serait la même tous les jours
-- **THEN** aucune illustration n'accompagne le pain, qui reste identifié par son libellé
+#### Scenario: Chaque plat porte son illustration
+- **WHEN** l'écran du jour affiche un jour dont tous les rôles sont publiés
+- **THEN** chaque carte porte une illustration déduite du libellé de son plat
 
-#### Scenario: Deux rôles de même famille le même jour
+#### Scenario: Deux plats de même famille
 - **WHEN** l'entrée et l'accompagnement d'un même jour relèvent tous deux de la famille des légumes
-- **THEN** l'écran ne présente pas deux fois la même illustration
+- **THEN** les deux cartes portent la même illustration, sans que le système la remplace
 
-#### Scenario: L'illustration marque le rang
-- **WHEN** l'écran du jour est affiché
-- **THEN** la présence d'une illustration au sein du déjeuner désigne le plat principal, et lui seul
+#### Scenario: Rôle absent
+- **WHEN** un rôle ne comporte aucun plat publié
+- **THEN** sa carte ne porte aucune illustration
 
-#### Scenario: Le goûter reste illustré
-- **WHEN** un jour comporte un goûter dont le détail est publié
-- **THEN** celui-ci porte l'illustration déduite de son libellé
+#### Scenario: Aucune requête d'image
+- **WHEN** un écran de menu est chargé
+- **THEN** aucune requête réseau n'est émise pour représenter un plat

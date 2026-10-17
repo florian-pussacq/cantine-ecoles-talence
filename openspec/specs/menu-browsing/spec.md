@@ -32,19 +32,30 @@ Le menu du jour SHALL constituer une cible unique donnant accès au détail de l
 
 ### Requirement: Navigation entre jours
 
-Le système SHALL permettre de passer au jour servi précédent ou suivant. La navigation SHALL être possible au clavier et par une commande visible, et MAY être doublée d'un geste de balayage horizontal.
+Le système SHALL permettre de passer au jour servi précédent ou suivant. La navigation SHALL être
+possible au clavier et par une commande visible, et MAY être doublée d'un geste de balayage
+horizontal.
 
-Lorsque le jour affiché n'est pas celui que le système aurait choisi, le système SHALL offrir une commande ramenant à ce jour en une seule action, depuis l'écran du jour comme depuis l'écran de la semaine.
+Les commandes de jour précédent et suivant SHALL encadrer la mention qui situe le jour affiché,
+et SHALL être rendues une seule fois par écran.
 
-Le libellé de cette commande SHALL nommer le jour vers lequel elle ramène, et NE SHALL PAS annoncer « aujourd'hui » lorsque le jour de retour n'est pas le jour courant. Lorsque aucun jour n'est publié, la commande NE SHALL PAS être affichée.
+Lorsque le jour affiché n'est pas celui que le système aurait choisi, le système SHALL offrir une
+commande ramenant à ce jour en une seule action, depuis l'écran du jour comme depuis l'écran de
+la semaine. Cette commande SHALL être rendue à la suite du contenu, et non dans l'en-tête.
 
-Cette commande NE SHALL PAS énoncer la distance qui sépare le jour affiché du jour de retour.
+Le libellé de cette commande SHALL nommer le jour vers lequel elle ramène, et NE SHALL PAS
+annoncer « aujourd'hui » lorsque le jour de retour n'est pas le jour courant. Lorsque aucun jour
+n'est publié, la commande NE SHALL PAS être affichée. Cette commande NE SHALL PAS énoncer la
+distance qui sépare le jour affiché du jour de retour.
 
-Le choix d'un jour par l'utilisateur SHALL cesser de valoir lorsque le jour civil change. Le système NE SHALL PAS présenter comme jour du moment un jour choisi lors d'une session antérieure.
+Le choix d'un jour par l'utilisateur SHALL cesser de valoir lorsque le jour civil change.
 
-Le passage d'un jour à l'autre SHALL être perçu comme immédiat : le menu du jour atteint SHALL être présent, lisible et actionnable dès la première image, sans être retenu par une animation.
+Le passage d'un jour à l'autre SHALL être perçu comme immédiat, et toute transition qui
+l'accompagne SHALL gouverner l'écran entier sous une seule et même durée.
 
-Lorsqu'une transition accompagne le changement de jour, elle SHALL être décorative et gouverner l'écran entier sous une seule et même durée. Les éléments qui énoncent le jour affiché NE SHALL PAS changer selon un temps différent de celui du contenu qu'ils annoncent.
+#### Scenario: Un seul rang de commandes
+- **WHEN** l'écran du jour est affiché
+- **THEN** les commandes de jour précédent et suivant apparaissent une seule fois
 
 #### Scenario: Passage au jour suivant
 - **WHEN** l'utilisateur demande le jour suivant depuis un vendredi
@@ -52,7 +63,7 @@ Lorsqu'une transition accompagne le changement de jour, elle SHALL être décora
 
 #### Scenario: Retour au repère en une action
 - **WHEN** l'utilisateur s'est éloigné de plusieurs jours puis actionne la commande de retour
-- **THEN** l'écran affiche de nouveau le jour que le système avait choisi, et la commande cède la place à la mention
+- **THEN** l'écran affiche de nouveau le jour que le système avait choisi, et la commande disparaît
 
 #### Scenario: Le retour ne ment pas sur le jour
 - **WHEN** le jour courant n'est pas servi et que le système a choisi le prochain jour servi
@@ -70,9 +81,13 @@ Lorsqu'une transition accompagne le changement de jour, elle SHALL être décora
 - **WHEN** l'utilisateur demande un jour au-delà des données disponibles
 - **THEN** l'application le signale explicitement plutôt que d'afficher un écran vide
 
+#### Scenario: Reprise après plusieurs jours de veille
+- **WHEN** l'application installée est reprise alors que le jour civil a changé
+- **THEN** le jour choisi lors de la session précédente ne s'applique plus
+
 #### Scenario: Une seule horloge
 - **WHEN** l'utilisateur change de jour et qu'une transition accompagne le changement
-- **THEN** l'en-tête qui énonce la date et le contenu du jour changent sous la même durée, et non l'un avant l'autre
+- **THEN** la désignation du jour et le contenu du jour changent sous la même durée, et non l'un avant l'autre
 
 #### Scenario: Le contenu n'attend pas l'animation
 - **WHEN** une transition est en cours après un changement de jour
@@ -168,41 +183,31 @@ Un avertissement indiquant que seul le document officiel de la Ville fait foi SH
 
 ### Requirement: En-tête d'écran
 
-Chaque écran SHALL porter un en-tête énonçant ce que l'écran montre et pour quand.
+Chaque écran SHALL porter un en-tête énonçant ce qu'est l'application et ce que l'écran montre.
 
-Le titre de l'en-tête — la date sur l'écran du jour, la période sur l'écran de la semaine — SHALL tenir sur une seule ligne et NE SHALL JAMAIS être coupé. Lorsque l'en-tête ne peut pas loger sur une même ligne le titre et la mention qui le situe, c'est la mention qui SHALL se replier.
+Chaque écran SHALL porter exactement un titre de premier niveau.
 
-Chaque écran SHALL porter exactement un titre de premier niveau, qui SHALL être ce titre d'en-tête.
+L'en-tête NE SHALL PAS porter la mention qui situe le jour affiché : celle-ci SHALL vivre dans
+le rang de navigation, entre les commandes qui la font changer.
 
-L'en-tête SHALL réserver un emplacement unique, occupé soit par la mention qui situe le jour affiché, soit par la commande de retour au repère, jamais par les deux. Lorsque le jour affiché est celui que le système a choisi, cet emplacement SHALL porter la mention ; lorsque l'utilisateur a lui-même choisi le jour affiché, il SHALL porter la commande.
-
-La hauteur de cet emplacement SHALL être réservée indépendamment de son occupant, de sorte que le passage de la mention à la commande ne déplace aucun contenu.
-
-L'en-tête NE SHALL PAS porter d'autre commande : celles qui sont communes à tous les écrans vivent sur l'enseigne.
+L'en-tête NE SHALL PAS porter la commande de retour au repère, ni aucune autre commande : celles
+qui sont communes à tous les écrans vivent sur l'enseigne.
 
 #### Scenario: Un seul titre de premier niveau
 - **WHEN** un écran de consultation est chargé
 - **THEN** le document contient exactement un titre de premier niveau
 
-#### Scenario: L'en-tête situe la date
-- **WHEN** l'écran du jour affiche un jour autre que celui du moment, choisi par le système
-- **THEN** l'en-tête énonce la date affichée et la façon dont elle se situe par rapport à aujourd'hui
+#### Scenario: La mention accompagne les commandes qui la changent
+- **WHEN** l'écran du jour affiche un jour choisi par le système
+- **THEN** la mention qui situe ce jour est rendue dans le rang de navigation, et non dans l'en-tête
 
-#### Scenario: Date longue et mention longue
-- **WHEN** l'écran du jour affiche une date dont le libellé est le plus long possible, accompagnée de la mention de situation la plus longue possible
-- **THEN** la date est rendue entière sur une seule ligne, et c'est la mention qui occupe une seconde ligne
+#### Scenario: L'en-tête ne bouge pas d'un écran à l'autre
+- **WHEN** l'utilisateur passe de l'écran du jour à l'écran de la semaine
+- **THEN** l'en-tête énonce la même chose et conserve la même hauteur
 
 #### Scenario: Période de la semaine
 - **WHEN** l'écran de la semaine est affiché
 - **THEN** la période énoncée tient sur une seule ligne et n'est pas coupée
-
-#### Scenario: La mention cède la place à la commande
-- **WHEN** l'utilisateur navigue vers un jour autre que celui que le système avait choisi
-- **THEN** la mention disparaît et la commande de retour apparaît au même emplacement, sans que la hauteur de l'en-tête change
-
-#### Scenario: Le titre reste complet sans la mention
-- **WHEN** la commande de retour occupe l'emplacement
-- **THEN** le titre de premier niveau énonce la date affichée, et la commande est restituée comme une commande et non comme une partie du titre
 
 ### Requirement: Lisibilité sur écran large
 
@@ -242,17 +247,21 @@ Les rapports de contraste SHALL être vérifiés sur les couleurs telles qu'elle
 
 ### Requirement: Accès aux écrans
 
-Le système SHALL rendre atteignables en permanence, depuis n'importe quel écran, les destinations consultées quotidiennement — l'écran du jour et l'écran de la semaine — au moyen d'une barre ancrée au bas de la fenêtre, à portée du pouce sur un téléphone tenu d'une main.
+Le système SHALL offrir un accès permanent aux écrans du jour et de la semaine, présenté comme
+un choix entre deux états dont un seul est actif.
 
-Cette barre NE SHALL PAS mettre sur le même plan une vue de consultation et un réglage. Elle NE SHALL contenir que des destinations consultées quotidiennement.
+Ce choix SHALL être rendu au-dessus du contenu, et non dans un élément ancré au bas de la
+fenêtre. L'état actif SHALL être restitué comme tel aux technologies d'assistance.
 
-Les écrans que l'on consulte une fois — le réglage des allergènes, les mentions — SHALL être atteignables autrement : par une commande portée par l'enseigne pour le premier, par le pied de page pour le second.
+Le passage d'un écran à l'autre NE SHALL PAS réinitialiser le jour choisi par l'utilisateur.
 
-Lorsque l'écran courant ne figure pas dans la barre, celle-ci SHALL rester affichée sans marque d'écran courant, et SHALL suffire à en sortir.
+#### Scenario: Deux écrans, un actif
+- **WHEN** l'écran du jour est affiché
+- **THEN** le choix présente exactement deux entrées, et celle du jour est restituée comme active
 
-La barre SHALL compenser la zone sûre inférieure de l'appareil, de sorte qu'aucune de ses commandes ne soit recouverte par un indicateur système. Le contenu de l'écran SHALL réserver la hauteur de la barre augmentée de cette zone sûre, de sorte qu'aucun contenu ne reste inaccessible derrière elle.
-
-Sur un écran large, la barre SHALL rester bornée à la colonne de contenu, conformément à l'exigence de lisibilité sur écran large.
+#### Scenario: Le choix survit au changement d'écran
+- **WHEN** l'utilisateur a choisi un jour puis passe à l'écran de la semaine et revient
+- **THEN** le jour choisi est toujours affiché
 
 #### Scenario: Destinations quotidiennes atteignables partout
 - **WHEN** l'utilisateur se trouve sur un écran quelconque de l'application
@@ -265,10 +274,6 @@ Sur un écran large, la barre SHALL rester bornée à la colonne de contenu, con
 #### Scenario: Le réglage s'atteint depuis l'enseigne
 - **WHEN** l'utilisateur se trouve sur un écran autre que le réglage des allergènes
 - **THEN** l'enseigne porte la commande qui y mène
-
-#### Scenario: Zone sûre inférieure
-- **WHEN** l'application est ouverte sur un appareil dont le bas de l'écran est occupé par un indicateur système
-- **THEN** aucune commande de la barre ne se trouve sous cet indicateur, et le pied de page reste atteignable
 
 #### Scenario: Barre sur écran large
 - **WHEN** l'application est ouverte sur un écran de bureau
@@ -313,76 +318,6 @@ Si l'application ne parvient pas à résoudre le jour courant dans un délai de 
 #### Scenario: Application qui ne démarre pas
 - **WHEN** la page est périmée et que l'application ne démarre pas
 - **THEN** la zone du jour apparaît au bout de trois secondes avec le contenu pré-rendu
-
-### Requirement: Ardoise du jour
-
-Les plats du déjeuner SHALL être présentés sous forme d'ardoise : une entrée par rôle, dans l'ordre du service, chacune énonçant son rôle et le libellé du plat. Les rôles SHALL être alignés entre eux, de sorte que la lecture verticale des rôles et celle des libellés forment deux colonnes distinctes.
-
-Le plat principal SHALL être visuellement distinct de tous les autres rôles à la fois par sa couleur de famille, par la présence d'une illustration et par la taille de son libellé. Il SHALL conserver sa place dans l'ordre du service, sa prééminence étant portée par sa forme et non par son rang.
-
-Le pain SHALL être présenté en fin d'ardoise, plus discrètement que les rôles servis, parce qu'il n'est pas servi à un moment du repas.
-
-Lorsqu'un rôle est absent du jour affiché, son entrée SHALL rester en place et indiquer explicitement l'absence. L'ardoise NE SHALL PAS se refermer, afin qu'un rôle absent reste distinguable d'une donnée manquante.
-
-Lorsque le libellé d'un plat n'ajoute rien à son libellé de rôle, l'entrée SHALL nommer à sa place ce qui distingue ce plat des autres jours — sa qualité lorsqu'elle est renseignée. Elle NE SHALL PAS énoncer deux fois le même mot.
-
-Lorsqu'un tel libellé n'a aucune qualité à promouvoir, l'entrée SHALL signaler que le détail n'est pas publié. Elle NE SHALL PAS laisser entendre que le plat n'est pas servi, lorsque d'autres informations sur ce plat — ses allergènes notamment — sont connues.
-
-Le goûter SHALL être présenté hors de l'ardoise, comme un objet distinct portant le même vocabulaire visuel que le plat principal, et séparé du déjeuner de telle sorte qu'il ne se lise pas comme une partie de celui-ci.
-
-Le rôle `accompagnement` SHALL être désigné par le mot « Accompagnement ».
-
-#### Scenario: Jour complet
-- **WHEN** un jour comporte tous ses rôles
-- **THEN** chaque rôle occupe une entrée de l'ardoise dans l'ordre du service, et le plat principal est le seul à porter une couleur de famille, une illustration et un libellé de grande taille
-
-#### Scenario: Ordre du service
-- **WHEN** l'ardoise d'un jour complet est lue de haut en bas
-- **THEN** les rôles servis apparaissent dans l'ordre entrée, plat, accompagnement, laitage, dessert, et le pain vient après eux
-
-#### Scenario: Rôle absent
-- **WHEN** un jour ne comporte pas d'accompagnement
-- **THEN** l'entrée de l'accompagnement reste affichée avec la mention explicite qu'il n'y en a pas ce jour
-
-#### Scenario: Plat principal de famille inconnue
-- **WHEN** la famille du plat principal ne peut pas être déduite
-- **THEN** son entrée prend la couleur de repli neutre et reste lisible
-
-#### Scenario: Libellé qui répète le rôle, qualité connue
-- **WHEN** le pain du jour porte le libellé « Pain » et l'indicateur de qualité « Label Rouge »
-- **THEN** l'entrée annonce le pain par sa qualité, et le mot « pain » n'apparaît qu'une fois
-
-#### Scenario: Libellé qui répète le rôle, aucune qualité
-- **WHEN** le goûter du jour porte le libellé « Goûter » et aucun indicateur de qualité
-- **THEN** l'affichage signale que le détail n'est pas publié, sans répéter le mot « goûter » ni laisser croire qu'aucun goûter n'est servi
-
-#### Scenario: Libellé porteur d'information
-- **WHEN** le pain du jour porte le libellé « Pain du mois »
-- **THEN** ce libellé est affiché tel quel, puisqu'il dit ce que le rôle ne dit pas
-
-#### Scenario: Le goûter reste hors du déjeuner
-- **WHEN** un jour comporte un goûter détaillé
-- **THEN** celui-ci est présenté hors de l'ardoise, avec le vocabulaire visuel du plat principal, et une rupture visible le sépare du déjeuner
-
-#### Scenario: Désignation de l'accompagnement
-- **WHEN** un jour comporte un accompagnement
-- **THEN** son rôle est désigné par le mot « Accompagnement »
-
-### Requirement: Le jour tient dans la fenêtre
-
-Sur la fenêtre d'un téléphone courant, l'écran du jour SHALL présenter sans défilement : la date affichée, l'intégralité des rôles du déjeuner, le goûter lorsqu'il existe, et les commandes de navigation entre jours.
-
-Le pied de page et les mentions MAY se trouver au-delà de la ligne de flottaison.
-
-Cette exigence SHALL être vérifiée par une mesure automatisée sur le profil mobile des tests, et non par appréciation.
-
-#### Scenario: Jour complet sur téléphone
-- **WHEN** un jour comportant tous ses rôles et un goûter est affiché sur le profil mobile des tests
-- **THEN** la date, tous les rôles du déjeuner, le goûter et les commandes de jour précédent et suivant sont dans le champ visible sans défilement
-
-#### Scenario: Mention de situation sur deux lignes
-- **WHEN** le jour affiché est éloigné du jour courant et que la mention de situation occupe une seconde ligne
-- **THEN** l'exigence précédente reste satisfaite
 
 ### Requirement: Enseigne de l'application
 
@@ -443,3 +378,67 @@ La commande menant aux réglages SHALL continuer d'annoncer le nombre d'allergè
 #### Scenario: Nom accessible de la commande
 - **WHEN** trois allergènes sont surveillés
 - **THEN** la commande menant aux réglages annonce les réglages et le nombre d'allergènes surveillés
+
+### Requirement: Cartes du jour
+
+L'écran du jour SHALL présenter le déjeuner comme une suite de cartes de même forme, une par
+rôle du déjeuner et jamais moins, dans l'ordre du service. Un rôle absent SHALL produire une
+carte énonçant son absence, afin qu'un creux reste distinguable d'une donnée manquante.
+
+Aucune carte NE SHALL être actionnable : la cible est la journée entière, portée par l'élément
+qui contient la suite.
+
+Chaque carte SHALL porter le libellé de son rôle, le nom du plat, et — lorsqu'ils existent — les
+mentions de qualité et le signalement d'allergène. Elle NE SHALL PAS porter de texte descriptif :
+les données n'en comportent pas.
+
+La couleur d'une carte SHALL désigner le rôle et non le contenu. Chaque rôle SHALL disposer
+d'une couleur propre, stable d'un jour à l'autre, tenant le rapport de contraste du texte normal
+aussi bien sur la surface d'une carte que sur le fond de l'écran, de sorte qu'une seule valeur
+serve d'aplat et d'encre.
+
+Le rang du plat principal SHALL être dit par le corps de son nom seul, sans aplat ni cadre qui
+le distinguerait des autres cartes.
+
+La première carte SHALL être entièrement visible sans défilement, sur la plus petite fenêtre
+prise en charge. Les cartes suivantes MAY demander un défilement.
+
+#### Scenario: Un rôle par carte
+- **WHEN** l'écran du jour affiche un jour servi
+- **THEN** chaque rôle du déjeuner est présent, dans l'ordre du service, y compris ceux dont aucun plat n'est publié
+
+#### Scenario: Rôle absent
+- **WHEN** un jour ne comporte pas d'entrée
+- **THEN** une carte énonce l'absence d'entrée, et ne se confond pas avec une carte portant un plat
+
+#### Scenario: La couleur ne dépend pas du contenu
+- **WHEN** deux jours différents sont affichés successivement
+- **THEN** la couleur associée à un même rôle est identique sur les deux jours
+
+#### Scenario: Aucune carte n'est actionnable
+- **WHEN** l'écran du jour est parcouru au clavier
+- **THEN** aucune carte ne reçoit le focus, et l'ouverture du détail se fait par la cible qui porte la journée
+
+#### Scenario: La première carte est visible d'emblée
+- **WHEN** l'écran du jour est affiché sur la plus petite fenêtre prise en charge
+- **THEN** la première carte est entièrement visible sans défiler
+
+### Requirement: Pied fixe de mentions
+
+L'application SHALL porter un pied fixe, ancré au bas de la fenêtre, donnant accès aux mentions
+et à la provenance des données depuis n'importe quel écran.
+
+Ce pied SHALL réserver sous le contenu une hauteur égale à la sienne augmentée de l'encart que
+le système réserve au bas de la fenêtre, afin qu'aucun contenu ne passe dessous.
+
+Ce pied NE SHALL PAS porter d'information variant d'un écran à l'autre. La date de mise à jour
+des données et le lien vers le document officiel SHALL rester dans le flux de l'écran qu'ils
+qualifient.
+
+#### Scenario: Le pied reste atteignable
+- **WHEN** l'utilisateur défile jusqu'au bas d'un écran long
+- **THEN** le pied est visible et son lien actionnable, sans recouvrir la dernière carte
+
+#### Scenario: Encart bas du système
+- **WHEN** l'application est affichée sur un appareil réservant un encart au bas de la fenêtre
+- **THEN** le pied se place au-dessus de cet encart et le contenu ne passe pas dessous

@@ -150,3 +150,12 @@ champ dès qu'on défile.
 
 Le rang **haut** porte les deux flèches et, entre elles, la mention et la date. Le rang **bas**
 ne porte que le retour, et seulement lorsqu'on est écarté du jour repère.
+
+## Scénarios retirés de la spec principale
+
+Ajouté à l'archivage, le 17 octobre 2026. Un bloc MODIFIED remplace l'exigence entière ; ces scénarios de la spec principale décrivaient un état que ce changement abandonne, et sont retirés délibérément. Les autres ont été recopiés dans le delta.
+
+- **En-tête d'écran — « L'en-tête situe la date », « Date longue et mention longue »** : la mention quitte l'en-tête pour le rang de navigation.
+- **En-tête d'écran — « La mention cède la place à la commande », « Le titre reste complet sans la mention »** : la commande de retour quitte l'en-tête pour la suite du contenu (D55).
+- **Accès aux écrans — « Zone sûre inférieure »** : les onglets ne sont plus ancrés au bas de la fenêtre ; l'encart bas relève de « Pied fixe de mentions », scénario « Encart bas du système ».
+
