@@ -244,6 +244,23 @@ body {
   border-radius: 4px;
 }
 
+/* La zone qui dépend du jour, sur une page rendue un autre jour
+   (jour-au-premier-rendu, D3 et D4). Masquée en gardant sa place, jusqu'à ce
+   que la coque soit hydratée et ait résolu le jour courant. Si l'hydratation
+   n'arrive pas, l'animation la rend visible au bout de trois secondes : un
+   écran vide serait pire qu'un menu qui nomme son jour. La règle de mouvement
+   réduit ci-dessous n'abrège que la durée, pas ce délai. */
+html[data-perime]:not([data-hydrate]) .selon-le-jour {
+  visibility: hidden;
+  animation: reveler 0s 3s forwards;
+}
+
+@keyframes reveler {
+  to {
+    visibility: visible;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

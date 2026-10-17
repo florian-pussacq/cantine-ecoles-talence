@@ -32,7 +32,7 @@ Le jour du rendu est posé par le hook serveur, en attribut de `<html>` (`data-j
 
 Une page périmée reçoit `data-perime` sur `<html>`. La règle CSS `html[data-perime]:not([data-hydrate]) .selon-le-jour { visibility: hidden }` masque la zone sans la retirer du flux : rien ne bouge autour d'elle. Le marqueur `data-hydrate`, posé par la coque à son montage (D7 de `ci-github`), la révèle — à ce moment, l'écran énonce le bon jour.
 
-Seuls les écrans dont le contenu dépend du jour portent `.selon-le-jour` : le jour et la semaine. L'enseigne, les onglets et le pied ne dépendent pas du jour et restent peints.
+Seuls les écrans dont le contenu dépend du jour portent `.selon-le-jour` : le jour et la semaine. La classe est posée une fois, par la coque, sur un conteneur `display: contents` autour du contenu d'écran, sous la même condition que les onglets (`montrerOnglets`) : une seule source pour « écran de menu », et aucun écran ne peut l'oublier. L'enseigne, les onglets et le pied ne dépendent pas du jour et restent peints.
 
 ### D4 — Si l'hydratation n'arrive pas, la zone revient
 

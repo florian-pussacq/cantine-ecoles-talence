@@ -4,9 +4,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!--
-      L'application a une apparence, et une seule (design.md, D25). Il n'y a donc
-      ni requête de média sur la teinte, ni script à exécuter avant la première
-      peinture : le HTML prérendu arrive déjà juste.
+      Le seul script exécuté avant la première peinture (jour-au-premier-rendu,
+      D1). La page porte le jour de Paris pour lequel elle a été rendue ; le
+      service worker peut la servir des semaines plus tard. Si ce jour n'est pas
+      celui du navigateur, la page est marquée périmée, et la zone qui dépend du
+      jour reste masquée jusqu'à l'hydratation (tokens.css). D32 avait refusé un
+      tel script pour un défaut inoffensif ; un menu faux sous « Aujourd'hui »
+      ne l'est pas.
+    -->
+    <script>
+      (function (racine) {
+        var rendu = racine.getAttribute('data-jour-rendu');
+        var jour = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Paris' }).format(
+          new Date()
+        );
+        if (rendu && rendu !== jour) racine.setAttribute('data-perime', '');
+      })(document.documentElement);
+    </script>
+    <!--
+      L'application a une apparence, et une seule (design.md, D25) : ni requête
+      de média sur la teinte, ni script de thème.
     -->
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#f4ecdd" />

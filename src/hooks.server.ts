@@ -1,5 +1,7 @@
 import { readFileSync } from 'node:fs';
 import type { Handle } from '@sveltejs/kit';
+import { horloge } from '$lib/data/horloge.svelte.js';
+import { parisDate } from '$lib/data/resolve.js';
 
 /**
  * Pose la bibliothèque de formes dans la coque HTML (design.md, D57).
@@ -29,10 +31,22 @@ import type { Handle } from '@sveltejs/kit';
  */
 const SPRITE = readFileSync('src/lib/illustrations/sprite.svg', 'utf8');
 
+/**
+ * Le jour civil de Paris pour lequel la page est rendue (jour-au-premier-rendu,
+ * D2).
+ *
+ * C'est l'instant même que les écrans ont lu pour résoudre leur jour : une seule
+ * source, de sorte que `CANTINE_INSTANT`, s'il fixe le rendu, fixe aussi cet
+ * attribut. Le script de `app.html` le compare au jour du navigateur avant la
+ * première peinture.
+ */
+const JOUR_RENDU = `<html lang="fr" data-jour-rendu="${parisDate(horloge.instant)}">`;
+
 export const handle: Handle = async ({ event, resolve }) =>
   resolve(event, {
     // Une fonction de remplacement, et non la chaîne : un `$&` ou un `$1` qui
     // apparaîtrait un jour dans un chemin SVG serait autrement interprété comme
     // un motif de substitution.
-    transformPageChunk: ({ html }) => html.replace('<!--sprite-->', () => SPRITE)
+    transformPageChunk: ({ html }) =>
+      html.replace('<html lang="fr">', () => JOUR_RENDU).replace('<!--sprite-->', () => SPRITE)
   });

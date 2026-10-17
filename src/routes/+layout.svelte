@@ -127,7 +127,14 @@
     </p>
   {/if}
 
-  {@render children()}
+  <!--
+    Les deux écrans de menu dépendent du jour : sur une page rendue un autre
+    jour, leur contenu reste masqué jusqu'à l'hydratation (tokens.css,
+    jour-au-premier-rendu). Le conteneur ne participe pas à la mise en page.
+  -->
+  <div class:selon-le-jour={montrerOnglets} style="display: contents">
+    {@render children()}
+  </div>
 </div>
 
 <!--
