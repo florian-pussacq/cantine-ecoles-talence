@@ -6,6 +6,7 @@
   import Enseigne from '$lib/ui/Enseigne.svelte';
   import EnTete from '$lib/ui/EnTete.svelte';
   import Onglets from '$lib/ui/Onglets.svelte';
+  import Bandeau from '$lib/ui/Bandeau.svelte';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { appUpdate } from '$lib/pwa/update.svelte.js';
@@ -121,10 +122,12 @@
       La nouvelle version attend : elle ne remplace pas l'application pendant
       qu'on la consulte, ce qui ferait perdre le jour qu'on regardait.
     -->
-    <p class="update">
-      <span>Une nouvelle version est disponible.</span>
-      <button type="button" onclick={() => appUpdate.apply()}>Appliquer</button>
-    </p>
+    <Bandeau ton="info">
+      Une nouvelle version est disponible.
+      {#snippet action()}
+        <button type="button" onclick={() => appUpdate.apply()}>Appliquer</button>
+      {/snippet}
+    </Bandeau>
   {/if}
 
   <!--
@@ -228,31 +231,5 @@
     display: inline-flex;
     align-items: center;
     padding-inline: var(--space-3);
-  }
-
-  .update {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-2);
-    background: var(--warn);
-    color: var(--warn-on);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    font-weight: var(--poids-moyen);
-  }
-
-  .update button {
-    font: inherit;
-    font-weight: var(--poids-fort);
-    color: var(--warn-on);
-    background: none;
-    border: 2px solid currentcolor;
-    border-radius: var(--radius-pilule);
-    min-height: var(--touch);
-    padding-inline: var(--space-3);
-    cursor: pointer;
   }
 </style>

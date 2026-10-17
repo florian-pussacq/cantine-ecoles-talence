@@ -102,7 +102,15 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
   { texte: 'accent', fond: 'fond', seuil: 4.5, quoi: 'accent sur le fond' },
   { texte: 'accent', fond: 'carte', seuil: 4.5, quoi: 'accent sur une carte' },
   { texte: 'on-accent', fond: 'accent', seuil: 4.5, quoi: 'libellé de l’onglet courant' },
-  { texte: 'warn-on', fond: 'warn', seuil: 4.5, quoi: 'bandeau d’avertissement' },
+  { texte: 'warn-on', fond: 'warn', seuil: 4.5, quoi: 'bandeau d’alerte' },
+  { texte: 'info-on', fond: 'info', seuil: 4.5, quoi: 'bandeau d’information' },
+  {
+    texte: 'info-on',
+    fond: 'fond',
+    seuil: 4.5,
+    quoi: 'bandeau d’information discret, sans surface'
+  },
+  { texte: 'evenement-on', fond: 'evenement', seuil: 4.5, quoi: 'bandeau d’événement' },
   /*
     Les sept rôles (D50). Chacun est vérifié trois fois, parce qu'un seul jeton
     remplit trois emplois : l'aplat de la pastille, le glyphe blanc posé dessus,
@@ -157,14 +165,14 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
  * duplication qu'un contrôle de couverture devait surveiller. Ils sont devenus
  * des jetons, et le taux se lit à la source.
  */
-function readVoiles(): Record<string, number> {
-  const voiles: Record<string, number> = {};
+function readVoiles(): Record<string, { source: string; alpha: number }> {
+  const voiles: Record<string, { source: string; alpha: number }> = {};
   for (const match of CSS.matchAll(
-    /--([\w-]+):\s*color-mix\(in srgb, var\(--ink\) (\d+)%, transparent\)/g
+    /--([\w-]+):\s*color-mix\(in srgb, var\(--([\w-]+)\) (\d+)%, transparent\)/g
   )) {
-    const [, name, taux] = match;
-    if (name === undefined || taux === undefined) continue;
-    voiles[name] = Number(taux) / 100;
+    const [, name, source, taux] = match;
+    if (name === undefined || source === undefined || taux === undefined) continue;
+    voiles[name] = { source, alpha: Number(taux) / 100 };
   }
   return voiles;
 }
@@ -181,13 +189,33 @@ const voiles = readVoiles();
  * Le seuil de 3:1 des bordures vient de WCAG 1.4.11 : une bordure qui délimite
  * une commande porte une information, au même titre qu'un texte.
  */
-const TRANSPARENCES: { voile: string; fond: string; seuil: number; quoi: string }[] = [
+const TRANSPARENCES: {
+  voile: string;
+  fond: string;
+  /** Le jeton posé sur la surface voilée ; absent, c'est le voile lui-même qui se lit. */
+  texte?: string;
+  seuil: number;
+  quoi: string;
+}[] = [
   {
     voile: 'voile-trait',
     fond: 'fond',
     seuil: 3,
     quoi: 'bordure des commandes de navigation et de sortie'
-  }
+  },
+  /*
+    La ligne du jour courant de la semaine (bandeau-et-aujourdhui, D4). Le taux
+    est borné par l'encre atténuée des autres plats : à 18 %, elle ne tiendrait
+    plus que 4,62. La teinte, elle, ne se distingue pas de la carte en niveaux
+    de gris, et n'a pas à le faire : c'est la pastille qui porte le signal.
+  */
+  ...(['ink', 'ink-muted', 'accent'] as const).map((texte) => ({
+    voile: 'voile-accent',
+    fond: 'carte',
+    texte,
+    seuil: 4.5,
+    quoi: `--${texte} sur la ligne du jour courant de la semaine`
+  }))
 ];
 
 /**
@@ -231,18 +259,21 @@ describe('la palette', () => {
 });
 
 describe('les surfaces peintes par transparence', () => {
-  for (const { voile, fond, seuil, quoi } of TRANSPARENCES) {
+  for (const { voile, fond, texte, seuil, quoi } of TRANSPARENCES) {
     it(`${quoi} tient ${seuil}:1`, () => {
-      const alpha = voiles[voile];
-      const arriere = jetons[fond];
-      expect(alpha, `voile --${voile} absent de tokens.css`).toBeDefined();
-      expect(arriere, `jeton --${fond} absent`).toBeDefined();
+      const declare = voiles[voile];
+      const base = jetons[fond];
+      expect(declare, `voile --${voile} absent de tokens.css`).toBeDefined();
+      expect(base, `jeton --${fond} absent`).toBeDefined();
+      const { source, alpha } = declare as { source: string; alpha: number };
 
-      const peint = compose(jetons['ink'] as string, arriere as string, alpha as number);
-      const rapport = contraste(peint, arriere as string);
+      const peint = compose(jetons[source] as string, base as string, alpha);
+      const [avant, arriere] =
+        texte === undefined ? [peint, base as string] : [jetons[texte] as string, peint];
+      const rapport = contraste(avant, arriere);
       expect(
         Number(rapport.toFixed(2)),
-        `--${voile} (${(alpha as number) * 100} % d’encre) sur --${fond} donne ${peint} : ${rapport.toFixed(2)}:1`
+        `--${voile} (${alpha * 100} % de --${source}) sur --${fond} donne ${peint} : ${rapport.toFixed(2)}:1`
       ).toBeGreaterThanOrEqual(seuil);
     });
   }
@@ -329,10 +360,11 @@ const SURFACES = ['fond', 'carte', 'chip', 'creux', 'bord'] as const;
 /**
  * Les inversions : les endroits où une surface peint bien du texte, et pourquoi.
  *
- * L'étiquette du jour courant est blanche sur encre. Elle emploie `--carte` là
- * où l'on attendrait une encre, et c'est juste : ce qui est dessous est `--ink`,
- * pas une carte. La partition ci-dessus ne peut pas le voir — elle lit une
- * déclaration, pas la surface qui la porte.
+ * L'étiquette du jour courant de la semaine en a été une : blanche sur encre,
+ * elle employait `--carte` là où l'on attendrait une encre, et c'était juste. Elle
+ * est devenue la pastille à l'accent, `--on-accent` sur `--accent`, une paire
+ * déjà mesurée (bandeau-et-aujourdhui, D3). Il n'en reste aucune ; la liste
+ * demeure, parce que c'est elle qui dit comment en déclarer une.
  *
  * Elles ne sont donc **pas exemptées, mais déclarées et mesurées** : chacune est
  * une paire de plus dans le contrôle numérique. Une exemption ferait sortir la
@@ -346,17 +378,16 @@ const INVERSIONS: {
   fond: string;
   seuil: number;
   quoi: string;
-}[] = [
-  {
-    fichier: 'src/routes/semaine/+page.svelte',
-    texte: 'carte',
-    fond: 'ink',
-    seuil: 4.5,
-    quoi: 'étiquette « Aujourd’hui » de la ligne du jour courant'
-  }
-];
+}[] = [];
 
 describe('les inversions tiennent leur seuil', () => {
+  it('n’en laisse aucune sans mesure', () => {
+    for (const { texte, fond } of INVERSIONS) {
+      expect(jetons[texte], `jeton --${texte} absent`).toBeDefined();
+      expect(jetons[fond], `jeton --${fond} absent`).toBeDefined();
+    }
+  });
+
   for (const { texte, fond, seuil, quoi, fichier } of INVERSIONS) {
     it(`${quoi} tient ${seuil}:1`, () => {
       const avant = jetons[texte];

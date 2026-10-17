@@ -1,6 +1,7 @@
 <script lang="ts">
   import PlatCarte from '$lib/menu/PlatCarte.svelte';
   import PiedSource from '$lib/ui/PiedSource.svelte';
+  import Bandeau from '$lib/ui/Bandeau.svelte';
   import type { PageData } from './$types.js';
 
   let { data }: { data: PageData } = $props();
@@ -48,10 +49,11 @@
         >selon la possibilité, chaud ou froid</strong
       >. Il ne dépend pas de la date : il se répète chaque semaine, du lundi au vendredi.
     </p>
-    <p class="warn">
+    <!-- Une limite de l'application : info. L'orange reste à ce qui menace un repas (D1). -->
+    <Bandeau ton="info">
       Cette application ne sait pas s'il y a grève aujourd'hui. Aucune source ne le lui dit, et elle
       n'affiche donc jamais ce menu d'elle-même.
-    </p>
+    </Bandeau>
   </div>
 
   <div class="variantes" role="group" aria-label="Variante de service">
@@ -97,7 +99,7 @@
   />
 {:else}
   <div class="panel">
-    <p class="warn">Le menu de grève n'a pas pu être chargé.</p>
+    <Bandeau ton="alerte">Le menu de grève n'a pas pu être chargé.</Bandeau>
     <p>Il reste consultable sur le site de la Ville, à la page des menus des écoles.</p>
   </div>
 {/if}
@@ -126,13 +128,6 @@
 
   .intro strong {
     color: var(--ink);
-  }
-
-  .warn {
-    background: var(--warn);
-    color: var(--warn-on);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-2) var(--space-3);
   }
 
   h2 {

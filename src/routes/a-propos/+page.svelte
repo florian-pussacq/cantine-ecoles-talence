@@ -1,5 +1,6 @@
 <script lang="ts">
   import ExternalLink from '$lib/ui/ExternalLink.svelte';
+  import Bandeau from '$lib/ui/Bandeau.svelte';
   import { formatDay } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
@@ -27,13 +28,17 @@
   L'avertissement vient en premier et n'est pas repliable. Une donnée allergène
   fausse a des conséquences médicales ; ce bloc est la seule chose de cet écran
   qui doive être lue.
+
+  Il porte le ton info et non l'alerte : il dit une limite de l'application, pas
+  un danger pour le repas qu'on regarde. C'est sa place, en tête et non
+  repliable, qui le fait lire (bandeau-et-aujourdhui, D1).
 -->
-<p class="disclaimer">
+<Bandeau ton="info">
   <strong>Seul le document officiel de la Ville de Talence fait foi.</strong>
   Les menus sont susceptibles d'être modifiés selon les arrivages. Cette application ne remplace ni le
   document officiel ni un projet d'accueil individualisé (PAI), et l'absence d'allergène déclaré ne garantit
   pas l'absence de traces.
-</p>
+</Bandeau>
 
 <section class="panel">
   <h2>La source</h2>
@@ -112,16 +117,6 @@
 </section>
 
 <style>
-  .disclaimer {
-    margin: 0;
-    background: var(--warn);
-    color: var(--warn-on);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-3);
-    font-size: var(--text-sm);
-    line-height: 1.5;
-  }
-
   .panel {
     background: var(--carte);
     color: var(--ink);

@@ -175,28 +175,40 @@ export function dayNumber(date: string): string {
  * raison du choix initial ne décrit plus ce qui est à l'écran, et c'est
  * `browsedEyebrow` qui prend la suite (D60).
  */
-export function targetEyebrow(target: DisplayTarget): string {
+/**
+ * Une mention en deux parts (bandeau-et-aujourdhui, D3) : ce qui se dit en
+ * sourcil, et si le jour affiché est le jour courant. Dans ce cas, c'est la
+ * pastille « Aujourd'hui » qui le dit, la même que sur la semaine : le mot ne
+ * s'écrit qu'à un endroit, `RangNavigation`.
+ */
+export type Mention = { texte: string; aujourdhui: boolean };
+
+const sourcil = (texte: string): Mention => ({ texte, aujourdhui: false });
+
+export function targetEyebrow(target: DisplayTarget): Mention {
   switch (target.status) {
     case 'today':
-      return target.vacation ? "Vacances · aujourd'hui" : "Aujourd'hui";
+      return { texte: target.vacation ? 'Vacances' : '', aujourdhui: true };
     case 'next-served':
       // Le férié se nomme ; le week-end et les vacances n'ont pas encore leur
       // mention propre, et gardent la générique.
       if (target.skipped === 'public-holiday') {
-        return target.daysAhead === 1
-          ? 'Férié · service demain'
-          : `Férié · service dans ${target.daysAhead} jours`;
+        return sourcil(
+          target.daysAhead === 1
+            ? 'Férié · service demain'
+            : `Férié · service dans ${target.daysAhead} jours`
+        );
       }
       // Les vacances aussi : tous les enfants n'y déjeunent pas (menus-vacances, D5).
       if (target.vacation) {
-        return target.daysAhead === 1
-          ? 'Vacances · demain'
-          : `Vacances · dans ${target.daysAhead} jours`;
+        return sourcil(
+          target.daysAhead === 1 ? 'Vacances · demain' : `Vacances · dans ${target.daysAhead} jours`
+        );
       }
-      if (target.daysAhead === 1) return 'Demain';
-      return `Prochain service · dans ${target.daysAhead} jours`;
+      if (target.daysAhead === 1) return sourcil('Demain');
+      return sourcil(`Prochain service · dans ${target.daysAhead} jours`);
     case 'not-published':
-      return 'Menu non publié';
+      return sourcil('Menu non publié');
   }
 }
 
@@ -216,14 +228,14 @@ export function targetEyebrow(target: DisplayTarget): string {
  * Aucun singulier à traiter : les écarts de un sont captés par « Demain » et
  * « Hier », donc le compte vaut toujours au moins deux (D60).
  */
-export function browsedEyebrow(date: string, today: string): string {
+export function browsedEyebrow(date: string, today: string): Mention {
   const ecart = daysBetween(today, date);
 
-  if (ecart === 0) return "Aujourd'hui";
-  if (ecart === 1) return 'Demain';
-  if (ecart === -1) return 'Hier';
+  if (ecart === 0) return { texte: '', aujourdhui: true };
+  if (ecart === 1) return sourcil('Demain');
+  if (ecart === -1) return sourcil('Hier');
 
-  return ecart > 0 ? `Dans ${ecart} jours` : `Il y a ${-ecart} jours`;
+  return sourcil(ecart > 0 ? `Dans ${ecart} jours` : `Il y a ${-ecart} jours`);
 }
 
 /**

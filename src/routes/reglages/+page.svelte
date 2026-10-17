@@ -2,6 +2,7 @@
   import { resolve } from '$app/paths';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '$lib/filter/storage.js';
+  import Bandeau from '$lib/ui/Bandeau.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -39,10 +40,11 @@
   </p>
 
   {#if !allergenFilter.persists}
-    <p class="warn">
+    <!-- Une limite de l'application, pas un danger pour un repas : info (D1). -->
+    <Bandeau ton="info">
       Le stockage de ce navigateur est indisponible : votre choix ne sera pas conservé après la
       fermeture de l'onglet. Le reste de l'application fonctionne normalement.
-    </p>
+    </Bandeau>
   {/if}
 
   <ul>
@@ -148,17 +150,6 @@
     font-size: var(--text-sm);
     color: var(--ink-muted);
     line-height: 1.5;
-  }
-
-  .warn {
-    margin: 0;
-    background: var(--warn);
-    color: var(--warn-on);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    font-weight: var(--poids-moyen);
-    line-height: 1.4;
   }
 
   ul {

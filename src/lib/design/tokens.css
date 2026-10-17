@@ -101,9 +101,21 @@
   --fam-inconnu: #5f6b66;
   --fam-inconnu-pale: #e3e6e4;
 
-  /* Sémantique — distincte des rôles comme des familles, jamais un accent */
+  /*
+   * Les trois tons des messages (bandeau-et-aujourdhui, D1).
+   *
+   * L'alerte n'appartient qu'à ce qui compromet la lecture d'un repas :
+   * employée pour tout, elle ne signalerait plus rien. L'info dit les limites
+   * de l'application, l'événement ce qui caractérise le jour. Les deux surfaces
+   * ne se distinguent du fond que par la teinte, ce que WCAG ne leur demande
+   * pas : c'est le texte posé dessus qui se lit, et il tient plus de 9:1.
+   */
   --warn: #e89406;
   --warn-on: #2a1b00;
+  --info: #e4ecf2;
+  --info-on: #17384f;
+  --evenement: #f6e3c4;
+  --evenement-on: #4a3510;
 
   /*
    * Les voiles : de l'encre posée par transparence (fermer-les-echelles, D2).
@@ -117,6 +129,10 @@
   --voile-fond: color-mix(in srgb, var(--ink) 12%, transparent);
   /* La bordure d'une commande : elle porte une information, donc 3:1. */
   --voile-trait: color-mix(in srgb, var(--ink) 55%, transparent);
+  /* La ligne du jour courant de la semaine. Le taux est borné par l'encre
+     atténuée posée dessus ; la teinte est un renfort de couleur, la pastille
+     « Aujourd'hui » porte le signal (bandeau-et-aujourdhui, D4). */
+  --voile-accent: color-mix(in srgb, var(--accent) 12%, transparent);
   /* Derrière la fiche du jour : il assourdit l'écran sans le cacher, et ne
      porte aucun texte (audit-design-system, D2). */
   --voile-modale: rgb(0 0 0 / 0.45);

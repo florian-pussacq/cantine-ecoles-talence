@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   allergenNames,
-  browsedEyebrow,
+  browsedEyebrow as mentionParcourue,
   courseName,
   dayNumber,
   formatDay,
@@ -10,7 +10,7 @@ import {
   shortAllergenName,
   slotAbsence,
   slotLabel,
-  targetEyebrow,
+  targetEyebrow as mentionCible,
   targetReturnLabel,
   weekReturnLabel,
   allergensUndeclared,
@@ -18,6 +18,22 @@ import {
   undeclaredNotice
 } from './labels.js';
 import type { Course } from '../data/schema.js';
+
+/*
+  La mention se lit en deux parts depuis bandeau-et-aujourdhui (D3) : un sourcil,
+  et la pastille « Aujourd'hui ». Les cas qui ne sont pas le jour courant n'ont
+  que le sourcil, et se vérifient sur lui.
+*/
+const targetEyebrow = (...args: Parameters<typeof mentionCible>) => {
+  const mention = mentionCible(...args);
+  expect(mention.aujourdhui).toBe(false);
+  return mention.texte;
+};
+const browsedEyebrow = (...args: Parameters<typeof mentionParcourue>) => {
+  const mention = mentionParcourue(...args);
+  expect(mention.aujourdhui).toBe(false);
+  return mention.texte;
+};
 
 describe('formatDay', () => {
   it('rend un jour civil en français, capitalisé', () => {
@@ -37,8 +53,11 @@ describe('formatDay', () => {
 });
 
 describe('targetEyebrow', () => {
-  it('nomme aujourd’hui', () => {
-    expect(targetEyebrow({ status: 'today', date: '2026-09-10' })).toBe("Aujourd'hui");
+  it('marque aujourd’hui de la pastille, sans rien d’autre à dire', () => {
+    expect(mentionCible({ status: 'today', date: '2026-09-10' })).toEqual({
+      texte: '',
+      aujourdhui: true
+    });
   });
 
   it('dit « demain » plutôt que « dans 1 jours »', () => {
@@ -62,9 +81,10 @@ describe('targetEyebrow', () => {
   });
 
   it('nomme les vacances quand le jour présenté en est un', () => {
-    expect(targetEyebrow({ status: 'today', date: '2026-10-20', vacation: true })).toBe(
-      "Vacances · aujourd'hui"
-    );
+    expect(mentionCible({ status: 'today', date: '2026-10-20', vacation: true })).toEqual({
+      texte: 'Vacances',
+      aujourdhui: true
+    });
     const cible = {
       status: 'next-served',
       date: '2026-10-19',
@@ -101,8 +121,8 @@ describe('targetEyebrow', () => {
 describe('browsedEyebrow', () => {
   const AUJOURD_HUI = '2026-09-10';
 
-  it('nomme aujourd’hui', () => {
-    expect(browsedEyebrow('2026-09-10', AUJOURD_HUI)).toBe("Aujourd'hui");
+  it('marque aujourd’hui de la pastille', () => {
+    expect(mentionParcourue('2026-09-10', AUJOURD_HUI)).toEqual({ texte: '', aujourdhui: true });
   });
 
   it('dit « demain » et « hier » plutôt que de compter jusqu’à un', () => {

@@ -35,6 +35,8 @@ Un **bandeau info discret** n'a pas de surface : il garde l'encre `--info-on`, s
 
 Les liens et les commandes dans un bandeau prennent l'encre du bandeau (`currentColor`) et la graisse forte, comme aujourd'hui dans `.warn`. Le contraste est donc celui du ton.
 
+*Corrigé à l'application.* La graisse du texte est normale, et l'alerte seule passe en `--poids-moyen`. Reprise de l'ancien `.warn`, la graisse moyenne partout effaçait le gras de l'avertissement légal (« Seul le document officiel… fait foi »), qui ne se détachait plus du reste. L'alerte garde son poids : c'est le seul ton qui doive arrêter la lecture.
+
 Le contenu reste du texte courant : `<p>` par défaut. Le thème du jour a un titre et une note. Le composant accepte donc un `titre` facultatif, rendu en `<h2>`, pour garder la hiérarchie actuelle (l'écran a un seul `h1`, la désignation du jour).
 
 ### D2 — L'ordre de lecture

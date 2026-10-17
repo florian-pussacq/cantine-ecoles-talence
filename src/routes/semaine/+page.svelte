@@ -4,6 +4,7 @@
   import Illustration from '$lib/illustrations/Illustration.svelte';
   import { classify } from '$lib/illustrations/families.js';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
+  import Bandeau from '$lib/ui/Bandeau.svelte';
   import { isStale } from '$lib/data/load.js';
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
@@ -155,14 +156,14 @@
 />
 
 {#if data.status.kind !== 'ok'}
-  <p class="notice">
+  <Bandeau ton="info">
     Aucun menu n'est disponible. Une première connexion est nécessaire pour les télécharger.
-  </p>
+  </Bandeau>
 {:else}
   {#if stale}
-    <p class="stale">
+    <Bandeau ton="info" discret>
       Ces menus n'ont pas été rafraîchis depuis plus de deux jours. Ils peuvent être périmés.
-    </p>
+    </Bandeau>
   {/if}
 
   <!--
@@ -255,22 +256,6 @@
 {/if}
 
 <style>
-  .notice {
-    margin: 0;
-    background: var(--carte);
-    color: var(--ink);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-3);
-    font-size: var(--text-sm);
-  }
-
-  .stale {
-    margin: 0;
-    padding-inline: var(--space-2);
-    color: var(--ink-muted);
-    font-size: var(--text-sm);
-  }
-
   /* `pan-y` rend le défilement vertical au navigateur et garde l'horizontal
      pour l'application. Sans cette ligne, le geste meurt sur `pointercancel`
      sans que rien ne le signale (D18). */
@@ -324,14 +309,18 @@
   }
 
   /*
-    Le jour courant porte quatre signaux, dont aucun n'est une couleur : fond
-    plein, contour appuyé, étiquette en toutes lettres, et le nom du plat qui
-    monte d'un cran. La ligne reste repérable en niveaux de gris.
+    Le jour courant tient par deux signaux qui ne sont pas des couleurs : la
+    pastille « Aujourd'hui », forme sombre écrite en toutes lettres, et le nom
+    du plat qui monte d'un cran. La ligne reste repérable en niveaux de gris.
+
+    Le fond teinté n'en est pas un troisième : à aucun taux qui laisse son seuil
+    au texte atténué, il ne se distingue de la carte sans couleur. C'est un
+    renfort. Il remplace le contour noir de 2 px, qui se lisait comme un focus
+    clavier (bandeau-et-aujourdhui, D4).
   */
   li.today button,
   li.today .quiet {
-    background: var(--chip);
-    box-shadow: 0 0 0 2px var(--ink);
+    background: var(--voile-accent);
   }
 
   .disc {
@@ -379,13 +368,14 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* La même pastille que la mention de l'écran du jour (D3). */
   .now {
     font-size: var(--text-2xs);
     font-weight: var(--poids-titre);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    background: var(--ink);
-    color: var(--carte);
+    background: var(--accent);
+    color: var(--on-accent);
     border-radius: var(--radius-pilule);
     padding: 0.12rem 0.42rem;
   }

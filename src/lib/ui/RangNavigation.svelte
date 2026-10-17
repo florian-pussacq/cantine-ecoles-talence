@@ -38,6 +38,7 @@
     cle,
     sens,
     mention,
+    aujourdhui = false,
     principal
   }: {
     libelle: string;
@@ -47,6 +48,8 @@
     cle: string | null;
     sens: number;
     mention: string;
+    /** Le jour désigné est le jour courant : la pastille le dit (bandeau-et-aujourdhui, D3). */
+    aujourdhui?: boolean;
     principal: string;
   } = $props();
 </script>
@@ -66,7 +69,10 @@
     <!-- Un `div` et non un `span` : il contient désormais un titre, qui est du
          contenu de flux et n'a rien à faire dans un élément de phrasé. -->
     <div class="quand glisse" style:--sens={sens}>
-      <span class="mention">{mention}</span>
+      <span class="mention">
+        {#if mention}<span>{mention}</span>{/if}
+        {#if aujourdhui}<span class="aujourdhui">Aujourd'hui</span>{/if}
+      </span>
       <h1 class="designation">{principal}</h1>
     </div>
   {/key}
@@ -133,11 +139,24 @@
   }
 
   .mention {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
     font-size: var(--text-xs);
     font-weight: var(--poids-titre);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
+  }
+
+  /* La même pastille que la ligne du jour de la semaine : un seul objet
+     « Aujourd'hui » dans l'application (bandeau-et-aujourdhui, D3). */
+  .aujourdhui {
+    font-size: var(--text-2xs);
+    background: var(--accent);
+    color: var(--on-accent);
+    border-radius: var(--radius-pilule);
+    padding: 0.12rem 0.42rem;
   }
 
   /* Ce que le rang désigne ne se coupe jamais : c'est la seule chose que l'écran

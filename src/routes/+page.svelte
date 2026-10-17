@@ -20,6 +20,7 @@
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
   import PiedSource from '$lib/ui/PiedSource.svelte';
   import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
+  import Bandeau from '$lib/ui/Bandeau.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -163,43 +164,43 @@
   }}
   cle={date}
   {sens}
-  {mention}
+  mention={mention.texte}
+  aujourdhui={mention.aujourdhui}
   principal={date === null ? 'Menus des écoles' : formatDay(date)}
 />
 
+<!--
+  Les messages de l'écran, dans l'ordre où ils se lisent (bandeau-et-aujourdhui,
+  D2) : ce qu'est le jour, puis ce qui en menace la lecture, puis ce qui la
+  relativise.
+-->
 {#if data.status.kind === 'schema-too-new'}
-  <p class="notice">
+  <Bandeau ton="info">
     Ces menus ont été publiés dans un format plus récent que celui que cette version sait lire.
     Rechargez la page pour mettre l'application à jour.
-  </p>
+  </Bandeau>
 {:else if data.status.kind === 'unavailable'}
-  <p class="notice">
+  <Bandeau ton="info">
     Aucun menu n'est disponible. Une première connexion est nécessaire pour les télécharger.
-  </p>
+  </Bandeau>
 {:else if day === null}
-  <p class="notice">
+  <Bandeau ton="info">
     Le menu de cette période n'est pas encore publié par la Ville.
     <ExternalLink href="https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/">
       Consulter la page officielle
     </ExternalLink>
-  </p>
+  </Bandeau>
 {:else}
-  {#if stale}
-    <p class="notice subtle">
-      Ces menus n'ont pas été rafraîchis depuis plus de deux jours. Ils peuvent être périmés.
-    </p>
-  {/if}
-
   {#if day.title}
     <!-- Un jour de vacances n'est pas un jour d'école : il se nomme (menus-vacances, D4). -->
-    <p class="notice subtle">{day.title}</p>
+    <Bandeau ton="evenement">{day.title}</Bandeau>
   {/if}
 
   {#if day.confidence === 'low'}
-    <p class="warn">
+    <Bandeau ton="alerte">
       Données incertaines pour ce jour.
       <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
-    </p>
+    </Bandeau>
   {/if}
 
   {#if allergensUndeclared(day.source)}
@@ -208,10 +209,16 @@
       n'est connu. Le dire est le seul cas où il parle sans correspondance
       (allergenes-non-communiques, D3).
     -->
-    <p class="warn">
+    <Bandeau ton="alerte">
       {undeclaredNotice(allergenFilter.codes.size > 0)}
       <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
-    </p>
+    </Bandeau>
+  {/if}
+
+  {#if stale}
+    <Bandeau ton="info" discret>
+      Ces menus n'ont pas été rafraîchis depuis plus de deux jours. Ils peuvent être périmés.
+    </Bandeau>
   {/if}
 
   <!--
@@ -233,10 +240,12 @@
     {#key date}
       <div class="jour glisse" style:--sens={sens}>
         {#if day.theme}
-          <section class="theme">
-            <h2>{day.theme}</h2>
-            {#if day.note}<p>{day.note}</p>{/if}
-          </section>
+          <!-- Un contenu du jour, qui glisse avec lui ; pas une carte de plat (D2). -->
+          {#if day.note}
+            <Bandeau ton="evenement" titre={day.theme}>{day.note}</Bandeau>
+          {:else}
+            <Bandeau ton="evenement" titre={day.theme} />
+          {/if}
         {/if}
 
         <!--
@@ -307,39 +316,6 @@
 {/if}
 
 <style>
-  .notice {
-    margin: 0;
-    background: var(--carte);
-    color: var(--ink);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-3);
-    font-size: var(--text-sm);
-    line-height: 1.5;
-  }
-
-  .notice.subtle {
-    background: none;
-    color: var(--ink-muted);
-    padding-inline: var(--space-2);
-  }
-
-  .warn {
-    margin: 0;
-    background: var(--warn);
-    color: var(--warn-on);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    font-weight: var(--poids-moyen);
-    line-height: 1.35;
-  }
-
-  .warn :global(a),
-  .notice :global(a) {
-    color: currentcolor;
-    font-weight: var(--poids-fort);
-  }
-
   /*
     `pan-y` rend le défilement vertical au navigateur et garde l'horizontal pour
     l'application. Sans cette ligne, le navigateur revendique le mouvement, émet
@@ -386,27 +362,6 @@
     outline: 3px solid var(--ink);
     outline-offset: 3px;
     border-radius: var(--radius-carte);
-  }
-
-  .theme {
-    background: var(--carte);
-    color: var(--ink);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-3);
-  }
-
-  .theme h2 {
-    margin: 0;
-    font-size: var(--text-base);
-    font-weight: var(--poids-titre);
-    letter-spacing: -0.01em;
-  }
-
-  .theme p {
-    margin: var(--space-1) 0 0;
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
-    line-height: 1.45;
   }
 
   /*

@@ -24,7 +24,10 @@ test('un jour de vacances se nomme et dit qu’il ne précise pas ses allergène
   await ouvrir(page, '2026-10-20T12:00:00+02:00');
 
   await expect(designation(page)).toHaveText('Mardi 20 octobre');
-  await expect(page.locator('nav .mention')).toHaveText("Vacances · aujourd'hui");
+  // La mention nomme les vacances, et la pastille dit que c'est aujourd'hui
+  // (bandeau-et-aujourdhui, D3).
+  await expect(page.locator('nav .mention')).toContainText('Vacances');
+  await expect(page.locator('nav .mention .aujourdhui')).toHaveText("Aujourd'hui");
   await expect(page.getByText('Vacances de Toussaint')).toBeVisible();
   await expect(page.getByText('Ce menu ne précise pas les allergènes de ses plats.')).toBeVisible();
 });

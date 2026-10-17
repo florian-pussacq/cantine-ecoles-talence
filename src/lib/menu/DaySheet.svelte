@@ -15,6 +15,7 @@
     watchedSummary
   } from './labels.js';
   import ExternalLink from '../ui/ExternalLink.svelte';
+  import Bandeau from '../ui/Bandeau.svelte';
   import { allergenFilter } from '../filter/allergens.svelte.js';
   import { allergenIcon } from '../illustrations/allergens.js';
 
@@ -98,10 +99,12 @@
 
     {#if surveilles.length > 0}
       {#if nonPrecise}
-        <p class="non-precise">
-          {undeclaredWatched(surveilles.map(({ name }) => name))}
-          <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
-        </p>
+        <div class="non-precise">
+          <Bandeau ton="alerte">
+            {undeclaredWatched(surveilles.map(({ name }) => name))}
+            <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
+          </Bandeau>
+        </div>
       {:else}
         <section class="resume" aria-labelledby="resume-titre">
           <h3 id="resume-titre">Allergènes surveillés</h3>
@@ -439,21 +442,6 @@
 
   .resume .aucun {
     color: var(--ink-muted);
-  }
-
-  .non-precise {
-    margin: 0;
-    background: var(--warn);
-    color: var(--warn-on);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
-    font-weight: var(--poids-moyen);
-  }
-
-  .non-precise :global(a) {
-    color: currentcolor;
-    font-weight: var(--poids-fort);
   }
 
   .none {
