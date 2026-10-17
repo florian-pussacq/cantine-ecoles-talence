@@ -73,6 +73,10 @@ le relire dans le PDF avant d'aller plus loin.
 pdftotext -layout sources/pdf/<nom>.pdf - | less
 ```
 
+Un jour férié — la cellule ne porte que `JOUR FÉRIÉ` — sort en `public-holiday`,
+sans plats et sans avertissement. Un `⚠` sur une cellule qui mentionne « férié »
+signifie qu'elle porte aussi autre chose : la relire.
+
 Si un mois nouveau porte un thème « ZOOM SUR » rattaché à un jour précis, le
 poser à la main dans le fichier, entre `kind` et `confidence`.
 

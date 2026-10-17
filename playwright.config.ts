@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { INSTANT_PAR_DEFAUT } from './e2e/instant';
 
 /**
  * Deux profils, parce qu'une mise en page qu'aucun test ne visite n'est pas
@@ -17,7 +18,9 @@ const MOBILE_SEULEMENT = [/balayage\.spec\.ts/, /couche-modale\.spec\.ts/, /haut
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
-  reporter: process.env.CI ? 'github' : 'list',
+  // En CI, les annotations dans la PR, et un rapport HTML que le workflow
+  // conserve sur échec : sans lui, l'artefact serait vide.
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: 'http://localhost:4173',
     locale: 'fr-FR',
@@ -33,6 +36,10 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run build && npm run preview',
+    // Le pré-rendu énonce le même jour que le navigateur des tests (ci-github,
+    // D6). Un serveur réutilisé, construit sans cette variable, ne le garantit
+    // pas : l'arrêter avant de lancer la suite.
+    env: { CANTINE_INSTANT: INSTANT_PAR_DEFAUT.toISOString() },
     port: 4173,
     reuseExistingServer: !process.env.CI
   }

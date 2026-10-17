@@ -257,6 +257,19 @@ def course(slot: str, line: Line) -> dict:
     }
 
 
+def is_public_holiday(lines: list[Line]) -> bool:
+    """La cellule ne dit que « JOUR FÉRIÉ », sur une ligne ou deux.
+
+    Le test porte sur la cellule entière, jamais sur une sous-chaîne : un plat
+    dont le libellé mentionnerait « férié » serait avalé sans que personne le
+    voie. Une cellule qui porte des plats en plus suit le chemin ordinaire et
+    ressort en confiance faible, pour relecture."""
+    text = " ".join(line.label for line in lines)
+    return unaccent(text).lower().split() == ["jour", "ferie"] and not any(
+        line.allergens for line in lines
+    )
+
+
 def read_cell(words, left, right, top, bottom, allergen_min_x, tolerance) -> list[Line]:
     """Découpe une cellule en lignes de plat.
 
@@ -494,6 +507,11 @@ def main() -> None:
     warnings = []
     for date in sorted(cells):
         lines, first_row, pitch = cells[date]
+        if is_public_holiday(lines):
+            days.append(
+                {"date": date, "kind": "public-holiday", "confidence": "high", "courses": []}
+            )
+            continue
         slots, reliable = assign_slots(lines, first_row, pitch)
         day = {
             "date": date,

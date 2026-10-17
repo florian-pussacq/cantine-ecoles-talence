@@ -38,7 +38,8 @@ describe('resolveDisplayDay', () => {
     expect(resolveDisplayDay(real, noonInParis('2026-09-12'))).toEqual({
       status: 'next-served',
       date: '2026-09-14',
-      daysAhead: 2
+      daysAhead: 2,
+      skipped: null
     });
   });
 
@@ -46,7 +47,8 @@ describe('resolveDisplayDay', () => {
     expect(resolveDisplayDay(real, noonInParis('2026-09-13'))).toEqual({
       status: 'next-served',
       date: '2026-09-14',
-      daysAhead: 1
+      daysAhead: 1,
+      skipped: null
     });
   });
 
@@ -55,7 +57,8 @@ describe('resolveDisplayDay', () => {
     expect(resolveDisplayDay(edges, noonInParis('2099-01-03'))).toEqual({
       status: 'next-served',
       date: '2099-01-05',
-      daysAhead: 2
+      daysAhead: 2,
+      skipped: 'weekend'
     });
   });
 
@@ -64,7 +67,38 @@ describe('resolveDisplayDay', () => {
     expect(resolveDisplayDay(edges, noonInParis('2099-01-01'))).toEqual({
       status: 'next-served',
       date: '2099-01-02',
-      daysAhead: 1
+      daysAhead: 1,
+      skipped: 'holiday'
+    });
+  });
+
+  it('dit qu’il saute un jour férié', () => {
+    expect(resolveDisplayDay(edges, noonInParis('2099-01-08'))).toEqual({
+      status: 'next-served',
+      date: '2099-01-09',
+      daysAhead: 1,
+      skipped: 'public-holiday'
+    });
+  });
+
+  it('enjambe le week-end qui suit un vendredi férié', () => {
+    const friday = '2026-09-11';
+    const menu = september as MonthMenu;
+    const withHoliday = buildDataset([
+      {
+        menu: {
+          ...menu,
+          days: menu.days.map((day) =>
+            day.date === friday ? { ...day, kind: 'public-holiday' as const, courses: [] } : day
+          )
+        }
+      }
+    ]);
+    expect(resolveDisplayDay(withHoliday, noonInParis(friday))).toEqual({
+      status: 'next-served',
+      date: '2026-09-14',
+      daysAhead: 3,
+      skipped: 'public-holiday'
     });
   });
 
@@ -206,6 +240,12 @@ describe('buildDataset', () => {
   });
 
   it('ne retient comme servis que les jours d’école, triés', () => {
-    expect(edges.servedDates).toEqual(['2099-01-02', '2099-01-05', '2099-01-06', '2099-01-07']);
+    expect(edges.servedDates).toEqual([
+      '2099-01-02',
+      '2099-01-05',
+      '2099-01-06',
+      '2099-01-07',
+      '2099-01-09'
+    ]);
   });
 });

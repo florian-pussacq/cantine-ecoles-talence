@@ -60,6 +60,8 @@ Ce qui disparaît en conséquence : un compte alwaysdata, un secret SSH, une ét
 
 *Contrepartie assumée :* Netlify n'exécute pas les tests de bout en bout, qui demandent des navigateurs que son image de construction n'a pas. Un job `e2e` rouge n'empêche donc pas la publication. C'est le prix de l'intégration Git native, qui est ce qui donne les prévisualisations de merge request ; `npm run validate` reste joué des deux côtés. L'alternative — publier depuis GitLab CI avec `netlify deploy --prod` — rétablirait la séquence stricte au prix des prévisualisations.
 
+*Note du 17 octobre 2026 :* le dépôt a migré sur GitHub. La vérification est passée à GitHub Actions, et la protection de `main` y rétablit la séquence stricte sans renoncer aux prévisualisations. Voir le changement `ci-github`, D1.
+
 ### D3 — Données saisies à la main, non générées
 
 Le PRD ordonnait parser → pipeline → PWA, ce qui repousse le premier pixel à quatre jours. L'ordre est inversé.

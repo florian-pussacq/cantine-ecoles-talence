@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-02T13:37:18Z",
+  "generatedAt": "2026-10-17T08:23:42Z",
   "months": [
     {
       "month": "2026-08",
@@ -14,8 +14,23 @@
     },
     {
       "month": "2026-10",
-      "contentHash": "b45a974a2ff757bb68ddfb85a1c3f54d88c2881375775005402babed98cd1c7c",
-      "updatedAt": "2026-06-24"
+      "contentHash": "30fc8c163f4d588e167a7c1a1da1b2ea5908e4967c850267eac9ce268a107947",
+      "updatedAt": "2026-09-30"
+    },
+    {
+      "month": "2026-11",
+      "contentHash": "140dd3e9d73caf758a9e9dc97c032c6fffc1a42fee4272f943ab4c0ef243481f",
+      "updatedAt": "2026-09-02"
+    },
+    {
+      "month": "2026-12",
+      "contentHash": "19143074ff8a33c66658906c55593a0b6c8737a857473b471a2b54e47adab379",
+      "updatedAt": null
+    },
+    {
+      "month": "2027-01",
+      "contentHash": "a1846ef2ef10d3cdff4f876916c95687f3f3ed4cf7cce8428a30db967785e8fb",
+      "updatedAt": "2026-10-15"
     }
   ]
 }

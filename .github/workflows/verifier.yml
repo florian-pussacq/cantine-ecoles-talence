@@ -1,0 +1,68 @@
+# Vérification de chaque pull request et de chaque poussée sur `main`.
+#
+# La publication n'est pas faite ici : Netlify est branché sur ce dépôt, publie
+# `main` et rejoue `npm run validate && npm run build` de son côté. Ce workflow
+# existe pour que rien n'atteigne `main` sans avoir été vérifié, et parce qu'il
+# porte les tests de bout en bout que l'image de construction de Netlify ne peut
+# pas exécuter. La protection de `main`, qui exige ses deux jobs, est réglée dans
+# GitHub et décrite dans `docs/livraison.md` (ci-github, D1).
+
+name: verifier
+
+# Une branche sans pull request est un brouillon : elle se vérifie en local. La
+# poussée sur `main` reste vérifiée, pour qu'un contournement de la protection
+# laisse au moins une trace rouge (D2).
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Une nouvelle poussée sur la même référence rend l'exécution en cours sans objet.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # La version de Node vient de `.nvmrc`, que Netlify lit aussi : une seule
+      # déclaration pour l'hébergeur, l'intégration continue et le poste (D3).
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Formatage, lint, dérive des types, validité des données, types Svelte,
+      # tests unitaires — en une commande, la même qu'en local.
+      - run: npm run validate
+      # La construction applique les budgets de performance et échoue s'ils sont
+      # dépassés.
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Chromium installé à la demande plutôt que par une image
+      # `mcr.microsoft.com/playwright`, dont l'étiquette devrait suivre la version
+      # de `@playwright/test` à chaque montée (D4).
+      - run: npx playwright install --with-deps chromium
+      # `CI` est posé par GitHub : Playwright construit alors son propre serveur,
+      # avec l'instant fixé au pré-rendu, au lieu d'en réutiliser un (D6).
+      - run: npm run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

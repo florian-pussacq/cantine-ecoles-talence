@@ -1,0 +1,964 @@
+{
+  "schemaVersion": 1,
+  "month": "2027-01",
+  "source": {
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/10/01-MENUS-WEB-JANVIER-2027.pdf",
+    "pdfSha256": "0ad452fa988967de2135ea16a17074e413111c073ead96153c0a9fcf24d0ed8b",
+    "updatedLabel": "Menus mis à jour le 15 octobre 2026",
+    "updatedAt": "2026-10-15",
+    "fetchedAt": "2026-10-17T08:23:02Z",
+    "producerVersion": "extract-menu-pdf/1"
+  },
+  "allergenLegend": {
+    "1": "Gluten (blé, seigle, orge, avoine, épeautre, kamut)",
+    "2": "Crustacés",
+    "3": "Œufs",
+    "4": "Poisson",
+    "5": "Arachides",
+    "6": "Soja",
+    "7": "Lait",
+    "8": "Fruits à coques (amandes, noisettes, noix, pistaches)",
+    "9": "Céleri",
+    "10": "Moutarde",
+    "11": "Graines de sésame",
+    "12": "Anhydride sulfureux et sulfites",
+    "13": "Lupin",
+    "14": "Mollusques"
+  },
+  "days": [
+    {
+      "date": "2027-01-04",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Maïs aux poivons",
+          "allergens": [10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Saucisse de volaille",
+          "allergens": [1, 7, 9],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Choux-fleurs persillés",
+          "allergens": [7, 9, 13],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Biscuit Bio + Lait chocolaté",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-05",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Pamplemousse",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Croq'fromage",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Lentilles",
+          "allergens": [9, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Liégeois chocolat",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Pomme cuite",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Crème de marron",
+          "allergens": [1],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-06",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Chou chinois et dés d'emmental",
+          "allergens": [7, 10, 12],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Pot-au-feu de bœuf",
+          "allergens": [9],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Légumes pot-au-feu",
+          "allergens": [9, 13],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Dessert maison",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Goûter",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-07",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Rillettes de thon",
+          "allergens": [2, 3, 4, 7, 10, 14],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Sauté de porc à l'ananas*",
+          "allergens": [9, 12],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Crispy Cubes",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Petit Suisse",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Barre de céréales",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-08",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Chou rouge à la framboise",
+          "allergens": [10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Dos de colin au citron",
+          "allergens": [2, 4],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Purée de panais",
+          "allergens": [1, 7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Éclair au chocolat",
+          "allergens": [1, 3, 6, 7],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Fruit de saison Bio",
+          "allergens": [1],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-11",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Coupelle de volaille",
+          "allergens": [3, 7],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Paupiette de veau sauce tomate",
+          "allergens": [1, 6, 9],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Poêlée de légumes",
+          "allergens": [1, 9],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Confiture",
+          "allergens": [1],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-12",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Carottes râpées aux raisins secs",
+          "allergens": [10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Tarte butternut Comté",
+          "allergens": [1, 3, 7, 9],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Cocktail de fruits",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Biscuit Bio + Pâte de fruits",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-13",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Salade mexicaine",
+          "allergens": [7, 10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Blanc de poulet au jus",
+          "allergens": [7, 9, 12],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Fondue de poireaux",
+          "allergens": [1, 7, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Crème vanille",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Goûter",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-14",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Champignons à la crème",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Sauté de bœuf sauce aigre douce",
+          "allergens": [1, 6, 10, 12],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Semoule",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Far aux pruneaux",
+          "allergens": [1, 3, 7],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Boudoir + Fruit de saison Bio",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-15",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Salade de crudités et fromage",
+          "allergens": [7, 9, 10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Poisson meunière",
+          "allergens": [1, 3, 7],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Haricots plats persillés",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Barre bretonne",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Yaourt à boire Bio",
+          "allergens": [1, 7],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-18",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Radis beurre",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Ravioli bolognaise",
+          "allergens": [1, 3, 7],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage blanc nature",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Compote pomme poire",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Tablette de chocolat",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-19",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Betteraves vinaigrette",
+          "allergens": [10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Légumes façon cantonnais",
+          "allergens": [1, 3, 6, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Riz",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Biscuit Bio + Flan caramel",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-20",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Potage de légumes",
+          "allergens": [7, 9],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Parmentier de canard",
+          "allergens": [1, 7, 9],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Salade de fruits exotiques",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Goûter",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-21",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Céleri rémoulade",
+          "allergens": [3, 7, 9, 10],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Rôti de bœuf",
+          "allergens": [12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Duo carottes et navets",
+          "allergens": [9],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Yaourt aromatisé",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Semoule au lait",
+          "allergens": [1, 7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Berlingot Bio",
+          "allergens": [1],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-22",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Rillettes de légumes",
+          "allergens": [7, 11],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Poêlée de poissons",
+          "allergens": [2, 4, 7, 14],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Blé",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain au lait + Lingotin",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-25",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Mâche et fromage",
+          "allergens": [7, 10, 12],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Cordon bleu",
+          "allergens": [1, 3, 7],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Chou Romanesco",
+          "allergens": [1, 6, 9, 10, 12],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Tarte aux pommes",
+          "allergens": [1, 3, 7, 8],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Biscuit + Fruit de saison Bio",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-26",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Salade de crudités",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Crispy Wings de chou-fleur",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Quinoa",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Pêches au sirop",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Pâte à tartiner",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-27",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["label-rouge"]
+        },
+        {
+          "slot": "entree",
+          "label": "Crêpe au fromage",
+          "allergens": [1, 3, 7],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Rôti d'épaule d'agneau",
+          "allergens": [9, 12],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Purée de Brocolis",
+          "allergens": [1, 7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "laitage",
+          "label": "Yaourt à boire",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Goûter",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-28",
+      "kind": "school",
+      "theme": "Captain America VS Superman",
+      "note": "Un menu qui envoie du lourd avec deux légendes ! Maïs grillé, hot-dog revisité, potatoes croustillantes et flan fruité… tout est là pour faire le plein d'énergie. Des recettes simples, efficaces et appréciées des enfants, préparées avec des produits de qualité. Bien-manger, c'est déjà un super pouvoir !",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain du mois",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "entree",
+          "label": "Cobette de maïs au paprika fumé",
+          "allergens": [12],
+          "flags": []
+        },
+        {
+          "slot": "plat",
+          "label": "Hot-dog de volaille",
+          "allergens": [1],
+          "flags": []
+        },
+        {
+          "slot": "accompagnement",
+          "label": "Potatoes au four",
+          "allergens": [],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Babybel",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Flan vanille fruits rouges",
+          "allergens": [7],
+          "flags": []
+        },
+        {
+          "slot": "gouter",
+          "label": "Cake marbré",
+          "allergens": [1, 3, 7, 8],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "date": "2027-01-29",
+      "kind": "school",
+      "confidence": "high",
+      "courses": [
+        {
+          "slot": "pain",
+          "label": "Pain",
+          "allergens": [1],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "entree",
+          "label": "Macédoine mayonnaise",
+          "allergens": [3, 7, 9, 10],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "plat",
+          "label": "Lasagnes saumon épinards",
+          "allergens": [1, 3, 4, 7],
+          "flags": []
+        },
+        {
+          "slot": "laitage",
+          "label": "Fromage",
+          "allergens": [7],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "dessert",
+          "label": "Fruit de saison",
+          "allergens": [],
+          "flags": ["bio"]
+        },
+        {
+          "slot": "gouter",
+          "label": "Pain + Fromage blanc Bio",
+          "allergens": [1, 7],
+          "flags": []
+        }
+      ]
+    }
+  ]
+}

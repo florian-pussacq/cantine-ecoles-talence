@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 // Le parcours complet « ouvrir → voir aujourd'hui → hors ligne → toujours visible »
 // est écrit au groupe de tâches 11. Ce test garde la chaîne de bout en bout vivante

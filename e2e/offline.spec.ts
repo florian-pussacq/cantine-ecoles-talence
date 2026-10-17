@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 /**
  * Le parcours qui décide de la valeur du projet : ouvrir, voir le menu, perdre

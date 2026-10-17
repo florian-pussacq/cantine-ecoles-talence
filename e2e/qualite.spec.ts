@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, hydratee, test, type Page } from './test';
 
 const ECRANS = ['/', '/semaine', '/reglages', '/greve', '/a-propos'] as const;
 
@@ -109,6 +109,7 @@ for (const ecran of ECRANS) {
 
 test('la navigation au clavier atteint et actionne les commandes de jour', async ({ page }) => {
   await page.goto('/');
+  await hydratee(page);
   const titreInitial = await page.locator('nav .designation').textContent();
 
   // Les flèches déplacent d'un jour servi à l'autre.

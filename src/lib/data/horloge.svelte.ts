@@ -25,8 +25,22 @@ import { browser } from '$app/environment';
  * sous ses yeux pendant qu'il lit poserait une autre question. La reprise couvre
  * le cas réel.
  */
+/**
+ * L'instant de départ.
+ *
+ * Au pré-rendu, il peut être imposé par `CANTINE_INSTANT` : le HTML cuit au
+ * build énonce un jour, et les tests de bout en bout fixent celui du navigateur.
+ * Si les deux divergent, l'hydratation change le jour affiché sous leurs yeux et
+ * ce qu'ils mesurent n'a plus de sens (ci-github, D6). La variable n'est lue que
+ * hors du navigateur, et le build de production ne la pose pas.
+ */
+function instantDeDepart(): Date {
+  const impose = browser ? undefined : process.env.CANTINE_INSTANT;
+  return impose ? new Date(impose) : new Date();
+}
+
 class Horloge {
-  #instant = $state(new Date());
+  #instant = $state(instantDeDepart());
   #suivie = false;
 
   get instant(): Date {

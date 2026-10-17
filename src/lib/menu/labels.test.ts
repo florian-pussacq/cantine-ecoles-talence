@@ -39,15 +39,29 @@ describe('targetEyebrow', () => {
   });
 
   it('dit « demain » plutôt que « dans 1 jours »', () => {
-    expect(targetEyebrow({ status: 'next-served', date: '2026-09-14', daysAhead: 1 })).toBe(
-      'Demain'
-    );
+    expect(
+      targetEyebrow({ status: 'next-served', date: '2026-09-14', daysAhead: 1, skipped: null })
+    ).toBe('Demain');
   });
 
   it('compte les jours au-delà', () => {
-    expect(targetEyebrow({ status: 'next-served', date: '2026-09-14', daysAhead: 2 })).toBe(
-      'Prochain service · dans 2 jours'
+    expect(
+      targetEyebrow({ status: 'next-served', date: '2026-09-14', daysAhead: 2, skipped: null })
+    ).toBe('Prochain service · dans 2 jours');
+  });
+
+  it('nomme le férié qu’il enjambe', () => {
+    const cible = { status: 'next-served', date: '2026-11-12', daysAhead: 1 } as const;
+    expect(targetEyebrow({ ...cible, skipped: 'public-holiday' })).toBe('Férié · service demain');
+    expect(targetEyebrow({ ...cible, daysAhead: 3, skipped: 'public-holiday' })).toBe(
+      'Férié · service dans 3 jours'
     );
+  });
+
+  it('garde la mention générique pour le week-end et les vacances', () => {
+    const cible = { status: 'next-served', date: '2026-09-14', daysAhead: 2 } as const;
+    expect(targetEyebrow({ ...cible, skipped: 'weekend' })).toBe('Prochain service · dans 2 jours');
+    expect(targetEyebrow({ ...cible, skipped: 'holiday' })).toBe('Prochain service · dans 2 jours');
   });
 
   it('dit explicitement qu’un menu n’est pas publié', () => {
@@ -245,22 +259,32 @@ describe('le libellé de la commande de retour', () => {
   });
 
   it('dit « Demain » plutôt que « Aujourd’hui » à un jour de distance', () => {
-    expect(targetReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1 })).toBe(
-      'Demain'
-    );
+    expect(
+      targetReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1, skipped: null })
+    ).toBe('Demain');
   });
 
   it('ne dit jamais « Aujourd’hui » devant un jour qui ne l’est pas', () => {
     // Week-ends et vacances réunis, le jour civil n'est pas servi environ
     // quarante pour cent des jours de l'année. Un libellé fixe afficherait lundi
     // un dimanche, ce que targetEyebrow existe pour empêcher (design.md, D45).
-    const label = targetReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 10 });
+    const label = targetReturnLabel({
+      status: 'next-served',
+      date: '2026-09-14',
+      daysAhead: 10,
+      skipped: null
+    });
     expect(label).toBe('Prochain service');
     expect(label).not.toContain("Aujourd'hui");
   });
 
   it('reste plus court que la mention, qui ne tiendrait pas sur un bouton', () => {
-    const cible = { status: 'next-served', date: '2026-09-14', daysAhead: 10 } as const;
+    const cible = {
+      status: 'next-served',
+      date: '2026-09-14',
+      daysAhead: 10,
+      skipped: null
+    } as const;
     expect((targetReturnLabel(cible) as string).length).toBeLessThan(targetEyebrow(cible).length);
   });
 
@@ -272,8 +296,8 @@ describe('le libellé de la commande de retour', () => {
   it('nomme une semaine et non un jour sur l’écran de la semaine', () => {
     // « Demain » ne veut rien dire devant une période de cinq jours.
     expect(weekReturnLabel({ status: 'today', date: '2026-09-10' })).toBe('Cette semaine');
-    expect(weekReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1 })).toBe(
-      'Prochain service'
-    );
+    expect(
+      weekReturnLabel({ status: 'next-served', date: '2026-09-14', daysAhead: 1, skipped: null })
+    ).toBe('Prochain service');
   });
 });

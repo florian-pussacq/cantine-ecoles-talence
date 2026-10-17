@@ -1,5 +1,6 @@
 <script lang="ts">
   import '$lib/design/tokens.css';
+  import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
   import Enseigne from '$lib/ui/Enseigne.svelte';
@@ -22,6 +23,16 @@
     jour.
   */
   horloge.suivre();
+
+  /*
+    Hydratée : les écouteurs sont branchés. Le montage de la coque suit celui de
+    l'écran, donc ceux de l'écran le sont aussi. Rien ne lit ce marqueur dans
+    l'application ; les tests de bout en bout s'en servent pour ne pas presser une
+    touche que personne n'écoute encore (ci-github, D7).
+  */
+  onMount(() => {
+    document.documentElement.dataset.hydrate = '';
+  });
 
   /*
     Le titre de chaque écran vit ici, et non dans l'écran qu'il nomme.
