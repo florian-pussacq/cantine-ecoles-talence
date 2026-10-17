@@ -85,21 +85,14 @@ page, comparer les empreintes et ouvrir une issue — ou une PR produite par le
 script — quand un PDF change ou quand le corpus couvre moins de deux semaines à
 venir. À concevoir après `ci-github`, dont il réutilise le socle.
 
-## 8. `reconstruction-quotidienne` — à proposer, juste après `ci-github`
+## 8. Jour figé au pré-rendu — proposé : `jour-au-premier-rendu`
 
-Défaut révélé par `ci-github` (D6). Le pré-rendu cuit dans le HTML le jour
-résolu au build. Netlify ne reconstruit qu'à la poussée, souvent des semaines
-avant la visite : chaque visiteur voit d'abord le menu du jour du build, puis
-l'écran change sous ses yeux à l'hydratation. C'est aussi un décalage de mise en
-page, que `coque.spec.ts` ne voit pas puisque ses tests alignent les deux
-instants.
+La reconstruction quotidienne d'abord envisagée ne règle rien : le service worker
+sert le HTML de la version installée sans le revalider, et chaque build crée une
+version, donc un bandeau de mise à jour par jour. Voir
+`openspec/changes/jour-au-premier-rendu/`.
 
-Piste : un workflow planifié, peu après minuit à Paris, qui appelle un build
-hook Netlify (secret `NETLIFY_BUILD_HOOK`, qui ne peut que déclencher une
-construction). Le HTML a alors au plus quelques heures. À trancher : le service
-worker sert-il le HTML en cache avant de revalider ? Si oui, la reconstruction
-ne suffit pas, et la première peinture d'une application installée reste celle
-de sa dernière mise à jour. Ce workflow est aussi le socle de l'entrée 7.
+## 9. Barrière de déploiement par build hook — à proposer
 
 Le même build hook peut rétablir une barrière sans PR. On développe sur le tronc
 et Netlify publie à la poussée : un `e2e` rouge signale un défaut déjà en ligne.
