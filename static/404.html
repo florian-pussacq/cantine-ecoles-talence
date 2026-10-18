@@ -4,9 +4,13 @@
 
   Elle ne passe pas par SvelteKit : l'adapter est en `fallback: undefined`, donc
   une URL qui ne correspond à aucune route prérendue n'atteint jamais
-  l'application. D'où la duplication des couleurs ici — c'est le seul fichier du
-  projet qui ne peut pas lire `tokens.css`, et une page d'erreur qui dépendrait
-  du chargement de l'application serait une page d'erreur qui échoue.
+  l'application. C'est le seul fichier du projet qui ne peut pas lire
+  `tokens.css`, et une page d'erreur qui dépendrait du chargement de
+  l'application serait une page d'erreur qui échoue.
+
+  Elle recopie donc les jetons qu'elle emploie, sous leur nom et avec leur
+  valeur, en clair et en sombre. `contrast.test.ts` refuse une copie qui
+  diverge de `tokens.css` (finition-week-end-et-404, D3).
 
   Pour la même raison, le lien de retour est le seul chemin absolu écrit à la
   main du dépôt : `$app/paths` n'est pas atteignable ici, et le site est servi à
@@ -23,18 +27,20 @@
     <style>
       :root {
         color-scheme: light dark;
-        --table: #1e5a6b;
-        --tray: #f3f5f1;
-        --encre: #16211f;
-        --sur-table: #f3f5f1;
+        --fond: #f4ecdd;
+        --carte: #ffffff;
+        --bord: #ddd0b8;
+        --encre: #2b2318;
+        --accent: #7e6130;
       }
 
       @media (prefers-color-scheme: dark) {
         :root {
-          --table: #0d1a20;
-          --tray: #1b262d;
-          --encre: #e8eef1;
-          --sur-table: #e8eef1;
+          --fond: #1b1712;
+          --carte: #27211a;
+          --bord: #3c3428;
+          --encre: #f2e9d8;
+          --accent: #d6ad66;
         }
       }
 
@@ -44,8 +50,8 @@
         display: grid;
         place-items: center;
         padding: 1.5rem;
-        background: var(--table);
-        color: var(--sur-table);
+        background: var(--fond);
+        color: var(--encre);
         font-family:
           ui-sans-serif,
           system-ui,
@@ -70,8 +76,9 @@
         font-size: 0.6875rem;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        font-weight: 700;
-        opacity: 0.72;
+        font-weight: 800;
+        /* Le sourcil de l'application est à l'accent, comme sa mention. */
+        color: var(--accent);
       }
 
       h1 {
@@ -92,14 +99,15 @@
         padding-inline: 1rem;
         margin-top: 0.5rem;
         border-radius: 999px;
-        background: var(--tray);
+        background: var(--carte);
+        border: 1px solid var(--bord);
         color: var(--encre);
         font-weight: 700;
         text-decoration: none;
       }
 
       a:focus-visible {
-        outline: 3px solid var(--sur-table);
+        outline: 3px solid var(--encre);
         outline-offset: 2px;
       }
     </style>

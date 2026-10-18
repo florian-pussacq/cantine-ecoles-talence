@@ -59,6 +59,18 @@ export function daysBetween(from: string, to: string): number {
 }
 
 /**
+ * Un samedi ou un dimanche, pour une date AAAA-MM-JJ de Paris.
+ *
+ * Les mensuels ne listent que du lundi au vendredi : le week-end n'est pas dans
+ * les données, et se reconnaît au calendrier (finition-week-end-et-404, D1). Midi
+ * UTC tombe le même jour civil à Paris, quelle que soit l'heure d'été.
+ */
+function estWeekEnd(date: string): boolean {
+  const jour = new Date(`${date}T12:00:00Z`).getUTCDay();
+  return jour === 0 || jour === 6;
+}
+
+/**
  * Détermine le jour à afficher.
  *
  * `now` est un paramètre et non une lecture de l'horloge : sans cela, les règles
@@ -85,7 +97,7 @@ export function resolveDisplayDay(dataset: MenuDataset, now: Date): DisplayTarge
     status: 'next-served',
     date: next,
     daysAhead: daysBetween(today, next),
-    skipped: kind,
+    skipped: kind ?? (estWeekEnd(today) ? 'weekend' : null),
     ...vacation(next)
   };
 }

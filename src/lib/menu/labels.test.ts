@@ -73,6 +73,24 @@ describe('targetEyebrow', () => {
     ).toBe('Prochain service · dans 2 jours');
   });
 
+  it('nomme le week-end, comme le férié (finition-week-end-et-404, D2)', () => {
+    const cible = { status: 'next-served', date: '2026-09-14', skipped: 'weekend' } as const;
+    expect(targetEyebrow({ ...cible, daysAhead: 2 })).toBe('Week-end · service dans 2 jours');
+    expect(targetEyebrow({ ...cible, daysAhead: 1 })).toBe('Week-end · service demain');
+  });
+
+  it('laisse les vacances primer sur le week-end', () => {
+    expect(
+      targetEyebrow({
+        status: 'next-served',
+        date: '2026-10-19',
+        daysAhead: 2,
+        skipped: 'weekend',
+        vacation: true
+      })
+    ).toBe('Vacances · dans 2 jours');
+  });
+
   it('nomme le férié qu’il enjambe', () => {
     const cible = { status: 'next-served', date: '2026-11-12', daysAhead: 1 } as const;
     expect(targetEyebrow({ ...cible, skipped: 'public-holiday' })).toBe('Férié · service demain');
@@ -108,9 +126,9 @@ describe('targetEyebrow', () => {
     ).toBe('Férié · service dans 3 jours');
   });
 
-  it('garde la mention générique pour le week-end et les vacances', () => {
+  it('garde la mention générique pour des vacances sans menu', () => {
+    // Le week-end a désormais la sienne (finition-week-end-et-404, D2).
     const cible = { status: 'next-served', date: '2026-09-14', daysAhead: 2 } as const;
-    expect(targetEyebrow({ ...cible, skipped: 'weekend' })).toBe('Prochain service · dans 2 jours');
     expect(targetEyebrow({ ...cible, skipped: 'holiday' })).toBe('Prochain service · dans 2 jours');
   });
 

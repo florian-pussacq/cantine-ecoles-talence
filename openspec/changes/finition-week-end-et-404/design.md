@@ -33,11 +33,11 @@ Les vacances gardent la priorité sur le week-end, comme elles l'ont aujourd'hui
 
 ### D3 — La 404 reprend les jetons, par copie gardée
 
-Elle déclare les jetons qu'elle emploie sous leur nom (`--fond`, `--carte`, `--bord`, `--encre`, `--encre-douce`, `--accent`) avec leurs valeurs claires, puis sombres sous `prefers-color-scheme: dark`. Le sourcil prend `--encre-douce` au lieu d'une opacité, comme l'exige le reste de l'application (`fermer-les-echelles`, D2). Le lien de retour prend l'allure d'une commande de l'application : surface de carte, filet, cible de 44 px.
+Elle déclare les jetons qu'elle emploie sous leur nom (`--fond`, `--carte`, `--bord`, `--encre`, `--accent`) avec leurs valeurs claires, puis sombres sous `prefers-color-scheme: dark`. Le sourcil quitte son opacité, que le reste de l'application refuse sur un texte (`fermer-les-echelles`, D2), et prend `--accent` : c'est la couleur de la mention de l'écran du jour (`RangNavigation`), que ce sourcil imite. La proposition disait `--encre-douce` ; la lecture du composant a corrigé. Le lien de retour prend l'allure d'une commande de l'application : surface de carte, filet, cible de 44 px.
 
 `contrast.test.ts` lit les couleurs de la 404 et exige, pour chaque jeton qu'elle déclare, la valeur de `tokens.css` dans la même palette. C'est la garde déjà posée pour les `theme-color` d'`app.html` (`mode-sombre`, D5), étendue au seul autre fichier qui ne peut pas lire les jetons.
 
 ## Risks / Trade-offs
 
 - [Fuseau] Un samedi à Paris peut être un vendredi ailleurs. → Le résolveur raisonne déjà sur la date de Paris ; le week-end s'en déduit.
-- [Copie élargie] La 404 recopie six jetons au lieu de quatre. → Chacun est gardé (D3) ; une valeur oubliée après un changement de palette fait échouer le test.
+- [Copie élargie] La 404 recopie cinq jetons au lieu de quatre. → Chacun est gardé (D3) ; une valeur oubliée après un changement de palette fait échouer le test.

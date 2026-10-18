@@ -191,8 +191,9 @@ export function targetEyebrow(target: DisplayTarget): Mention {
     case 'today':
       return { texte: target.vacation ? 'Vacances' : '', aujourdhui: true };
     case 'next-served':
-      // Le férié se nomme ; le week-end et les vacances n'ont pas encore leur
-      // mention propre, et gardent la générique.
+      // Le férié et le week-end se nomment, sur le même motif ; la date écrite
+      // juste en dessous dit le jour, la mention dit l'écart
+      // (finition-week-end-et-404, D2).
       if (target.skipped === 'public-holiday') {
         return sourcil(
           target.daysAhead === 1
@@ -204,6 +205,13 @@ export function targetEyebrow(target: DisplayTarget): Mention {
       if (target.vacation) {
         return sourcil(
           target.daysAhead === 1 ? 'Vacances · demain' : `Vacances · dans ${target.daysAhead} jours`
+        );
+      }
+      if (target.skipped === 'weekend') {
+        return sourcil(
+          target.daysAhead === 1
+            ? 'Week-end · service demain'
+            : `Week-end · service dans ${target.daysAhead} jours`
         );
       }
       if (target.daysAhead === 1) return sourcil('Demain');

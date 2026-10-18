@@ -39,7 +39,7 @@ describe('resolveDisplayDay', () => {
       status: 'next-served',
       date: '2026-09-14',
       daysAhead: 2,
-      skipped: null
+      skipped: 'weekend'
     });
   });
 
@@ -48,6 +48,17 @@ describe('resolveDisplayDay', () => {
       status: 'next-served',
       date: '2026-09-14',
       daysAhead: 1,
+      skipped: 'weekend'
+    });
+  });
+
+  it('ne prête pas de nature à un jour de semaine que les données ignorent', () => {
+    // Les mensuels ne listent pas le week-end : le résolveur le reconnaît au
+    // calendrier (finition-week-end-et-404, D1). Un vendredi absent n'en est pas un.
+    expect(resolveDisplayDay(real, noonInParis('2026-08-28'))).toEqual({
+      status: 'next-served',
+      date: '2026-08-31',
+      daysAhead: 3,
       skipped: null
     });
   });

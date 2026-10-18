@@ -383,6 +383,28 @@ describe('les deux palettes', () => {
     expect(Object.keys(SOMBRES).filter((nom) => !(nom in CLAIRS))).toEqual([]);
   });
 
+  it('la page 404 reprend les jetons, dans chaque palette', () => {
+    // Elle ne peut pas lire `tokens.css` : elle les recopie sous leur nom, et la
+    // copie est gardée ici (finition-week-end-et-404, D3). Un nom qu'elle
+    // inventerait, ou une valeur restée en arrière, échoue.
+    const page = separer(readFileSync('static/404.html', 'utf8'));
+    const palettes = [
+      ['claire', readTokens(page.clair), CLAIRS],
+      ['sombre', readTokens(page.sombre), SOMBRES]
+    ] as const;
+    const ecarts = palettes.flatMap(([nom, copies, jetons]) =>
+      Object.entries(copies)
+        .filter(([jeton, valeur]) => jetons[jeton] !== valeur)
+        .map(
+          ([jeton, valeur]) =>
+            `--${jeton} ${valeur} (palette ${nom} : ${jetons[jeton] ?? 'aucun jeton'})`
+        )
+    );
+    expect(ecarts).toEqual([]);
+    expect(Object.keys(palettes[0][1]).length).toBeGreaterThan(3);
+    expect(Object.keys(palettes[1][1])).toEqual(Object.keys(palettes[0][1]));
+  });
+
   it('la barre du navigateur prend le fond de chaque palette (D5)', () => {
     // `app.html` recopie `--fond`, faute de pouvoir lire un jeton : la copie est
     // gardée ici.
