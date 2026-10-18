@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { expect, test as base } from '@playwright/test';
 
 import { INSTANT_PAR_DEFAUT } from './instant';
 
@@ -36,4 +36,14 @@ export const test = base.extend<{ horloge: void }>({
  */
 export async function hydratee(page: Page): Promise<void> {
   await page.locator('html[data-hydrate]').waitFor({ state: 'attached' });
+}
+
+/**
+ * Attend que le carrousel soit au repos (carrousel-des-jours, D2).
+ *
+ * Pendant la course qui suit un changement de jour, le document contient aussi
+ * le jour qui s'en va. Un test qui mesure la page la mesure au repos.
+ */
+export async function auRepos(page: Page): Promise<void> {
+  await expect(page.locator('.voisin')).toHaveCount(0);
 }

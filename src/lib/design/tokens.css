@@ -180,6 +180,10 @@
   /* La courbe de tout mouvement de l'application : rapide au départ, posée à
      l'arrivée (fermer-les-echelles, D6). */
   --courbe: ease-out;
+  /* La course d'un jour qui se pose après un geste : il part à la vitesse du
+     doigt et freine longuement, comme une page qu'on lâche. Un `ease-out` y
+     paraissait raide (carrousel-des-jours, D3). */
+  --courbe-glisse: cubic-bezier(0.22, 1, 0.36, 1);
   /* Le délai au-delà duquel une page périmée se montre sans attendre
      l'hydratation (jour-au-premier-rendu, D4). */
   --secours: 3s;

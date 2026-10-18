@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './test';
+import { auRepos, expect, test, type Page } from './test';
 
 /**
  * Le retour au repère, et ce qui l'entoure (design.md, D44 à D47, D55).
@@ -116,6 +116,7 @@ test('la commande suit le contenu, elle ne le précède pas', async ({ page }) =
   // son apparition ne peut pas déplacer ce qu'on est en train de lire.
   await page.goto('/');
   await jourSuivant(page).click();
+  await auRepos(page);
 
   const commande = retour(page);
   await expect(commande).toBeVisible();

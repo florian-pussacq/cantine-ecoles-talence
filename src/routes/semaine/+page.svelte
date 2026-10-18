@@ -11,7 +11,7 @@
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
   import { selection } from '$lib/menu/selection.svelte.js';
-  import { createBalayage } from '$lib/ui/balayage.js';
+  import Carrousel from '$lib/ui/Carrousel.svelte';
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
   import PiedSource from '$lib/ui/PiedSource.svelte';
   import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
@@ -48,9 +48,12 @@
   const chosen = $derived(selection.dateLe(today));
   const anchor = $derived(chosen ?? repere);
 
-  const days = $derived(
-    weekOf(anchor).map((date) => ({ date, day: data.dataset.byDate.get(date) ?? null }))
-  );
+  /** Les cinq jours d'une semaine, chacun avec son menu s'il est publié. */
+  function semaine(date: string) {
+    return weekOf(date).map((jour) => ({ date: jour, day: data.dataset.byDate.get(jour) ?? null }));
+  }
+
+  const days = $derived(semaine(anchor));
 
   const first = $derived(days[0]?.date ?? anchor);
   const last = $derived(days[4]?.date ?? anchor);
@@ -120,12 +123,6 @@
       : null
   );
 
-  /** Le même geste que sur l'écran du jour, d'une semaine à l'autre (D17). */
-  const balayage = createBalayage({
-    onPrevious: () => selection.set(shift(first, -7), today),
-    onNext: () => selection.set(shift(first, 7), today)
-  });
-
   /** Le sens de la dernière navigation, pour que la transition suive le geste. */
   let sens = $state(1);
   let precedente: string | null = null;
@@ -176,11 +173,20 @@
     deux atteignables et annoncées. Lui inventer un rôle ARIA ajouterait un
     élément interactif de plus à parcourir pour la même fonction — voir la note
     équivalente sur l'écran du jour.
+
+    Le même carrousel, d'une semaine à l'autre (carrousel-des-jours) : les
+    semaines voisines existent toujours, même sans menu publié — elles le
+    disent jour par jour.
   -->
-  <div class="balayage" {...balayage}>
-    {#key first}
-      <ul class="sheet glisse" style:--sens={sens}>
-        {#each days as { date, day } (date)}
+  <Carrousel
+    cle={first}
+    precedent={shift(first, -7)}
+    suivant={shift(first, 7)}
+    aller={(lundi) => selection.set(lundi, today)}
+  >
+    {#snippet panneau(lundi)}
+      <ul class="sheet">
+        {#each semaine(lundi) as { date, day } (date)}
           {@const isToday = date === today}
           {@const course = day ? mainCourse(day) : null}
           {@const match = course ? classify(course.label) : null}
@@ -243,8 +249,8 @@
           </li>
         {/each}
       </ul>
-    {/key}
-  </div>
+    {/snippet}
+  </Carrousel>
 
   <!-- La commande de retour a son rang propre, sous la liste (D55). -->
   {#if retour}
@@ -261,18 +267,6 @@
 {/if}
 
 <style>
-  /* `pan-y` rend le défilement vertical au navigateur et garde l'horizontal
-     pour l'application. Sans cette ligne, le geste meurt sur `pointercancel`
-     sans que rien ne le signale (D18). */
-  .balayage {
-    touch-action: pan-y;
-    /* La transition d'entrée décale son contenu de 24 pixels : sans découpe, ce
-       débordement s'ajoute brièvement à la largeur défilable et laisse la page
-       glisser de côté pendant l'animation. `clip` découpe sans créer de conteneur
-       de défilement, et laisse donc l'axe vertical intact. */
-    overflow-x: clip;
-  }
-
   .sheet {
     list-style: none;
     margin: 0;

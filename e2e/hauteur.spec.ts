@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './test';
+import { auRepos, expect, test, type Page } from './test';
 
 /**
  * La garantie affaiblie, et pourquoi elle l'est (design.md, D53).
@@ -48,6 +48,7 @@ test('la première carte est entièrement visible sans défiler', async ({ page 
 
   const suivant = page.locator('nav[aria-label="Navigation entre les jours"] button').nth(1);
   await suivant.click();
+  await auRepos(page);
 
   // Le jour atteint doit porter tous ses rôles, sans quoi la mesure ne dit rien
   // du cas le plus chargé. Un jeu de données renouvelé fait ainsi échouer le

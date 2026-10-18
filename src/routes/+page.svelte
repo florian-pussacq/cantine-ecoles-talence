@@ -18,7 +18,7 @@
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import LienExterne from '$lib/ui/LienExterne.svelte';
   import { selection } from '$lib/menu/selection.svelte.js';
-  import { createBalayage } from '$lib/ui/balayage.js';
+  import Carrousel from '$lib/ui/Carrousel.svelte';
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
   import PiedSource from '$lib/ui/PiedSource.svelte';
   import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
@@ -90,7 +90,6 @@
   const previous = $derived(date === null ? null : servedNeighbour(data.dataset, date, 'previous'));
   const next = $derived(date === null ? null : servedNeighbour(data.dataset, date, 'next'));
 
-  const snack = $derived(day?.courses.find((course) => course.slot === 'gouter') ?? null);
   /* Le dernier contact de l'appareil avec le serveur, et non l'âge du manifeste
      (fraicheur-par-appareil, D1). */
   const joursSansContact = $derived(contactAncien(appUpdate.contact, now));
@@ -113,12 +112,6 @@
       sens = date > precedente ? 1 : -1;
     }
     precedente = date;
-  });
-
-  /** Le balayage vit dans `$lib/ui/balayage` (design.md, D17). */
-  const balayage = createBalayage({
-    onPrevious: () => previous !== null && selection.set(previous, today),
-    onNext: () => next !== null && selection.set(next, today)
   });
 
   function onKeydown(event: KeyboardEvent) {
@@ -235,64 +228,73 @@
     raisonnement ci-dessus tient lieu de justification, sans directive à tenir
     à jour.
 
-    La surface de geste reste hors de la clé : elle porte les gestionnaires et
-    la capture du pointeur, et la détruire pendant qu'un doigt la touche tuerait
-    le geste en cours. C'est son contenu qui se renouvelle, pas elle.
+    Le contenu suit le doigt, et le jour voisin arrive avec lui
+    (carrousel-des-jours) : le carrousel rend ses voisins pendant le mouvement
+    seulement, par le même dessin que le jour présenté.
   -->
-  <div class="balayage" {...balayage}>
-    {#key date}
-      <div class="jour glisse" style:--sens={sens}>
-        {#if day.theme}
-          <!-- Un contenu du jour, qui glisse avec lui ; pas une carte de plat (D2). -->
-          {#if day.note}
-            <Bandeau ton="evenement" titre={day.theme}>{day.note}</Bandeau>
-          {:else}
-            <Bandeau ton="evenement" titre={day.theme} />
+  <Carrousel
+    cle={day.date}
+    precedent={previous}
+    suivant={next}
+    aller={(jourVise) => selection.set(jourVise, today)}
+  >
+    {#snippet panneau(cle)}
+      {@const jour = data.dataset.byDate.get(cle)}
+      {@const gouter = jour?.courses.find((course) => course.slot === 'gouter') ?? null}
+      {#if jour}
+        <div class="jour">
+          {#if jour.theme}
+            <!-- Un contenu du jour, qui glisse avec lui ; pas une carte de plat (D2). -->
+            {#if jour.note}
+              <Bandeau ton="evenement" titre={jour.theme}>{jour.note}</Bandeau>
+            {:else}
+              <Bandeau ton="evenement" titre={jour.theme} />
+            {/if}
           {/if}
-        {/if}
 
-        <!--
-          Le déjeuner est une cible unique (D38).
-
-          Chaque plat était auparavant actionnable, ce qui lui imposait 44 pixels
-          de hauteur et rendait le plateau incompressible. La question posée à
-          cet écran n'est de toute façon pas « quelle case contient l'allergène »
-          mais « la journée en contient-elle un » : une ouverture, la liste
-          entière.
-        -->
-        <button type="button" class="cible" onclick={() => (ouverte = true)}>
-          <ListeDuJour {day} />
-        </button>
-
-        {#if snack}
           <!--
-            Le goûter n'est pas dans la liste du déjeuner : il n'est pas servi au
-            même moment, et l'y ranger dirait le contraire. Il n'est pas non plus
-            une note de bas de page — vingt libellés distincts sur trente-cinq
-            jours, c'est la deuxième quantité d'information de l'écran (D29).
+            Le déjeuner est une cible unique (D38).
 
-            Il prend la même carte que les rôles du déjeuner, et non plus un
-            vocabulaire à lui. Ce vocabulaire propre existait parce que la vedette
-            était le seul modèle disponible depuis la disparition des
-            compartiments (D41) ; la carte l'a remplacé, et le recopier ferait
-            vivre deux dessins de la même chose.
-
-            Il mène à la même fiche que le déjeuner : deux chemins d'ouverture,
-            une seule journée à décrire. La séparation est portée par sa forme et
-            son éloignement, et non par un filet : un trait sépare deux choses de
-            même nature.
-
-            Il prend la forme compacte de la carte : une ligne, sans vignette.
-            Il reste une cible distincte, et c'est la ligne entière qu'on touche
-            (lignes-compactes, D2).
+            Chaque plat était auparavant actionnable, ce qui lui imposait 44 pixels
+            de hauteur et rendait le plateau incompressible. La question posée à
+            cet écran n'est de toute façon pas « quelle case contient l'allergène »
+            mais « la journée en contient-elle un » : une ouverture, la liste
+            entière.
           -->
-          <button type="button" class="snack" onclick={() => (ouverte = true)}>
-            <PlatCarte slot="gouter" course={snack} legend={day.legend} compacte />
+          <button type="button" class="cible" onclick={() => (ouverte = true)}>
+            <ListeDuJour day={jour} />
           </button>
-        {/if}
-      </div>
-    {/key}
-  </div>
+
+          {#if gouter}
+            <!--
+              Le goûter n'est pas dans la liste du déjeuner : il n'est pas servi au
+              même moment, et l'y ranger dirait le contraire. Il n'est pas non plus
+              une note de bas de page — vingt libellés distincts sur trente-cinq
+              jours, c'est la deuxième quantité d'information de l'écran (D29).
+
+              Il prend la même carte que les rôles du déjeuner, et non plus un
+              vocabulaire à lui. Ce vocabulaire propre existait parce que la vedette
+              était le seul modèle disponible depuis la disparition des
+              compartiments (D41) ; la carte l'a remplacé, et le recopier ferait
+              vivre deux dessins de la même chose.
+
+              Il mène à la même fiche que le déjeuner : deux chemins d'ouverture,
+              une seule journée à décrire. La séparation est portée par sa forme et
+              son éloignement, et non par un filet : un trait sépare deux choses de
+              même nature.
+
+              Il prend la forme compacte de la carte : une ligne, sans vignette.
+              Il reste une cible distincte, et c'est la ligne entière qu'on touche
+              (lignes-compactes, D2).
+            -->
+            <button type="button" class="snack" onclick={() => (ouverte = true)}>
+              <PlatCarte slot="gouter" course={gouter} legend={jour.legend} compacte />
+            </button>
+          {/if}
+        </div>
+      {/if}
+    {/snippet}
+  </Carrousel>
 
   <!--
     La commande de retour a son rang propre, sous les cartes (D55).
@@ -323,21 +325,6 @@
 {/if}
 
 <style>
-  /*
-    `pan-y` rend le défilement vertical au navigateur et garde l'horizontal pour
-    l'application. Sans cette ligne, le navigateur revendique le mouvement, émet
-    `pointercancel`, et le geste meurt sans que rien ne le signale — c'est la
-    panne constatée en D18.
-  */
-  .balayage {
-    touch-action: pan-y;
-    /* La transition d'entrée décale son contenu de 24 pixels : sans découpe, ce
-       débordement s'ajoute brièvement à la largeur défilable et laisse la page
-       glisser de côté pendant l'animation. `clip` découpe sans créer de conteneur
-       de défilement, et laisse donc l'axe vertical intact. */
-    overflow-x: clip;
-  }
-
   /* Le contenu du jour reproduit l'intervalle de la coque : il est devenu un
      seul enfant de celle-ci, pour n'avoir qu'une horloge (D30). */
   .jour {
