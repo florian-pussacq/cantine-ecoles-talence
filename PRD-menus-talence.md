@@ -283,7 +283,7 @@ Cible **RGAA / WCAG 2.1 AA** — c'est un service qui rediffuse une donnée publ
 
 ## 8. Exigences non fonctionnelles
 
-- **Perf** : LCP < 1 s en 4G sur un mid-range Android ; interaction jour→jour < 100 ms ; bundle JS < 60 Ko gzip ; poids total premier chargement < 150 Ko. Ces chiffres sont atteignables sans framework lourd — c'est un lecteur de JSON, pas une SPA d'entreprise.
+- **Perf** : LCP < 1 s en 4G sur un mid-range Android ; interaction jour→jour < 100 ms ; JavaScript < 60 Ko gzip par page, et < 80 Ko pour l'ensemble que le service worker précharge ; poids du premier chargement d'une page < 150 Ko (précisé le 18 octobre 2026, `budget-par-page`). Ces chiffres sont atteignables sans framework lourd — c'est un lecteur de JSON, pas une SPA d'entreprise.
 - **Offline** : service worker, stratégie *stale-while-revalidate* sur `/data/*`, *cache-first* sur l'app shell. L'app doit être 100 % fonctionnelle après une première visite.
 - **Fraîcheur** : au plus 24 h de retard sur la source, `updatedAt` affiché.
 - **Disponibilité** : dégradation gracieuse — si le job casse, l'app continue de servir les dernières données valides. Jamais d'écran blanc parce qu'un PDF a changé de gabarit.

@@ -4,16 +4,24 @@
  * Le dépassement fait échouer la construction plutôt que de produire un rapport
  * que personne ne lit (design.md, risques).
  *
- * Deux budgets sont mesurés, tous deux en gzip :
+ * Trois budgets, tous en gzip, chacun pour une question (budget-par-page, D2) :
  *
- *  - JS : la somme de tous les modules JavaScript émis. C'est une borne
- *    supérieure du JavaScript du premier chargement, puisqu'une route donnée
- *    n'en charge qu'un sous-ensemble. Un budget tenu ici est donc tenu partout.
+ *  - JavaScript par page : ce que charge la page la plus lourde. C'est lui qui
+ *    retarde l'affichage, et c'est lui que le PRD vise en plaçant le budget à
+ *    côté du LCP.
  *
- *  - Premier chargement : le document HTML le plus lourd, plus l'ensemble des
- *    feuilles de style, plus le JavaScript ci-dessus. Même logique : on
- *    surestime volontairement plutôt que de simuler un graphe de dépendances
- *    qui divergerait du vrai comportement du navigateur.
+ *  - Premier chargement par page : le document, ses feuilles de style et son
+ *    JavaScript, pour la page la plus lourde.
+ *
+ *  - JavaScript préchargé : tout le JavaScript émis, service worker compris. Le
+ *    hors-ligne le télécharge en entier à la première visite et à chaque
+ *    déploiement : c'est un coût de données, pas d'affichage.
+ *
+ * Le JavaScript d'une page se lit dans ce que le build a produit, sans rien
+ * simuler (D1). La page nomme les modules qu'elle charge — l'entrée, la coque,
+ * la route — et le manifeste de Vite donne leurs imports statiques. Les imports
+ * à la demande sont exclus : l'application connaît toutes les routes, mais ne
+ * charge que celle de la page présentée.
  *
  * Les fichiers de données (`/data/*.json`) sont exclus : ils sont récupérés
  * après l'affichage, pas pendant.
@@ -24,11 +32,21 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, extname, relative } from 'node:path';
 
 const BUILD_DIR = 'build';
+const MANIFEST = '.svelte-kit/output/client/.vite/manifest.json';
 
 const BUDGETS = {
-  js: 60 * 1024,
-  firstLoad: 150 * 1024
+  jsParPage: 60 * 1024,
+  premierChargement: 150 * 1024,
+  jsPrecharge: 80 * 1024
 };
+
+/**
+ * Les pages sans JavaScript, et pourquoi (D4). Toute autre page qui ne nomme
+ * aucun module fait échouer la mesure : elle passerait sans rien garder.
+ */
+const SANS_JAVASCRIPT = new Map([
+  ['404.html', 'page autonome servie par Netlify, sans application (static/404.html)']
+]);
 
 /** @param {string} dir @returns {string[]} */
 function walk(dir) {
@@ -52,53 +70,145 @@ function kb(bytes) {
   return `${(bytes / 1024).toFixed(1)} Ko`;
 }
 
+/** @param {string} message @returns {never} */
+function echec(message) {
+  console.error(`\nBudget : ${message}\n`);
+  process.exit(1);
+}
+
 /** @type {string[]} */
 let files = [];
 try {
   files = walk(BUILD_DIR);
 } catch {
-  console.error(`Budget : dossier « ${BUILD_DIR} » introuvable. Lancer le build d'abord.`);
-  process.exit(1);
+  echec(`dossier « ${BUILD_DIR} » introuvable. Lancer le build d'abord.`);
 }
 
-/** @type {{ path: string, size: number }[]} */
-const js = [];
-let cssTotal = 0;
-let heaviestHtml = 0;
-
-for (const file of files) {
-  if (relative(BUILD_DIR, file).startsWith('data/')) continue;
-
-  const ext = extname(file);
-  if (ext === '.js') js.push({ path: relative(BUILD_DIR, file), size: gzipSize(file) });
-  else if (ext === '.css') cssTotal += gzipSize(file);
-  else if (ext === '.html') heaviestHtml = Math.max(heaviestHtml, gzipSize(file));
+/**
+ * @typedef {{ file: string, imports?: string[], css?: string[] }} Entree
+ * @type {Record<string, Entree>}
+ */
+let manifest = {};
+try {
+  manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
+} catch {
+  echec(`manifeste de Vite « ${MANIFEST} » illisible. Lancer le build d'abord.`);
 }
 
-const jsTotal = js.reduce((sum, f) => sum + f.size, 0);
-const firstLoad = jsTotal + cssTotal + heaviestHtml;
+/** Le manifeste est indexé par source ; une page nomme des fichiers émis. */
+const parFichier = new Map(Object.entries(manifest).map(([cle, e]) => [e.file, cle]));
+
+/** @type {Map<string, number>} */
+const tailles = new Map();
+/** @param {string} chemin relatif à `build/` */
+const taille = (chemin) => {
+  const connue = tailles.get(chemin);
+  if (connue !== undefined) return connue;
+  const mesuree = gzipSize(join(BUILD_DIR, chemin));
+  tailles.set(chemin, mesuree);
+  return mesuree;
+};
+
+/**
+ * Le JavaScript et le CSS d'une page : ses modules nommés, fermés par les
+ * imports statiques du manifeste (D1).
+ *
+ * @param {string} page chemin relatif à `build/`
+ */
+function chargesPar(page) {
+  const html = readFileSync(join(BUILD_DIR, page), 'utf8');
+  const nommes = [
+    ...new Set(
+      [...html.matchAll(/["(]\.?\/?(_app\/immutable\/[^"')]+\.js)/g)].map((m) => m[1] ?? '')
+    )
+  ];
+  if (nommes.length === 0)
+    echec(`${page} ne nomme aucun module : la mesure ne sait pas la lire (D4).`);
+
+  /** @type {Set<string>} */
+  const vus = new Set();
+  const pile = nommes.map((fichier) => {
+    const cle = parFichier.get(fichier);
+    if (cle === undefined) echec(`${page} nomme ${fichier}, absent du manifeste de Vite (D4).`);
+    return cle;
+  });
+  while (pile.length > 0) {
+    const cle = /** @type {string} */ (pile.pop());
+    if (vus.has(cle)) continue;
+    const entree = manifest[cle];
+    if (entree === undefined)
+      echec(`${cle}, importé par ${page}, absent du manifeste de Vite (D4).`);
+    vus.add(cle);
+    pile.push(...(entree.imports ?? []));
+  }
+
+  const js = [...vus].map((cle) => /** @type {Entree} */ (manifest[cle]).file);
+  const css = [...new Set([...vus].flatMap((cle) => manifest[cle]?.css ?? []))];
+  const jsTotal = js.reduce((somme, f) => somme + taille(f), 0);
+  const cssTotal = css.reduce((somme, f) => somme + taille(f), 0);
+  return {
+    page,
+    js,
+    jsTotal,
+    premierChargement: gzipSize(join(BUILD_DIR, page)) + cssTotal + jsTotal
+  };
+}
+
+const pages = files
+  .map((f) => relative(BUILD_DIR, f))
+  .filter((f) => extname(f) === '.html' && !SANS_JAVASCRIPT.has(f))
+  .sort()
+  .map(chargesPar);
+
+if (pages.length === 0) echec('aucune page pré-rendue à mesurer.');
+
+const jsPrecharge = files
+  .filter((f) => extname(f) === '.js' && !relative(BUILD_DIR, f).startsWith('data/'))
+  .reduce((somme, f) => somme + gzipSize(f), 0);
+
+const plusLourde = (/** @type {'jsTotal' | 'premierChargement'} */ cle) =>
+  pages.reduce((a, b) => (b[cle] > a[cle] ? b : a));
+const pireJs = plusLourde('jsTotal');
+const pireChargement = plusLourde('premierChargement');
 
 const rows = [
-  { label: 'JavaScript', actual: jsTotal, budget: BUDGETS.js },
-  { label: 'Premier chargement', actual: firstLoad, budget: BUDGETS.firstLoad }
+  { label: 'JavaScript par page', actual: pireJs.jsTotal, budget: BUDGETS.jsParPage, page: pireJs },
+  {
+    label: 'Premier chargement',
+    actual: pireChargement.premierChargement,
+    budget: BUDGETS.premierChargement,
+    page: pireChargement
+  },
+  { label: 'JavaScript préchargé', actual: jsPrecharge, budget: BUDGETS.jsPrecharge, page: null }
 ];
 
 console.log('\nBudgets (gzip)');
-for (const { label, actual, budget } of rows) {
+for (const { label, actual, budget, page } of rows) {
   const pct = Math.round((actual / budget) * 100);
   const mark = actual > budget ? '✗' : '✓';
+  const ou = page ? `  ${page.page}` : '';
   console.log(
-    `  ${mark} ${label.padEnd(20)} ${kb(actual).padStart(9)} / ${kb(budget)}  (${pct} %)`
+    `  ${mark} ${label.padEnd(21)} ${kb(actual).padStart(9)} / ${kb(budget)}  (${pct} %)${ou}`
   );
 }
-console.log(`    dont CSS ${kb(cssTotal)}, HTML le plus lourd ${kb(heaviestHtml)}`);
+console.log('    JavaScript par page :');
+for (const p of pages) console.log(`      ${kb(p.jsTotal).padStart(9)}  ${p.page}`);
 
 const failures = rows.filter((row) => row.actual > row.budget);
 
 if (failures.length > 0) {
-  console.error('\nBudget dépassé. Les cinq modules les plus lourds :');
-  for (const f of js.sort((a, b) => b.size - a.size).slice(0, 5)) {
-    console.error(`  ${kb(f.size).padStart(9)}  ${f.path}`);
+  for (const { label, page } of failures) {
+    // Les modules de la page fautive, et non de tout le build : c'est là qu'il
+    // faut couper (D3).
+    const modules = page
+      ? page.js
+      : files.filter((f) => extname(f) === '.js').map((f) => relative(BUILD_DIR, f));
+    console.error(
+      `\n${label} dépassé${page ? ` par ${page.page}` : ''}. Les cinq modules les plus lourds :`
+    );
+    for (const f of modules.sort((a, b) => taille(b) - taille(a)).slice(0, 5)) {
+      console.error(`  ${kb(taille(f)).padStart(9)}  ${f}`);
+    }
   }
   console.error('');
   process.exit(1);
