@@ -7,10 +7,10 @@
 
 ## 2. Plateforme (humain), avant la poussée de ce changement
 
-- [ ] 2.1 Netlify : créer un build hook sur la branche `main`
-- [ ] 2.2 GitHub : enregistrer son URL comme secret `NETLIFY_BUILD_HOOK`
+- [x] 2.1 Netlify : créer un build hook sur la branche `main`
+- [x] 2.2 GitHub : enregistrer son URL comme secret `NETLIFY_BUILD_HOOK`
 
 ## 3. Vérification sur le site réel
 
-- [ ] 3.1 Pousser : la construction de production née de la poussée est annulée dans Netlify
-- [ ] 3.2 La CI verte appelle le hook : Netlify construit et publie
+- [x] 3.1 Pousser : la construction de production née de la poussée est annulée dans Netlify — constaté par le mainteneur sur la poussée de `3437aa3`, le 18 octobre 2026
+- [x] 3.2 La CI verte appelle le hook : Netlify construit et publie — journal de `publier` (« Publication demandée pour 3437aa3 ») et publication constatée par le mainteneur

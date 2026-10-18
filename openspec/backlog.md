@@ -92,7 +92,7 @@ sert le HTML de la version installée sans le revalider, et chaque build crée u
 version, donc un bandeau de mise à jour par jour. Voir
 `openspec/changes/jour-au-premier-rendu/`.
 
-## 9. Barrière de déploiement par build hook — à proposer
+## 9. Barrière de déploiement par build hook — `barriere-de-deploiement`, archivé le 18 octobre 2026
 
 Le même build hook peut rétablir une barrière sans PR. On développe sur le tronc
 et Netlify publie à la poussée : un `e2e` rouge signale un défaut déjà en ligne.
