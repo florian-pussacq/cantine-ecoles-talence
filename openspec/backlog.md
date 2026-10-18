@@ -82,7 +82,7 @@ qu'à lire ce champ pour les autres natures.
 
 ## 7. Veille planifiée des PDF de la Ville
 
-Proposé le 18 octobre 2026 : `veille-des-pdf`. Le workflow échoue au lieu
+Archivé le 18 octobre 2026 : `veille-des-pdf`. Le workflow échoue au lieu
 d'ouvrir une issue ou une PR (design, D3). Le détail d'origine :
 
 Le 16 octobre, le corpus s'est épuisé alors que la Ville avait publié novembre
