@@ -74,7 +74,7 @@
       <!--
         Une carte par plat servi, et pas une de plus.
 
-        `Tray` rend les six rôles quoi qu'il arrive, parce que sur l'écran du
+        `ListeDuJour` rend les six rôles quoi qu'il arrive, parce que sur l'écran du
         jour un creux doit rester distinguable d'une donnée manquante (D12). Un
         menu de repli en sert trois : la même règle produirait ici quinze cartes
         d'absence qui n'apprendraient rien.
@@ -107,36 +107,36 @@
 <style>
   .panel {
     background: var(--carte);
-    border-radius: var(--radius-carte);
-    padding: var(--space-4);
+    border-radius: var(--rayon-carte);
+    padding: var(--espace-4);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--espace-3);
   }
 
   .panel + .panel,
   .variantes + .panel {
-    margin-top: var(--space-3);
+    margin-top: var(--espace-3);
   }
 
   .intro p {
     margin: 0;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     line-height: 1.5;
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .intro strong {
-    color: var(--ink);
+    color: var(--encre);
   }
 
   h2 {
     margin: 0;
-    font-size: var(--text-xs);
+    font-size: var(--texte-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   /*
@@ -145,34 +145,34 @@
   */
   .variantes {
     display: flex;
-    gap: var(--space-1);
-    margin-top: var(--space-3);
-    padding: var(--space-1);
+    gap: var(--espace-1);
+    margin-top: var(--espace-3);
+    padding: var(--espace-1);
     background: var(--voile-fond);
-    border-radius: var(--radius-pilule);
+    border-radius: var(--rayon-pilule);
   }
 
   .variantes button {
     flex: 1;
-    min-height: var(--touch);
+    min-height: var(--cible);
     border: 0;
-    border-radius: var(--radius-pilule);
+    border-radius: var(--rayon-pilule);
     background: transparent;
-    color: var(--ink);
+    color: var(--encre);
     font: inherit;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
     cursor: pointer;
   }
 
   .variantes button[aria-pressed='true'] {
     background: var(--accent);
-    color: var(--on-accent);
+    color: var(--sur-accent);
   }
 
   .plats {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--espace-2);
   }
 </style>

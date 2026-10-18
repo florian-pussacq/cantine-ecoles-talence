@@ -40,46 +40,46 @@
 
 <style>
   .bandeau {
-    border-radius: var(--radius-pastille);
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-sm);
+    border-radius: var(--rayon-pastille);
+    padding: var(--espace-2) var(--espace-3);
+    font-size: var(--texte-sm);
     line-height: 1.4;
   }
 
   .info {
     background: var(--info);
-    color: var(--info-on);
+    color: var(--sur-info);
   }
 
   .evenement {
     background: var(--evenement);
-    color: var(--evenement-on);
+    color: var(--sur-evenement);
   }
 
   /* L'alerte pèse plus que les deux autres : c'est la seule qui doive arrêter
      la lecture. */
   .alerte {
-    background: var(--warn);
-    color: var(--warn-on);
+    background: var(--alerte);
+    color: var(--sur-alerte);
     font-weight: var(--poids-moyen);
   }
 
   .discret {
     background: none;
-    padding-inline: var(--space-2);
+    padding-inline: var(--espace-2);
   }
 
   .avec-action {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-2);
-    padding-right: var(--space-2);
+    gap: var(--espace-2);
+    padding-right: var(--espace-2);
   }
 
   h2 {
     margin: 0;
-    font-size: var(--text-base);
+    font-size: var(--texte-base);
     font-weight: var(--poids-titre);
     letter-spacing: -0.01em;
   }
@@ -89,7 +89,7 @@
   }
 
   h2 + p {
-    margin-top: var(--space-1);
+    margin-top: var(--espace-1);
   }
 
   /* Un lien ou une commande prend l'encre du ton : le contraste est celui du
@@ -106,9 +106,9 @@
     color: currentcolor;
     background: none;
     border: 2px solid currentcolor;
-    border-radius: var(--radius-pilule);
-    min-height: var(--touch);
-    padding-inline: var(--space-3);
+    border-radius: var(--rayon-pilule);
+    min-height: var(--cible);
+    padding-inline: var(--espace-3);
     cursor: pointer;
   }
 </style>

@@ -4,7 +4,7 @@ import edgeCases from '../../../fixtures/edge-cases.json' with { type: 'json' };
 import september from '../../../static/data/2026-09.json' with { type: 'json' };
 import { buildDataset } from '../data/dataset.js';
 import type { MonthMenu } from '../data/schema.js';
-import Tray from './Tray.svelte';
+import ListeDuJour from './ListeDuJour.svelte';
 
 const edges = buildDataset([{ menu: edgeCases as MonthMenu }]);
 const real = buildDataset([{ menu: september as MonthMenu }]);
@@ -12,7 +12,7 @@ const real = buildDataset([{ menu: september as MonthMenu }]);
 function trayFor(dataset: typeof edges, date: string) {
   const day = dataset.byDate.get(date);
   if (day === undefined) throw new Error(`jour absent du fixture : ${date}`);
-  return render(Tray, { props: { day } });
+  return render(ListeDuJour, { props: { day } });
 }
 
 describe('la liste ne se referme pas', () => {

@@ -15,8 +15,8 @@ import { describe, expect, it } from 'vitest';
  * base de `tokens.css` lui-même, qui portait deux valeurs en dur sans que rien
  * ne les voie (D7).
  *
- * Les espacements ne sont pas surveillés. L'échelle existe, de `--space-1` à
- * `--space-5`, mais les valeurs qui restent en dur sont toutes sous son premier
+ * Les espacements ne sont pas surveillés. L'échelle existe, de `--espace-1` à
+ * `--espace-5`, mais les valeurs qui restent en dur sont toutes sous son premier
  * cran : des réglages optiques autour d'une capsule ou d'une pastille, qu'une
  * échelle ne porterait qu'avec des crans sans intention (fermer-les-echelles, D8).
  * Les épaisseurs de filet en pixels restent permises pour la même raison.
@@ -33,7 +33,7 @@ const JETONS = new Set(
  * Les jetons posés par les composants eux-mêmes, en ligne : leur nom est connu
  * du composant qui les pose, pas de `tokens.css`.
  */
-const JETONS_LOCAUX = /^--(sens|pale|ring)$/;
+const JETONS_LOCAUX = /^--(sens|pale|anneau)$/;
 
 /** Les styles de l'application : blocs `<style>` et styles en ligne des composants, feuilles CSS. */
 function styles(): { fichier: string; css: string }[] {
@@ -147,7 +147,7 @@ const NEUTRALISATION = '0.01ms !important';
  * Une opacité posée sur du texte est un voile que `contrast.test.ts` ne peut
  * pas mesurer : elle ne dit pas sur quel fond elle se pose. Le pied de source
  * en portait une à 72 %, qui avait échappé au relevé des voiles. Un texte
- * atténué prend `--ink-muted`, et toute autre opacité se déclare ici.
+ * atténué prend `--encre-douce`, et toute autre opacité se déclare ici.
  */
 const OPACITES: { fichier: string; valeur: string; pourquoi: string }[] = [
   {
@@ -201,6 +201,25 @@ function inconnus(): string[] {
   return [...new Set(trouves)];
 }
 
+/**
+ * Les racines anglaises que les jetons portaient avant `vocabulaire-francais`
+ * (D5), et le suffixe `-on` qu'a remplacé le préfixe `--sur-` (D3). Ce n'est pas
+ * un dictionnaire : ce sont les noms qu'on réécrirait par réflexe.
+ */
+const RACINES_ANGLAISES =
+  /^--(?:ink|chip|shell|touch|warn|on|space|text|radius|font|ring)(?:-|$)|-on$/;
+
+/** Les jetons déclarés, dans `tokens.css` comme en ligne par un composant. */
+function declares(): string[] {
+  const trouves: string[] = [];
+  for (const { fichier, css } of styles()) {
+    for (const { propriete } of declarations(css)) {
+      if (propriete.startsWith('--')) trouves.push(`${fichier} — ${propriete}`);
+    }
+  }
+  return trouves;
+}
+
 describe('les composants passent par les jetons', () => {
   it('ne déclare aucune taille, graisse, rayon, couleur ni mouvement en dur', () => {
     // Un écart se corrige par un jeton existant, ou par un jeton nouveau nommé
@@ -213,6 +232,15 @@ describe('les composants passent par les jetons', () => {
     // `var(--poids-frot)` ne lève aucune erreur : le texte retombe sur sa
     // graisse héritée, et personne ne le voit.
     expect(inconnus()).toEqual([]);
+  });
+
+  it('nomme ses jetons en français (vocabulaire-francais)', () => {
+    // Le renommage a retiré ces noms ; un jeton qui les reprend rouvrirait le
+    // mélange des deux langues.
+    const anglais = declares().filter((ici) => RACINES_ANGLAISES.test(ici.split(' — ')[1] ?? ''));
+    expect(anglais).toEqual([]);
+    // La garde lit réellement des déclarations : sans elles, elle passerait à vide.
+    expect(declares().length).toBeGreaterThan(50);
   });
 
   it('lit réellement les composants et la feuille de jetons', () => {

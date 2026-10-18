@@ -75,20 +75,20 @@
     celle de la commande du moment, et l'en-tête sauterait au changement d'écran.
   */
   .enseigne {
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    padding-inline: var(--space-2);
+    gap: var(--espace-2);
+    padding-inline: var(--espace-2);
   }
 
   .identite {
     flex: 1;
     min-width: 0;
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--espace-2);
     color: inherit;
     text-decoration: none;
   }
@@ -99,7 +99,7 @@
     flex: none;
     border-radius: 50%;
     background: var(--accent);
-    color: var(--on-accent);
+    color: var(--sur-accent);
     display: grid;
     place-items: center;
   }
@@ -121,10 +121,10 @@
   .nom {
     flex: 1;
     min-width: 0;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
     letter-spacing: 0.01em;
-    color: var(--ink-muted);
+    color: var(--encre-douce);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

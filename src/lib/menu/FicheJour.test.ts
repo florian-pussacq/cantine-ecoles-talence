@@ -5,7 +5,7 @@ import toussaint from '../../../static/data/2026-10-vacances.json' with { type: 
 import { allergenFilter } from '../filter/allergens.svelte.js';
 import type { ResolvedDay } from '../data/dataset.js';
 import type { MonthMenu } from '../data/schema.js';
-import DaySheet from './DaySheet.svelte';
+import FicheJour from './FicheJour.svelte';
 
 const menu = september as MonthMenu;
 const legend = menu.allergenLegend;
@@ -36,7 +36,7 @@ function jourComplet(): string {
 }
 
 function sheetFor(date: string, onClose = () => {}, source: MonthMenu = menu) {
-  return render(DaySheet, { props: { day: jour(date, source), onClose } });
+  return render(FicheJour, { props: { day: jour(date, source), onClose } });
 }
 
 /** Le filtre est un état partagé : chaque test le règle, et le rend vide. */

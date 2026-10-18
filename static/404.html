@@ -25,16 +25,16 @@
         color-scheme: light dark;
         --table: #1e5a6b;
         --tray: #f3f5f1;
-        --ink: #16211f;
-        --on-table: #f3f5f1;
+        --encre: #16211f;
+        --sur-table: #f3f5f1;
       }
 
       @media (prefers-color-scheme: dark) {
         :root {
           --table: #0d1a20;
           --tray: #1b262d;
-          --ink: #e8eef1;
-          --on-table: #e8eef1;
+          --encre: #e8eef1;
+          --sur-table: #e8eef1;
         }
       }
 
@@ -45,7 +45,7 @@
         place-items: center;
         padding: 1.5rem;
         background: var(--table);
-        color: var(--on-table);
+        color: var(--sur-table);
         font-family:
           ui-sans-serif,
           system-ui,
@@ -93,13 +93,13 @@
         margin-top: 0.5rem;
         border-radius: 999px;
         background: var(--tray);
-        color: var(--ink);
+        color: var(--encre);
         font-weight: 700;
         text-decoration: none;
       }
 
       a:focus-visible {
-        outline: 3px solid var(--on-table);
+        outline: 3px solid var(--sur-table);
         outline-offset: 2px;
       }
     </style>

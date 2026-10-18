@@ -33,17 +33,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-1);
+    gap: var(--espace-1);
     text-align: center;
   }
 
   h1 {
     margin: 0;
-    font-size: var(--text-2xl);
+    font-size: var(--texte-2xl);
     font-weight: var(--poids-titre);
     letter-spacing: -0.03em;
     line-height: 1.1;
-    color: var(--ink);
+    color: var(--encre);
     text-wrap: balance;
   }
 </style>

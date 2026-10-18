@@ -11,7 +11,7 @@
     slotLabel
   } from './labels.js';
   import { allergenFilter } from '../filter/allergens.svelte.js';
-  import AllergenChip from './AllergenChip.svelte';
+  import PastilleAllergene from './PastilleAllergene.svelte';
   import PastilleRole from './PastilleRole.svelte';
 
   /**
@@ -88,7 +88,7 @@
   class:principal
   class:compacte
   class:famille={famille !== null}
-  style:--ring={famille ? `var(--fam-${famille})` : undefined}
+  style:--anneau={famille ? `var(--fam-${famille})` : undefined}
   style:--pale={famille ? `var(--fam-${famille}-pale)` : undefined}
 >
   <span class="pastille"><PastilleRole {slot} size={compacte ? 16 : 20} /></span>
@@ -107,7 +107,7 @@
         </span>
       {/if}
       {#if signale}
-        <AllergenChip {...signale} />
+        <PastilleAllergene {...signale} />
       {/if}
       <!--
       Un rôle du déjeuner absent s'énonce ; un goûter absent ne produit pas de
@@ -128,12 +128,12 @@
   .carte {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3);
+    gap: var(--espace-3);
+    padding: var(--espace-3);
     background: var(--carte);
     border: 1px solid var(--bord);
-    border-radius: var(--radius-carte);
-    color: var(--ink);
+    border-radius: var(--rayon-carte);
+    color: var(--encre);
   }
 
   /* Un creux se lit comme un creux : la carte d'un rôle absent s'enfonce sous le
@@ -150,9 +150,9 @@
   .pastille {
     width: 34px;
     height: 34px;
-    border-radius: var(--radius-pastille);
+    border-radius: var(--rayon-pastille);
     background: var(--creux);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
     box-shadow: inset 0 0 0 1px var(--bord);
     display: grid;
     place-items: center;
@@ -166,9 +166,9 @@
     tactile : le goûter en est une.
   */
   .compacte {
-    min-height: var(--touch);
-    padding-block: var(--space-2);
-    gap: var(--space-2);
+    min-height: var(--cible);
+    padding-block: var(--espace-2);
+    gap: var(--espace-2);
   }
 
   .compacte .pastille {
@@ -180,22 +180,22 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: baseline;
-    column-gap: var(--space-2);
+    column-gap: var(--espace-2);
   }
 
   .compacte .nom {
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
   }
 
   /* Le filet et le bord disent la famille sur toute la hauteur de la carte. */
   .carte.famille {
-    border-color: var(--ring);
-    box-shadow: inset 4px 0 0 var(--ring);
+    border-color: var(--anneau);
+    box-shadow: inset 4px 0 0 var(--anneau);
   }
 
   .famille .pastille {
-    background: var(--ring);
-    color: var(--on-fam);
+    background: var(--anneau);
+    color: var(--sur-famille);
     box-shadow: none;
   }
 
@@ -209,26 +209,26 @@
   }
 
   .role {
-    font-size: var(--text-xs);
+    font-size: var(--texte-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     font-weight: var(--poids-titre);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   /* Sur la carte principale, le libellé prend la famille : chaque famille tient
      4,5:1 comme encre sur la carte blanche (contrast.test.ts). */
   .famille .role {
-    color: var(--ring);
+    color: var(--anneau);
   }
 
   .famille-nom {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
-    font-size: var(--text-xs);
+    gap: var(--espace-1);
+    font-size: var(--texte-xs);
     font-weight: var(--poids-fort);
-    color: var(--ring);
+    color: var(--anneau);
   }
 
   .famille-nom::before {
@@ -240,7 +240,7 @@
   }
 
   .nom {
-    font-size: var(--text-base);
+    font-size: var(--texte-base);
     font-weight: var(--poids-fort);
     line-height: 1.25;
     text-wrap: balance;
@@ -248,7 +248,7 @@
 
   /* Le seul rang qui reste au plat du jour, et le seul dont il ait besoin. */
   .principal .nom {
-    font-size: var(--text-lg);
+    font-size: var(--texte-lg);
     letter-spacing: -0.02em;
     line-height: 1.15;
   }
@@ -259,30 +259,30 @@
   .unknown {
     font-style: italic;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .absent {
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-style: italic;
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1);
-    color: var(--ink-muted);
+    gap: var(--espace-1);
+    color: var(--encre-douce);
   }
 
   .tags em {
     font-style: normal;
-    font-size: var(--text-2xs);
+    font-size: var(--texte-2xs);
     font-weight: var(--poids-titre);
     letter-spacing: 0.09em;
     text-transform: uppercase;
     border: 1.5px solid currentColor;
-    border-radius: var(--radius-pilule);
+    border-radius: var(--rayon-pilule);
     padding: 0.08rem 0.4rem;
   }
 
@@ -303,7 +303,7 @@
 
   .famille .vignette {
     background: var(--pale);
-    box-shadow: inset 0 0 0 3px var(--ring);
+    box-shadow: inset 0 0 0 3px var(--anneau);
   }
 
   .vignette :global(.illustration) {

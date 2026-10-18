@@ -27,7 +27,7 @@
   /* Surfaces */
   --fond: #f4ecdd;
   --carte: #ffffff;
-  --chip: #ffffff;
+  --etiquette: #ffffff;
   /* Un creux se lit comme un creux : la surface d'un rôle absent s'enfonce
      sous le fond au lieu d'en dépasser. */
   --creux: #eae0cd;
@@ -37,14 +37,14 @@
   --bord: #ddd0b8;
 
   /* Encres */
-  --ink: #2b2318;
-  --ink-muted: #6d6353;
+  --encre: #2b2318;
+  --encre-douce: #6d6353;
 
   /* L'accent : enseigne, onglet courant, commande de retour. Il est plus sombre
      que le doré de la maquette parce qu'il doit porter du texte blanc et se lire
      lui-même sur le fond crème — un doré clair ne fait ni l'un ni l'autre. */
   --accent: #7e6130;
-  --on-accent: #ffffff;
+  --sur-accent: #ffffff;
 
   /*
    * Les familles du plat principal : le seul code couleur du menu, sur le disque
@@ -57,7 +57,7 @@
    * quoi un poisson bleu sur fond bleu disparaît.
    */
   /* Le glyphe posé sur l'aplat d'une famille. */
-  --on-fam: #ffffff;
+  --sur-famille: #ffffff;
 
   --fam-viande: #d93b2b;
   --fam-viande-pale: #faded9;
@@ -87,25 +87,25 @@
    * ne se distinguent du fond que par la teinte, ce que WCAG ne leur demande
    * pas : c'est le texte posé dessus qui se lit, et il tient plus de 9:1.
    */
-  --warn: #e89406;
-  --warn-on: #2a1b00;
+  --alerte: #e89406;
+  --sur-alerte: #2a1b00;
   --info: #e4ecf2;
-  --info-on: #17384f;
+  --sur-info: #17384f;
   --evenement: #f6e3c4;
-  --evenement-on: #4a3510;
+  --sur-evenement: #4a3510;
 
   /*
    * Les voiles : de l'encre posée par transparence (fermer-les-echelles, D2).
    *
-   * La forme `color-mix(in srgb, var(--ink) N%, transparent)` est celle que
+   * La forme `color-mix(in srgb, var(--encre) N%, transparent)` est celle que
    * `contrast.test.ts` sait lire : il mesure chaque voile depuis sa déclaration
    * ici, et non plus depuis un taux recopié dans un composant.
    */
   /* L'aplat de la pilule d'onglets : décoratif, c'est le libellé posé dessus
      qui se lit. */
-  --voile-fond: color-mix(in srgb, var(--ink) 12%, transparent);
+  --voile-fond: color-mix(in srgb, var(--encre) 12%, transparent);
   /* La bordure d'une commande : elle porte une information, donc 3:1. */
-  --voile-trait: color-mix(in srgb, var(--ink) 55%, transparent);
+  --voile-trait: color-mix(in srgb, var(--encre) 55%, transparent);
   /* La ligne du jour courant de la semaine. Le taux est borné par l'encre
      atténuée posée dessus ; la teinte est un renfort de couleur, la pastille
      « Aujourd'hui » porte le signal (bandeau-et-aujourdhui, D4). */
@@ -115,18 +115,19 @@
   --voile-modale: rgb(0 0 0 / 0.45);
 
   /* Typographie : pile système, aucune requête réseau (PRD §8) */
-  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --police:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   /* Le plus petit cran : les étiquettes en capitales serrées dans une carte
      (« Bio », « Aujourd'hui »), et les pastilles de compte. Aucun texte ne
      descend plus bas (audit-design-system, D3). */
-  --text-2xs: 0.625rem;
-  --text-xs: 0.6875rem;
-  --text-sm: 0.8125rem;
-  --text-base: 0.9375rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.375rem;
-  --text-2xl: 1.5rem;
+  --texte-2xs: 0.625rem;
+  --texte-xs: 0.6875rem;
+  --texte-sm: 0.8125rem;
+  --texte-base: 0.9375rem;
+  --texte-lg: 1.125rem;
+  --texte-xl: 1.375rem;
+  --texte-2xl: 1.5rem;
 
   /* Graisses. Elles ne changent pas au palier large : une graisse n'a pas à
      grandir avec l'écran (fermer-les-echelles, D3). */
@@ -135,22 +136,22 @@
   --poids-titre: 800;
 
   /* Espacements */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
+  --espace-1: 0.25rem;
+  --espace-2: 0.5rem;
+  --espace-3: 0.75rem;
+  --espace-4: 1rem;
+  --espace-5: 1.5rem;
 
-  --radius-carte: 16px;
-  --radius-pastille: 10px;
-  --radius-pilule: 999px;
+  --rayon-carte: 16px;
+  --rayon-pastille: 10px;
+  --rayon-pilule: 999px;
   /* Le haut de la fiche du jour, qui monte du bas de l'écran. */
-  --radius-feuille: 20px;
+  --rayon-feuille: 20px;
   /* L'indicateur de focus, qui épouse sans les recouvrir les coins d'une commande. */
-  --radius-focus: 4px;
+  --rayon-focus: 4px;
 
   /* Cible tactile minimale (WCAG 2.1 AA) */
-  --touch: 44px;
+  --cible: 44px;
 
   /*
    * Le pied fixe des mentions, et la place qu'il faut lui laisser (D52).
@@ -187,7 +188,7 @@
   /* Largeur de la colonne de contenu. Elle grandit sur écran large, mais reste
      bornée : un texte étiré sur toute la largeur d'un écran de bureau ne se lit
      pas (design.md, D23). */
-  --shell: 520px;
+  --colonne: 520px;
 
   /* Échelle des illustrations, pour qu'elles suivent la colonne. */
   --ill-plat: 46px;
@@ -203,15 +204,15 @@
  */
 @media (min-width: 760px) {
   :root {
-    --shell: 720px;
+    --colonne: 720px;
 
-    --text-2xs: 0.6875rem;
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 1rem;
-    --text-lg: 1.25rem;
-    --text-xl: 1.5rem;
-    --text-2xl: 1.75rem;
+    --texte-2xs: 0.6875rem;
+    --texte-xs: 0.75rem;
+    --texte-sm: 0.875rem;
+    --texte-base: 1rem;
+    --texte-lg: 1.25rem;
+    --texte-xl: 1.5rem;
+    --texte-2xl: 1.75rem;
 
     --ill-plat: 58px;
     --ill-disque: 84px;
@@ -236,9 +237,9 @@ html {
 body {
   margin: 0;
   background: var(--fond);
-  color: var(--ink);
-  font-family: var(--font);
-  font-size: var(--text-base);
+  color: var(--encre);
+  font-family: var(--police);
+  font-size: var(--texte-base);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -269,9 +270,9 @@ body {
 /* L'indicateur de focus se pose désormais sur des surfaces claires : c'est
    l'encre qui le trace, et non plus la couleur d'un texte sur fond sombre. */
 :where(a, button):focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 3px solid var(--encre);
   outline-offset: 2px;
-  border-radius: var(--radius-focus);
+  border-radius: var(--rayon-focus);
 }
 
 /* La zone qui dépend du jour, sur une page rendue un autre jour

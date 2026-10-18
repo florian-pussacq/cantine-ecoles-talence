@@ -39,18 +39,18 @@
   }
 
   .retour {
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
-    padding-inline: var(--space-4);
+    gap: var(--espace-2);
+    padding-inline: var(--espace-4);
     font: inherit;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-fort);
-    color: var(--on-accent);
+    color: var(--sur-accent);
     background: var(--accent);
     border: none;
-    border-radius: var(--radius-pilule);
+    border-radius: var(--rayon-pilule);
     cursor: pointer;
   }
 </style>

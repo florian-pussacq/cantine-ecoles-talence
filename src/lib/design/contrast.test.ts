@@ -89,25 +89,25 @@ export function compose(source: string, fond: string, alpha: number): string {
  * du seuil strict, y compris sur les compartiments colorés.
  */
 const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
-  { texte: 'ink', fond: 'fond', seuil: 4.5, quoi: 'texte sur le fond de l’écran' },
-  { texte: 'ink', fond: 'carte', seuil: 4.5, quoi: 'nom de plat sur une carte' },
-  { texte: 'ink', fond: 'creux', seuil: 4.5, quoi: 'texte sur la carte d’un rôle absent' },
-  { texte: 'ink', fond: 'chip', seuil: 4.5, quoi: 'pastille d’allergène' },
-  { texte: 'ink-muted', fond: 'fond', seuil: 4.5, quoi: 'mention atténuée sur le fond' },
-  { texte: 'ink-muted', fond: 'carte', seuil: 4.5, quoi: 'mention atténuée sur une carte' },
-  { texte: 'ink-muted', fond: 'creux', seuil: 4.5, quoi: 'énoncé d’une absence' },
+  { texte: 'encre', fond: 'fond', seuil: 4.5, quoi: 'texte sur le fond de l’écran' },
+  { texte: 'encre', fond: 'carte', seuil: 4.5, quoi: 'nom de plat sur une carte' },
+  { texte: 'encre', fond: 'creux', seuil: 4.5, quoi: 'texte sur la carte d’un rôle absent' },
+  { texte: 'encre', fond: 'etiquette', seuil: 4.5, quoi: 'pastille d’allergène' },
+  { texte: 'encre-douce', fond: 'fond', seuil: 4.5, quoi: 'mention atténuée sur le fond' },
+  { texte: 'encre-douce', fond: 'carte', seuil: 4.5, quoi: 'mention atténuée sur une carte' },
+  { texte: 'encre-douce', fond: 'creux', seuil: 4.5, quoi: 'énoncé d’une absence' },
   { texte: 'accent', fond: 'fond', seuil: 4.5, quoi: 'accent sur le fond' },
   { texte: 'accent', fond: 'carte', seuil: 4.5, quoi: 'accent sur une carte' },
-  { texte: 'on-accent', fond: 'accent', seuil: 4.5, quoi: 'libellé de l’onglet courant' },
-  { texte: 'warn-on', fond: 'warn', seuil: 4.5, quoi: 'bandeau d’alerte' },
-  { texte: 'info-on', fond: 'info', seuil: 4.5, quoi: 'bandeau d’information' },
+  { texte: 'sur-accent', fond: 'accent', seuil: 4.5, quoi: 'libellé de l’onglet courant' },
+  { texte: 'sur-alerte', fond: 'alerte', seuil: 4.5, quoi: 'bandeau d’alerte' },
+  { texte: 'sur-info', fond: 'info', seuil: 4.5, quoi: 'bandeau d’information' },
   {
-    texte: 'info-on',
+    texte: 'sur-info',
     fond: 'fond',
     seuil: 4.5,
     quoi: 'bandeau d’information discret, sans surface'
   },
-  { texte: 'evenement-on', fond: 'evenement', seuil: 4.5, quoi: 'bandeau d’événement' },
+  { texte: 'sur-evenement', fond: 'evenement', seuil: 4.5, quoi: 'bandeau d’événement' },
   /*
     Les familles portent désormais deux emplois de plus, sur la carte principale
     de l'écran du jour (couleur-par-famille, D3) : l'aplat de la pastille, sous
@@ -121,10 +121,15 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
       seuil: 4.5,
       quoi: `libellé du rôle sur la carte principale ${famille}`
     },
-    { texte: 'on-fam', fond: `fam-${famille}`, seuil: 4.5, quoi: `glyphe sur l'aplat ${famille}` }
+    {
+      texte: 'sur-famille',
+      fond: `fam-${famille}`,
+      seuil: 4.5,
+      quoi: `glyphe sur l'aplat ${famille}`
+    }
   ]),
   ...FAMILLES.map((famille) => ({
-    texte: 'ink',
+    texte: 'encre',
     fond: `fam-${famille}-pale`,
     seuil: 4.5,
     quoi: `texte sur la teinte pâle ${famille}`
@@ -194,7 +199,7 @@ const TRANSPARENCES: {
     plus que 4,62. La teinte, elle, ne se distingue pas de la carte en niveaux
     de gris, et n'a pas à le faire : c'est la pastille qui porte le signal.
   */
-  ...(['ink', 'ink-muted', 'accent'] as const).map((texte) => ({
+  ...(['encre', 'encre-douce', 'accent'] as const).map((texte) => ({
     voile: 'voile-accent',
     fond: 'carte',
     texte,
@@ -279,7 +284,7 @@ describe('les surfaces peintes par transparence', () => {
  * `tokens.css`, où le contrôle ci-dessus les voit tous ; il reste à refuser
  * qu'un composant en peigne un de son côté (fermer-les-echelles, D2).
  *
- * Il ne couvre que `color-mix(in srgb, var(--ink) N%, transparent)`, la forme
+ * Il ne couvre que `color-mix(in srgb, var(--encre) N%, transparent)`, la forme
  * mécaniquement reconnaissable. Les opacités appliquées à un élément entier ne
  * disent pas sur quel fond elles se posent, et resteraient à déclarer à la main.
  */
@@ -294,7 +299,7 @@ describe('couverture des transparences', () => {
     it(`${fichier} ne peint aucun voile d'encre hors des jetons`, () => {
       const source = readFileSync(fichier, 'utf8');
       const trouves = [
-        ...source.matchAll(/color-mix\(in srgb, var\(--ink\) \d+%, transparent\)/g)
+        ...source.matchAll(/color-mix\(in srgb, var\(--encre\) \d+%, transparent\)/g)
       ].map((m) => m[0]);
       expect(trouves, 'voile écrit dans un composant : le déclarer dans tokens.css').toEqual([]);
     });
@@ -340,14 +345,14 @@ describe('la palette', () => {
  * surface où elle ne tient pas son seuil. Il ferme la classe d'erreur constatée
  * deux fois, pas toutes.
  */
-const SURFACES = ['fond', 'carte', 'chip', 'creux', 'bord'] as const;
+const SURFACES = ['fond', 'carte', 'etiquette', 'creux', 'bord'] as const;
 
 /**
  * Les inversions : les endroits où une surface peint bien du texte, et pourquoi.
  *
  * L'étiquette du jour courant de la semaine en a été une : blanche sur encre,
  * elle employait `--carte` là où l'on attendrait une encre, et c'était juste. Elle
- * est devenue la pastille à l'accent, `--on-accent` sur `--accent`, une paire
+ * est devenue la pastille à l'accent, `--sur-accent` sur `--accent`, une paire
  * déjà mesurée (bandeau-et-aujourdhui, D3). Il n'en reste aucune ; la liste
  * demeure, parce que c'est elle qui dit comment en déclarer une.
  *

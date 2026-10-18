@@ -102,26 +102,26 @@
 
 <style>
   .panel + .panel {
-    margin-top: var(--space-3);
+    margin-top: var(--espace-3);
   }
 
   /* Le patron de titre de section de l'application (a-propos). */
   h2 {
     margin: 0;
-    font-size: var(--text-xs);
+    font-size: var(--texte-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .lien {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
-    min-height: var(--touch);
+    min-height: var(--cible);
     justify-content: center;
-    color: var(--ink);
+    color: var(--encre);
     text-decoration: none;
   }
 
@@ -131,24 +131,24 @@
   }
 
   .lien .detail {
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
   }
 
   .panel {
     background: var(--carte);
-    color: var(--ink);
-    border-radius: var(--radius-carte);
-    padding: var(--space-4);
+    color: var(--encre);
+    border-radius: var(--rayon-carte);
+    padding: var(--espace-4);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--espace-3);
   }
 
   .intro {
     margin: 0;
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
     line-height: 1.5;
   }
 
@@ -167,10 +167,10 @@
   label {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    min-height: var(--touch);
-    padding-block: var(--space-1);
-    font-size: var(--text-base);
+    gap: var(--espace-3);
+    min-height: var(--cible);
+    padding-block: var(--espace-1);
+    font-size: var(--texte-base);
     cursor: pointer;
   }
 
@@ -183,7 +183,7 @@
   }
 
   input:focus-visible {
-    outline: 3px solid var(--ink);
+    outline: 3px solid var(--encre);
     outline-offset: 2px;
   }
 
@@ -191,34 +191,34 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-2);
+    gap: var(--espace-2);
     border-top: 1px solid var(--bord);
-    padding-top: var(--space-3);
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    padding-top: var(--espace-3);
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
   }
 
   .foot button {
     font: inherit;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
-    color: var(--ink);
+    color: var(--encre);
     background: none;
     border: 1px solid var(--bord);
-    border-radius: var(--radius-pilule);
-    min-height: var(--touch);
-    padding-inline: var(--space-3);
+    border-radius: var(--rayon-pilule);
+    min-height: var(--cible);
+    padding-inline: var(--espace-3);
     cursor: pointer;
   }
 
   .legal {
     margin: 0;
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
     line-height: 1.45;
   }
 
   .legal strong {
-    color: var(--ink);
+    color: var(--encre);
   }
 </style>

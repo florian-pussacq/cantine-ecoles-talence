@@ -92,7 +92,7 @@
   .rang {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--espace-2);
   }
 
   /*
@@ -104,16 +104,16 @@
     suffit à l'œil. Le chevron seul serait muet ; il ne l'est pas.
   */
   .fleche {
-    width: var(--touch);
-    height: var(--touch);
+    width: var(--cible);
+    height: var(--cible);
     flex: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font: inherit;
-    font-size: var(--text-xl);
+    font-size: var(--texte-xl);
     line-height: 1;
-    color: var(--ink);
+    color: var(--encre);
     background: var(--carte);
     /* Une bordure qui délimite une commande porte une information et tient donc
        3:1 (WCAG 1.4.11). Sur le fond crème, l'encre à 40 % ne mesure que 2,32:1
@@ -141,8 +141,8 @@
   .mention {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
-    font-size: var(--text-xs);
+    gap: var(--espace-1);
+    font-size: var(--texte-xs);
     font-weight: var(--poids-titre);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -152,10 +152,10 @@
   /* La même pastille que la ligne du jour de la semaine : un seul objet
      « Aujourd'hui » dans l'application (bandeau-et-aujourdhui, D3). */
   .aujourdhui {
-    font-size: var(--text-2xs);
+    font-size: var(--texte-2xs);
     background: var(--accent);
-    color: var(--on-accent);
-    border-radius: var(--radius-pilule);
+    color: var(--sur-accent);
+    border-radius: var(--rayon-pilule);
     padding: 0.12rem 0.42rem;
   }
 
@@ -166,10 +166,10 @@
      document, pas la taille à l'écran. */
   .designation {
     margin: 0;
-    font-size: var(--text-base);
+    font-size: var(--texte-base);
     font-weight: var(--poids-fort);
     line-height: 1.35;
-    color: var(--ink);
+    color: var(--encre);
     white-space: nowrap;
   }
 </style>

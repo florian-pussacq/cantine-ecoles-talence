@@ -22,7 +22,7 @@ from PIL import Image, ImageDraw
 
 FOND = (244, 236, 221)  # --fond      #F4ECDD
 ACCENT = (126, 97, 48)  # --accent    #7E6130
-ON_ACCENT = (255, 255, 255)  # --on-accent #FFFFFF
+ON_ACCENT = (255, 255, 255)  # --sur-accent #FFFFFF
 
 OUT = Path("static/icons")
 SUPERSAMPLE = 4

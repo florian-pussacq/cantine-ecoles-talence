@@ -55,22 +55,22 @@
     flex: 1;
     margin-inline: auto;
     max-width: 360px;
-    gap: var(--space-1);
-    padding: var(--space-1);
-    border-radius: var(--radius-pilule);
+    gap: var(--espace-1);
+    padding: var(--espace-1);
+    border-radius: var(--rayon-pilule);
     background: var(--voile-fond);
   }
 
   .tabs a {
     flex: 1;
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-pilule);
-    font-size: var(--text-sm);
+    border-radius: var(--rayon-pilule);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
-    color: var(--ink);
+    color: var(--encre);
     text-decoration: none;
   }
 
@@ -78,7 +78,7 @@
      ni la couleur ni l'opacité ne portent seules l'information. */
   .tabs a[aria-current='page'] {
     background: var(--accent);
-    color: var(--on-accent);
+    color: var(--sur-accent);
     font-weight: var(--poids-fort);
   }
 </style>

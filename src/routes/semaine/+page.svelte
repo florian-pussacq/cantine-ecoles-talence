@@ -13,7 +13,7 @@
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
   import PiedSource from '$lib/ui/PiedSource.svelte';
   import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
-  import AllergenChip from '$lib/menu/AllergenChip.svelte';
+  import PastilleAllergene from '$lib/menu/PastilleAllergene.svelte';
   import {
     allergenNames,
     allergensUndeclared,
@@ -185,7 +185,7 @@
                 <span
                   class="disc"
                   style:--pale={`var(--fam-${match.family}-pale)`}
-                  style:--ring={`var(--fam-${match.family})`}
+                  style:--anneau={`var(--fam-${match.family})`}
                 >
                   <Illustration name={match.illustration} size={32} />
                 </span>
@@ -204,7 +204,7 @@
                   {/if}
                   {#if flagged(day).codes.length > 0}
                     <span class="chips">
-                      <AllergenChip {...flagged(day)} count={flaggedCount(day)} compact />
+                      <PastilleAllergene {...flagged(day)} count={flaggedCount(day)} compact />
                     </span>
                   {/if}
                 </span>
@@ -273,7 +273,7 @@
     margin: 0;
     padding: 6px;
     background: var(--carte);
-    border-radius: var(--radius-carte);
+    border-radius: var(--rayon-carte);
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -292,11 +292,11 @@
     width: 100%;
     display: grid;
     grid-template-columns: 58px 1fr;
-    gap: var(--space-3);
+    gap: var(--espace-3);
     align-items: center;
-    padding: var(--space-2) 0.55rem;
+    padding: var(--espace-2) 0.55rem;
     border: 0;
-    border-radius: var(--radius-pastille);
+    border-radius: var(--rayon-pastille);
     background: none;
     font: inherit;
     color: inherit;
@@ -328,7 +328,7 @@
     height: 58px;
     border-radius: 50%;
     background: var(--pale);
-    border: 4px solid var(--ring);
+    border: 4px solid var(--anneau);
     display: grid;
     place-items: center;
   }
@@ -353,43 +353,43 @@
   }
 
   .dow {
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-fort);
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--ink);
+    color: var(--encre);
   }
 
   .num {
-    font-size: var(--text-lg);
+    font-size: var(--texte-lg);
     font-weight: var(--poids-titre);
     letter-spacing: -0.02em;
-    color: var(--ink);
+    color: var(--encre);
     font-variant-numeric: tabular-nums;
   }
 
   /* La même pastille que la mention de l'écran du jour (D3). */
   .now {
-    font-size: var(--text-2xs);
+    font-size: var(--texte-2xs);
     font-weight: var(--poids-titre);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     background: var(--accent);
-    color: var(--on-accent);
-    border-radius: var(--radius-pilule);
+    color: var(--sur-accent);
+    border-radius: var(--rayon-pilule);
     padding: 0.12rem 0.42rem;
   }
 
   .main {
-    font-size: var(--text-base);
+    font-size: var(--texte-base);
     font-weight: var(--poids-fort);
-    color: var(--ink);
+    color: var(--encre);
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
 
   li.today .main {
-    font-size: var(--text-lg);
+    font-size: var(--texte-lg);
     font-weight: var(--poids-titre);
     letter-spacing: -0.02em;
   }
@@ -397,12 +397,12 @@
   .quiet-label {
     font-weight: var(--poids-moyen);
     font-style: italic;
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .rest {
-    font-size: var(--text-xs);
-    color: var(--ink-muted);
+    font-size: var(--texte-xs);
+    color: var(--encre-douce);
     line-height: 1.35;
   }
 

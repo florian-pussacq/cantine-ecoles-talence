@@ -2,8 +2,8 @@
   import { isStale } from '$lib/data/load.js';
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { parisDate, resolveDisplayDay, servedNeighbour } from '$lib/data/resolve.js';
-  import DaySheet from '$lib/menu/DaySheet.svelte';
-  import Tray from '$lib/menu/Tray.svelte';
+  import FicheJour from '$lib/menu/FicheJour.svelte';
+  import ListeDuJour from '$lib/menu/ListeDuJour.svelte';
   import PlatCarte from '$lib/menu/PlatCarte.svelte';
   import {
     allergensUndeclared,
@@ -14,7 +14,7 @@
     undeclaredNotice
   } from '$lib/menu/labels.js';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
-  import ExternalLink from '$lib/ui/ExternalLink.svelte';
+  import LienExterne from '$lib/ui/LienExterne.svelte';
   import { selection } from '$lib/menu/selection.svelte.js';
   import { createBalayage } from '$lib/ui/balayage.js';
   import RangNavigation from '$lib/ui/RangNavigation.svelte';
@@ -186,9 +186,9 @@
 {:else if day === null}
   <Bandeau ton="info">
     Le menu de cette période n'est pas encore publié par la Ville.
-    <ExternalLink href="https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/">
+    <LienExterne href="https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/">
       Consulter la page officielle
-    </ExternalLink>
+    </LienExterne>
   </Bandeau>
 {:else}
   {#if day.title}
@@ -199,7 +199,7 @@
   {#if day.confidence === 'low'}
     <Bandeau ton="alerte">
       Données incertaines pour ce jour.
-      <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
+      <LienExterne href={day.source.pdfUrl}>Vérifier sur le PDF officiel</LienExterne>
     </Bandeau>
   {/if}
 
@@ -211,7 +211,7 @@
     -->
     <Bandeau ton="alerte">
       {undeclaredNotice(allergenFilter.codes.size > 0)}
-      <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
+      <LienExterne href={day.source.pdfUrl}>Vérifier sur le PDF officiel</LienExterne>
     </Bandeau>
   {/if}
 
@@ -258,7 +258,7 @@
           entière.
         -->
         <button type="button" class="cible" onclick={() => (ouverte = true)}>
-          <Tray {day} />
+          <ListeDuJour {day} />
         </button>
 
         {#if snack}
@@ -316,7 +316,7 @@
     soit le déjeuner ou le goûter : c'est le `<dialog>` natif qui s'en charge, et
     c'est précisément pourquoi il ne faut rien câbler ici (D38).
   -->
-  <DaySheet {day} onClose={() => (ouverte = false)} />
+  <FicheJour {day} onClose={() => (ouverte = false)} />
 {/if}
 
 <style>
@@ -340,7 +340,7 @@
   .jour {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--espace-3);
   }
 
   /*
@@ -363,9 +363,9 @@
   }
 
   .cible:focus-visible {
-    outline: 3px solid var(--ink);
+    outline: 3px solid var(--encre);
     outline-offset: 3px;
-    border-radius: var(--radius-carte);
+    border-radius: var(--rayon-carte);
   }
 
   /*
@@ -378,7 +378,7 @@
     trait ne soit ajouté.
   */
   .snack {
-    margin-top: var(--space-3);
+    margin-top: var(--espace-3);
     display: block;
     width: 100%;
     padding: 0;
@@ -391,8 +391,8 @@
   }
 
   .snack:focus-visible {
-    outline: 3px solid var(--ink);
+    outline: 3px solid var(--encre);
     outline-offset: 3px;
-    border-radius: var(--radius-carte);
+    border-radius: var(--rayon-carte);
   }
 </style>

@@ -162,7 +162,7 @@
 
 <style>
   .shell {
-    max-width: var(--shell);
+    max-width: var(--colonne);
     margin-inline: auto;
     min-height: 100dvh;
     /* Le contenu réserve le pied *et* l'encart système sous lui : réserver la
@@ -171,14 +171,14 @@
 
        L'intervalle ajouté à cette réserve est celui de la coque, et non un cran
        au-dessus (D63). `--pied-reserve` dimensionne déjà la barre et sa zone
-       sûre ; le `--space-5` qui s'y ajoutait n'avait pas de motif écrit, et
+       sûre ; le `--espace-5` qui s'y ajoutait n'avait pas de motif écrit, et
        c'est lui qu'on lisait comme un grand vide au-dessus des mentions. Le
        pied fixe est séparé du contenu comme deux enfants de la coque le sont
        entre eux. */
-    padding: var(--space-3) var(--space-3) calc(var(--space-3) + var(--pied-reserve));
+    padding: var(--espace-3) var(--espace-3) calc(var(--espace-3) + var(--pied-reserve));
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--espace-3);
     /*
       La colonne ne défile jamais de côté, et c'est ici que ça se dit.
 
@@ -209,7 +209,7 @@
     bottom: 0;
     z-index: 1;
     margin-inline: auto;
-    max-width: var(--shell);
+    max-width: var(--colonne);
     min-height: var(--pied-reserve);
     display: flex;
     align-items: center;
@@ -217,7 +217,7 @@
     /* Le rembourrage bas porte l'encart système en plus du sien : c'est ce qui
        empêche la moitié basse du pied de passer sous l'indicateur d'accueil
        (D34). */
-    padding: 0 var(--space-3) var(--encart-bas);
+    padding: 0 var(--espace-3) var(--encart-bas);
     background: var(--fond);
     border-top: 1px solid var(--bord);
   }
@@ -225,11 +225,11 @@
   /* La cible tactile fait 44 pixels comme toutes les autres : le pied est
      dimensionné autour d'elle, et non l'inverse. */
   .pied a {
-    color: var(--ink-muted);
-    font-size: var(--text-xs);
-    min-height: var(--touch);
+    color: var(--encre-douce);
+    font-size: var(--texte-xs);
+    min-height: var(--cible);
     display: inline-flex;
     align-items: center;
-    padding-inline: var(--space-3);
+    padding-inline: var(--espace-3);
   }
 </style>

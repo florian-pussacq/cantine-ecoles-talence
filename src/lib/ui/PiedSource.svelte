@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatDay } from '$lib/menu/labels.js';
-  import ExternalLink from './ExternalLink.svelte';
+  import LienExterne from './LienExterne.svelte';
 
   /**
    * Ce qui qualifie les données affichées : leur fraîcheur et leur origine.
@@ -38,7 +38,7 @@
 
 <footer>
   <span>{mention}</span>
-  <ExternalLink href={pdfUrl}>PDF officiel</ExternalLink>
+  <LienExterne href={pdfUrl}>PDF officiel</LienExterne>
 </footer>
 
 <style>
@@ -54,20 +54,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-2) 0;
+    gap: var(--espace-2);
+    padding: var(--espace-3) var(--espace-2) 0;
     /* Filet décoratif : il ne délimite aucune commande et ne porte aucune
        information, donc WCAG 1.4.11 ne lui applique pas de seuil (D27). */
     border-top: 1px solid var(--bord);
-    color: var(--ink-muted);
-    font-size: var(--text-xs);
+    color: var(--encre-douce);
+    font-size: var(--texte-xs);
   }
 
   footer :global(a) {
-    color: var(--ink);
+    color: var(--encre);
     font-weight: var(--poids-fort);
     /* Cible tactile : un lien isolé doit être atteignable au pouce. */
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: inline-flex;
     align-items: center;
   }

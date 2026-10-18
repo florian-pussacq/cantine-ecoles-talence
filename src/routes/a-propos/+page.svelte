@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ExternalLink from '$lib/ui/ExternalLink.svelte';
+  import LienExterne from '$lib/ui/LienExterne.svelte';
   import Bandeau from '$lib/ui/Bandeau.svelte';
   import { formatDay } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
@@ -51,15 +51,15 @@
       <dt>Document</dt>
       <dd>
         {#if source}
-          <ExternalLink href={source.pdfUrl}>Le PDF du mois</ExternalLink>
+          <LienExterne href={source.pdfUrl}>Le PDF du mois</LienExterne>
         {:else}
-          <ExternalLink href={PAGE_OFFICIELLE}>La page des menus</ExternalLink>
+          <LienExterne href={PAGE_OFFICIELLE}>La page des menus</LienExterne>
         {/if}
       </dd>
     </div>
     <div>
       <dt>Page officielle</dt>
-      <dd><ExternalLink href={PAGE_OFFICIELLE}>talence.fr</ExternalLink></dd>
+      <dd><LienExterne href={PAGE_OFFICIELLE}>talence.fr</LienExterne></dd>
     </div>
     {#if source?.updatedLabel}
       <div>
@@ -91,7 +91,7 @@
   <p>
     La Ville propose sa propre application, <strong>Qui Dit Miam</strong>, à télécharger depuis les
     magasins d'applications ; les liens figurent sur
-    <ExternalLink href={PAGE_OFFICIELLE}>la page des menus</ExternalLink>. C'est elle qui fait
+    <LienExterne href={PAGE_OFFICIELLE}>la page des menus</LienExterne>. C'est elle qui fait
     autorité.
   </p>
 </section>
@@ -119,40 +119,40 @@
 <style>
   .panel {
     background: var(--carte);
-    color: var(--ink);
-    border-radius: var(--radius-carte);
-    padding: var(--space-4);
+    color: var(--encre);
+    border-radius: var(--rayon-carte);
+    padding: var(--espace-4);
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--espace-2);
   }
 
   h2 {
-    margin: 0 0 var(--space-1);
-    font-size: var(--text-xs);
+    margin: 0 0 var(--espace-1);
+    font-size: var(--texte-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   p {
     margin: 0;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     line-height: 1.55;
   }
 
   dl {
-    margin: var(--space-1) 0 0;
+    margin: var(--espace-1) 0 0;
     display: flex;
     flex-direction: column;
   }
 
   dl div {
     display: flex;
-    gap: var(--space-3);
-    padding-block: var(--space-2);
-    font-size: var(--text-sm);
+    gap: var(--espace-3);
+    padding-block: var(--espace-2);
+    font-size: var(--texte-sm);
   }
 
   dl div + div {
@@ -161,7 +161,7 @@
 
   dt {
     flex: 0 0 7.5rem;
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   dd {
@@ -177,7 +177,7 @@
     `--fond` était la couleur claire et un lien clair sur un panneau sombre était
     juste ; D49 a retourné la palette sans retourner ces deux déclarations.
 
-    `--ink` passerait le seuil de très loin, mais rendrait le lien indistinct du
+    `--encre` passerait le seuil de très loin, mais rendrait le lien indistinct du
     texte qui l'entoure et laisserait le soulignement porter seul sa nature de
     commande. L'accent tient 5,77:1 sur la carte, et son jeton est défini pour
     cet emploi.
@@ -190,7 +190,7 @@
   /* Les liens d'un tableau de définitions sont isolés, pas au fil d'une phrase :
      ils doivent atteindre la cible tactile minimale. */
   dd :global(a) {
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: inline-flex;
     align-items: center;
   }

@@ -14,7 +14,7 @@
     watchedFirst,
     watchedSummary
   } from './labels.js';
-  import ExternalLink from '../ui/ExternalLink.svelte';
+  import LienExterne from '../ui/LienExterne.svelte';
   import Bandeau from '../ui/Bandeau.svelte';
   import { allergenFilter } from '../filter/allergens.svelte.js';
   import { allergenIcon } from '../illustrations/allergens.js';
@@ -102,7 +102,7 @@
         <div class="non-precise">
           <Bandeau ton="alerte">
             {undeclaredWatched(surveilles.map(({ name }) => name))}
-            <ExternalLink href={day.source.pdfUrl}>Vérifier sur le PDF officiel</ExternalLink>
+            <LienExterne href={day.source.pdfUrl}>Vérifier sur le PDF officiel</LienExterne>
           </Bandeau>
         </div>
       {:else}
@@ -192,7 +192,7 @@
           plat. Cela ne garantit pas l'absence de traces.
         </span>
       {/if}
-      <ExternalLink href={day.source.pdfUrl}>Voir le PDF officiel</ExternalLink>
+      <LienExterne href={day.source.pdfUrl}>Voir le PDF officiel</LienExterne>
     </footer>
   </div>
 </dialog>
@@ -217,8 +217,8 @@
     overflow-y: auto;
     margin: auto auto 0;
     background: var(--carte);
-    color: var(--ink);
-    border-radius: var(--radius-feuille) var(--radius-feuille) 0 0;
+    color: var(--encre);
+    border-radius: var(--rayon-feuille) var(--rayon-feuille) 0 0;
 
     opacity: 0;
     translate: 0 12px;
@@ -262,21 +262,21 @@
     dialog {
       max-width: 520px;
       margin: auto;
-      border-radius: var(--radius-carte);
+      border-radius: var(--rayon-carte);
     }
   }
 
   .corps {
-    padding: var(--space-4) var(--space-4) var(--space-5);
+    padding: var(--espace-4) var(--espace-4) var(--espace-5);
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--espace-4);
   }
 
   .head {
     display: flex;
     align-items: flex-start;
-    gap: var(--space-3);
+    gap: var(--espace-3);
   }
 
   .head-body {
@@ -287,16 +287,16 @@
   }
 
   .role {
-    font-size: var(--text-xs);
+    font-size: var(--texte-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   h2 {
     margin: 0;
-    font-size: var(--text-lg);
+    font-size: var(--texte-lg);
     font-weight: var(--poids-titre);
     letter-spacing: -0.03em;
     line-height: 1.15;
@@ -305,15 +305,15 @@
   .close {
     margin-left: auto;
     align-self: flex-start;
-    min-height: var(--touch);
-    padding-inline: var(--space-3);
+    min-height: var(--cible);
+    padding-inline: var(--espace-3);
     font: inherit;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
-    color: var(--ink);
+    color: var(--encre);
     background: none;
     border: 1px solid var(--bord);
-    border-radius: var(--radius-pilule);
+    border-radius: var(--rayon-pilule);
     cursor: pointer;
   }
 
@@ -328,14 +328,14 @@
   .plats {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--espace-3);
   }
 
   .plats > li {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    padding-bottom: var(--space-3);
+    gap: var(--espace-1);
+    padding-bottom: var(--espace-3);
     border-bottom: 1px solid var(--bord);
   }
 
@@ -345,43 +345,43 @@
   }
 
   .plat-role {
-    font-size: var(--text-xs);
+    font-size: var(--texte-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .plat-nom {
-    font-size: var(--text-base);
+    font-size: var(--texte-base);
     font-weight: var(--poids-fort);
     line-height: 1.25;
   }
 
-  /* Voir Tray.svelte : un détail non publié s'écrit comme une mention, pas
+  /* Voir ListeDuJour.svelte : un détail non publié s'écrit comme une mention, pas
      comme un titre — et ne se confond pas avec une absence. */
   .plat-nom.unknown {
     font-style: italic;
     font-weight: var(--poids-moyen);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .allergens {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1);
-    margin-top: var(--space-1);
+    gap: var(--espace-1);
+    margin-top: var(--espace-1);
   }
 
   .allergens li {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
-    background: var(--chip);
+    gap: var(--espace-1);
+    background: var(--etiquette);
     border: 1px solid var(--bord);
-    border-radius: var(--radius-pastille);
+    border-radius: var(--rayon-pastille);
     padding: 0.3rem 0.5rem 0.3rem 0.35rem;
-    font-size: var(--text-sm);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
   }
 
@@ -392,21 +392,21 @@
 
   /*
     Un filtre actif : ce qu'on surveille se lit en premier, le reste s'efface
-    sans disparaître. `--ink-muted` garde 4,5:1 sur la pastille — un allergène
+    sans disparaître. `--encre-douce` garde 4,5:1 sur la pastille — un allergène
     atténué reste un allergène lisible.
   */
   .plats.filtre .allergens li:not(.surveille) {
-    color: var(--ink-muted);
+    color: var(--encre-douce);
     font-weight: normal;
   }
 
   .allergens li.surveille {
-    border: 2px solid var(--ink);
+    border: 2px solid var(--encre);
     font-weight: var(--poids-titre);
   }
 
   .marque {
-    font-size: var(--text-2xs);
+    font-size: var(--texte-2xs);
     font-weight: var(--poids-titre);
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -414,47 +414,47 @@
 
   .resume {
     background: var(--creux);
-    border-radius: var(--radius-pastille);
-    padding: var(--space-3);
+    border-radius: var(--rayon-pastille);
+    padding: var(--espace-3);
   }
 
   .resume h3 {
-    margin: 0 0 var(--space-2);
-    font-size: var(--text-xs);
+    margin: 0 0 var(--espace-2);
+    font-size: var(--texte-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: var(--poids-titre);
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .resume ul {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: var(--espace-1);
   }
 
   .resume li {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 var(--space-2);
-    font-size: var(--text-sm);
+    gap: 0 var(--espace-2);
+    font-size: var(--texte-sm);
   }
 
   .resume .aucun {
-    color: var(--ink-muted);
+    color: var(--encre-douce);
   }
 
   .none {
-    margin: var(--space-1) 0 0;
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    margin: var(--espace-1) 0 0;
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
   }
 
   .plat-ligne {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: var(--space-1) var(--space-2);
+    gap: var(--espace-1) var(--espace-2);
   }
 
   /* La même capsule que sur l'ardoise : un label de qualité s'écrit d'une seule
@@ -462,25 +462,25 @@
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1);
-    color: var(--ink-muted);
+    gap: var(--espace-1);
+    color: var(--encre-douce);
   }
 
   .tags em {
     font-style: normal;
-    font-size: var(--text-2xs);
+    font-size: var(--texte-2xs);
     font-weight: var(--poids-titre);
     letter-spacing: 0.09em;
     text-transform: uppercase;
     border: 1.5px solid currentColor;
-    border-radius: var(--radius-pilule);
+    border-radius: var(--rayon-pilule);
     padding: 0.08rem 0.4rem;
   }
 
   .pork {
     margin: 0;
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
   }
 
   .pork span {
@@ -489,17 +489,17 @@
 
   footer {
     border-top: 1px solid var(--bord);
-    padding-top: var(--space-3);
+    padding-top: var(--espace-3);
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    color: var(--ink-muted);
+    gap: var(--espace-2);
+    font-size: var(--texte-sm);
+    color: var(--encre-douce);
     line-height: 1.45;
   }
 
   footer strong {
-    color: var(--ink);
+    color: var(--encre);
   }
 
   /* L'accent, et non le fond : ce lien était peint en `--fond` sur la couche
@@ -508,7 +508,7 @@
   footer :global(a) {
     color: var(--accent);
     font-weight: var(--poids-fort);
-    min-height: var(--touch);
+    min-height: var(--cible);
     display: inline-flex;
     align-items: center;
   }

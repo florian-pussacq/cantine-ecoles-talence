@@ -73,19 +73,19 @@
   .chip {
     display: inline-block;
     align-self: flex-start;
-    background: var(--chip);
-    border: 2px solid var(--ink);
-    border-radius: var(--radius-pastille);
+    background: var(--etiquette);
+    border: 2px solid var(--encre);
+    border-radius: var(--rayon-pastille);
     padding: 0.12rem 0.4rem;
-    font-size: var(--text-xs);
+    font-size: var(--texte-xs);
     font-weight: var(--poids-fort);
-    color: var(--ink);
+    color: var(--encre);
     line-height: 1.3;
   }
 
   .chip.compact {
     border-width: 2px;
-    font-size: var(--text-2xs);
+    font-size: var(--texte-2xs);
     padding: 0.06rem 0.32rem;
   }
 

@@ -59,12 +59,12 @@
   .commande {
     position: relative;
     flex: none;
-    width: var(--touch);
-    height: var(--touch);
+    width: var(--cible);
+    height: var(--cible);
     display: grid;
     place-items: center;
-    color: var(--ink);
-    border-radius: var(--radius-pilule);
+    color: var(--encre);
+    border-radius: var(--rayon-pilule);
   }
 
   .compte {
@@ -73,11 +73,11 @@
     right: 2px;
     min-width: 17px;
     height: 17px;
-    padding-inline: var(--space-1);
-    border-radius: var(--radius-pilule);
+    padding-inline: var(--espace-1);
+    border-radius: var(--rayon-pilule);
     background: var(--carte);
-    color: var(--ink);
-    font-size: var(--text-2xs);
+    color: var(--encre);
+    font-size: var(--texte-2xs);
     font-weight: var(--poids-titre);
     line-height: 17px;
     text-align: center;
