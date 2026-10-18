@@ -149,7 +149,7 @@ teinté à l'accent remplace le contour noir. Voir
 
 ## 14. Un seul code couleur : la famille — découpé en trois le 18 octobre 2026
 
-- **14a** `couleur-par-famille` : proposé — la famille sur la carte principale,
+- **14a** `couleur-par-famille` : archivé le 18 octobre 2026 — la famille sur la carte principale,
   retrait des `--role-*`, révision de D50 et D54.
 - **14b** à proposer : direction Affinée, les cartes vides et le goûter en lignes
   compactes, empruntées à Express (artefact d'audit, piste 2).

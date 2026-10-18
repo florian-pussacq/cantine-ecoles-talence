@@ -451,13 +451,11 @@ Chaque carte SHALL porter le libellé de son rôle, le nom du plat, et — lorsq
 mentions de qualité et le signalement d'allergène. Elle NE SHALL PAS porter de texte descriptif :
 les données n'en comportent pas.
 
-La couleur d'une carte SHALL désigner le rôle et non le contenu. Chaque rôle SHALL disposer
-d'une couleur propre, stable d'un jour à l'autre, tenant le rapport de contraste du texte normal
-aussi bien sur la surface d'une carte que sur le fond de l'écran, de sorte qu'une seule valeur
-serve d'aplat et d'encre.
-
-Le rang du plat principal SHALL être dit par le corps de son nom seul, sans aplat ni cadre qui
-le distinguerait des autres cartes.
+La couleur SHALL désigner la famille du plat principal, et elle seule : la carte du plat
+principal SHALL porter la couleur de sa famille, la même que sur l'écran de la semaine, et le nom
+de cette famille écrit. Les autres cartes NE SHALL PAS porter de couleur de rôle ni de famille.
+Un plat principal dont la famille n'est pas reconnue SHALL porter la couleur de repli neutre, sans
+nom de famille.
 
 La première carte SHALL être entièrement visible sans défilement, sur la plus petite fenêtre
 prise en charge. Les cartes suivantes MAY demander un défilement.
@@ -477,6 +475,18 @@ prise en charge. Les cartes suivantes MAY demander un défilement.
 #### Scenario: La première carte est visible d'emblée
 - **WHEN** l'écran du jour est affiché sur la plus petite fenêtre prise en charge
 - **THEN** la première carte est entièrement visible sans défiler
+
+#### Scenario: Le plat principal porte sa famille
+- **WHEN** l'écran du jour affiche un rôti de bœuf en plat principal
+- **THEN** sa carte porte la couleur de la famille viande et le mot « Viande », la même couleur que son disque sur l'écran de la semaine
+
+#### Scenario: Les autres cartes restent en encre
+- **WHEN** l'écran du jour affiche une salade grecque en entrée
+- **THEN** sa carte ne porte aucune couleur de famille ni de rôle
+
+#### Scenario: Plat principal inclassable
+- **WHEN** le plat principal n'appartient à aucune famille reconnue
+- **THEN** sa carte porte la couleur de repli neutre et aucun nom de famille
 
 ### Requirement: Pied fixe de mentions
 
