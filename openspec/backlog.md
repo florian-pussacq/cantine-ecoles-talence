@@ -8,18 +8,5 @@ alors cette liste**. Les entrées restent ici, et non en changements vides, pour
 Ce qui est fait ne s'y garde pas : son histoire est dans `openspec/changes/archive/`
 et dans git. Ménage du 18 octobre 2026 ; le vocabulaire est celui de `CONTEXT.md`.
 
-## 1. Mention de l'écran du jour, le week-end
-
-La spec est tenue : « Prochain service · dans 2 jours » dit bien qu'on ne regarde
-pas aujourd'hui. Le férié et les vacances ont leur mention propre ; le week-end
-garde la générique. Resterait « Week-end · service lundi », en lisant le champ
-`skipped` de la cible résolue comme le fait déjà le férié. Le commentaire de
-`targetEyebrow` (`src/lib/menu/labels.ts`), qui dit que les vacances n'ont pas
-encore leur mention, est faux depuis `menus-vacances` : à corriger au passage.
-
-## 2. La page 404, d'une autre identité
-
-`static/404.html` a gardé l'apparence de l'ardoise sombre, sans la palette crème ni
-ses jetons, et ses deux palettes à elle. C'est la seule page qui ne ressemble pas à
-l'application. Rarement vue ; à reprendre avec l'entrée 1, dans un même changement
-de finition.
+_Rien en attente._ La mention du week-end et la page 404 sont devenues
+`finition-week-end-et-404` le 18 octobre 2026.
