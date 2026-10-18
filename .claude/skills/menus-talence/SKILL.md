@@ -17,34 +17,46 @@ l'empreinte du PDF en ligne, et que `npm run validate`, `npm run build` et
 
 ## 1. Relever ce que la Ville publie
 
-Lire <https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/> et en
-extraire les liens PDF mensuels.
+```bash
+npm run veille
+```
+
+La veille lit <https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/>,
+télécharge chaque PDF de menu et compare son empreinte au `source.pdfSha256` des
+données publiées. Elle nomme ce qui est à traiter :
+
+- **nouveau** : un menu qu'aucune donnée ne cite ;
+- **republié** : un menu cité dont l'empreinte a changé ;
+- **corpus court** : le dernier jour publié est à moins de quatorze jours ;
+- **déplacé**, sans action : même document, autre URL — la prochaine extraction
+  prendra la nouvelle.
+
+Le même contrôle tourne chaque matin dans le workflow `veille`, qui échoue quand
+il y a quelque chose à faire. C'est en général lui qui amène ici.
 
 L'URL d'un mois change quand la Ville le réédite : septembre 2026 est passé de
-`/uploads/2026/06/` à `/uploads/2026/08/`. Prendre l'URL sur la page, jamais
-celle du fichier existant.
+`/uploads/2026/06/` à `/uploads/2026/08/`. Prendre l'URL que donne la veille,
+jamais celle du fichier existant.
 
 Le menu de grève est sur la même page mais suit un autre gabarit — cinq jours de
 semaine croisés avec deux variantes, sans dates. Il se traite à l'étape 3, avec
-`--greve`. En pratique il n'a pas bougé depuis 2023 : ce qu'on vérifie est son
-empreinte, pas son contenu.
+`--greve`. En pratique il n'a pas bougé depuis 2023.
 
-Les menus de vacances (`…-TOUSSAINT-…`, `…-NOEL-…`) sont sur la même page et se
-traitent comme les mensuels, avec leur propre fichier : voir l'étape 3.
+Les menus de vacances (`…-TOUSSAINT-…`, `…-NOEL-…`) se traitent comme les
+mensuels, avec leur propre fichier : voir l'étape 3.
 
-L'affichage de l'origine des viandes n'est pas un menu et ne se traite pas ici.
+Les autres PDF de la page (origine des viandes, calendrier, guide) ne sont pas
+des menus ; la veille les ignore.
 
-## 2. Télécharger et comparer les empreintes
+## 2. Télécharger ce qui est à traiter
 
 ```bash
 curl -sSL -o sources/pdf/<nom>.pdf <url>
-sha256sum sources/pdf/*.pdf
 ```
 
-Comparer chaque empreinte au `source.pdfSha256` du fichier correspondant —
-`static/data/<AAAA-MM>.json` pour un mois, `static/data/greve.json` pour la
-grève. Empreinte identique, document inchangé : passer au suivant. Empreinte
-différente ou fichier absent : le traiter.
+Seulement les documents que la veille a nommés nouveaux ou republiés. Les PDF
+conservés sous `sources/pdf/` sont la référence de `npm run test:extraction` :
+un PDF remplacé exige sa réextraction dans le même commit.
 
 ## 3. Extraire
 

@@ -60,6 +60,31 @@ dans les deux interfaces.
 
 Symptôme d'un hook absent : le job `publier` échoue en le nommant.
 
+## La veille des menus
+
+Le workflow `veille` (`.github/workflows/veille.yml`) compare chaque matin les
+PDF de menus de la page de la Ville aux données publiées. Il **échoue** quand une
+action est requise — un menu nouveau ou republié, un corpus qui couvre moins de
+quatorze jours — et son résumé dit quoi faire : la procédure du skill
+`menus-talence`. Il reste rouge chaque matin tant que ce n'est pas fait. Il
+n'ouvre ni issue ni pull request, et n'écrit rien dans le dépôt
+(`veille-des-pdf`, D3).
+
+Deux réglages de GitHub, hors du dépôt, le concernent :
+
+- **La notification.** GitHub prévient par courriel de l'échec d'un workflow
+  planifié la personne qui a modifié son `cron` en dernier. Vérifier, dans
+  _Settings → Notifications → System → Actions_ du compte, que les échecs sont
+  bien notifiés.
+- **La désactivation.** Le dépôt est public : GitHub y désactive un workflow
+  planifié après 60 jours sans activité, ce qu'un été sans nouveaux menus peut
+  atteindre. GitHub prévient par courriel avant. Pour le réactiver : _Actions →
+  veille → Enable workflow_.
+
+Symptôme d'une veille désactivée : plus aucune exécution quotidienne dans
+l'onglet _Actions_, et des menus qui s'épuisent sans alerte. `npm run veille`
+fait le même contrôle à la main.
+
 ## L'instant des tests
 
 Les tests de bout en bout ne lisent jamais l'horloge réelle. `e2e/instant.ts`

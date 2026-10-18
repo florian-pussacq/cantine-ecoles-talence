@@ -1,0 +1,32 @@
+# Veille des menus publiés par la Ville (veille-des-pdf).
+#
+# Chaque matin, `scripts/veille-pdf.js` compare les PDF de menus de la page de la
+# Ville aux données publiées. Le job échoue quand une action est requise (menu
+# nouveau ou republié, corpus de moins de quatorze jours) ou quand la page est en
+# panne ; son résumé dit quoi faire. GitHub notifie l'échec d'un workflow
+# planifié par courriel : c'est la seule alerte, sans issue ni pull request (D3).
+#
+# Le job ne lit que le dépôt et la page de la Ville, et n'écrit rien.
+
+name: veille
+
+on:
+  schedule:
+    # 5 h 17 UTC : 7 h 17 l'été, 6 h 17 l'hiver à Paris, avant qu'on regarde le
+    # menu. La minute 17 évite l'heure pile, où GitHub retarde les exécutions (D5).
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  veille:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Sans `npm ci` : le script n'a d'autre dépendance que Node (D4).
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/veille-pdf.js

@@ -13,6 +13,7 @@
     "test:unit": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
     "test:extraction": "python3 scripts/test_extraction.py",
+    "veille": "node scripts/veille-pdf.js",
     "prepare": "svelte-kit sync",
     "types": "node scripts/generate-types.js",
     "data": "node scripts/validate-data.js",

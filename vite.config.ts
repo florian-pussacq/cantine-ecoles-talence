@@ -9,7 +9,7 @@ export default defineConfig({
   // pré-rendu, qui a lui besoin de la variante serveur.
   resolve: process.env.VITEST ? { conditions: ['browser'] } : undefined,
   test: {
-    include: ['src/**/*.{test,spec}.{js,ts}'],
+    include: ['src/**/*.{test,spec}.{js,ts}', 'scripts/**/*.test.js'],
     // jsdom pour tout : les tests purs s'en accommodent, et cela évite d'avoir
     // deux configurations à tenir pour une poignée de tests de rendu.
     environment: 'jsdom',

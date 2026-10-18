@@ -15,3 +15,7 @@
 `sans-allergenes.json` est un second mois synthétique, en février 2099 : un document qui ne précise pas les allergènes de ses plats, hormis le gluten du pain — la forme du menu de la Toussaint 2026 (allergenes-non-communiques). Des lasagnes et un fromage blanc sans code, qui ne doivent jamais se lire « sans allergène ».
 
 Ces fichiers ne sont pas publié sous `static/data/` : ils ne doivent jamais atteindre un utilisateur.
+
+## La page de la Ville
+
+`page-menus.html` reprend les liens PDF de la page des menus de la Ville, tels qu'ils y figuraient le 18 octobre 2026 : sept menus et trois documents qui n'en sont pas (un calendrier, un guide, l'origine des viandes). La veille des PDF s'y teste sans réseau (veille-des-pdf).
