@@ -31,13 +31,12 @@ describe('la liste ne se referme pas', () => {
     expect(roles).toEqual(['Entrée', 'Plat', 'Accompagnement', 'Laitage', 'Dessert', 'Pain']);
   });
 
-  it('donne une carte à chaque rôle, servi ou non', () => {
+  it('donne un élément à chaque rôle, servi ou non', () => {
     const { container } = trayFor(edges, '2099-01-02');
     expect(container.querySelectorAll('.carte')).toHaveLength(6);
     // Un creux se distingue d'un contenu autrement que par son absence.
     expect(container.querySelectorAll('.carte.vide').length).toBeGreaterThan(0);
   });
-
   it("suit l'ordre du service, le pain fermant la liste", () => {
     // Le pain n'est pas servi à un moment du repas : il est sur la table du
     // début à la fin, et trente-trois jours sur trente-cinq il s'appelle
@@ -52,6 +51,30 @@ describe('la liste ne se referme pas', () => {
     // Le 7 janvier en comporte un : il est rendu ailleurs, hors du déjeuner.
     trayFor(edges, '2099-01-07');
     expect(screen.queryByText('Pain + chocolat')).not.toBeInTheDocument();
+  });
+});
+
+describe('la forme suit le contenu (lignes-compactes)', () => {
+  it('ramène un rôle absent à une ligne compacte, sans vignette', () => {
+    const { container } = trayFor(edges, '2099-01-02');
+    const vides = [...container.querySelectorAll('.carte.vide')];
+    expect(vides).toHaveLength(2);
+    for (const ligne of vides) {
+      expect(ligne).toHaveClass('compacte');
+      expect(ligne.querySelector('.vignette')).toBeNull();
+    }
+  });
+
+  it('garde une carte entière à chaque rôle servi', () => {
+    // Le 2 septembre sert tout sauf le laitage.
+    const { container } = trayFor(real, '2026-09-02');
+    const servies = [...container.querySelectorAll('.carte:not(.vide)')];
+    expect(servies).toHaveLength(5);
+    for (const carte of servies) {
+      expect(carte).not.toHaveClass('compacte');
+      expect(carte.querySelector('.vignette')).not.toBeNull();
+    }
+    expect(container.querySelector('.carte.vide')).toHaveClass('compacte');
   });
 });
 

@@ -16,6 +16,8 @@ Le goûter est servi l'après-midi. Sa carte pleine le mettait sur le même plan
 
 Le goûter reste une cible distincte qui ouvre la fiche du jour, et le focus y revient à la fermeture (spec, « Couche modale de détail de la journée »).
 
+Une cible ne descend pas sous `--touch` (44 px). À la mise en œuvre, la ligne du goûter mesurait 42 px, et `qualite.spec.ts` l'a refusée : la forme compacte porte donc `min-height: var(--touch)`, sur la ligne elle-même plutôt que sur le bouton, pour que le contour de focus épouse ce qu'on touche.
+
 ### D3 — Une forme de `PlatCarte`, pas un second composant
 
 `PlatCarte` reçoit `compacte`. Les deux formes partagent le libellé du rôle, le nom, les mentions et le signalement : un second composant les dupliquerait, et les deux finiraient par diverger. La forme compacte retire la vignette, réduit la pastille et passe le corps en ligne.

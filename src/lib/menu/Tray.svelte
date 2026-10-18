@@ -8,9 +8,10 @@
   /**
    * Le déjeuner, dans l'ordre où l'écran le montre (design.md, D39).
    *
-   * Une carte par rôle, et jamais moins : la liste ne se referme pas sur un rôle
-   * absent, faute de quoi un creux cesserait d'être distinguable d'une donnée
-   * manquante (D12).
+   * Un élément par rôle, et jamais moins : la liste ne se referme pas sur un
+   * rôle absent, faute de quoi un creux cesserait d'être distinguable d'une
+   * donnée manquante (D12). Mais l'absence n'a pas le poids d'un plat : elle
+   * tient sur une ligne compacte (lignes-compactes, D1).
    */
   const lignes = $derived(
     LUNCH_SLOTS.map((slot) => ({
@@ -34,7 +35,13 @@
 -->
 <div class="tray">
   {#each lignes as { slot, course } (slot)}
-    <PlatCarte {slot} {course} legend={day.legend} principal={slot === 'plat'} />
+    <PlatCarte
+      {slot}
+      {course}
+      legend={day.legend}
+      principal={slot === 'plat'}
+      compacte={course === null}
+    />
   {/each}
 </div>
 

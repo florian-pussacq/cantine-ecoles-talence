@@ -17,9 +17,9 @@
   /**
    * La carte d'un rôle du service (design.md, D50, D51).
    *
-   * Elle a la même forme pour les sept rôles, y compris lorsqu'aucun plat n'est
-   * publié : un creux doit rester distinguable d'une donnée manquante (D12), et
-   * une carte qui disparaîtrait ferait douter de ce que l'écran n'affiche pas.
+   * Elle existe pour les sept rôles, y compris lorsqu'aucun plat n'est publié :
+   * un creux doit rester distinguable d'une donnée manquante (D12), et une carte
+   * qui disparaîtrait ferait douter de ce que l'écran n'affiche pas.
    *
    * Elle est un `div` et non un `li` : la journée entière est une cible unique
    * (D38), donc cette carte vit dans un `<button>`. Une liste y serait du HTML
@@ -34,12 +34,19 @@
    * même que son disque sur l'écran de la semaine (couleur-par-famille, D1, D3).
    * Seule la carte principale la porte ; les autres restent en encre, et se
    * reconnaissent à leur glyphe et à leur libellé (D4).
+   *
+   * La forme suit le contenu (lignes-compactes, D1, D3). Un rôle absent et le
+   * goûter n'ont pas le poids d'un plat servi : ils prennent la forme
+   * `compacte`, une ligne sans vignette, avec le même libellé et les mêmes
+   * mentions. C'est une forme de cette carte et non un second composant, pour
+   * que les deux ne divergent pas sur ce qu'ils disent.
    */
   let {
     slot,
     course,
     legend,
-    principal = false
+    principal = false,
+    compacte = false
   }: {
     slot: Course['slot'];
     course: Course | null;
@@ -50,6 +57,7 @@
     */
     legend: AllergenLegend;
     principal?: boolean;
+    compacte?: boolean;
   } = $props();
 
   /** Les allergènes cochés que porte ce plat : leurs codes et leurs noms courts. */
@@ -78,11 +86,12 @@
   class="carte"
   class:vide={course === null}
   class:principal
+  class:compacte
   class:famille={famille !== null}
   style:--ring={famille ? `var(--fam-${famille})` : undefined}
   style:--pale={famille ? `var(--fam-${famille}-pale)` : undefined}
 >
-  <span class="pastille"><PastilleRole {slot} /></span>
+  <span class="pastille"><PastilleRole {slot} size={compacte ? 16 : 20} /></span>
 
   <span class="corps">
     <span class="role">{slotLabel(slot)}</span>
@@ -110,7 +119,7 @@
     {/if}
   </span>
 
-  {#if match}
+  {#if match && !compacte}
     <span class="vignette"><Illustration name={match.illustration} /></span>
   {/if}
 </div>
@@ -148,6 +157,34 @@
     display: grid;
     place-items: center;
     flex: none;
+  }
+
+  /*
+    Une ligne et non une carte : la pastille rétrécit, la vignette disparaît, et
+    le libellé, le nom et les mentions se suivent sur une ligne qui ne passe à
+    la suivante que faute de place (D1, D2). Elle ne descend pas sous une cible
+    tactile : le goûter en est une.
+  */
+  .compacte {
+    min-height: var(--touch);
+    padding-block: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .compacte .pastille {
+    width: 24px;
+    height: 24px;
+  }
+
+  .compacte .corps {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--space-2);
+  }
+
+  .compacte .nom {
+    font-size: var(--text-sm);
   }
 
   /* Le filet et le bord disent la famille sur toute la hauteur de la carte. */

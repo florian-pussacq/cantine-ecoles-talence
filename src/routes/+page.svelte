@@ -278,9 +278,13 @@
             une seule journée à décrire. La séparation est portée par sa forme et
             son éloignement, et non par un filet : un trait sépare deux choses de
             même nature.
+
+            Il prend la forme compacte de la carte : une ligne, sans vignette.
+            Il reste une cible distincte, et c'est la ligne entière qu'on touche
+            (lignes-compactes, D2).
           -->
           <button type="button" class="snack" onclick={() => (ouverte = true)}>
-            <PlatCarte slot="gouter" course={snack} legend={day.legend} />
+            <PlatCarte slot="gouter" course={snack} legend={day.legend} compacte />
           </button>
         {/if}
       </div>
