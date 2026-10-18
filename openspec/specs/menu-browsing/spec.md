@@ -542,7 +542,7 @@ Tout message qui n'est pas un plat SHALL être présenté, sur tous les écrans,
 La couleur d'alerte NE SHALL être employée par aucun autre ton. Sur l'écran du jour, les messages SHALL se lire dans l'ordre événement, alerte, info. Un message NE SHALL PAS emprunter la présentation d'une carte de plat.
 
 #### Scenario: Un jour de vacances sans allergènes précisés
-- **WHEN** l'utilisateur consulte le 21 octobre 2026, jour de vacances dont le document ne précise pas les allergènes, avec des menus non rafraîchis depuis plus de deux jours
+- **WHEN** l'utilisateur consulte le 21 octobre 2026, jour de vacances dont le document ne précise pas les allergènes, sur un appareil qui n'a pas joint le serveur depuis plus de sept jours
 - **THEN** l'intitulé des vacances se lit d'abord sur le ton événement, puis l'avertissement des allergènes sur le ton alerte, puis l'avertissement de fraîcheur sur le ton info
 
 #### Scenario: Une limite de l'application n'alerte pas

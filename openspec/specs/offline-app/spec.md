@@ -54,15 +54,19 @@ Le système SHALL fournir un manifeste d'application web et les icônes nécessa
 
 ### Requirement: Affichage de la fraîcheur des données
 
-Le système SHALL afficher la date de mise à jour des données consultées. Si la date de génération du manifeste remonte à plus de 48 heures, le système SHALL afficher un avertissement discret.
+Le système SHALL afficher la date de mise à jour des données consultées. Lorsque le dernier contact réussi de l'appareil avec le serveur remonte à plus de sept jours, le système SHALL afficher un avertissement discret disant que l'appareil n'a pas pu vérifier les menus. Le système NE SHALL PAS afficher cet avertissement en fonction de l'âge du manifeste, ni lorsque aucun contact n'est connu.
 
 #### Scenario: Données récentes
-- **WHEN** le manifeste a été généré il y a moins de 48 heures
+- **WHEN** l'appareil a joint le serveur il y a moins de sept jours, quel que soit l'âge du manifeste
 - **THEN** la date de mise à jour est affichée sans avertissement particulier
 
 #### Scenario: Données périmées
-- **WHEN** le manifeste a été généré il y a plus de 48 heures
-- **THEN** un avertissement discret signale que les données peuvent ne plus être à jour et renvoie vers le PDF officiel
+- **WHEN** le dernier contact réussi de l'appareil avec le serveur remonte à plus de sept jours
+- **THEN** un avertissement discret dit que l'appareil n'a pas pu vérifier les menus depuis ce nombre de jours, et renvoie vers le PDF officiel
+
+#### Scenario: Contact inconnu
+- **WHEN** le stockage local est indisponible, ou qu'aucun contact n'a encore réussi
+- **THEN** aucun avertissement de fraîcheur n'est affiché
 
 ### Requirement: Budgets de performance
 
