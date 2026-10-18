@@ -24,6 +24,11 @@ npm run validate && npm run build
 et `npm run test:e2e` dès qu'un commit touche l'interface ou les données
 servies.
 
+`npm run test:extraction` dès qu'un commit touche l'extracteur
+(`scripts/extract-menu-pdf.py`), ses dépendances (`scripts/requirements.txt`) ou
+les PDF conservés (`sources/pdf/`). Il exige Python et
+`pip install -r scripts/requirements.txt` ; la CI le relance à chaque poussée.
+
 Les messages de commit suivent les Conventional Commits, en français :
 `type(portée): description`. Le type est `feat`, `fix`, `docs`, `ci`, `test`,
 `refactor`… ; la portée nomme la zone (`ui`, `données`, `openspec`, `github`…).

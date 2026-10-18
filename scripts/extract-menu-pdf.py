@@ -39,10 +39,13 @@ import sys
 import unicodedata
 from dataclasses import dataclass, field
 
+# `pymupdf` et non `fitz` : l'ancien nom est déprécié, et PyMuPDF écrit son
+# avertissement sur la sortie standard, en tête du JSON (extraction-reproductible,
+# D2). La version est épinglée : le parser dépend des coordonnées que MuPDF rend.
 try:
-    import fitz  # PyMuPDF
+    import pymupdf
 except ImportError:  # pragma: no cover
-    sys.exit("PyMuPDF manquant : pip install pymupdf")
+    sys.exit("PyMuPDF manquant : pip install -r scripts/requirements.txt")
 
 # --- géométrie de la grille -------------------------------------------------
 #
@@ -520,7 +523,7 @@ def main() -> None:
     args = ap.parse_args()
 
     blob = open(args.pdf, "rb").read()
-    page = fitz.open(stream=blob, filetype="pdf")[0]
+    page = pymupdf.open(stream=blob, filetype="pdf")[0]
 
     if args.greve:
         document, warnings = build_strike(page, args, blob)

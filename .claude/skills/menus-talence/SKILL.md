@@ -48,6 +48,9 @@ différente ou fichier absent : le traiter.
 
 ## 3. Extraire
 
+L'extracteur dépend de PyMuPDF, en version exacte :
+`pip install -r scripts/requirements.txt`.
+
 ```bash
 python3 scripts/extract-menu-pdf.py sources/pdf/<nom>.pdf \
   --url <url officielle> \
@@ -111,8 +114,13 @@ pour manifeste divergent.
 ## 5. Vérifier
 
 ```bash
-npm run validate && npm run build && npm run test:e2e
+npm run validate && npm run build && npm run test:e2e && npm run test:extraction
 ```
+
+`test:extraction` rejoue l'extraction de chaque PDF conservé et exige les
+fichiers publiés à l'identique. Après une extraction faite par cette procédure,
+il passe par construction ; il échoue si un PDF a été remplacé sans réextraire
+ses données, ou si un PDF conservé n'est cité par aucun fichier.
 
 Les tests unitaires lisent le corpus réel. Un menu qui change peut en faire
 tomber un — c'est le test qui a figé une date, pas la donnée qui a tort :

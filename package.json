@@ -12,6 +12,7 @@
     "validate": "prettier --check . && eslint . && node scripts/check-lockfile.js && node scripts/generate-types.js --check && node scripts/validate-data.js && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && vitest run --passWithNoTests",
     "test:unit": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
+    "test:extraction": "python3 scripts/test_extraction.py",
     "prepare": "svelte-kit sync",
     "types": "node scripts/generate-types.js",
     "data": "node scripts/validate-data.js",

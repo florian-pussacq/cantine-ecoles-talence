@@ -6,6 +6,9 @@
 # c'est la seule voie vers la production (barriere-de-deploiement ;
 # `docs/livraison.md`). Netlify rejoue `npm run validate && npm run build` de son
 # côté, mais n'exécute pas les tests de bout en bout : ils vivent ici.
+#
+# Le job `extraction` rejoue l'extracteur des menus sur chaque PDF conservé. Il ne
+# garde pas la production (extraction-reproductible, D5).
 
 name: verifier
 
@@ -64,6 +67,23 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # L'extracteur des menus reproduit-il encore chaque mois publié depuis son PDF ?
+  # Hors des `needs` de `publier` : l'application sert des données déjà commitées,
+  # qu'un extracteur cassé ne touche pas. Le job rouge dit qu'on ne peut plus en
+  # produire de nouvelles (extraction-reproductible, D5).
+  extraction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+      # La version de PyMuPDF est celle que déclare le dépôt, épinglée (D1).
+      - run: pip install -r scripts/requirements.txt
+      - run: python scripts/test_extraction.py
 
   publier:
     # Seulement pour une poussée sur `main` : une pull request ne publie rien.

@@ -1,0 +1,8 @@
+# Les dépendances de l'extracteur des menus (scripts/extract-menu-pdf.py).
+#
+#     pip install -r scripts/requirements.txt
+#
+# Version exacte : le parser lit la géométrie du texte que rend MuPDF, et une
+# autre version peut la décaler. Une montée se fait dans un commit à part, que
+# `npm run test:extraction` juge (extraction-reproductible, D1).
+pymupdf==1.28.2

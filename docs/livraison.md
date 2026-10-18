@@ -27,6 +27,10 @@ commits sur main, en local ──► vérification locale ──► poussée gro
   Sinon la poussée suivante publiera après sa propre vérification.
 - **La vérification locale** (`CLAUDE.md`) épargne un cycle de CI rouge ; ce
   n'est plus elle qui garde la production.
+- **Le job `extraction`** rejoue l'extracteur sur chaque PDF de `sources/pdf/`
+  et exige les menus publiés à l'identique. Il ne retient pas la publication :
+  un extracteur cassé n'empêche pas de servir des données déjà commitées
+  (`extraction-reproductible`, D5).
 
 Fenêtre connue : entre la lecture de la tête de `main` et la récupération par
 Netlify, quelques secondes pendant lesquelles une poussée pourrait passer sans
