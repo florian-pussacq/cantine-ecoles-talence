@@ -8,5 +8,4 @@ alors cette liste**. Les entrées restent ici, et non en changements vides, pour
 Ce qui est fait ne s'y garde pas : son histoire est dans `openspec/changes/archive/`
 et dans git. Ménage du 18 octobre 2026 ; le vocabulaire est celui de `CONTEXT.md`.
 
-_Rien en attente._ La mention du week-end et la page 404 sont devenues
-`finition-week-end-et-404` le 18 octobre 2026.
+_Rien en attente._
