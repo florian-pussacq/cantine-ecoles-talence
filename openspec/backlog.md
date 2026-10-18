@@ -153,7 +153,7 @@ teinté à l'accent remplace le contour noir. Voir
   retrait des `--role-*`, révision de D50 et D54.
 - **14b** `lignes-compactes` : archivé le 18 octobre 2026 — direction Affinée, les cartes vides et le goûter en lignes
   compactes, empruntées à Express (artefact d'audit, piste 2).
-- **14c** `pictogrammes-allergenes` : proposé le 18 octobre 2026 — un pictogramme
+- **14c** `pictogrammes-allergenes` : archivé le 18 octobre 2026 — un pictogramme
   par allergène signalé, trois au plus. Le défaut était dans `AllergenChip`, donc
   sur le jour comme sur la semaine, et non sur la seule semaine.
 
