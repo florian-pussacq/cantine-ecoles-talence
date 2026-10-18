@@ -1,18 +1,17 @@
 /**
- * Palette « Cantine claire » et échelles, arrêtées sur maquette (design.md, D49).
+ * Palette « Cantine claire » et échelles, arrêtées sur maquette (design.md, D49),
+ * et sa déclinaison sombre, qui suit la préférence du système (mode-sombre).
  *
- * D25 tenait qu'il n'y a qu'une palette, un fond profond, des plateaux clairs.
- * Le premier membre de cette phrase est conservé, le second est retourné : il
- * n'y a toujours qu'une palette, et elle est claire. Le motif n'est pas
- * technique — l'ardoise sombre se lisait comme un tableau d'affichage, et
- * l'objet qu'on veut est un menu de cantine d'école.
+ * D25 avait retiré tout thème, suivi du système compris, et D49 avait gardé
+ * cette interdiction en passant la palette au clair. `mode-sombre` l'a levée en
+ * connaissance de cause (D1) : le parent qui a réglé son téléphone en sombre a
+ * déjà choisi, et un réglage propre coûterait un script avant la première
+ * peinture. Il n'y a toujours aucun réglage dans l'application.
  *
- * Ce que D25 protégeait reste protégé, et par le même test : `contrast.test.ts`
- * parcourt tous les composants et refuse qu'une apparence dépende d'une
- * préférence système, d'un attribut posé sur la racine, ou d'un second jeu de
- * jetons. Il les cherche par leur nom exact — raison pour laquelle on ne les
- * écrit pas ici, pas même pour les citer. Il n'y a pas de seconde valeur à tenir
- * cohérente avec la première, et il n'y en aura pas.
+ * La bascule tient ici et nulle part ailleurs (D2) : un seul bloc, plus bas, qui
+ * redéclare chaque jeton de couleur. `contrast.test.ts` mesure les deux
+ * palettes, exige que la sombre soit complète, et refuse toute requête de thème
+ * dans un composant.
  *
  * Un seul code couleur porte le menu : la famille du plat principal, la même sur
  * l'écran du jour et sur la semaine (couleur-par-famille). Les rôles n'ont plus
@@ -193,6 +192,57 @@
   /* Échelle des illustrations, pour qu'elles suivent la colonne. */
   --ill-plat: 46px;
   --ill-disque: 68px;
+}
+
+/*
+ * La palette sombre (mode-sombre, D3).
+ *
+ * Elle part de la piste 6 de l'audit de design. Les surfaces restent brunes,
+ * comme le crème dont elles sont l'envers, et non grises : c'est le même menu,
+ * le soir. Les familles s'éclaircissent et leurs teintes pâles s'assombrissent ;
+ * le glyphe posé sur leur aplat passe donc du blanc au foncé.
+ *
+ * Les voiles n'y figurent pas : ils dérivent de l'encre et de l'accent, et se
+ * recalculent d'eux-mêmes. Le voile de la modale reste noir, qui assourdit les
+ * deux fonds.
+ *
+ * Chaque valeur est mesurée par `contrast.test.ts`, comme sa jumelle claire.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --fond: #1b1712;
+    --carte: #27211a;
+    --etiquette: #27211a;
+    --creux: #15120e;
+    --bord: #3c3428;
+
+    --encre: #f2e9d8;
+    --encre-douce: #b3a690;
+
+    --accent: #d6ad66;
+    --sur-accent: #1b1712;
+
+    --sur-famille: #1b1712;
+    --fam-viande: #ff8a7a;
+    --fam-viande-pale: #3d2420;
+    --fam-volaille: #f2b54a;
+    --fam-volaille-pale: #3a2d16;
+    --fam-poisson: #6cb8ee;
+    --fam-poisson-pale: #1d2f3e;
+    --fam-vegetarien: #6fcf86;
+    --fam-vegetarien-pale: #1e3324;
+    --fam-inconnu: #a9b3ae;
+    --fam-inconnu-pale: #2a2e2c;
+
+    --alerte: #f2a93b;
+    --sur-alerte: #1b1300;
+    --info: #1f2c37;
+    --sur-info: #cfe2f1;
+    --evenement: #3a2e1a;
+    --sur-evenement: #f3dcb0;
+  }
 }
 
 /*

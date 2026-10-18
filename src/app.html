@@ -22,11 +22,16 @@
       })(document.documentElement);
     </script>
     <!--
-      L'application a une apparence, et une seule (design.md, D25) : ni requête
-      de média sur la teinte, ni script de thème.
+      L'apparence suit le système, claire ou sombre, sans script de thème
+      (mode-sombre, D1, D5). `color-scheme` le dit au navigateur avant la feuille
+      de style, pour que le canevas de la première peinture ne soit pas blanc
+      chez qui est en sombre ; la barre du navigateur prend le fond de chaque
+      palette. Ces deux couleurs recopient `--fond` : une balise ne lit pas les
+      jetons.
     -->
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#f4ecdd" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f4ecdd" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1b1712" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
     <link rel="apple-touch-icon" href="%sveltekit.assets%/icons/apple-touch-icon.png" />
     <link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />

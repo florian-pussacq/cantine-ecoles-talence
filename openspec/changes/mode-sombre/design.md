@@ -52,8 +52,14 @@ L'interdiction de `prefers-color-scheme` est levée pour `tokens.css` seul ; cel
 
 `app.html` porte deux `<meta name="theme-color">`, chacune avec son attribut `media`. Le manifeste n'accepte qu'une couleur : l'écran de lancement de l'application installée reste crème. C'est un éclair d'une demi-seconde, et le manifeste ne permet pas mieux.
 
+Découvert à la mise en œuvre : `app.html` déclarait aussi `<meta name="color-scheme" content="light">`. Il annonce au navigateur une page qui n'existe qu'en clair, et le canevas peint avant la feuille de style restait blanc chez qui est en sombre. Il passe à `light dark`. Les deux `theme-color` recopient `--fond`, faute de pouvoir lire un jeton ; `contrast.test.ts` garde la copie.
+
+### D6 — L'ordre de la cascade est gardé
+
+Découvert à la mise en œuvre. Le bloc sombre et la palette claire partagent le sélecteur `:root` : c'est leur ordre dans la feuille qui décide. Inséré par erreur avant `:root`, le bloc passait tous les tests de contraste, qui modélisaient la sombre comme recouvrant la claire, mais n'était jamais peint. Seules les captures l'ont montré. `contrast.test.ts` exige désormais que le bloc sombre suive `:root`.
+
 ## Risks / Trade-offs
 
-- [Pictogrammes d'allergène] Certains ont des couleurs sombres (la goutte de lait est bleu foncé) et se poseront sur une étiquette sombre. Ils sont décoratifs et doublés par le texte, mais un pictogramme qu'on ne voit plus perd son rôle de repère → contrôle visuel. S'il faut agir, ce sera un fond clair sous le pictogramme, dans un changement à part.
+- [Pictogrammes d'allergène] Certains ont des couleurs sombres (la goutte de lait est bleu foncé) et se posent sur une étiquette sombre. → Mesuré : sur l'étiquette sombre, chaque pictogramme garde au moins une couleur à 3:1 ou plus (au plus bas 3,04, les sulfites), quand deux sont déjà sous ce seuil sur l'étiquette claire (œufs 2,59, sésame 2,96). Le critère retient la couleur la plus contrastée de chaque dessin, ce qui est indulgent. Le sombre ne dégrade rien ; pas d'action.
 - [Illustrations] L'audit les montre lisibles sur fond sombre sans retouche, sur maquette seulement → contrôle sur l'application réelle.
 - [Premier rendu] Aucun : la requête de média s'applique avant la première peinture, sans script.

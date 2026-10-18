@@ -18,15 +18,43 @@ import { describe, expect, it } from 'vitest';
  * discipline mais le fond sur lequel elle s'exerce : `--on-table` a disparu avec
  * l'ardoise, et les transparences qui s'y posaient sont désormais des encres
  * sombres sur des surfaces claires.
+ *
+ * Il y a désormais deux palettes (mode-sombre). La claire vit dans `:root` ; la
+ * sombre la recouvre sous `prefers-color-scheme: dark`. Chaque contrôle de ce
+ * fichier s'exécute sur l'une et sur l'autre : une paire qui ne tiendrait que
+ * dans une palette n'en tient aucune.
  */
 
 const CSS = readFileSync('src/lib/design/tokens.css', 'utf8');
 
-/** Les jetons de la palette. Il n'y en a qu'une (design.md, D25). */
-function readTokens(): Record<string, string> {
+const REQUETE_SOMBRE = '@media (prefers-color-scheme: dark)';
+
+/**
+ * Le bloc de la palette sombre, et la feuille sans lui.
+ *
+ * Le bloc se délimite par ses accolades : une expression régulière ne sait pas
+ * les équilibrer, et le bloc contient lui-même `:root { … }`.
+ */
+function separer(css: string): { clair: string; sombre: string } {
+  const debut = css.indexOf(REQUETE_SOMBRE);
+  if (debut === -1) return { clair: css, sombre: '' };
+  let profondeur = 0;
+  let fin = css.indexOf('{', debut);
+  do {
+    if (css[fin] === '{') profondeur++;
+    if (css[fin] === '}') profondeur--;
+    fin++;
+  } while (profondeur > 0 && fin < css.length);
+  return { clair: css.slice(0, debut) + css.slice(fin), sombre: css.slice(debut, fin) };
+}
+
+const { clair: CSS_CLAIR, sombre: CSS_SOMBRE } = separer(CSS);
+
+/** Les jetons de couleur opaques déclarés dans un extrait de la feuille. */
+function readTokens(css: string): Record<string, string> {
   const jetons: Record<string, string> = {};
 
-  for (const match of CSS.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)) {
+  for (const match of css.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)) {
     const [, name, value] = match;
     if (name === undefined || value === undefined) continue;
     jetons[name] = value;
@@ -35,7 +63,18 @@ function readTokens(): Record<string, string> {
   return jetons;
 }
 
-const jetons = readTokens();
+const CLAIRS = readTokens(CSS_CLAIR);
+const SOMBRES = readTokens(CSS_SOMBRE);
+
+/**
+ * Les deux palettes telles que la cascade les peint : la sombre recouvre la
+ * claire jeton par jeton. Qu'un jeton y manque, et c'est la valeur claire qui
+ * serait peinte sur un fond sombre — d'où le contrôle de complétude plus bas.
+ */
+const PALETTES: [string, Record<string, string>][] = [
+  ['claire', CLAIRS],
+  ['sombre', { ...CLAIRS, ...SOMBRES }]
+];
 
 /** Les familles du plat principal : le seul code couleur du menu (couleur-par-famille). */
 const FAMILLES = ['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const;
@@ -231,7 +270,7 @@ const DECORATIFS: { voile: string; pourquoi: string }[] = [
   que ce fichier existe pour arrêter.
 */
 
-describe('la palette', () => {
+describe.each(PALETTES)('la palette %s', (_, jetons) => {
   for (const { texte, fond, seuil, quoi } of PAIRES) {
     it(`${quoi} tient ${seuil}:1`, () => {
       const avant = jetons[texte];
@@ -248,7 +287,7 @@ describe('la palette', () => {
   }
 });
 
-describe('les surfaces peintes par transparence', () => {
+describe.each(PALETTES)('les surfaces peintes par transparence, palette %s', (_, jetons) => {
   for (const { voile, fond, texte, seuil, quoi } of TRANSPARENCES) {
     it(`${quoi} tient ${seuil}:1`, () => {
       const declare = voiles[voile];
@@ -306,21 +345,71 @@ describe('couverture des transparences', () => {
   }
 });
 
-describe('la palette', () => {
-  it('ne porte aucune trace d’un thème, clair ou sombre (D25, D49)', () => {
-    expect(CSS).not.toContain('--dark-');
+/**
+ * Deux palettes, et une seule bascule (mode-sombre, D2, D4).
+ *
+ * D25 et D49 interdisaient toute trace d'un thème. Le suivi du système est
+ * revenu, mais en un seul endroit : une requête de média dans `tokens.css`, et
+ * aucun sélecteur `data-theme`, puisque l'application n'offre aucun réglage
+ * propre (D1).
+ */
+describe('les deux palettes', () => {
+  it('ne connaît qu’une requête de thème, la sombre, et aucun réglage', () => {
+    expect(CSS.split('prefers-color-scheme').length - 1).toBe(1);
+    expect(CSS).toContain(REQUETE_SOMBRE);
     expect(CSS).not.toContain('data-theme');
-    expect(CSS).not.toContain('prefers-color-scheme');
+    expect(CSS).not.toContain('--dark-');
+  });
+
+  it('la sombre redéclare chaque jeton de couleur de la claire', () => {
+    // Un jeton oublié hériterait de sa valeur claire : une encre sombre sur un
+    // fond sombre, que la mesure des paires ne verrait pas si la paire n'est
+    // pas listée.
+    const oublies = Object.keys(CLAIRS).filter((nom) => !(nom in SOMBRES));
+    expect(oublies).toEqual([]);
+    expect(Object.keys(CLAIRS).length).toBeGreaterThan(20);
+  });
+
+  it('la sombre vient après la claire, qu’elle doit recouvrir', () => {
+    // Même sélecteur, même spécificité : c'est l'ordre qui décide. Placé avant
+    // `:root`, le bloc sombre est mesuré ici mais jamais peint — c'est arrivé à
+    // la mise en œuvre, et seul le rendu l'a montré.
+    const racine = CSS.search(/^:root\s*\{/m);
+    expect(racine).toBeGreaterThan(-1);
+    expect(CSS.indexOf(REQUETE_SOMBRE)).toBeGreaterThan(racine);
+  });
+
+  it('la sombre ne déclare rien que la claire ignore', () => {
+    expect(Object.keys(SOMBRES).filter((nom) => !(nom in CLAIRS))).toEqual([]);
+  });
+
+  it('la barre du navigateur prend le fond de chaque palette (D5)', () => {
+    // `app.html` recopie `--fond`, faute de pouvoir lire un jeton : la copie est
+    // gardée ici.
+    const html = readFileSync('src/app.html', 'utf8');
+    const barre = (schema: string) =>
+      html.match(
+        new RegExp(
+          `<meta name="theme-color" content="(#[0-9a-fA-F]{6})" media="\\(prefers-color-scheme: ${schema}\\)"`
+        )
+      )?.[1];
+    expect(barre('light')).toBe(CLAIRS['fond']);
+    expect(barre('dark')).toBe(SOMBRES['fond']);
+  });
+
+  it('la sombre change aussi le schéma des contrôles natifs', () => {
+    expect(CSS_SOMBRE).toMatch(/color-scheme:\s*dark/);
   });
 });
 
 /**
- * L'apparence unique, surveillée là où elle avait discrètement cessé de l'être.
+ * Les composants, surveillés là où l'apparence avait discrètement cessé de
+ * l'être.
  *
- * Le contrôle ci-dessus ne lisait que `tokens.css`, et deux composants ont vécu
- * des mois avec une règle `prefers-color-scheme: dark` héritée du thème supprimé
- * par D25 — dont l'une repeignait des liens en clair sur un panneau clair. Une
- * exigence qui n'est vérifiée qu'à un seul endroit ne l'est pas.
+ * Deux composants ont vécu des mois avec une règle `prefers-color-scheme: dark`
+ * héritée du thème supprimé par D25 — dont l'une repeignait des liens en clair
+ * sur un panneau clair. La bascule appartient à `tokens.css` seul (mode-sombre,
+ * D2) : un composant qui en déclarerait une seconde la contournerait.
  */
 /**
  * La partition des jetons : ce qui peint du texte, et ce qui peint dessous.
@@ -370,7 +459,7 @@ const INVERSIONS: {
   quoi: string;
 }[] = [];
 
-describe('les inversions tiennent leur seuil', () => {
+describe.each(PALETTES)('les inversions tiennent leur seuil, palette %s', (_, jetons) => {
   it('n’en laisse aucune sans mesure', () => {
     for (const { texte, fond } of INVERSIONS) {
       expect(jetons[texte], `jeton --${texte} absent`).toBeDefined();
@@ -403,7 +492,7 @@ describe('un jeton de surface ne peint jamais du texte', () => {
 
   it('ne partitionne que des jetons qui existent', () => {
     for (const surface of SURFACES) {
-      expect(jetons[surface], `jeton --${surface} absent`).toBeDefined();
+      expect(CLAIRS[surface], `jeton --${surface} absent`).toBeDefined();
     }
   });
 
@@ -433,7 +522,7 @@ describe('un jeton de surface ne peint jamais du texte', () => {
   }
 });
 
-describe("l'apparence ne dépend d'aucune préférence extérieure", () => {
+describe('aucun composant ne dépend de la préférence d’apparence', () => {
   /*
     Le sprite est joint aux composants, et il faut le dire.
 
