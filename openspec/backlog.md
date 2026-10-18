@@ -139,13 +139,13 @@ jetons nommés en français, le texte à 72 % passe à `--ink-muted`, espacement
 minimal (les deux `4px` seulement). Voir
 `openspec/changes/archive/2026-10-17-fermer-les-echelles/`.
 
-## 13. Composant Bandeau et « Aujourd'hui » unifié — `bandeau-et-aujourdhui`, en cours
+## 13. Composant Bandeau et « Aujourd'hui » unifié — `bandeau-et-aujourdhui`, archivé le 18 octobre 2026
 
 Décisions du 17 octobre 2026 : le stockage indisponible, « ne sait pas s'il y a
 grève » et l'avertissement légal passent en info ; sur l'écran du jour, la
 pastille « Aujourd'hui » n'apparaît que le jour même ; sur la semaine, un fond
 teinté à l'accent remplace le contour noir. Voir
-`openspec/changes/bandeau-et-aujourdhui/`.
+`openspec/changes/archive/2026-10-18-bandeau-et-aujourdhui/`.
 
 ## 14. Un seul code couleur : la famille — à proposer
 
