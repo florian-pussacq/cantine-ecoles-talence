@@ -65,7 +65,13 @@ async function glisser(
   };
 }
 
-/** Le décalage horizontal de la piste, lu sur sa transformation calculée. */
+/**
+ * Le décalage horizontal de la piste, lu sur sa transformation calculée.
+ *
+ * Il se lit par `expect.poll` en plein geste : Chromium regroupe les
+ * mouvements tactiles et livre le dernier à l'image suivante, si bien qu'une
+ * lecture immédiate peut le précéder d'un pas.
+ */
 async function decalage(page: Page): Promise<number> {
   return page
     .locator('.piste')
@@ -132,7 +138,7 @@ test.describe('écran du jour', () => {
       vers: { x: boite.x + boite.width - 140, y },
       relever: false
     });
-    expect(await decalage(page)).toBeCloseTo(-120, 0);
+    await expect.poll(() => decalage(page)).toBeCloseTo(-120, 0);
     await expect(page.locator('.voisin.apres')).toHaveCount(1);
     // Le voisin se voit, mais ne se lit ni ne se touche.
     await expect(page.locator('.voisin.apres')).toHaveAttribute('aria-hidden', 'true');
@@ -175,7 +181,7 @@ test.describe('écran du jour', () => {
       relever: false
     });
     // Le contenu suit, mais d'un tiers seulement : il résiste.
-    expect(await decalage(page)).toBeCloseTo(50, 0);
+    await expect.poll(() => decalage(page)).toBeCloseTo(50, 0);
     await lever();
 
     await expect(page.locator('.voisin')).toHaveCount(0);
@@ -272,7 +278,7 @@ test.describe('écran de la semaine', () => {
       vers: { x: boite.x + 140, y },
       relever: false
     });
-    expect(await decalage(page)).toBeCloseTo(120, 0);
+    await expect.poll(() => decalage(page)).toBeCloseTo(120, 0);
     await expect(page.locator('.voisin.avant .sheet')).toHaveCount(1);
     await lever();
   });
