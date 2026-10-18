@@ -55,6 +55,37 @@ describe('signalement sans dépendance à la couleur', () => {
   });
 });
 
+describe('un pictogramme par allergène signalé (pictogrammes-allergenes)', () => {
+  const pictogrammes = (container: HTMLElement) =>
+    [...container.querySelectorAll('use')].map((use) => use.getAttribute('href'));
+
+  it('dessine chaque allergène signalé, dans l’ordre du texte', () => {
+    const { container, getByText } = render(AllergenChip, {
+      props: { names: ['Œufs', 'Lait'], codes: [3, 7] }
+    });
+    expect(pictogrammes(container)).toEqual(['#alg-oeufs', '#alg-lait']);
+    expect(getByText('Contient : œufs, lait')).toBeInTheDocument();
+  });
+
+  it('s’arrête à trois pictogrammes, le texte nommant tout', () => {
+    const { container, getByText } = render(AllergenChip, {
+      props: {
+        names: ['Gluten', 'Œufs', 'Poisson', 'Lait'],
+        codes: [1, 3, 4, 7],
+        compact: true,
+        count: 2
+      }
+    });
+    expect(pictogrammes(container)).toEqual(['#alg-gluten', '#alg-oeufs', '#alg-poisson']);
+    expect(getByText('2 plats · Gluten, Œufs, Poisson, Lait')).toBeInTheDocument();
+  });
+
+  it('garde le pictogramme de repli sans code', () => {
+    const { container } = render(AllergenChip, { props: { names: ['Lait'] } });
+    expect(pictogrammes(container)).toEqual(['#alg-defaut']);
+  });
+});
+
 describe('lisibilité de la pastille', () => {
   it('garde son texte lisible sur son fond, donc aussi en niveaux de gris', () => {
     // La pastille est en --ink sur --chip. Un rapport de contraste est un écart

@@ -15,8 +15,19 @@
     count = null
   }: { names: string[]; codes?: number[]; compact?: boolean; count?: number | null } = $props();
 
-  // Le pictogramme est celui du premier allergène cité, choisi par son code.
-  const icon = $derived(`#${allergenIcon(codes[0] ?? 0)}`);
+  /*
+    Un pictogramme par allergène signalé, dans l'ordre où le texte les nomme, et
+    trois au plus (pictogrammes-allergenes, D1, D2). Au-delà, le dessin
+    deviendrait une frise ; le texte, lui, continue de tout nommer, et c'est lui
+    qui fait foi. Sans code, la pastille garde le pictogramme de repli : elle
+    reste marquée.
+  */
+  const PICTOGRAMMES_MAX = 3;
+  const icones = $derived(
+    (codes.length > 0 ? codes.slice(0, PICTOGRAMMES_MAX) : [0]).map(
+      (code) => `#${allergenIcon(code)}`
+    )
+  );
   /*
     Sur la semaine, le nombre de plats concernés compte plus que la liste des
     allergènes : à Talence, presque chaque jour contient du lait, si bien qu'une
@@ -33,22 +44,39 @@
 </script>
 
 <span class="chip" class:compact>
-  <svg width={compact ? 13 : 15} height={compact ? 13 : 15} aria-hidden="true" focusable="false">
-    <use href={icon} />
-  </svg>
+  <span class="pictos">
+    {#each icones as icone, i (i)}
+      <svg
+        width={compact ? 13 : 15}
+        height={compact ? 13 : 15}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <use href={icone} />
+      </svg>
+    {/each}
+  </span>
   <span>{text}</span>
 </span>
 
 <style>
+  /*
+    Le texte coule après les pictogrammes, au lieu de tenir dans une colonne à
+    côté d'eux : quand il passe à la ligne, la suite reprend toute la largeur de
+    la pastille (pictogrammes-allergenes, D2). En colonne, trois pictogrammes
+    faisaient d'un signalement de deux lignes un signalement de trois.
+
+    D'où le rayon de pastille et non de pilule, et un retrait égal des deux
+    côtés : la seconde ligne commence au bord gauche, qu'un arrondi de pilule
+    mordrait.
+  */
   .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.28rem;
+    display: inline-block;
     align-self: flex-start;
     background: var(--chip);
     border: 2px solid var(--ink);
-    border-radius: var(--radius-pilule);
-    padding: 0.12rem 0.5rem 0.12rem 0.2rem;
+    border-radius: var(--radius-pastille);
+    padding: 0.12rem 0.4rem;
     font-size: var(--text-xs);
     font-weight: var(--poids-fort);
     color: var(--ink);
@@ -58,7 +86,15 @@
   .chip.compact {
     border-width: 2px;
     font-size: var(--text-2xs);
-    padding: 0.06rem 0.4rem 0.06rem 0.16rem;
+    padding: 0.06rem 0.32rem;
+  }
+
+  /* Les pictogrammes restent groupés : ils se lisent ensemble, avant le texte. */
+  .pictos {
+    display: inline-flex;
+    gap: 1px;
+    vertical-align: middle;
+    margin-right: 0.28rem;
   }
 
   svg {

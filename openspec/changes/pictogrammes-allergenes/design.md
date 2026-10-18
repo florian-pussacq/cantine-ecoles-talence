@@ -7,7 +7,7 @@
 **Goals:**
 
 - Que le dessin ne dise jamais moins que ce que l'œil peut en attendre : chaque allergène signalé a son pictogramme, jusqu'au plafond.
-- Garder la pastille sur une ligne, y compris sur la semaine à 320 px.
+- Ne pas allonger la pastille : autant de lignes avec trois pictogrammes qu'avec un seul, sur les deux écrans à 320 px. Une seule ligne n'est pas atteignable : avant ce changement, le texte passait déjà à la ligne sur la carte du jour dès trois allergènes surveillés, et sur la semaine dès cinq.
 
 **Non-Goals:**
 
@@ -30,7 +30,17 @@ Alternative écartée : les pictogrammes en chevauchement, comme une pile d'avat
 
 Le défaut est dans `AllergenChip` ; la correction y est aussi. Le jour et la semaine en héritent sans changement d'appel.
 
+### D4 — Le texte coule après les pictogrammes, dans une pastille arrondie
+
+Découvert à la mise en œuvre. La pastille était une rangée flexible : le pictogramme d'un côté, le texte dans une colonne de l'autre. Avec trois pictogrammes, cette colonne rétrécissait, et la pastille de l'entrée du 31 août passait de deux lignes à trois (36 → 51 px).
+
+La pastille devient un bloc en ligne : les pictogrammes ouvrent la première ligne, et le texte qui passe à la ligne suivante reprend toute la largeur. Le nombre de lignes redevient celui d'avant (38 px sur le jour ; jamais plus de deux sur la semaine avec cinq allergènes surveillés). Le gain se paie de 1 à 2 px de hauteur, ceux de la boîte de ligne.
+
+Cette seconde ligne commence au bord gauche, qu'un arrondi de pilule mordait. La pastille prend donc `--radius-pastille` au lieu de `--radius-pilule`, avec un retrait égal des deux côtés. Sur une ligne, 10 px de rayon pour 20 à 23 px de hauteur se lisent encore comme une pilule.
+
+Alternative écartée : baisser le plafond à deux. Le défaut venait de la mise en page, pas du nombre de pictogrammes.
+
 ## Risks / Trade-offs
 
-- [Largeur sur la semaine] Trois pictogrammes de 13 px ajoutent une trentaine de pixels à une pastille déjà chargée de texte → contrôle visuel à 320 px. Si elle passe à la ligne, l'espace entre pictogrammes se resserre avant que le plafond ne descende à deux.
+- [Largeur sur la semaine] Trois pictogrammes de 13 px ajoutent une trentaine de pixels à une pastille déjà chargée de texte → mesuré à 320 px, et résolu par D4.
 - [Budget JavaScript à 96 %] Une boucle sur un tableau ne pèse presque rien, mais la mesure se relève quand même.
