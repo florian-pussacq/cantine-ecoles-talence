@@ -187,9 +187,9 @@ Jetons : `--ink` → `--encre`, `--ink-muted` → `--encre-douce`, `--chip` →
 seul dans son commit, sans autre changement. Après l'entrée 14, pour ne pas
 renommer des jetons qu'on supprime.
 
-## 16. Mode sombre — proposé
+## 16. Mode sombre — archivé
 
-`mode-sombre`, proposé le 18 octobre 2026. D25 est rouvert avec sa réponse
+`mode-sombre`, archivé le 18 octobre 2026. D25 est rouvert avec sa réponse
 (design, D1) ; la palette de l'audit, mesurée, tient toutes les paires. Le détail
 d'origine :
 

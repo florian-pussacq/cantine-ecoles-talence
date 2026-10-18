@@ -247,7 +247,7 @@ Les écrans de consultation SHALL respecter le niveau WCAG 2.1 AA : contraste de
 
 Le système SHALL respecter `prefers-reduced-motion`.
 
-Le système SHALL présenter une apparence unique. Il NE SHALL PAS offrir de choix d'apparence, ni faire dépendre son apparence d'une préférence extérieure à l'application.
+Le système SHALL suivre la préférence d'apparence du système de l'utilisateur, claire ou sombre, et chacune de ses deux palettes SHALL satisfaire les seuils de contraste de cette exigence. Il NE SHALL PAS offrir de choix d'apparence propre à l'application.
 
 Les rapports de contraste SHALL être vérifiés sur les couleurs telles qu'elles sont peintes, y compris lorsqu'une surface est obtenue par mélange à l'opacité ou par transparence partielle.
 
@@ -263,7 +263,11 @@ Lorsqu'un texte partage sa ligne avec une commande dont la cible tactile impose 
 
 #### Scenario: Préférence système d'apparence
 - **WHEN** le système de l'utilisateur est en thème sombre
-- **THEN** l'application présente la même apparence que sur un système en thème clair
+- **THEN** l'application présente sa palette sombre dès la première peinture, sans réglage à faire dans l'application
+
+#### Scenario: Aucun choix propre à l'application
+- **WHEN** l'utilisateur parcourt les réglages de l'application
+- **THEN** il n'y trouve aucun choix d'apparence
 
 #### Scenario: Surface obtenue par opacité
 - **WHEN** un texte ou une bordure est peint par mélange à l'opacité sur le fond de page
