@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import september from '../../../static/data/2026-09.json' with { type: 'json' };
-import { isStale, loadDataset } from './load.js';
+import { contactAncien, loadDataset } from './load.js';
 import { EMPTY_DATASET } from './dataset.js';
 
 type Body = Record<string, unknown>;
@@ -150,18 +150,30 @@ describe('loadDataset', () => {
   });
 });
 
-describe('isStale', () => {
-  const dataset = { ...EMPTY_DATASET, generatedAt: '2026-09-10T03:00:00Z' };
+describe('contactAncien', () => {
+  // La fraîcheur se mesure sur l'appareil : le dernier contact réussi avec le
+  // serveur, et non l'âge du manifeste (fraicheur-par-appareil, D1).
+  const contact = '2026-10-10T08:00:00Z';
 
-  it('reste silencieux en deçà de 48 heures', () => {
-    expect(isStale(dataset, new Date('2026-09-12T02:00:00Z'))).toBe(false);
+  it('reste silencieux jusqu’à sept jours sans contact', () => {
+    expect(contactAncien(contact, new Date('2026-10-17T08:00:00Z'))).toBeNull();
   });
 
-  it('avertit au-delà de 48 heures', () => {
-    expect(isStale(dataset, new Date('2026-09-12T04:00:00Z'))).toBe(true);
+  it('compte les jours au-delà de sept', () => {
+    expect(contactAncien(contact, new Date('2026-10-17T09:00:00Z'))).toBe(7);
+    expect(contactAncien(contact, new Date('2026-10-22T10:00:00Z'))).toBe(12);
   });
 
-  it('n’avertit pas faute de date de génération', () => {
-    expect(isStale(EMPTY_DATASET, new Date('2030-01-01T00:00:00Z'))).toBe(false);
+  it('se tait sans contact connu, plutôt que d’affirmer un retard (D3)', () => {
+    expect(contactAncien(null, new Date('2030-01-01T00:00:00Z'))).toBeNull();
+    expect(contactAncien('pas une date', new Date('2030-01-01T00:00:00Z'))).toBeNull();
+  });
+
+  it('ne dépend plus de l’âge du manifeste', () => {
+    // Le manifeste peut avoir trois mois : un appareil qui vient de joindre le
+    // serveur est à jour.
+    const vieux = { ...EMPTY_DATASET, generatedAt: '2026-07-01T00:00:00Z' };
+    expect(vieux.generatedAt).not.toBeNull();
+    expect(contactAncien('2026-10-18T07:00:00Z', new Date('2026-10-18T08:00:00Z'))).toBeNull();
   });
 });

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { isStale } from '$lib/data/load.js';
+  import { contactAncien } from '$lib/data/load.js';
+  import { appUpdate } from '$lib/pwa/update.svelte.js';
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { parisDate, resolveDisplayDay, servedNeighbour } from '$lib/data/resolve.js';
   import FicheJour from '$lib/menu/FicheJour.svelte';
@@ -11,7 +12,8 @@
     formatDay,
     targetEyebrow,
     targetReturnLabel,
-    undeclaredNotice
+    undeclaredNotice,
+    PAGE_DES_MENUS
   } from '$lib/menu/labels.js';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import LienExterne from '$lib/ui/LienExterne.svelte';
@@ -89,7 +91,9 @@
   const next = $derived(date === null ? null : servedNeighbour(data.dataset, date, 'next'));
 
   const snack = $derived(day?.courses.find((course) => course.slot === 'gouter') ?? null);
-  const stale = $derived(isStale(data.dataset, now));
+  /* Le dernier contact de l'appareil avec le serveur, et non l'âge du manifeste
+     (fraicheur-par-appareil, D1). */
+  const joursSansContact = $derived(contactAncien(appUpdate.contact, now));
 
   /**
    * La journée est ouverte, ou elle ne l'est pas (design.md, D38).
@@ -186,9 +190,7 @@
 {:else if day === null}
   <Bandeau ton="info">
     Le menu de cette période n'est pas encore publié par la Ville.
-    <LienExterne href="https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/">
-      Consulter la page officielle
-    </LienExterne>
+    <LienExterne href={PAGE_DES_MENUS}>Consulter la page officielle</LienExterne>
   </Bandeau>
 {:else}
   {#if day.title}
@@ -215,9 +217,10 @@
     </Bandeau>
   {/if}
 
-  {#if stale}
+  {#if joursSansContact !== null}
     <Bandeau ton="info" discret>
-      Ces menus n'ont pas été rafraîchis depuis plus de deux jours. Ils peuvent être périmés.
+      Cet appareil n'a pas pu vérifier les menus depuis {joursSansContact} jours. Ils ont pu changer :
+      <LienExterne href={PAGE_DES_MENUS}>voir la page de la Ville</LienExterne>.
     </Bandeau>
   {/if}
 

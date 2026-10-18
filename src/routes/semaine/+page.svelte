@@ -5,7 +5,9 @@
   import { classify } from '$lib/illustrations/families.js';
   import { allergenFilter } from '$lib/filter/allergens.svelte.js';
   import Bandeau from '$lib/ui/Bandeau.svelte';
-  import { isStale } from '$lib/data/load.js';
+  import { contactAncien } from '$lib/data/load.js';
+  import { appUpdate } from '$lib/pwa/update.svelte.js';
+  import LienExterne from '$lib/ui/LienExterne.svelte';
   import { horloge } from '$lib/data/horloge.svelte.js';
   import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
   import { selection } from '$lib/menu/selection.svelte.js';
@@ -21,7 +23,8 @@
     formatDay,
     formatWeekday,
     shortAllergenName,
-    weekReturnLabel
+    weekReturnLabel,
+    PAGE_DES_MENUS
   } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
@@ -53,7 +56,8 @@
   const last = $derived(days[4]?.date ?? anchor);
 
   const source = $derived(days.find(({ day }) => day !== null)?.day?.source ?? null);
-  const stale = $derived(isStale(data.dataset, now));
+  // Comme l'écran du jour : le contact de l'appareil (fraicheur-par-appareil, D1).
+  const joursSansContact = $derived(contactAncien(appUpdate.contact, now));
 
   /** Le plat principal, ou à défaut le premier plat qui existe. */
   function mainCourse(day: NonNullable<(typeof days)[number]['day']>) {
@@ -160,9 +164,10 @@
     Aucun menu n'est disponible. Une première connexion est nécessaire pour les télécharger.
   </Bandeau>
 {:else}
-  {#if stale}
+  {#if joursSansContact !== null}
     <Bandeau ton="info" discret>
-      Ces menus n'ont pas été rafraîchis depuis plus de deux jours. Ils peuvent être périmés.
+      Cet appareil n'a pas pu vérifier les menus depuis {joursSansContact} jours. Ils ont pu changer :
+      <LienExterne href={PAGE_DES_MENUS}>voir la page de la Ville</LienExterne>.
     </Bandeau>
   {/if}
 

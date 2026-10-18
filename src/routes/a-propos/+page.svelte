@@ -1,7 +1,7 @@
 <script lang="ts">
   import LienExterne from '$lib/ui/LienExterne.svelte';
   import Bandeau from '$lib/ui/Bandeau.svelte';
-  import { formatDay } from '$lib/menu/labels.js';
+  import { formatDay, PAGE_DES_MENUS } from '$lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -16,8 +16,6 @@
           timeZone: 'Europe/Paris'
         }).format(new Date(data.dataset.generatedAt))
   );
-
-  const PAGE_OFFICIELLE = 'https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/';
 </script>
 
 <svelte:head>
@@ -53,13 +51,13 @@
         {#if source}
           <LienExterne href={source.pdfUrl}>Le PDF du mois</LienExterne>
         {:else}
-          <LienExterne href={PAGE_OFFICIELLE}>La page des menus</LienExterne>
+          <LienExterne href={PAGE_DES_MENUS}>La page des menus</LienExterne>
         {/if}
       </dd>
     </div>
     <div>
       <dt>Page officielle</dt>
-      <dd><LienExterne href={PAGE_OFFICIELLE}>talence.fr</LienExterne></dd>
+      <dd><LienExterne href={PAGE_DES_MENUS}>talence.fr</LienExterne></dd>
     </div>
     {#if source?.updatedLabel}
       <div>
@@ -91,7 +89,7 @@
   <p>
     La Ville propose sa propre application, <strong>Qui Dit Miam</strong>, à télécharger depuis les
     magasins d'applications ; les liens figurent sur
-    <LienExterne href={PAGE_OFFICIELLE}>la page des menus</LienExterne>. C'est elle qui fait
+    <LienExterne href={PAGE_DES_MENUS}>la page des menus</LienExterne>. C'est elle qui fait
     autorité.
   </p>
 </section>

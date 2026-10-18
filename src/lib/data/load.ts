@@ -92,16 +92,27 @@ export async function loadDataset(fetch: Fetcher, base: string): Promise<LoadRes
   return { dataset: buildDataset(inputs, manifest.generatedAt), status: { kind: 'ok' } };
 }
 
+/** Au-delà, un appareil qui n'a pas joint le serveur a pu manquer une réédition. */
+const CONTACT_MAX_JOURS = 7;
+
+const JOUR_MS = 24 * 60 * 60 * 1000;
+
 /**
- * Vrai si le manifeste remonte à plus de 48 heures.
+ * Le nombre de jours depuis le dernier contact réussi de l'appareil avec le
+ * serveur, s'il dépasse sept ; `null` sinon (fraicheur-par-appareil, D1, D2).
  *
- * Le seuil vient du PRD §9 : au-delà, soit le job d'ingestion est cassé, soit
- * l'appareil est hors ligne depuis longtemps. Dans les deux cas l'utilisateur a
- * le droit de savoir que ce qu'il lit peut être périmé.
+ * La date du manifeste n'est plus la mesure : elle ne change qu'à chaque mise à
+ * jour des menus, une fois par mois au mieux, et l'avertissement s'allumait pour
+ * tous deux jours après. Ce qui rend des menus douteux sur un appareil, c'est
+ * qu'il n'ait pas pu joindre le serveur.
+ *
+ * Sans contact connu, `null` : on n'affirme pas un retard qu'on ne mesure pas
+ * (D3).
  */
-export function isStale(dataset: MenuDataset, now: Date): boolean {
-  if (dataset.generatedAt === null) return false;
-  const generated = Date.parse(dataset.generatedAt);
-  if (Number.isNaN(generated)) return false;
-  return now.getTime() - generated > 48 * 60 * 60 * 1000;
+export function contactAncien(dernier: string | null, maintenant: Date): number | null {
+  if (dernier === null) return null;
+  const contact = Date.parse(dernier);
+  if (Number.isNaN(contact)) return null;
+  const ecart = maintenant.getTime() - contact;
+  return ecart > CONTACT_MAX_JOURS * JOUR_MS ? Math.floor(ecart / JOUR_MS) : null;
 }

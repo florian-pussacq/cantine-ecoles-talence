@@ -3,6 +3,12 @@ import type { Family } from '../illustrations/families.js';
 import { daysBetween, type DisplayTarget } from '../data/resolve.js';
 
 /**
+ * La page des menus de la Ville : la source, et le recours quand l'application
+ * ne peut pas répondre. Une seule adresse pour tous les écrans.
+ */
+export const PAGE_DES_MENUS = 'https://www.talence.fr/quotidien/enfance-scolarite/menu-ecoles/';
+
+/**
  * Les rôles du déjeuner, dans l'ordre où l'écran les montre.
  *
  * C'est l'ordre du service — entrée, plat, accompagnement, laitage, dessert —
