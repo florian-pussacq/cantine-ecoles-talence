@@ -147,7 +147,16 @@ pastille « Aujourd'hui » n'apparaît que le jour même ; sur la semaine, un fo
 teinté à l'accent remplace le contour noir. Voir
 `openspec/changes/archive/2026-10-18-bandeau-et-aujourdhui/`.
 
-## 14. Un seul code couleur : la famille — à proposer
+## 14. Un seul code couleur : la famille — découpé en trois le 18 octobre 2026
+
+- **14a** `couleur-par-famille` : proposé — la famille sur la carte principale,
+  retrait des `--role-*`, révision de D50 et D54.
+- **14b** à proposer : direction Affinée, les cartes vides et le goûter en lignes
+  compactes, empruntées à Express (artefact d'audit, piste 2).
+- **14c** à proposer : la pastille d'allergène de la semaine montre tous les
+  allergènes surveillés, deux ou trois pictogrammes au plus, au lieu du premier.
+
+Le détail d'origine :
 
 Le même rôti de bœuf est brun-orangé sur l'écran du jour (`--role-plat`) et rouge
 sur la semaine (`--fam-viande`). Décision : la famille seule, sur le **plat
