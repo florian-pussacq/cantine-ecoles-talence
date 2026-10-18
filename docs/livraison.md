@@ -1,31 +1,36 @@
 # La livraison
 
 Ce document décrit le chemin d'un commit jusqu'à la production, et surtout ce qui
-ne vit pas dans le dépôt : un réglage de plateforme sans lequel rien ne se
-publie. Il n'est pas versionnable ; il est donc écrit ici.
+ne vit pas dans le dépôt : deux réglages de plateforme sans lesquels rien ne se
+publie. Ils ne sont pas versionnables ; ils sont donc écrits ici.
 
 ## Le chemin
 
 ```
-commits sur main, en local ──► vérification locale ──► poussée groupée ──► Netlify publie
-                                                              │
-                                                              └──► GitHub Actions : verifier + e2e
+commits sur main, en local ──► vérification locale ──► poussée groupée
+                                                            │
+                                    Netlify : construction annulée (ignore)
+                                                            │
+                                    GitHub Actions : verifier + e2e
+                                                            │ verts, et le commit est
+                                                            ▼ toujours la tête de main
+                                    job publier ──► build hook ──► Netlify publie
 ```
 
 - **On travaille sur `main`** (développement sur le tronc). Les commits restent
-  en local et partent ensemble : chaque poussée déclenche un déploiement.
-- **La vérification locale est la barrière** : `npm run validate && npm run
-build`, et `npm run test:e2e` dès que l'interface ou les données servies
-  changent (`CLAUDE.md`).
-- **Netlify publie** `main` à chaque poussée, par son intégration Git, et rejoue
-  `npm run validate && npm run build` (`netlify.toml`). Il n'exécute pas les
-  tests de bout en bout.
-- **GitHub Actions vérifie** chaque poussée sur `main`
-  (`.github/workflows/verifier.yml`). Il constate après la publication ; il ne la
-  retient pas. Un `e2e` rouge sur `main` signale donc un défaut déjà en ligne.
+  en local et partent ensemble.
+- **Une poussée ne publie plus par elle-même.** `netlify.toml` annule toute
+  construction de production née d'une poussée ; Netlify n'annule jamais une
+  construction déclenchée par un build hook.
+- **La CI est la barrière.** Quand `verifier` et `e2e` réussissent, le job
+  `publier` appelle le hook — si le commit vérifié est encore la tête de `main`.
+  Sinon la poussée suivante publiera après sa propre vérification.
+- **La vérification locale** (`CLAUDE.md`) épargne un cycle de CI rouge ; ce
+  n'est plus elle qui garde la production.
 
-Pourquoi ce compromis, et comment rétablir une barrière sans PR : `ci-github`,
-D1 et sa révision.
+Fenêtre connue : entre la lecture de la tête de `main` et la récupération par
+Netlify, quelques secondes pendant lesquelles une poussée pourrait passer sans
+vérification. Pourquoi on l'accepte : `barriere-de-deploiement`, D2.
 
 ## Réglage 1 — Netlify relié au dépôt GitHub
 
@@ -38,6 +43,18 @@ _Site configuration → Build & deploy → Continuous deployment_ :
 
 Symptôme d'un lien resté sur GitLab : une fusion dans `main` ne déclenche aucun
 déploiement, et le site garde ses anciens menus.
+
+## Réglage 2 — Le build hook
+
+Sans lui, plus rien ne se publie. Dans Netlify, _Site configuration → Build &
+deploy → Build hooks_ : un hook sur la branche `main`. Son URL va dans GitHub,
+_Settings → Secrets and variables → Actions_, sous le nom `NETLIFY_BUILD_HOOK`.
+
+L'URL ne sait que déclencher une construction ; c'est pourquoi on l'a préférée à
+un jeton Netlify (`barriere-de-deploiement`, D1). Si elle fuit, la remplacer
+dans les deux interfaces.
+
+Symptôme d'un hook absent : le job `publier` échoue en le nommant.
 
 ## L'instant des tests
 

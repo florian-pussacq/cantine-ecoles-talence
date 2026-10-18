@@ -9,9 +9,9 @@ maintenable dans le temps, performant, resilient et compréhensible.
 **Ne pousse jamais de toi-même. La poussée est la décision de l'humain.**
 
 Développement sur le tronc : on travaille directement sur `main`, sans branche
-ni pull request. Netlify publie `main` : une poussée met en ligne. Les commits
-s'accumulent donc en local et partent ensemble, quand l'humain le décide — une
-poussée par commit déclencherait un déploiement par commit. Tu commites, tu
+ni pull request. Une poussée sur `main` met en ligne, une fois la CI verte
+(`docs/livraison.md`). Les commits s'accumulent donc en local et partent
+ensemble, quand l'humain le décide. Tu commites, tu
 t'arrêtes là, tu dis ce qui est prêt à partir.
 
 Ce que tu fais en revanche systématiquement, avant tout commit : la

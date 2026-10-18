@@ -1,11 +1,11 @@
-# Vérification de chaque poussée sur `main`, et des pull requests s'il y en a.
+# Vérification de chaque poussée sur `main`, et des pull requests s'il y en a ;
+# publication de `main` une fois vérifiée.
 #
-# La publication n'est pas faite ici : Netlify est branché sur ce dépôt, publie
-# `main` à chaque poussée et rejoue `npm run validate && npm run build` de son
-# côté. On développe sur le tronc : ce workflow constate après la publication, il
-# ne la retient pas. Il existe parce qu'il porte les tests de bout en bout que
-# l'image de construction de Netlify ne peut pas exécuter (ci-github, D1 et sa
-# révision ; `docs/livraison.md`).
+# Netlify ne publie plus à la poussée : `netlify.toml` annule ces constructions.
+# Le job `publier` appelle le build hook quand `verifier` et `e2e` ont réussi :
+# c'est la seule voie vers la production (barriere-de-deploiement ;
+# `docs/livraison.md`). Netlify rejoue `npm run validate && npm run build` de son
+# côté, mais n'exécute pas les tests de bout en bout : ils vivent ici.
 
 name: verifier
 
@@ -64,3 +64,37 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  publier:
+    # Seulement pour une poussée sur `main` : une pull request ne publie rien.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verifier, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      # Sans le secret, la production cesserait de se mettre à jour sans que
+      # personne le sache : l'échec doit se voir (D3).
+      - name: Vérifier la présence du build hook
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::Secret NETLIFY_BUILD_HOOK absent : rien ne peut être publié."
+            exit 1
+          fi
+      # Un hook construit la tête de `main` au moment de l'appel, pas ce commit-ci.
+      # Si une poussée l'a dépassé, c'est son propre passage qui publiera (D2).
+      - name: Publier si ce commit est encore la tête de main
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+          SHA: ${{ github.sha }}
+          # Le jeton du workflow, en lecture seule : il suffit pour lire la tête de
+          # `main`, dépôt privé compris.
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tete=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          if [ "$tete" != "$SHA" ]; then
+            echo "main est passée à $tete : ce passage ne publie pas."
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
+          echo "Publication demandée pour $SHA."

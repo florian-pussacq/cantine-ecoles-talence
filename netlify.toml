@@ -7,6 +7,12 @@
 [build]
   command = "npm run validate && npm run build"
   publish = "build"
+  # Une poussée sur `main` ne publie plus par elle-même (barriere-de-deploiement).
+  # En production, cette commande sort à 0, ce qui annule la construction ;
+  # Netlify ne l'applique jamais à une construction déclenchée par un build hook.
+  # Seul le hook publie, et seule la CI l'appelle, une fois verte. Les
+  # prévisualisations de pull request ne sont pas concernées.
+  ignore = '[ "$CONTEXT" = "production" ]'
 
 # Aucun [build.environment] ici, volontairement.
 #
