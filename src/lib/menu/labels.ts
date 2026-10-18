@@ -1,4 +1,5 @@
 import type { Course, Source } from '../data/schema.js';
+import type { Family } from '../illustrations/families.js';
 import { daysBetween, type DisplayTarget } from '../data/resolve.js';
 
 /**
@@ -401,4 +402,21 @@ export function undeclaredNotice(watching: boolean): string {
 /** Le libellé d'un plat sans code, selon que son document précise ou non les allergènes. */
 export function noAllergenLabel(source: Source): string {
   return allergensUndeclared(source) ? 'Allergènes non communiqués' : 'Aucun allergène déclaré';
+}
+
+/**
+ * Le nom d'une famille, écrit sur la carte du plat principal
+ * (couleur-par-famille, D3) : la couleur ne porte jamais seule l'information.
+ *
+ * Rien pour un plat inclassable : on ne devine pas une famille.
+ */
+export function familyLabel(family: Family): string | null {
+  const noms: Record<Family, string | null> = {
+    viande: 'Viande',
+    volaille: 'Volaille',
+    poisson: 'Poisson',
+    vegetarien: 'Végétarien',
+    inconnu: null
+  };
+  return noms[family];
 }

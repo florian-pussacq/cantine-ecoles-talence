@@ -55,34 +55,41 @@ describe('la liste ne se referme pas', () => {
   });
 });
 
-describe('la couleur dit le rôle, et non le contenu (D50)', () => {
-  it('donne à chaque carte le jeton de son rôle', () => {
+describe('la couleur dit la famille du plat principal (couleur-par-famille)', () => {
+  it('colore la carte principale de sa famille, et la nomme', () => {
+    // Le 3 septembre sert un blanc de poulet : volaille, comme son disque sur
+    // l'écran de la semaine.
     const { container } = trayFor(real, '2026-09-03');
-    const jetons = [...container.querySelectorAll('.carte')].map((carte) =>
-      carte.getAttribute('style')
-    );
-    expect(jetons).toEqual([
-      '--role: var(--role-entree);',
-      '--role: var(--role-plat);',
-      '--role: var(--role-accompagnement);',
-      '--role: var(--role-laitage);',
-      '--role: var(--role-dessert);',
-      '--role: var(--role-pain);'
-    ]);
+    const principale = container.querySelector('.carte.principal');
+    expect(principale?.classList.contains('famille')).toBe(true);
+    expect(principale?.getAttribute('style')).toContain('var(--fam-volaille)');
+    expect(principale?.querySelector('.famille-nom')?.textContent).toBe('Volaille');
   });
 
-  it('donne la même couleur au même rôle deux jours de suite', () => {
-    // C'est toute la raison du changement : un repère qui bouge d'un jour à
-    // l'autre n'est pas un repère (D50). La famille du plat, elle, change.
-    const lundi = trayFor(real, '2026-09-01').container.querySelector('.carte.principal');
-    const jeudi = trayFor(real, '2026-09-03').container.querySelector('.carte.principal');
-    expect(lundi?.getAttribute('style')).toBe(jeudi?.getAttribute('style'));
+  it('laisse les autres cartes en encre', () => {
+    // Une entrée « végétarienne » au sens de classify() ne dit rien de la
+    // famille du repas : seule la carte principale est colorée (D3).
+    const { container } = trayFor(real, '2026-09-03');
+    const autres = [...container.querySelectorAll('.carte:not(.principal)')];
+    expect(autres.length).toBeGreaterThan(0);
+    for (const carte of autres) {
+      expect(carte.classList.contains('famille')).toBe(false);
+      expect(carte.getAttribute('style') ?? '').not.toContain('--fam-');
+      expect(carte.querySelector('.famille-nom')).toBeNull();
+    }
   });
 
-  it("ne porte plus aucune couleur de famille sur l'écran du jour (D54)", () => {
-    // Les jetons de famille survivent, mais pour l'écran de la semaine seul.
+  it('ne devine pas la famille d’un plat inclassable', () => {
+    // La moussaka du 31 août : couleur de repli, aucun nom de famille.
+    const { container } = trayFor(real, '2026-08-31');
+    const principale = container.querySelector('.carte.principal');
+    expect(principale?.getAttribute('style')).toContain('var(--fam-inconnu)');
+    expect(principale?.querySelector('.famille-nom')).toBeNull();
+  });
+
+  it('ne porte plus aucune couleur de rôle', () => {
     const { container } = trayFor(real, '2026-09-03');
-    expect(container.innerHTML).not.toContain('--fam-');
+    expect(container.innerHTML).not.toContain('--role');
   });
 });
 

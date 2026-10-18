@@ -14,11 +14,9 @@
  * écrit pas ici, pas même pour les citer. Il n'y a pas de seconde valeur à tenir
  * cohérente avec la première, et il n'y en aura pas.
  *
- * Deux familles de couleurs cohabitent, et elles ne s'appliquent pas au même
- * écran (design.md, D54) :
- *
- *   --role-*  l'écran du jour, où la couleur dit le rang dans la liste
- *   --fam-*   l'écran de la semaine, où elle dit ce qui change d'un jour à l'autre
+ * Un seul code couleur porte le menu : la famille du plat principal, la même sur
+ * l'écran du jour et sur la semaine (couleur-par-famille). Les rôles n'ont plus
+ * de couleur ; ils se reconnaissent à leur glyphe et à leur libellé.
  */
 
 :root {
@@ -49,39 +47,18 @@
   --on-accent: #ffffff;
 
   /*
-   * Les sept rôles du service (design.md, D50).
+   * Les familles du plat principal : le seul code couleur du menu, sur le disque
+   * de la semaine comme sur la carte principale de l'écran du jour
+   * (couleur-par-famille, D1, D2).
    *
-   * Un seul jeton chacun, contre trois pour une famille. Chaque valeur tient
-   * 4,5:1 à la fois sur la carte blanche et sur le fond crème, ce qui la rend
-   * utilisable sans variante comme aplat de pastille — glyphe blanc dessus — et
-   * comme encre du libellé. Le patron à trois valeurs des familles n'existait
-   * que parce qu'un aplat saturé ne peut pas porter de texte ; en calculant
-   * l'aplat pour qu'il le puisse, la troisième valeur s'évapore.
-   *
-   * La maquette n'en propose que quatre, et dans des tons plus pâles. Trois sont
-   * inventées, et les sept sont assombries jusqu'au seuil : un pastel ne porte
-   * pas de texte.
+   * Chaque valeur tient 4,5:1 sous un glyphe blanc et comme encre sur la carte
+   * blanche ; aucune n'est posée sur le fond crème. Une illustration colorée
+   * n'est jamais posée sur l'aplat saturé — elle repose sur la teinte pâle, sans
+   * quoi un poisson bleu sur fond bleu disparaît.
    */
-  /* Le glyphe posé dans la pastille. Blanc sur les sept, ce qui n'est possible
-     que parce que les sept sont calculés pour le porter. */
-  --on-role: #ffffff;
+  /* Le glyphe posé sur l'aplat d'une famille. */
+  --on-fam: #ffffff;
 
-  --role-entree: #217b2d;
-  --role-plat: #ad510b;
-  --role-accompagnement: #8d6411;
-  --role-laitage: #1c70ac;
-  --role-dessert: #cb2461;
-  --role-pain: #955f35;
-  --role-gouter: #934cb6;
-
-  /*
-   * Les familles de plat, désormais réservées à l'écran de la semaine (D54).
-   *
-   * D39 n'y est pas annulée : cet écran ne distingue aucun rôle, et la famille
-   * est bien ce qui varie d'un jour à l'autre. Une illustration colorée n'est
-   * jamais posée sur un aplat saturé — elle repose sur la teinte pâle, sans quoi
-   * un poisson bleu sur fond bleu disparaît.
-   */
   --fam-viande: #d93b2b;
   --fam-viande-pale: #faded9;
 

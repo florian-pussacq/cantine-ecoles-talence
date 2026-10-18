@@ -470,10 +470,6 @@ prise en charge. Les cartes suivantes MAY demander un défilement.
 - **WHEN** un jour ne comporte pas d'entrée
 - **THEN** une carte énonce l'absence d'entrée, et ne se confond pas avec une carte portant un plat
 
-#### Scenario: La couleur ne dépend pas du contenu
-- **WHEN** deux jours différents sont affichés successivement
-- **THEN** la couleur associée à un même rôle est identique sur les deux jours
-
 #### Scenario: Aucune carte n'est actionnable
 - **WHEN** l'écran du jour est parcouru au clavier
 - **THEN** aucune carte ne reçoit le focus, et l'ouverture du détail se fait par la cible qui porte la journée

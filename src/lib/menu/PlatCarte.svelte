@@ -4,6 +4,7 @@
   import type { AllergenLegend, Course } from '../data/schema.js';
   import {
     courseName,
+    familyLabel,
     flaggedAllergenNames,
     qualityLabel,
     slotAbsence,
@@ -29,9 +30,10 @@
    * elle est portée par l'élément qui contient la liste. Un bouton par carte
    * ferait sept cibles là où il n'y a qu'une seule chose à ouvrir.
    *
-   * Le rang du plat principal ne tient qu'au corps de son nom. Il n'a ni aplat
-   * ni cadre : la vedette a disparu avec l'ardoise, parce que la couleur sert
-   * désormais à se repérer dans la liste et qu'un second code la brouillerait.
+   * La couleur ne dit plus le rôle : elle dit la famille du plat principal, la
+   * même que son disque sur l'écran de la semaine (couleur-par-famille, D1, D3).
+   * Seule la carte principale la porte ; les autres restent en encre, et se
+   * reconnaissent à leur glyphe et à leur libellé (D4).
    */
   let {
     slot,
@@ -66,15 +68,29 @@
     en a pas — c'est l'inverse de ce que la carte vide est là pour dire.
   */
   const match = $derived(course === null ? null : classify(course.label));
+
+  /* La famille ne vaut que pour le plat principal : `classify()` range aussi une
+     salade grecque en « végétarien », ce qui ne dit rien d'une entrée (D3). */
+  const famille = $derived(principal && match ? match.family : null);
 </script>
 
-<div class="carte" class:vide={course === null} class:principal style:--role="var(--role-{slot})">
+<div
+  class="carte"
+  class:vide={course === null}
+  class:principal
+  class:famille={famille !== null}
+  style:--ring={famille ? `var(--fam-${famille})` : undefined}
+  style:--pale={famille ? `var(--fam-${famille}-pale)` : undefined}
+>
   <span class="pastille"><PastilleRole {slot} /></span>
 
   <span class="corps">
     <span class="role">{slotLabel(slot)}</span>
     {#if course && nom}
       <span class="nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
+      {#if famille && familyLabel(famille)}
+        <span class="famille-nom">{familyLabel(famille)}</span>
+      {/if}
       <!-- Une qualité promue au rang de nom ne se redit pas en capsule. -->
       {#if course.flags.length > 0 && nom.kind !== 'quality'}
         <span class="tags">
@@ -118,34 +134,32 @@
   }
 
   /*
-    La pastille porte la couleur du rôle en aplat, et le glyphe la reçoit en
-    `currentColor`. Les deux tiennent 4,5:1 l'un sur l'autre parce que le jeton
-    a été calculé pour, et non choisi à l'œil (D50).
+    Par défaut, la pastille est neutre : surface du creux, glyphe en encre
+    atténuée, une paire déjà mesurée. Seule la carte principale l'allume, de la
+    couleur de sa famille, sous un glyphe blanc (D3, D4).
   */
   .pastille {
     width: 34px;
     height: 34px;
     border-radius: var(--radius-pastille);
-    background: var(--role);
-    color: var(--on-role);
+    background: var(--creux);
+    color: var(--ink-muted);
+    box-shadow: inset 0 0 0 1px var(--bord);
     display: grid;
     place-items: center;
     flex: none;
   }
 
-  /*
-    Une absence n'a pas de couleur à annoncer : la pastille s'éteint plutôt que
-    de promettre un contenu par sa vivacité.
+  /* Le filet et le bord disent la famille sur toute la hauteur de la carte. */
+  .carte.famille {
+    border-color: var(--ring);
+    box-shadow: inset 4px 0 0 var(--ring);
+  }
 
-    Elle ne s'éteint pas en délavant la couleur du rôle, ce qui donnerait un
-    aplat clair sous un glyphe blanc — soit exactement le défaut que la palette
-    a été calculée pour éviter. Elle prend la surface du creux et l'encre
-    atténuée, une paire déjà mesurée par `contrast.test.ts`.
-  */
-  .carte.vide .pastille {
-    background: var(--creux);
-    color: var(--ink-muted);
-    box-shadow: inset 0 0 0 1px var(--bord);
+  .famille .pastille {
+    background: var(--ring);
+    color: var(--on-fam);
+    box-shadow: none;
   }
 
   .corps {
@@ -157,19 +171,35 @@
     flex: 1;
   }
 
-  /* Le libellé du rôle porte la couleur du rôle : c'est le même jeton que
-     l'aplat de la pastille, et il tient le seuil du texte courant sur la carte
-     comme sur le fond. */
   .role {
     font-size: var(--text-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     font-weight: var(--poids-titre);
-    color: var(--role);
+    color: var(--ink-muted);
   }
 
-  .carte.vide .role {
-    color: var(--ink-muted);
+  /* Sur la carte principale, le libellé prend la famille : chaque famille tient
+     4,5:1 comme encre sur la carte blanche (contrast.test.ts). */
+  .famille .role {
+    color: var(--ring);
+  }
+
+  .famille-nom {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: var(--poids-fort);
+    color: var(--ring);
+  }
+
+  .famille-nom::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: currentColor;
   }
 
   .nom {
@@ -220,18 +250,23 @@
   }
 
   /*
-    L'illustration repose sur un disque clair et jamais sur l'aplat du rôle : un
-    poisson bleu sur fond bleu ne se voit pas. C'est la même règle que sur
-    l'écran de la semaine, pour la même raison.
+    L'illustration repose sur un disque clair et jamais sur un aplat saturé : un
+    poisson bleu sur fond bleu ne se voit pas. Sur la carte principale, c'est le
+    disque de la semaine en petit — teinte pâle de la famille, cerclée d'elle.
   */
   .vignette {
     width: var(--ill-disque);
     height: var(--ill-disque);
     border-radius: 50%;
-    background: color-mix(in srgb, var(--role) 12%, var(--carte));
+    background: var(--creux);
     display: grid;
     place-items: center;
     flex: none;
+  }
+
+  .famille .vignette {
+    background: var(--pale);
+    box-shadow: inset 0 0 0 3px var(--ring);
   }
 
   .vignette :global(.illustration) {

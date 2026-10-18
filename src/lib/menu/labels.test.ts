@@ -15,7 +15,8 @@ import {
   weekReturnLabel,
   allergensUndeclared,
   noAllergenLabel,
-  undeclaredNotice
+  undeclaredNotice,
+  familyLabel
 } from './labels.js';
 import type { Course } from '../data/schema.js';
 
@@ -369,5 +370,16 @@ describe('allergènes non communiqués', () => {
   it('dit au parent qui surveille des allergènes que le filtre ne peut rien signaler', () => {
     expect(undeclaredNotice(true)).toMatch(/ne peuvent pas être signalés/);
     expect(undeclaredNotice(false)).not.toMatch(/surveillez/);
+  });
+});
+
+describe('familyLabel', () => {
+  it('nomme les quatre familles reconnues', () => {
+    expect(familyLabel('viande')).toBe('Viande');
+    expect(familyLabel('vegetarien')).toBe('Végétarien');
+  });
+
+  it('ne nomme pas un plat inclassable', () => {
+    expect(familyLabel('inconnu')).toBeNull();
   });
 });

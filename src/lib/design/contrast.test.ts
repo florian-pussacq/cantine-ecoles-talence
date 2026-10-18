@@ -37,10 +37,7 @@ function readTokens(): Record<string, string> {
 
 const jetons = readTokens();
 
-/** Les sept rôles du service, dans l'ordre où l'écran les montre (D50). */
-const ROLES = ['entree', 'plat', 'accompagnement', 'laitage', 'dessert', 'pain', 'gouter'] as const;
-
-/** Les familles de plat de l'écran de la semaine (D54). */
+/** Les familles du plat principal : le seul code couleur du menu (couleur-par-famille). */
 const FAMILLES = ['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const;
 
 function canal(valeur: number): number {
@@ -112,32 +109,20 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
   },
   { texte: 'evenement-on', fond: 'evenement', seuil: 4.5, quoi: 'bandeau d’événement' },
   /*
-    Les sept rôles (D50). Chacun est vérifié trois fois, parce qu'un seul jeton
-    remplit trois emplois : l'aplat de la pastille, le glyphe blanc posé dessus,
-    et l'encre du libellé — laquelle se lit tantôt sur la carte, tantôt sur le
-    fond de l'écran. C'est cette triple exigence qui a fixé les valeurs, et non
-    la maquette : ses quatre teintes, plus pâles, n'en tenaient aucune.
+    Les familles portent désormais deux emplois de plus, sur la carte principale
+    de l'écran du jour (couleur-par-famille, D3) : l'aplat de la pastille, sous
+    un glyphe blanc, et l'encre du libellé du rôle sur la carte. Aucune n'est
+    posée sur le fond crème, où trois d'entre elles ne tiendraient pas 4,5:1.
   */
-  ...ROLES.flatMap((role) => [
+  ...FAMILLES.flatMap((famille) => [
     {
-      texte: `role-${role}`,
+      texte: `fam-${famille}`,
       fond: 'carte',
       seuil: 4.5,
-      quoi: `libellé du rôle ${role} sur une carte`
+      quoi: `libellé du rôle sur la carte principale ${famille}`
     },
-    {
-      texte: `role-${role}`,
-      fond: 'fond',
-      seuil: 4.5,
-      quoi: `libellé du rôle ${role} sur le fond`
-    },
-    { texte: 'on-role', fond: `role-${role}`, seuil: 4.5, quoi: `glyphe de la pastille ${role}` }
+    { texte: 'on-fam', fond: `fam-${famille}`, seuil: 4.5, quoi: `glyphe sur l'aplat ${famille}` }
   ]),
-  /*
-    Les familles ne servent plus que l'écran de la semaine (D54), où aucun rôle
-    n'est à distinguer et où la couleur dit bien ce qui varie d'un jour à
-    l'autre. Elles restent donc mesurées, et sur les mêmes seuils.
-  */
   ...FAMILLES.map((famille) => ({
     texte: 'ink',
     fond: `fam-${famille}-pale`,
