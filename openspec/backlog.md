@@ -173,9 +173,9 @@ colorer toutes les cartes repeindrait la moitié du menu en vert.
   pictogramme du premier code (`codes[0]`) : un pictogramme par allergène
   surveillé, deux ou trois au plus, ou aucun.
 
-## 15. Renommage en français — proposé
+## 15. Renommage en français — archivé
 
-`vocabulaire-francais`, proposé le 18 octobre 2026. Le périmètre s'élargit aux
+`vocabulaire-francais`, archivé le 18 octobre 2026. Le périmètre s'élargit aux
 échelles (`--space-*`, `--text-*`, `--radius-*`) et au motif `--sur-*`, et s'arrête
 au contrat de données. Le détail d'origine :
 
