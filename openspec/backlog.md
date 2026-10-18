@@ -16,6 +16,9 @@ script échoue sans lui), et le script importe `fitz`, dont PyMuPDF annonce le
 retrait au profit de `import pymupdf`. Déclarer la dépendance (un
 `requirements.txt` sous `scripts/`) et migrer l'import.
 
+Proposé le 18 octobre 2026 : `extraction-reproductible`, avec le test de
+non-régression du parseur sur les neuf PDF conservés.
+
 ## 3. `allergenes-non-communiques` — archivé le 17 octobre 2026
 
 Le PDF des vacances de la Toussaint ne porte **aucun** code allergène. Le parser
