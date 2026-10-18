@@ -151,7 +151,7 @@ teinté à l'accent remplace le contour noir. Voir
 
 - **14a** `couleur-par-famille` : archivé le 18 octobre 2026 — la famille sur la carte principale,
   retrait des `--role-*`, révision de D50 et D54.
-- **14b** à proposer : direction Affinée, les cartes vides et le goûter en lignes
+- **14b** `lignes-compactes` : proposé le 18 octobre 2026 — direction Affinée, les cartes vides et le goûter en lignes
   compactes, empruntées à Express (artefact d'audit, piste 2).
 - **14c** à proposer : la pastille d'allergène de la semaine montre tous les
   allergènes surveillés, deux ou trois pictogrammes au plus, au lieu du premier.
