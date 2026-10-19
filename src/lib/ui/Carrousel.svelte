@@ -168,10 +168,30 @@
        courant ne déborde pas sous lui : le carrousel découpe à sa hauteur.
        `clip` découpe sans créer de conteneur de défilement. */
     overflow: clip;
+
+    /*
+      L'écart entre deux jours, logé dans les panneaux et non entre eux.
+
+      La surface déborde d'un demi-écart de chaque côté dans la gouttière de la
+      page, et chaque panneau le lui rend en marge intérieure : au repos, le
+      contenu garde exactement sa place ; en mouvement, deux panneaux voisins
+      sont séparés d'un écart entier. La course d'un panneau reste la largeur
+      de la surface, et le script n'a rien à savoir de l'écart.
+
+      Le même débord, en hauteur, laisse au contour de focus la place que
+      la découpe lui prendrait.
+    */
+    margin: calc(-1 * var(--espace-2));
+    padding-block: var(--espace-2);
   }
 
   .piste {
     position: relative;
+  }
+
+  .courant,
+  .voisin {
+    padding-inline: var(--espace-2);
   }
 
   .piste.anime {

@@ -143,6 +143,11 @@ test.describe('écran du jour', () => {
     // Le voisin se voit, mais ne se lit ni ne se touche.
     await expect(page.locator('.voisin.apres')).toHaveAttribute('aria-hidden', 'true');
     await expect(page.locator('.voisin.apres')).toHaveJSProperty('inert', true);
+
+    // Les deux jours ne se touchent pas : un écart les sépare.
+    const courant = await page.locator('.courant .jour').boundingBox();
+    const voisin = await page.locator('.voisin.apres .jour').boundingBox();
+    expect(voisin!.x - (courant!.x + courant!.width)).toBeCloseTo(16, 0);
     await lever();
   });
 

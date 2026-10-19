@@ -63,6 +63,8 @@ Un composant `Carrousel` porte la surface, le suivi et les panneaux. Chaque écr
 
 Les seuils et la courbe ne se jugent pas en test, mais au doigt. Le changement prévoit un passage de réglage après le premier essai sur un vrai téléphone, et les valeurs retenues sont écrites ici.
 
+**Premier essai au doigt (19 octobre 2026).** Le comportement est jugé bon : seuils (10 px, 30 %, 0,4 px/ms), durée (`--glisse`, 260 ms) et courbe (`--courbe-glisse`) restent tels quels. Un seul défaut : en mouvement, les deux jours se touchent. Un écart de 16 px les sépare désormais (deux fois `--espace-2`), logé dans les panneaux : la surface déborde d'un demi-écart dans la gouttière de la page, et chaque panneau le lui rend en marge intérieure. Au repos, rien ne bouge ; la course d'un panneau reste la largeur de la surface, et le script ignore l'écart.
+
 ## Risks / Trade-offs
 
 - [Coût du premier mouvement] Les voisins se rendent au moment où le geste devient horizontal. → Une liste de jour est légère ; si une saccade se voit au doigt, ils seront rendus dès le contact.

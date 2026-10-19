@@ -24,4 +24,4 @@
 
 ## 5. Réglage au doigt
 
-- [ ] 5.1 Essai sur un vrai téléphone par l'humain ; seuils, durée et courbe ajustés et consignés dans `design.md`
+- [x] 5.1 Essai sur un vrai téléphone par l'humain ; seuils, durée et courbe ajustés et consignés dans `design.md`
