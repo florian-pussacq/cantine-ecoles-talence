@@ -79,6 +79,11 @@ type Entry = {
  * long l'emporte**, et à longueur égale, le premier de la table. C'est ce qui
  * fait que « écrasé de pommes de terre » devient un féculent et non un fruit,
  * alors que les deux mots-clés correspondent.
+ *
+ * Un mot-clé se compare **mot à mot**, et non comme un fragment : chaque mot
+ * admet son pluriel en -s ou -x, rien d'autre. Comparé en fragment, « blé »
+ * trouvait « cordon bleu » et le servait végétarien, « mousse » trouvait
+ * « pamplemousse » et le dessinait en mousse au chocolat.
  */
 const TABLE: readonly Entry[] = [
   // Viandes — un plat de pâtes à la bolognaise reste de la viande.
@@ -94,7 +99,10 @@ const TABLE: readonly Entry[] = [
       'mouton',
       'kefta',
       'paupiette',
-      'merguez'
+      'merguez',
+      'jambon',
+      'saucisse',
+      'hachis parmentier'
     ],
     illustration: 'viande',
     family: 'viande'
@@ -102,7 +110,17 @@ const TABLE: readonly Entry[] = [
 
   // Volailles
   {
-    keywords: ['volaille', 'poulet', 'dinde', 'canard', 'nuggets'],
+    // Le cordon bleu de la restauration scolaire est de dinde ou de poulet.
+    keywords: [
+      'volaille',
+      'poulet',
+      'dinde',
+      'canard',
+      'nuggets',
+      'haut de cuisse',
+      'cordon bleu',
+      'saucisse de volaille'
+    ],
     illustration: 'volaille',
     family: 'volaille'
   },
@@ -158,6 +176,9 @@ const TABLE: readonly Entry[] = [
     illustration: 'pates',
     family: 'vegetarien'
   },
+
+  // Ce qui se déclare végétarien, ou ne peut être que végétal.
+  { keywords: ['vege', 'vegetarien', 'seitan'], illustration: 'legume', family: 'vegetarien' },
 
   // Œufs
   { keywords: ['omelette', 'oeuf', 'œuf'], illustration: 'oeuf', family: 'vegetarien' },
@@ -262,7 +283,8 @@ const TABLE: readonly Entry[] = [
       'abricot',
       'orange',
       'kiwi',
-      'fraise'
+      'fraise',
+      'pamplemousse'
     ],
     illustration: 'fruit',
     family: 'vegetarien'
@@ -346,6 +368,15 @@ export type DishMatch = {
   readonly matched: string | null;
 };
 
+/** Chaque mot-clé, normalisé et compilé une fois pour toutes. */
+const MOTIFS = TABLE.flatMap((entry) =>
+  entry.keywords.map((keyword) => {
+    const needle = normalise(keyword);
+    const mots = needle.split(' ').map((mot) => `${mot}(?:s|x)?`);
+    return { entry, needle, motif: new RegExp(`(?:^| )${mots.join(' ')}(?: |$)`) };
+  })
+);
+
 const FALLBACK: DishMatch = { illustration: 'inconnu', family: 'inconnu', matched: null };
 
 /**
@@ -355,13 +386,10 @@ export function classify(label: string): DishMatch {
   const haystack = normalise(label);
   let best: { entry: Entry; keyword: string } | null = null;
 
-  for (const entry of TABLE) {
-    for (const keyword of entry.keywords) {
-      const needle = normalise(keyword);
-      if (!haystack.includes(needle)) continue;
-      if (best === null || needle.length > best.keyword.length) {
-        best = { entry, keyword: needle };
-      }
+  for (const { entry, needle, motif } of MOTIFS) {
+    if (!motif.test(haystack)) continue;
+    if (best === null || needle.length > best.keyword.length) {
+      best = { entry, keyword: needle };
     }
   }
 

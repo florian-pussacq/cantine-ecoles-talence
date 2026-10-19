@@ -47,6 +47,21 @@ describe('classify', () => {
       expect(classify('Compote de pommes').illustration).toBe('compote');
     });
 
+    it('compare mot à mot, et non par fragment', () => {
+      // « blé » dans « bleu » : le cordon bleu était servi végétarien.
+      expect(classify('Cordon bleu').family).toBe('volaille');
+      // « mousse » dans « pamplemousse » : un agrume dessiné en mousse.
+      expect(classify('Pamplemousse et sucre').illustration).toBe('fruit');
+      expect(classify('Blé pilaf').illustration).toBe('feculent');
+      // « saucisse » et « volaille » font huit lettres : le mot-clé complet tranche.
+      expect(classify('Saucisse de volaille').family).toBe('volaille');
+    });
+
+    it('admet le pluriel de chaque mot', () => {
+      expect(classify('Salade de pommes de terre').illustration).toBe('feculent');
+      expect(classify('Choux de Bruxelles').illustration).toBe('chou');
+    });
+
     it('départage à longueur égale par l’ordre de la table', () => {
       // « tarte » et « pomme » font cinq lettres : le dessert l'emporte.
       expect(classify('Tarte aux pommes').illustration).toBe('gateau');
