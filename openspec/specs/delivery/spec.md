@@ -43,19 +43,23 @@ La version de Node SHALL être déclarée dans `.nvmrc` seulement, et lue de là
 
 ### Requirement: La production ne publie qu'un commit vérifié
 
-Une poussée sur `main` NE SHALL PAS publier par elle-même. La publication SHALL être déclenchée par l'intégration continue, une fois `verifier` et `e2e` réussis, et seulement si le commit vérifié est encore la tête de `main`.
+Une poussée sur `main` NE SHALL PAS publier, ni par elle-même ni par l'intégration continue. La publication SHALL être déclenchée par un geste humain explicite, et SHALL être refusée, avec la raison, si les vérifications `verifier` et `e2e` de la tête de `main` ne sont pas en succès.
 
 #### Scenario: Poussée verte
-- **WHEN** des commits poussés sur `main` passent `verifier` et `e2e`, et qu'aucune poussée ne les a suivis
-- **THEN** l'intégration continue déclenche la publication, et Netlify publie la tête de `main`
+- **WHEN** des commits poussés sur `main` passent `verifier` et `e2e`
+- **THEN** rien n'est publié tant que l'humain ne le demande pas ; à sa demande, Netlify publie la tête de `main`
 
 #### Scenario: Poussée rouge
-- **WHEN** un commit poussé sur `main` échoue à `e2e`
-- **THEN** rien n'est publié, et la production reste sur le dernier commit vérifié
+- **WHEN** la publication est demandée alors que `e2e` a échoué sur la tête de `main`
+- **THEN** la demande est refusée en nommant la vérification en échec, et la production reste sur le dernier commit publié
 
 #### Scenario: Poussée dépassée
-- **WHEN** une nouvelle poussée arrive sur `main` avant la fin de la vérification de la précédente
-- **THEN** seule la plus récente, une fois vérifiée, déclenche la publication
+- **WHEN** la publication est demandée alors que la vérification de la tête de `main` est encore en cours
+- **THEN** la demande est refusée, et peut être renouvelée une fois la vérification terminée
+
+#### Scenario: Seule l'extraction en échec
+- **WHEN** la publication est demandée alors que `verifier` et `e2e` réussissent sur la tête de `main`, et que seule la vérification de l'extraction échoue
+- **THEN** Netlify publie la tête de `main`
 
 ### Requirement: La reproduction des menus est vérifiée à chaque poussée
 
