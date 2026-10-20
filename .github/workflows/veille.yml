@@ -12,9 +12,12 @@ name: veille
 
 on:
   schedule:
-    # 5 h 17 UTC : 7 h 17 l'été, 6 h 17 l'hiver à Paris, avant qu'on regarde le
-    # menu. La minute 17 évite l'heure pile, où GitHub retarde les exécutions (D5).
-    - cron: '17 5 * * *'
+    # 1 h 17 UTC : 3 h 17 l'été, 2 h 17 l'hiver à Paris. GitHub retarde les
+    # exécutions planifiées, parfois de plusieurs heures (la première, prévue à
+    # 7 h 17, a tourné à 12 h 46) : partir en pleine nuit laisse ce retard se
+    # perdre avant le matin. La minute 17 évite l'heure pile, où l'embouteillage
+    # est le pire (D5).
+    - cron: '17 1 * * *'
   workflow_dispatch:
 
 permissions:
