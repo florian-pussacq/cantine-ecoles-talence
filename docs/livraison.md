@@ -12,19 +12,27 @@ commits sur main, en local ──► vérification locale ──► poussée gro
                                     Netlify : construction annulée (ignore)
                                                             │
                                     GitHub Actions : verifier + e2e
-                                                            │ verts, et le commit est
-                                                            ▼ toujours la tête de main
-                                    job publier ──► build hook ──► Netlify publie
+                                                            │ et rien de plus
+                                                            ┊
+                         geste humain : Actions → publier → Run workflow
+                                                            │ verifier et e2e verts
+                                                            ▼ sur la tête de main
+                                    build hook ──► Netlify publie
 ```
 
 - **On travaille sur `main`** (développement sur le tronc). Les commits restent
   en local et partent ensemble.
-- **Une poussée ne publie plus par elle-même.** `netlify.toml` annule toute
-  construction de production née d'une poussée ; Netlify n'annule jamais une
-  construction déclenchée par un build hook.
-- **La CI est la barrière.** Quand `verifier` et `e2e` réussissent, le job
-  `publier` appelle le hook — si le commit vérifié est encore la tête de `main`.
-  Sinon la poussée suivante publiera après sa propre vérification.
+- **Une poussée ne publie pas.** `netlify.toml` annule toute construction de
+  production née d'une poussée ; Netlify n'annule jamais une construction
+  déclenchée par un build hook. La CI vérifie, et s'arrête là.
+- **Publier est un geste humain** (`deploiement-manuel`). Sur GitHub, ou dans
+  son application mobile : _Actions → publier → Run workflow_, depuis `main`.
+- **La CI reste la barrière.** Le workflow `publier` n'appelle le hook que si les
+  jobs `verifier` et `e2e` ont réussi sur la tête de `main`. Sinon il refuse, et
+  son résumé dit pourquoi : vérification rouge, en cours, absente, ou lancement
+  depuis une autre branche. Une extraction rouge ne retient pas la publication.
+  `node scripts/barriere-publication.js` donne la même réponse depuis un poste,
+  sans rien publier.
 - **La vérification locale** (`CLAUDE.md`) épargne un cycle de CI rouge ; ce
   n'est plus elle qui garde la production.
 - **Le job `extraction`** rejoue l'extracteur sur chaque PDF de `sources/pdf/`
@@ -58,7 +66,7 @@ L'URL ne sait que déclencher une construction ; c'est pourquoi on l'a préfér�
 un jeton Netlify (`barriere-de-deploiement`, D1). Si elle fuit, la remplacer
 dans les deux interfaces.
 
-Symptôme d'un hook absent : le job `publier` échoue en le nommant.
+Symptôme d'un hook absent : le workflow `publier` échoue en le nommant.
 
 ## La veille des menus
 

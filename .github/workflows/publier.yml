@@ -1,0 +1,60 @@
+# Publication en production, sur décision humaine (deploiement-manuel).
+#
+# Une poussée ne publie rien : `netlify.toml` annule les constructions qu'elle
+# déclenche, et la CI ne publie pas. Ce workflow est le seul chemin vers la
+# production. On le lance à la main : _Actions → publier → Run workflow_, sur le
+# site de GitHub ou dans son application mobile.
+#
+# Il ne publie qu'une tête de `main` dont les jobs `verifier` et `e2e` ont réussi,
+# et dit pourquoi quand il refuse (`scripts/barriere-publication.js`, D2).
+# Le geste ne s'approuve pas dans un réglage du dépôt : la garantie se lit ici
+# (D1). Le détail, et les réglages hors du dépôt, sont dans `docs/livraison.md`.
+
+name: publier
+
+on:
+  workflow_dispatch:
+
+# Une publication à la fois ; une seconde demande attend la première.
+concurrency:
+  group: publier
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  # Pour lire les exécutions de `verifier` et leurs jobs.
+  actions: read
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    steps:
+      # Sans le secret, rien ne peut partir : l'échec doit le nommer (D5).
+      - name: Vérifier la présence du build hook
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::Secret NETLIFY_BUILD_HOOK absent : rien ne peut être publié."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      # Sans `npm ci` : le script n'a d'autre dépendance que Node.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      # Refuse, en disant pourquoi, une tête de `main` non vérifiée, une
+      # vérification en cours, ou un lancement depuis une autre branche (D2, D3).
+      - name: La tête de main est-elle vérifiée ?
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/barriere-publication.js
+      # Le hook construit la tête de `main` au moment de l'appel. Une poussée
+      # glissée depuis la lecture passerait sans vérification : c'est la fenêtre
+      # acceptée par `barriere-de-deploiement`, D2 (D4).
+      - name: Publier
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
+          echo "Publication demandée à Netlify."

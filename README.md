@@ -50,8 +50,8 @@ Aucun compte, aucun cookie, aucun pistage, aucune ressource tierce.
                               │
                               ▼ commit sur main, puis poussée
                        GitHub Actions : validation, tests, e2e, budgets
-                              │ tout est vert
-                              ▼
+                              │ tout est vert, puis geste humain :
+                              ▼ Actions → publier → Run workflow
                        build hook ──▶ Netlify publie le site
                                       (SvelteKit entièrement pré-rendu,
                                        service worker pour le hors-ligne)
@@ -72,8 +72,9 @@ menus sont intégrés aux pages au moment du build : l'écran s'affiche complet 
 la première peinture. Un service worker garde l'application et ses données pour
 le hors-ligne.
 
-**La livraison.** On travaille directement sur `main`. Une poussée ne publie pas
-par elle-même : la CI vérifie, puis appelle le build hook de Netlify. Le détail,
+**La livraison.** On travaille directement sur `main`. Une poussée ne publie pas :
+la CI vérifie, et la mise en ligne est un second geste, le workflow `publier`,
+qui refuse tout commit dont la vérification n'est pas verte. Le détail,
 et les deux réglages de plateforme qui ne vivent pas dans le dépôt, sont dans
 [`docs/livraison.md`](docs/livraison.md).
 

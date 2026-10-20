@@ -1,11 +1,11 @@
-# Vérification de chaque poussée sur `main`, et des pull requests s'il y en a ;
-# publication de `main` une fois vérifiée.
+# Vérification de chaque poussée sur `main`, et des pull requests s'il y en a.
 #
-# Netlify ne publie plus à la poussée : `netlify.toml` annule ces constructions.
-# Le job `publier` appelle le build hook quand `verifier` et `e2e` ont réussi :
-# c'est la seule voie vers la production (barriere-de-deploiement ;
-# `docs/livraison.md`). Netlify rejoue `npm run validate && npm run build` de son
-# côté, mais n'exécute pas les tests de bout en bout : ils vivent ici.
+# Elle ne publie pas. Netlify ne publie plus à la poussée : `netlify.toml` annule
+# ces constructions. La publication est un geste humain, le workflow `publier`,
+# qui n'appelle le build hook que si `verifier` et `e2e` ont réussi sur la tête
+# de `main` (deploiement-manuel ; `docs/livraison.md`). Netlify rejoue
+# `npm run validate && npm run build` de son côté, mais n'exécute pas les tests
+# de bout en bout : ils vivent ici.
 #
 # Le job `extraction` rejoue l'extracteur des menus sur chaque PDF conservé. Il ne
 # garde pas la production (extraction-reproductible, D5).
@@ -69,7 +69,7 @@ jobs:
           retention-days: 7
 
   # L'extracteur des menus reproduit-il encore chaque mois publié depuis son PDF ?
-  # Hors des `needs` de `publier` : l'application sert des données déjà commitées,
+  # La publication ne l'attend pas : l'application sert des données déjà commitées,
   # qu'un extracteur cassé ne touche pas. Le job rouge dit qu'on ne peut plus en
   # produire de nouvelles (extraction-reproductible, D5).
   extraction:
@@ -84,37 +84,3 @@ jobs:
       # La version de PyMuPDF est celle que déclare le dépôt, épinglée (D1).
       - run: pip install -r scripts/requirements.txt
       - run: python scripts/test_extraction.py
-
-  publier:
-    # Seulement pour une poussée sur `main` : une pull request ne publie rien.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [verifier, e2e]
-    runs-on: ubuntu-latest
-    steps:
-      # Sans le secret, la production cesserait de se mettre à jour sans que
-      # personne le sache : l'échec doit se voir (D3).
-      - name: Vérifier la présence du build hook
-        env:
-          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
-        run: |
-          if [ -z "$HOOK" ]; then
-            echo "::error::Secret NETLIFY_BUILD_HOOK absent : rien ne peut être publié."
-            exit 1
-          fi
-      # Un hook construit la tête de `main` au moment de l'appel, pas ce commit-ci.
-      # Si une poussée l'a dépassé, c'est son propre passage qui publiera (D2).
-      - name: Publier si ce commit est encore la tête de main
-        env:
-          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
-          SHA: ${{ github.sha }}
-          # Le jeton du workflow, en lecture seule : il suffit pour lire la tête de
-          # `main`, dépôt privé compris.
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          tete=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
-          if [ "$tete" != "$SHA" ]; then
-            echo "main est passée à $tete : ce passage ne publie pas."
-            exit 0
-          fi
-          curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
-          echo "Publication demandée pour $SHA."

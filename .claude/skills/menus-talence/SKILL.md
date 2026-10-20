@@ -141,5 +141,6 @@ le rendre indépendant du jour plutôt que figer la nouvelle date.
 ## 6. Rendre compte
 
 Commiter, en disant ce qui a changé pour le lecteur des menus : quel mois, quel
-jour, quel plat. Puis s'arrêter — la poussée met en ligne, et elle appartient à
-l'humain.
+jour, quel plat. Puis s'arrêter : la poussée et la mise en ligne appartiennent
+à l'humain. Lui rappeler que les nouveaux menus ne seront servis qu'une fois
+poussés, la CI verte, **puis publiés** (_Actions → publier → Run workflow_).
