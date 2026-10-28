@@ -1,7 +1,7 @@
 <script lang="ts">
-  import LienExterne from '$lib/ui/LienExterne.svelte';
-  import Bandeau from '$lib/ui/Bandeau.svelte';
-  import { formatDay, PAGE_DES_MENUS } from '$lib/menu/labels.js';
+  import LienExterne from '#lib/ui/LienExterne.svelte';
+  import Bandeau from '#lib/ui/Bandeau.svelte';
+  import { formatDay, PAGE_DES_MENUS } from '#lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();

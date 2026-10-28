@@ -1,21 +1,21 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import Illustration from '$lib/illustrations/Illustration.svelte';
-  import { classify } from '$lib/illustrations/families.js';
-  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
-  import Bandeau from '$lib/ui/Bandeau.svelte';
-  import { contactAncien } from '$lib/data/load.js';
-  import { appUpdate } from '$lib/pwa/update.svelte.js';
-  import LienExterne from '$lib/ui/LienExterne.svelte';
-  import { horloge } from '$lib/data/horloge.svelte.js';
-  import { parisDate, resolveDisplayDay, weekOf } from '$lib/data/resolve.js';
-  import { selection } from '$lib/menu/selection.svelte.js';
-  import Carrousel from '$lib/ui/Carrousel.svelte';
-  import RangNavigation from '$lib/ui/RangNavigation.svelte';
-  import PiedSource from '$lib/ui/PiedSource.svelte';
-  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
-  import PastilleAllergene from '$lib/menu/PastilleAllergene.svelte';
+  import Illustration from '#lib/illustrations/Illustration.svelte';
+  import { classify } from '#lib/illustrations/families.js';
+  import { allergenFilter } from '#lib/filter/allergens.svelte.js';
+  import Bandeau from '#lib/ui/Bandeau.svelte';
+  import { contactAncien } from '#lib/data/load.js';
+  import { appUpdate } from '#lib/pwa/update.svelte.js';
+  import LienExterne from '#lib/ui/LienExterne.svelte';
+  import { horloge } from '#lib/data/horloge.svelte.js';
+  import { parisDate, resolveDisplayDay, weekOf } from '#lib/data/resolve.js';
+  import { selection } from '#lib/menu/selection.svelte.js';
+  import Carrousel from '#lib/ui/Carrousel.svelte';
+  import RangNavigation from '#lib/ui/RangNavigation.svelte';
+  import PiedSource from '#lib/ui/PiedSource.svelte';
+  import CommandeRetour from '#lib/ui/CommandeRetour.svelte';
+  import PastilleAllergene from '#lib/menu/PastilleAllergene.svelte';
   import {
     allergenNames,
     allergensUndeclared,
@@ -25,7 +25,7 @@
     shortAllergenName,
     weekReturnLabel,
     PAGE_DES_MENUS
-  } from '$lib/menu/labels.js';
+  } from '#lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();

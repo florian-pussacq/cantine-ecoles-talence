@@ -1,5 +1,5 @@
-import { base } from '$app/paths';
-import type { StrikeMenu } from '$lib/data/schema.js';
+import { asset } from '$app/paths';
+import type { StrikeMenu } from '#lib/data/schema.js';
 import type { PageLoad } from './$types.js';
 
 /**
@@ -16,7 +16,7 @@ import type { PageLoad } from './$types.js';
  */
 export const load: PageLoad = async ({ fetch }) => {
   try {
-    const response = await fetch(`${base}/data/greve.json`);
+    const response = await fetch(asset('data/greve.json'));
     if (!response.ok) return { menu: null };
     const menu: StrikeMenu = await response.json();
     // Un fichier plus récent que ce que l'écran sait lire n'est pas interprété à

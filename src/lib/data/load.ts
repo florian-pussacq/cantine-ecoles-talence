@@ -23,6 +23,9 @@ export type LoadResult = {
 
 type Fetcher = typeof globalThis.fetch;
 
+/** Situe un fichier de `static/` : `asset` de `$app/paths`, ou son double en test. */
+type Asset = (file: string) => string;
+
 /**
  * Récupère le manifeste puis les mois qu'il annonce.
  *
@@ -35,11 +38,11 @@ type Fetcher = typeof globalThis.fetch;
  * Les mois sont demandés en parallèle : ils ne dépendent pas les uns des autres,
  * et l'écran ne peut rien afficher avant de les avoir tous.
  */
-export async function loadDataset(fetch: Fetcher, base: string): Promise<LoadResult> {
+export async function loadDataset(fetch: Fetcher, asset: Asset): Promise<LoadResult> {
   let manifest: MenuIndex;
 
   try {
-    const response = await fetch(`${base}/data/index.json`);
+    const response = await fetch(asset('data/index.json'));
     if (!response.ok) return { dataset: EMPTY_DATASET, status: { kind: 'unavailable' } };
     manifest = await response.json();
   } catch {
@@ -59,7 +62,7 @@ export async function loadDataset(fetch: Fetcher, base: string): Promise<LoadRes
     wanted.map(async (entry) => {
       try {
         // Un menu de vacances partage son mois avec un mensuel : il nomme son fichier.
-        const response = await fetch(`${base}/data/${entry.file ?? `${entry.month}.json`}`);
+        const response = await fetch(asset(`data/${entry.file ?? `${entry.month}.json`}`));
         if (!response.ok) return null;
         return { entry, raw: await response.json() };
       } catch {

@@ -1,15 +1,15 @@
 <script lang="ts">
-  import '$lib/design/tokens.css';
+  import '#lib/design/tokens.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
-  import Enseigne from '$lib/ui/Enseigne.svelte';
-  import EnTete from '$lib/ui/EnTete.svelte';
-  import Onglets from '$lib/ui/Onglets.svelte';
-  import Bandeau from '$lib/ui/Bandeau.svelte';
-  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
-  import { horloge } from '$lib/data/horloge.svelte.js';
-  import { appUpdate } from '$lib/pwa/update.svelte.js';
+  import Enseigne from '#lib/ui/Enseigne.svelte';
+  import EnTete from '#lib/ui/EnTete.svelte';
+  import Onglets from '#lib/ui/Onglets.svelte';
+  import Bandeau from '#lib/ui/Bandeau.svelte';
+  import { allergenFilter } from '#lib/filter/allergens.svelte.js';
+  import { horloge } from '#lib/data/horloge.svelte.js';
+  import { appUpdate } from '#lib/pwa/update.svelte.js';
 
   let { children } = $props();
 

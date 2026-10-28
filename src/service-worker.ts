@@ -1,7 +1,8 @@
 /// <reference types="@sveltejs/kit" />
 /// <reference lib="webworker" />
 
-import { base, build, files, prerendered, version } from '$service-worker';
+import { version } from '$app/env';
+import { assets, immutable, prerendered } from '$app/manifest';
 
 /**
  * Le service worker.
@@ -24,12 +25,26 @@ const SHELL_CACHE = `coque-${version}`;
 const DATA_CACHE = `donnees-${version}`;
 const OURS = new Set([SHELL_CACHE, DATA_CACHE]);
 
-const DATA_PREFIX = `${base}/data/`;
+/**
+ * Le manifeste donne ses chemins relatifs au préfixe de déploiement. Le service
+ * worker est servi à ce préfixe : y résoudre un chemin donne le chemin absolu
+ * que portent les requêtes.
+ */
+const absolute = (path: string) => new URL(`./${path}`, location.href).pathname;
+
+const DATA_PREFIX = absolute('data/');
 
 const isData = (pathname: string) => pathname.startsWith(DATA_PREFIX);
 
+const files = assets.map(({ path }) => absolute(path));
+
 /** La coque : tout ce que le build produit, moins les fichiers de données. */
-const SHELL_ASSETS = [...build, ...files.filter((path) => !isData(path)), ...prerendered];
+const SHELL_ASSETS = [
+  ...immutable.map(({ path }) => absolute(path)),
+  ...files,
+  // Le pré-rendu compte aussi les données qu'il a chargées.
+  ...prerendered.map(({ path }) => absolute(path))
+].filter((path) => !isData(path));
 const DATA_ASSETS = files.filter((path) => isData(path));
 
 worker.addEventListener('install', (event) => {
@@ -65,9 +80,16 @@ worker.addEventListener('message', (event) => {
   if (event.data === 'appliquer-la-mise-a-jour') void worker.skipWaiting();
 });
 
-/** Cache d'abord : la coque ne change qu'au déploiement. */
+/**
+ * Cache d'abord : la coque ne change qu'au déploiement.
+ *
+ * `ignoreVary`, parce que la coque se met en cache par des requêtes sans
+ * `Origin`, alors que le routeur charge ses modules en CORS, avec. Un serveur
+ * qui répond `Vary: Origin` ferait alors manquer chaque module hors ligne. Ces
+ * fichiers portent leur empreinte dans leur nom : un même chemin, un même contenu.
+ */
 async function fromShell(request: Request): Promise<Response> {
-  const cached = await caches.match(request, { cacheName: SHELL_CACHE });
+  const cached = await caches.match(request, { cacheName: SHELL_CACHE, ignoreVary: true });
   if (cached) return cached;
   return await fetch(request);
 }
@@ -128,7 +150,7 @@ worker.addEventListener('fetch', (event) => {
         (await caches.match(request, { cacheName: SHELL_CACHE })) ??
         (await fetch(request).catch(
           async () =>
-            (await caches.match(`${base}/`, { cacheName: SHELL_CACHE })) ??
+            (await caches.match(absolute(''), { cacheName: SHELL_CACHE })) ??
             new Response(null, { status: 503 })
         )))()
     );

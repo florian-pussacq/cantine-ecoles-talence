@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatDay } from '$lib/menu/labels.js';
+  import { formatDay } from '#lib/menu/labels.js';
   import LienExterne from './LienExterne.svelte';
 
   /**

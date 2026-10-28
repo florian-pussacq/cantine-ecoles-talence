@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
-import type { Handle } from '@sveltejs/kit';
-import { horloge } from '$lib/data/horloge.svelte.js';
-import { parisDate } from '$lib/data/resolve.js';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { horloge } from '#lib/data/horloge.svelte.js';
+import { parisDate } from '#lib/data/resolve.js';
 
 /**
  * Pose la bibliothèque de formes dans la coque HTML (design.md, D57).

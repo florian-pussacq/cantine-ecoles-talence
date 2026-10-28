@@ -1,7 +1,7 @@
 <script lang="ts">
-  import PlatCarte from '$lib/menu/PlatCarte.svelte';
-  import PiedSource from '$lib/ui/PiedSource.svelte';
-  import Bandeau from '$lib/ui/Bandeau.svelte';
+  import PlatCarte from '#lib/menu/PlatCarte.svelte';
+  import PiedSource from '#lib/ui/PiedSource.svelte';
+  import Bandeau from '#lib/ui/Bandeau.svelte';
   import type { PageData } from './$types.js';
 
   let { data }: { data: PageData } = $props();

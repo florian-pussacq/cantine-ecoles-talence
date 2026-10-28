@@ -1,5 +1,6 @@
-import { browser } from '$app/environment';
-import { base } from '$app/paths';
+import { browser } from '$app/env';
+import { asset } from '$app/paths';
+import type { AssetPath } from '$app/types';
 import { browserStore } from '../filter/storage.js';
 
 /** L'instant du dernier contact réussi avec le serveur (fraicheur-par-appareil, D1). */
@@ -52,9 +53,12 @@ class AppUpdate {
     }
 
     void (async () => {
-      const registration = await navigator.serviceWorker.register(`${base}/service-worker.js`, {
-        type: 'module'
-      });
+      // SvelteKit situe son service worker comme un fichier statique ; le typage
+      // d'`asset` ne le connaît pas, parce qu'il est produit au build.
+      const registration = await navigator.serviceWorker.register(
+        asset('service-worker.js' as AssetPath),
+        { type: 'module' }
+      );
 
       const track = (worker: ServiceWorker | null) => {
         if (worker === null) return;

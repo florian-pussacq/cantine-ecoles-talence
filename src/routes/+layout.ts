@@ -1,5 +1,6 @@
-import { base } from '$app/paths';
-import { loadDataset } from '$lib/data/load.js';
+import { asset } from '$app/paths';
+import type { AssetPath } from '$app/types';
+import { loadDataset } from '#lib/data/load.js';
 import type { LayoutLoad } from './$types.js';
 
 // Le site est intégralement pré-rendu : aucune route n'est calculée à la demande.
@@ -14,5 +15,7 @@ export const ssr = true;
  * peinture, sans squelette ni indicateur de progression.
  */
 export const load: LayoutLoad = async ({ fetch }) => {
-  return await loadDataset(fetch, base);
+  // Le manifeste nomme ses fichiers à l'exécution : le typage d'`asset` ne
+  // connaît que ceux présents au build.
+  return await loadDataset(fetch, (file) => asset(file as AssetPath));
 };

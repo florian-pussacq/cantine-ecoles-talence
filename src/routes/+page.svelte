@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { contactAncien } from '$lib/data/load.js';
-  import { appUpdate } from '$lib/pwa/update.svelte.js';
-  import { horloge } from '$lib/data/horloge.svelte.js';
-  import { parisDate, resolveDisplayDay, servedNeighbour } from '$lib/data/resolve.js';
-  import FicheJour from '$lib/menu/FicheJour.svelte';
-  import ListeDuJour from '$lib/menu/ListeDuJour.svelte';
-  import PlatCarte from '$lib/menu/PlatCarte.svelte';
+  import { contactAncien } from '#lib/data/load.js';
+  import { appUpdate } from '#lib/pwa/update.svelte.js';
+  import { horloge } from '#lib/data/horloge.svelte.js';
+  import { parisDate, resolveDisplayDay, servedNeighbour } from '#lib/data/resolve.js';
+  import FicheJour from '#lib/menu/FicheJour.svelte';
+  import ListeDuJour from '#lib/menu/ListeDuJour.svelte';
+  import PlatCarte from '#lib/menu/PlatCarte.svelte';
   import {
     allergensUndeclared,
     browsedEyebrow,
@@ -14,15 +14,15 @@
     targetReturnLabel,
     undeclaredNotice,
     PAGE_DES_MENUS
-  } from '$lib/menu/labels.js';
-  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
-  import LienExterne from '$lib/ui/LienExterne.svelte';
-  import { selection } from '$lib/menu/selection.svelte.js';
-  import Carrousel from '$lib/ui/Carrousel.svelte';
-  import RangNavigation from '$lib/ui/RangNavigation.svelte';
-  import PiedSource from '$lib/ui/PiedSource.svelte';
-  import CommandeRetour from '$lib/ui/CommandeRetour.svelte';
-  import Bandeau from '$lib/ui/Bandeau.svelte';
+  } from '#lib/menu/labels.js';
+  import { allergenFilter } from '#lib/filter/allergens.svelte.js';
+  import LienExterne from '#lib/ui/LienExterne.svelte';
+  import { selection } from '#lib/menu/selection.svelte.js';
+  import Carrousel from '#lib/ui/Carrousel.svelte';
+  import RangNavigation from '#lib/ui/RangNavigation.svelte';
+  import PiedSource from '#lib/ui/PiedSource.svelte';
+  import CommandeRetour from '#lib/ui/CommandeRetour.svelte';
+  import Bandeau from '#lib/ui/Bandeau.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();

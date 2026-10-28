@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 /**
  * L'instant de référence des écrans de consultation (design.md, D47).

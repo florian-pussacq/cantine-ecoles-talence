@@ -24,6 +24,10 @@ const manifest = (months: Body[]): Body => ({
   months
 });
 
+/** `asset` à la racine du domaine, ou sous un préfixe de déploiement. */
+const racine = (file: string) => `/${file}`;
+const sousCantine = (file: string) => `/cantine/${file}`;
+
 const entry = (extra: Body = {}) => ({
   month: '2026-09',
   contentHash: 'a'.repeat(64),
@@ -37,7 +41,7 @@ describe('loadDataset', () => {
         '/data/index.json': manifest([entry()]),
         '/data/2026-09.json': september as unknown as Body
       }),
-      ''
+      racine
     );
 
     expect(result.status).toEqual({ kind: 'ok' });
@@ -51,28 +55,28 @@ describe('loadDataset', () => {
         '/cantine/data/index.json': manifest([entry()]),
         '/cantine/data/2026-09.json': september as unknown as Body
       }),
-      '/cantine'
+      sousCantine
     );
 
     expect(result.status).toEqual({ kind: 'ok' });
   });
 
   it('signale l’indisponibilité quand le manifeste est injoignable', async () => {
-    const result = await loadDataset(stubFetch({ '/data/index.json': 'network-error' }), '');
+    const result = await loadDataset(stubFetch({ '/data/index.json': 'network-error' }), racine);
 
     expect(result.status).toEqual({ kind: 'unavailable' });
     expect(result.dataset).toBe(EMPTY_DATASET);
   });
 
   it('signale l’indisponibilité quand le manifeste répond en erreur', async () => {
-    const result = await loadDataset(stubFetch({}), '');
+    const result = await loadDataset(stubFetch({}), racine);
     expect(result.status).toEqual({ kind: 'unavailable' });
   });
 
   it('refuse un manifeste de contrat plus récent', async () => {
     const result = await loadDataset(
       stubFetch({ '/data/index.json': { ...manifest([]), schemaVersion: 2 } }),
-      ''
+      racine
     );
 
     expect(result.status).toEqual({ kind: 'schema-too-new', version: 2 });
@@ -84,7 +88,7 @@ describe('loadDataset', () => {
         '/data/index.json': manifest([entry()]),
         '/data/2026-09.json': { ...(september as unknown as Body), schemaVersion: 3 }
       }),
-      ''
+      racine
     );
 
     expect(result.status).toEqual({ kind: 'schema-too-new', version: 3 });
@@ -112,7 +116,7 @@ describe('loadDataset', () => {
         '/data/2026-09.json': september as unknown as Body,
         '/data/2026-09-vacances.json': vacances
       }),
-      ''
+      racine
     );
 
     expect(result.status).toEqual({ kind: 'ok' });
@@ -128,7 +132,7 @@ describe('loadDataset', () => {
         '/data/index.json': manifest([entry({ kind: 'strike' })]),
         '/data/2026-09.json': september as unknown as Body
       }),
-      ''
+      racine
     );
 
     // Aucun mois exploitable ne reste : le fichier de grève n'est pas téléchargé.
@@ -142,7 +146,7 @@ describe('loadDataset', () => {
         '/data/2026-09.json': september as unknown as Body,
         '/data/2026-10.json': 'network-error'
       }),
-      ''
+      racine
     );
 
     expect(result.status).toEqual({ kind: 'ok' });

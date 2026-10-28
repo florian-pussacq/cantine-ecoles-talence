@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { SvelteSet } from 'svelte/reactivity';
 import type { Course } from '../data/schema.js';
 import { browserStore, readSelection, writeSelection, type KeyValueStore } from './storage.js';

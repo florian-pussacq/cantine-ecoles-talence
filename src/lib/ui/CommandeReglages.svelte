@@ -1,6 +1,6 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
+  import { allergenFilter } from '#lib/filter/allergens.svelte.js';
   import Icone from './Icone.svelte';
 
   /**

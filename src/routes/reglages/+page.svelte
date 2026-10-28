@@ -1,8 +1,8 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { allergenFilter } from '$lib/filter/allergens.svelte.js';
-  import { ALLERGEN_CODES } from '$lib/filter/storage.js';
-  import Bandeau from '$lib/ui/Bandeau.svelte';
+  import { allergenFilter } from '#lib/filter/allergens.svelte.js';
+  import { ALLERGEN_CODES } from '#lib/filter/storage.js';
+  import Bandeau from '#lib/ui/Bandeau.svelte';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
