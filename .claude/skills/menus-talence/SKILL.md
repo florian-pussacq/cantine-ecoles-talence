@@ -27,12 +27,20 @@ données publiées. Elle nomme ce qui est à traiter :
 
 - **nouveau** : un menu qu'aucune donnée ne cite ;
 - **republié** : un menu cité dont l'empreinte a changé ;
+- **réédité sous un autre nom** : un menu cité, republié avec le suffixe que
+  WordPress ajoute à un doublon (`…-JANVIER-2027-1.pdf`). La veille nomme le PDF
+  qu'il remplace et le fichier de données à reprendre : c'est une réédition, pas
+  un mois neuf ;
 - **corpus court** : le dernier jour publié est à moins de quatorze jours ;
 - **déplacé**, sans action : même document, autre URL — la prochaine extraction
   prendra la nouvelle.
 
 Le même contrôle tourne chaque matin dans le workflow `veille`, qui échoue quand
 il y a quelque chose à faire. C'est en général lui qui amène ici.
+
+Un **nouveau** dont le mois a déjà son fichier sous `static/data/` est une
+réédition que la veille n'a pas su rapprocher (un nom tout autre) : la traiter
+comme un réédité sous un autre nom, et non comme un mois neuf.
 
 L'URL d'un mois change quand la Ville le réédite : septembre 2026 est passé de
 `/uploads/2026/06/` à `/uploads/2026/08/`. Prendre l'URL que donne la veille,
@@ -54,9 +62,16 @@ des menus ; la veille les ignore.
 curl -sSL -o sources/pdf/<nom>.pdf <url>
 ```
 
-Seulement les documents que la veille a nommés nouveaux ou republiés. Les PDF
-conservés sous `sources/pdf/` sont la référence de `npm run test:extraction` :
-un PDF remplacé exige sa réextraction dans le même commit.
+Seulement les documents que la veille a nommés à traiter. Les PDF conservés sous
+`sources/pdf/` sont la référence de `npm run test:extraction` : un PDF remplacé
+exige sa réextraction dans le même commit.
+
+Une réédition sous un autre nom remplace l'ancien PDF, qui ne serait plus cité par
+aucune donnée et ferait échouer `test:extraction` :
+
+```bash
+git rm sources/pdf/<ancien nom>.pdf
+```
 
 ## 3. Extraire
 
@@ -72,7 +87,9 @@ python3 scripts/extract-menu-pdf.py sources/pdf/<nom>.pdf \
 
 `--merge` et `--out` désignent le même fichier : le thème « ZOOM SUR » et sa note
 sont éditoriaux, rattachés à un jour par jugement humain, et le parser ne sait
-pas les produire. `--merge` les reprend. Sur un mois nouveau, l'omettre.
+pas les produire. `--merge` les reprend. Sur un mois nouveau, l'omettre. Une
+réédition sous un autre nom n'est pas un mois nouveau : `--merge` sur le fichier
+que la veille a nommé.
 
 Le menu de grève se produit avec `--greve`, sans `--merge` : il ne porte pas de
 thème.
@@ -138,9 +155,22 @@ Les tests unitaires lisent le corpus réel. Un menu qui change peut en faire
 tomber un — c'est le test qui a figé une date, pas la donnée qui a tort :
 le rendre indépendant du jour plutôt que figer la nouvelle date.
 
+`test:e2e` lance le Chromium qu'attend la version de `@playwright/test` du
+verrou ; dans une session cloud, le hook de démarrage l'installe. S'il manque —
+le réseau refuse `cdn.playwright.dev` —, faire autoriser ce domaine. Ne pas faire
+pointer Playwright vers le Chromium préinstallé du conteneur : sa révision n'est
+pas celle de la CI, et un e2e vert sur un autre navigateur ne prouve rien.
+
 ## 6. Rendre compte
 
-Commiter, en disant ce qui a changé pour le lecteur des menus : quel mois, quel
-jour, quel plat. Puis s'arrêter : la poussée et la mise en ligne appartiennent
-à l'humain. Lui rappeler que les nouveaux menus ne seront servis qu'une fois
+```bash
+npm run data:diff
+```
+
+dit ce qui change pour le lecteur des menus, plat par plat, contre le dernier
+commit. Le diff texte n'y aide pas : une réextraction reformate le fichier, et
+mille lignes de mise en forme y cachent six plats. Commiter avec cette liste dans
+le corps — quel mois, quel jour, quel plat, et chaque allergène qui change : c'est
+l'information qu'un parent cherche. Puis s'arrêter : la poussée et la mise en
+ligne appartiennent à l'humain. Lui rappeler que les nouveaux menus ne seront servis qu'une fois
 poussés, la CI verte, **puis publiés** (_Actions → publier → Run workflow_).

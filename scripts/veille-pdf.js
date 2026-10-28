@@ -4,8 +4,9 @@
  *   node scripts/veille-pdf.js        ou        npm run veille
  *
  * Lit la page des menus, télécharge chaque PDF de menu, et compare son empreinte
- * aux données publiées. Trois constats demandent une action : un menu nouveau,
- * un menu republié, un corpus qui couvre moins de quatorze jours (D1). Le code
+ * aux données publiées. Quatre constats demandent une action : un menu nouveau,
+ * un menu republié, un menu réédité sous un autre nom (reedition-renommee), un
+ * corpus qui couvre moins de quatorze jours (D1). Le code
  * de sortie le dit : 0 rien à faire, 1 une action à mener, 2 une panne.
  *
  * Le workflow planifié `veille.yml` le lance chaque matin et échoue sur un code
@@ -33,12 +34,21 @@ const USER_AGENT =
 /**
  * @typedef {{ fichier: string, pdfUrl: string, pdfSha256: string }} Publie
  * @typedef {{ url: string, sha: string }} Lien
- * @typedef {{ type: 'nouveau' | 'republie', nom: string, url: string }} Action
+ * @typedef {{ type: 'nouveau' | 'republie', nom: string, url: string }} Signale
+ * @typedef {{ type: 'renomme', nom: string, url: string, remplace: string, fichier: string }} Renomme
+ * @typedef {Signale | Renomme} Action
  * @typedef {{ type: 'deplace', nom: string, ancienne: string, nouvelle: string }} Avertissement
  */
 
 /** Le nom de fichier d'une URL, qui identifie un menu d'une réédition à l'autre. */
 const nomDe = (/** @type {string} */ url) => basename(new URL(url).pathname);
+
+/**
+ * Le nom privé du suffixe que WordPress ajoute à un doublon : `-1`, `-2`… avant
+ * l'extension. L'année n'en est pas un : dans `…-2027.pdf`, le tiret précède
+ * quatre chiffres (reedition-renommee, D1).
+ */
+const sansSuffixe = (/** @type {string} */ nom) => nom.replace(/-\d{1,2}(?=\.pdf$)/i, '');
 
 /**
  * Les liens de menus de la page, absolus et sans doublon.
@@ -60,6 +70,8 @@ export function liensDeMenus(html) {
  * Ce que la page apprend par rapport aux données publiées (D1).
  *
  * Un menu cité mais absent de la page n'est pas un constat : c'est un mois passé.
+ * Un nom que personne ne cite, mais qui ne diffère d'un nom cité que par le
+ * suffixe de doublon, est une réédition de ce document (reedition-renommee, D2).
  *
  * @param {Lien[]} liens
  * @param {Publie[]} publies
@@ -67,6 +79,7 @@ export function liensDeMenus(html) {
  */
 export function constats(liens, publies) {
   const parNom = new Map(publies.map((p) => [nomDe(p.pdfUrl), p]));
+  const parRacine = new Map(publies.map((p) => [sansSuffixe(nomDe(p.pdfUrl)), p]));
   /** @type {Action[]} */
   const actions = [];
   /** @type {Avertissement[]} */
@@ -75,8 +88,21 @@ export function constats(liens, publies) {
   for (const { url, sha } of liens) {
     const nom = nomDe(url);
     const cite = parNom.get(nom);
-    if (cite === undefined) actions.push({ type: 'nouveau', nom, url });
-    else if (cite.pdfSha256 !== sha) actions.push({ type: 'republie', nom, url });
+    if (cite === undefined) {
+      const reedite = parRacine.get(sansSuffixe(nom));
+      if (reedite === undefined) actions.push({ type: 'nouveau', nom, url });
+      else if (reedite.pdfSha256 !== sha) {
+        actions.push({
+          type: 'renomme',
+          nom,
+          url,
+          remplace: nomDe(reedite.pdfUrl),
+          fichier: reedite.fichier
+        });
+      } else {
+        avertissements.push({ type: 'deplace', nom, ancienne: reedite.pdfUrl, nouvelle: url });
+      }
+    } else if (cite.pdfSha256 !== sha) actions.push({ type: 'republie', nom, url });
     else if (cite.pdfUrl !== url) {
       avertissements.push({ type: 'deplace', nom, ancienne: cite.pdfUrl, nouvelle: url });
     }
@@ -137,11 +163,15 @@ async function telecharger(url) {
 function rapport({ actions, avertissements }, couverture) {
   const lignes = ['## Veille des menus de la Ville', ''];
   for (const a of actions) {
-    lignes.push(
-      a.type === 'nouveau'
-        ? `- **Nouveau** : ${a.nom}, qu'aucune donnée ne cite — ${a.url}`
-        : `- **Republié** : ${a.nom}, dont l'empreinte a changé — ${a.url}`
-    );
+    if (a.type === 'renomme') {
+      lignes.push(
+        `- **Réédité sous un autre nom** : ${a.nom} remplace ${a.remplace}, à reprendre dans ${DATA_DIR}/${a.fichier} — ${a.url}`
+      );
+    } else if (a.type === 'nouveau') {
+      lignes.push(`- **Nouveau** : ${a.nom}, qu'aucune donnée ne cite — ${a.url}`);
+    } else {
+      lignes.push(`- **Republié** : ${a.nom}, dont l'empreinte a changé — ${a.url}`);
+    }
   }
   if (couverture.court) {
     lignes.push(

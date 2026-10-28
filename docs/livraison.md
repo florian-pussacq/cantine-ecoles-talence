@@ -72,7 +72,7 @@ Symptôme d'un hook absent : le workflow `publier` échoue en le nommant.
 
 Le workflow `veille` (`.github/workflows/veille.yml`) compare chaque matin les
 PDF de menus de la page de la Ville aux données publiées. Il **échoue** quand une
-action est requise — un menu nouveau ou republié, un corpus qui couvre moins de
+action est requise — un menu nouveau, republié ou réédité sous un autre nom, un corpus qui couvre moins de
 quatorze jours — et son résumé dit quoi faire : la procédure du skill
 `menus-talence`. Il reste rouge chaque matin tant que ce n'est pas fait. Il
 n'ouvre ni issue ni pull request, et n'écrit rien dans le dépôt

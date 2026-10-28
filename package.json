@@ -20,7 +20,8 @@
     "prepare": "svelte-kit sync",
     "types": "node scripts/generate-types.js",
     "data": "node scripts/validate-data.js",
-    "data:index": "node scripts/validate-data.js --write-index"
+    "data:index": "node scripts/validate-data.js --write-index",
+    "data:diff": "node scripts/diff-menus.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

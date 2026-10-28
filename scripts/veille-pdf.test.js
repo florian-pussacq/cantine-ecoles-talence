@@ -75,6 +75,73 @@ describe('les constats (D1)', () => {
     ]);
   });
 
+  describe('la réédition renommée', () => {
+    // Le 23 octobre 2026 : WordPress a suffixé `-1` le janvier réédité.
+    const JANVIER = '2026/10/01-MENUS-WEB-JANVIER-2027.pdf';
+    const JANVIER_1 = `${UPLOADS}/2026/10/01-MENUS-WEB-JANVIER-2027-1.pdf`;
+    const janvier = { ...publie(JANVIER, 'a'), fichier: '2027-01.json' };
+
+    it('nomme le document remplacé et le fichier à reprendre', () => {
+      const { actions } = constats([{ url: JANVIER_1, sha: 'b' }], [janvier]);
+      expect(actions).toEqual([
+        {
+          type: 'renomme',
+          nom: '01-MENUS-WEB-JANVIER-2027-1.pdf',
+          url: JANVIER_1,
+          remplace: '01-MENUS-WEB-JANVIER-2027.pdf',
+          fichier: '2027-01.json'
+        }
+      ]);
+    });
+
+    it('est un déplacement à empreinte égale', () => {
+      const resultat = constats([{ url: JANVIER_1, sha: 'a' }], [janvier]);
+      expect(resultat.actions).toEqual([]);
+      expect(resultat.avertissements).toEqual([
+        {
+          type: 'deplace',
+          nom: '01-MENUS-WEB-JANVIER-2027-1.pdf',
+          ancienne: `${UPLOADS}/${JANVIER}`,
+          nouvelle: JANVIER_1
+        }
+      ]);
+    });
+
+    it('reconnaît un document déjà suffixé', () => {
+      const toussaint = '2026/09/10-MENUS-WEB-TOUSSAINT-2026-1.pdf';
+      const reedite = `${UPLOADS}/2026/10/10-MENUS-WEB-TOUSSAINT-2026-2.pdf`;
+      const { actions } = constats([{ url: reedite, sha: 'b' }], [publie(toussaint, 'a')]);
+      expect(actions).toMatchObject([
+        { type: 'renomme', remplace: '10-MENUS-WEB-TOUSSAINT-2026-1.pdf' }
+      ]);
+    });
+
+    it('préfère le nom exact', () => {
+      const exact = `${UPLOADS}/${JANVIER}`;
+      const resultat = constats(
+        [
+          { url: exact, sha: 'a' },
+          { url: JANVIER_1, sha: 'b' }
+        ],
+        [janvier]
+      );
+      // Le nom exact concorde ; le suffixé reste une réédition de ce même document.
+      expect(resultat.actions).toMatchObject([
+        { type: 'renomme', nom: '01-MENUS-WEB-JANVIER-2027-1.pdf' }
+      ]);
+      expect(resultat.avertissements).toEqual([]);
+    });
+
+    it('ne prend pas l’année pour un suffixe', () => {
+      const avecAnnee = `${UPLOADS}/2026/10/01-MENUS-WEB-JANVIER-2027.pdf`;
+      const { actions } = constats(
+        [{ url: avecAnnee, sha: 'b' }],
+        [publie('2026/10/01-MENUS-WEB-JANVIER.pdf', 'a')]
+      );
+      expect(actions).toMatchObject([{ type: 'nouveau' }]);
+    });
+  });
+
   it('se tait sur un mois passé retiré de la page', () => {
     const aout = '2026/06/08-MENUS-WEB-AOUT-2026.pdf';
     const resultat = constats(
