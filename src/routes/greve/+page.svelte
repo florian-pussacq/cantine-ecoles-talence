@@ -105,10 +105,15 @@
 {/if}
 
 <style>
+  /*
+    Une section, et non une carte : un filet d'encre l'ouvre, comme les
+    tableaux des écrans de menu (refonte-signaletique). L'aplat du plat
+    principal y est ainsi posé sur le fond, et non dans une carte — une carte
+    dans une carte n'ajoute qu'un cadre autour d'un cadre.
+  */
   .panel {
-    background: var(--carte);
-    border-radius: var(--rayon-carte);
-    padding: var(--espace-4);
+    border-top: 2px solid var(--encre);
+    padding-top: var(--espace-3);
     display: flex;
     flex-direction: column;
     gap: var(--espace-3);
@@ -130,35 +135,33 @@
     color: var(--encre);
   }
 
+  /* Un titre de section en casse de phrase, et non en petites capitales
+     espacées : c'est un titre, il se lit comme tel (refonte-signaletique). */
   h2 {
     margin: 0;
-    font-size: var(--texte-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: var(--poids-moyen);
-    color: var(--encre-douce);
+    font-size: var(--texte-base);
+    font-weight: var(--poids-fort);
+    color: var(--encre);
   }
 
   /*
-    Le sélecteur reprend la pilule des onglets plutôt que d'inventer une
-    troisième forme de bascule : c'est le même geste, il doit se reconnaître.
+    Le sélecteur reprend la forme de la barre des écrans plutôt que d'inventer
+    une troisième forme de bascule : c'est le même geste, il doit se
+    reconnaître. Le choix courant est souligné d'un trait d'encre, sans pilule
+    (refonte-signaletique, D11).
   */
   .variantes {
-    display: flex;
-    gap: var(--espace-1);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-top: var(--espace-3);
-    padding: var(--espace-1);
-    background: var(--voile-fond);
-    border-radius: var(--rayon-pilule);
+    border-bottom: 1px solid var(--bord);
   }
 
   .variantes button {
-    flex: 1;
     min-height: var(--cible);
     border: 0;
-    border-radius: var(--rayon-pilule);
     background: transparent;
-    color: var(--encre);
+    color: var(--encre-douce);
     font: inherit;
     font-size: var(--texte-sm);
     font-weight: var(--poids-moyen);
@@ -166,13 +169,17 @@
   }
 
   .variantes button[aria-pressed='true'] {
-    background: var(--accent);
-    color: var(--sur-accent);
+    color: var(--encre);
+    font-weight: var(--poids-fort);
+    box-shadow: inset 0 -3px 0 var(--encre);
   }
 
   .plats {
     display: flex;
     flex-direction: column;
-    gap: var(--espace-2);
+  }
+
+  .plats :global(.plat:last-child) {
+    border-bottom: 0;
   }
 </style>

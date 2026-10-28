@@ -115,23 +115,27 @@
 </section>
 
 <style>
+  /*
+    Une section, et non une carte : un filet d'encre l'ouvre, comme les
+    tableaux des écrans de menu (refonte-signaletique). Des cartes empilées de
+    même poids ne disent rien de plus que leur titre.
+  */
   .panel {
-    background: var(--carte);
+    border-top: 2px solid var(--encre);
+    padding-top: var(--espace-3);
     color: var(--encre);
-    border-radius: var(--rayon-carte);
-    padding: var(--espace-4);
     display: flex;
     flex-direction: column;
     gap: var(--espace-2);
   }
 
+  /* Un titre de section en casse de phrase, et non en petites capitales
+     espacées : c'est un titre, il se lit comme tel (refonte-signaletique). */
   h2 {
     margin: 0 0 var(--espace-1);
-    font-size: var(--texte-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: var(--poids-moyen);
-    color: var(--encre-douce);
+    font-size: var(--texte-base);
+    font-weight: var(--poids-fort);
+    color: var(--encre);
   }
 
   p {
@@ -179,6 +183,9 @@
     texte qui l'entoure et laisserait le soulignement porter seul sa nature de
     commande. L'accent tient 5,77:1 sur la carte, et son jeton est défini pour
     cet emploi.
+
+    Depuis que l'accent est l'encre (refonte-signaletique, D2), c'est la graisse
+    et le soulignement qui distinguent le lien du texte voisin.
   */
   .panel :global(a) {
     color: var(--accent);

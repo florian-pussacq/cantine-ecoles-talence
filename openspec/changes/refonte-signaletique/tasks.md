@@ -43,7 +43,7 @@
 
 ## 6. Écrans secondaires
 
-- [ ] 6.1 Réglages, grève et À propos : appliquer les jetons, la typographie et le lien des mentions ; aucun surtitre ni carte imbriquée ; vérifier `greve.spec.ts` et `qualite.spec.ts` (cibles de 44 pixels)
+- [x] 6.1 Réglages, grève et À propos : appliquer les jetons, la typographie et le lien des mentions ; aucun surtitre ni carte imbriquée ; vérifier `greve.spec.ts` et `qualite.spec.ts` (cibles de 44 pixels)
 
 ## 7. Intégration
 

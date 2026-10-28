@@ -50,7 +50,7 @@
     color: var(--sur-accent);
     background: var(--accent);
     border: none;
-    border-radius: var(--rayon-pilule);
+    border-radius: var(--rayon-carte);
     cursor: pointer;
   }
 </style>

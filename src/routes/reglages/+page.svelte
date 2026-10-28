@@ -120,14 +120,13 @@
     margin-top: var(--espace-3);
   }
 
-  /* Le patron de titre de section de l'application (a-propos). */
+  /* Le patron de titre de section de l'application (a-propos) : en casse de
+     phrase, et non en petites capitales espacées (refonte-signaletique). */
   h2 {
     margin: 0;
-    font-size: var(--texte-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: var(--poids-moyen);
-    color: var(--encre-douce);
+    font-size: var(--texte-base);
+    font-weight: var(--poids-fort);
+    color: var(--encre);
   }
 
   .lien {
@@ -150,11 +149,12 @@
     color: var(--encre-douce);
   }
 
+  /* Une section, et non une carte : un filet d'encre l'ouvre, comme les
+     tableaux des écrans de menu (refonte-signaletique). */
   .panel {
-    background: var(--carte);
+    border-top: 2px solid var(--encre);
+    padding-top: var(--espace-3);
     color: var(--encre);
-    border-radius: var(--rayon-carte);
-    padding: var(--espace-4);
     display: flex;
     flex-direction: column;
     gap: var(--espace-3);
@@ -193,7 +193,9 @@
     width: 24px;
     height: 24px;
     flex: none;
-    accent-color: var(--fond);
+    /* La coche prend l'encre : sur le fond clair de la palette, une case
+       cochée de la couleur du fond ne se verrait pas. */
+    accent-color: var(--encre);
     cursor: pointer;
   }
 
@@ -219,8 +221,8 @@
     font-weight: var(--poids-moyen);
     color: var(--encre);
     background: none;
-    border: 1px solid var(--bord);
-    border-radius: var(--rayon-pilule);
+    border: 1px solid var(--voile-trait);
+    border-radius: var(--rayon-carte);
     min-height: var(--cible);
     padding-inline: var(--espace-3);
     cursor: pointer;

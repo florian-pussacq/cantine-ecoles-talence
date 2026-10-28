@@ -159,9 +159,6 @@
    * `contrast.test.ts` sait lire : il mesure chaque voile depuis sa déclaration
    * ici, et non plus depuis un taux recopié dans un composant.
    */
-  /* L'aplat de la pilule d'onglets : décoratif, c'est le libellé posé dessus
-     qui se lit. */
-  --voile-fond: color-mix(in srgb, var(--encre) 12%, transparent);
   /* La bordure d'une commande : elle porte une information, donc 3:1. */
   --voile-trait: color-mix(in srgb, var(--encre) 55%, transparent);
   /* Derrière la fiche du jour : il assourdit l'écran sans le cacher, et ne

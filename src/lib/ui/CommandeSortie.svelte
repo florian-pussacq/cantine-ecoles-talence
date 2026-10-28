@@ -72,7 +72,7 @@
        3:1 (WCAG 1.4.11). L'encre à 55 % mesure 3,46:1 sur le fond crème, taux
        déjà mesuré par `contrast.test.ts` pour les flèches (D27, D49). */
     border: 1px solid var(--voile-trait);
-    border-radius: var(--rayon-pilule);
+    border-radius: var(--rayon-carte);
     text-decoration: none;
     white-space: nowrap;
   }

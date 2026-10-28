@@ -232,13 +232,7 @@ const TRANSPARENCES: {
  * échappatoire et forcerait à foncer des traits décoratifs pour satisfaire un
  * seuil que la norme ne leur applique pas.
  */
-const DECORATIFS: { voile: string; pourquoi: string }[] = [
-  {
-    voile: 'voile-fond',
-    pourquoi:
-      'aplat sans rôle propre — ce qui doit se lire, c’est le libellé posé dessus, et il est mesuré'
-  }
-];
+const DECORATIFS: { voile: string; pourquoi: string }[] = [];
 
 /*
   Le passage au clair a fait tomber une bordure sous son seuil sans rien casser

@@ -131,10 +131,10 @@
           <span class="plat-ligne">
             <span class="plat-nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
             <!--
-              Les labels précèdent les allergènes et reprennent la capsule de
-              l'ardoise. Rendus en dessous et en gris, ils se lisaient comme un
-              allergène de plus — la dernière confusion qu'on veuille sur cette
-              feuille. Une qualité promue au rang de nom ne se redit pas.
+              Les labels précèdent les allergènes, sur la ligne du nom. Rendus en
+              dessous et en gris, ils se lisaient comme un allergène de plus — la
+              dernière confusion qu'on veuille sur cette feuille. Une qualité
+              promue au rang de nom ne se redit pas.
             -->
             {#if course.flags.length > 0 && nom.kind !== 'quality'}
               <span class="tags">
@@ -287,10 +287,7 @@
   }
 
   .role {
-    font-size: var(--texte-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: var(--poids-moyen);
+    font-size: var(--texte-sm);
     color: var(--encre-douce);
   }
 
@@ -312,8 +309,9 @@
     font-weight: var(--poids-moyen);
     color: var(--encre);
     background: none;
-    border: 1px solid var(--bord);
-    border-radius: var(--rayon-pilule);
+    /* Une bordure qui délimite une commande tient 3:1 (WCAG 1.4.11). */
+    border: 1px solid var(--voile-trait);
+    border-radius: var(--rayon-carte);
     cursor: pointer;
   }
 
@@ -331,12 +329,23 @@
     gap: var(--espace-3);
   }
 
+  /*
+    Le rôle dans une colonne, à gauche du plat, comme sur l'écran du jour, et
+    non en surtitre au-dessus de lui (refonte-signaletique, D7). Tout le reste
+    du plat — nom, mentions, allergènes — tient dans la seconde colonne.
+  */
   .plats > li {
-    display: flex;
-    flex-direction: column;
-    gap: var(--espace-1);
+    display: grid;
+    grid-template-columns: var(--colonne-role) minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: var(--espace-3);
+    row-gap: var(--espace-1);
     padding-bottom: var(--espace-3);
     border-bottom: 1px solid var(--bord);
+  }
+
+  .plats > li > :not(.plat-role) {
+    grid-column: 2;
   }
 
   .plats > li:last-child {
@@ -346,8 +355,6 @@
 
   .plat-role {
     font-size: var(--texte-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
     font-weight: var(--poids-moyen);
     color: var(--encre-douce);
   }
@@ -400,31 +407,32 @@
     font-weight: normal;
   }
 
+  /* L'allergène surveillé prend la surface de l'alerte, comme la pastille de
+     l'écran du jour (refonte-signaletique, D9) ; son contour d'encre le garde
+     perceptible en niveaux de gris. */
   .allergens li.surveille {
-    border: 2px solid var(--encre);
+    background: var(--alerte);
+    color: var(--sur-alerte);
+    border: 2px solid var(--sur-alerte);
     font-weight: var(--poids-titre);
   }
 
   .marque {
-    font-size: var(--texte-2xs);
-    font-weight: var(--poids-titre);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: var(--texte-xs);
+    font-weight: var(--poids-moyen);
   }
 
   .resume {
     background: var(--creux);
-    border-radius: var(--rayon-pastille);
+    border-radius: var(--rayon-carte);
     padding: var(--espace-3);
   }
 
   .resume h3 {
     margin: 0 0 var(--espace-2);
-    font-size: var(--texte-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: var(--poids-titre);
-    color: var(--encre-douce);
+    font-size: var(--texte-sm);
+    font-weight: var(--poids-fort);
+    color: var(--encre);
   }
 
   .resume ul {
@@ -457,24 +465,18 @@
     gap: var(--espace-1) var(--espace-2);
   }
 
-  /* La même capsule que sur l'ardoise : un label de qualité s'écrit d'une seule
-     façon dans toute l'application. */
+  /* Comme sur l'écran du jour : un label de qualité s'écrit d'une seule façon
+     dans toute l'application, en texte, sans capsule (refonte-signaletique). */
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--espace-1);
+    gap: var(--espace-2);
+    font-size: var(--texte-xs);
     color: var(--encre-douce);
   }
 
   .tags em {
     font-style: normal;
-    font-size: var(--texte-2xs);
-    font-weight: var(--poids-titre);
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    border: 1.5px solid currentColor;
-    border-radius: var(--rayon-pilule);
-    padding: 0.08rem 0.4rem;
   }
 
   .pork {
