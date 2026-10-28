@@ -20,9 +20,9 @@
 
 ## 3. Coque : enseigne, barre basse, mentions
 
-- [ ] 3.1 `+layout.svelte` et `Onglets.svelte` : la barre Jour/Semaine ancrée en bas, bornée à la colonne, avec la compensation de zone sûre et l'onglet actif souligné d'un trait de 3 pixels (D11) ; retirer le pied fixe ; adapter `coque.spec.ts` et `large.spec.ts` aux scénarios « Zone sûre inférieure » et « Barre sur écran large »
-- [ ] 3.2 `PiedSource.svelte` : la provenance (« Menus mis à jour le… · PDF officiel ») suivie du lien vers les mentions, dans le flux des deux écrans de menu ; un lien vers les mentions dans l'écran des réglages ; e2e : les scénarios « Les mentions depuis un écran de menu » et « Les mentions depuis les réglages »
-- [ ] 3.3 `Enseigne.svelte` et `EnTete.svelte` : l'enseigne « Cantine Talence », la commande des réglages portant le compte des allergènes surveillés, sans marque quand la sélection est vide ; vérifier les tests existants de « Visibilité du filtre actif » et « L'en-tête ne change pas de hauteur »
+- [x] 3.1 `+layout.svelte` et `Onglets.svelte` : la barre Jour/Semaine ancrée en bas, bornée à la colonne, avec la compensation de zone sûre et l'onglet actif souligné d'un trait de 3 pixels (D11) ; retirer le pied fixe ; adapter `coque.spec.ts` et `large.spec.ts` aux scénarios « Zone sûre inférieure » et « Barre sur écran large »
+- [x] 3.2 `PiedSource.svelte` : la provenance (« Menus mis à jour le… · PDF officiel ») suivie du lien vers les mentions, dans le flux des deux écrans de menu ; un lien vers les mentions dans l'écran des réglages ; e2e : les scénarios « Les mentions depuis un écran de menu » et « Les mentions depuis les réglages »
+- [x] 3.3 `Enseigne.svelte` et `EnTete.svelte` : l'enseigne « Cantine Talence », la commande des réglages portant le compte des allergènes surveillés, sans marque quand la sélection est vide ; vérifier les tests existants de « Visibilité du filtre actif » et « L'en-tête ne change pas de hauteur »
 
 ## 4. Écran du jour
 

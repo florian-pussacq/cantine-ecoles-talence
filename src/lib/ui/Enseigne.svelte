@@ -49,9 +49,13 @@
       déjà (D33). Le nom accessible du lien vient donc du seul texte visible.
     -->
     <span class="marque" aria-hidden="true">
-      <svg width="22" height="22" focusable="false"><use href="#marque" /></svg>
+      <svg width="18" height="18" focusable="false"><use href="#marque" /></svg>
     </span>
-    <span class="nom">Cantine des écoles de Talence</span>
+    <!--
+      Le nom se lit en deux temps, comme une plaque : le lieu, puis ce qui le
+      situe. Le nom accessible reste le nom entier, qui est le texte visible.
+    -->
+    <span class="nom"><span class="lieu">Cantine</span> des écoles de Talence</span>
   </a>
   <!--
     Un réglage d'application appartient à la ligne qui porte l'application, pas
@@ -94,8 +98,8 @@
   }
 
   .marque {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
     flex: none;
     border-radius: 50%;
     background: var(--accent);
@@ -122,11 +126,14 @@
     flex: 1;
     min-width: 0;
     font-size: var(--texte-sm);
-    font-weight: var(--poids-moyen);
-    letter-spacing: 0.01em;
     color: var(--encre-douce);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .lieu {
+    font-weight: var(--poids-fort);
+    color: var(--encre);
   }
 </style>

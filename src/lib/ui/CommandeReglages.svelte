@@ -64,22 +64,24 @@
     display: grid;
     place-items: center;
     color: var(--encre);
-    border-radius: var(--rayon-pilule);
+    border-radius: var(--rayon-carte);
   }
 
   .compte {
     position: absolute;
     top: 2px;
     right: 2px;
-    min-width: 17px;
-    height: 17px;
+    min-width: 18px;
+    height: 18px;
     padding-inline: var(--espace-1);
     border-radius: var(--rayon-pilule);
-    background: var(--carte);
-    color: var(--encre);
+    /* Une inversion, comme l'étiquette « Aujourd'hui » : la paire de l'accent,
+       déjà mesurée (refonte-signaletique, D2). */
+    background: var(--accent);
+    color: var(--sur-accent);
     font-size: var(--texte-2xs);
     font-weight: var(--poids-titre);
-    line-height: 17px;
+    line-height: 18px;
     text-align: center;
     /* Un anneau de fond, parce que la pastille se pose sur les dents de la roue
        et que les deux formes se confondaient à la taille réelle. Il sépare, il

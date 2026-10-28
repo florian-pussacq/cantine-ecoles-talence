@@ -100,6 +100,21 @@
   </a>
 </section>
 
+<!--
+  Les mentions s'atteignent d'ici aussi (refonte-signaletique, D11). Le pied
+  fixe qui les portait sur tous les écrans a laissé le bas de la fenêtre au
+  choix entre le jour et la semaine ; sur les écrans de menu, elles suivent la
+  provenance des données, et ici, elles ont leur section.
+-->
+<section class="panel">
+  <h2>Application</h2>
+
+  <a class="lien" href={resolve('/a-propos')}>
+    <span class="titre">Source, mentions et vie privée</span>
+    <span class="detail">D'où viennent ces menus, et ce que l'application garde</span>
+  </a>
+</section>
+
 <style>
   .panel + .panel {
     margin-top: var(--espace-3);

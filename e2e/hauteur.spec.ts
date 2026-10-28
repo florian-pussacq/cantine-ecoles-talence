@@ -24,15 +24,15 @@ import { auRepos, expect, test, type Page } from './test';
 /**
  * La ligne de flottaison n'est pas le bas de la fenêtre.
  *
- * Le pied des mentions est ancré au bas et opaque : le contenu défile derrière
- * lui. Ce qui passe dessous n'est pas visible, même s'il est techniquement dans
- * la fenêtre. Le haut du pied est donc la limite réelle, et c'est un défaut que
- * la seule hauteur de page ne montrait pas.
+ * La barre des écrans est ancrée au bas et opaque : le contenu défile derrière
+ * elle (refonte-signaletique, D11). Ce qui passe dessous n'est pas visible, même
+ * s'il est techniquement dans la fenêtre. Le haut de la barre est donc la limite
+ * réelle, et c'est un défaut que la seule hauteur de page ne montrait pas.
  */
 async function flottaison(page: Page): Promise<number> {
-  const pied = await page.locator('.pied').boundingBox();
-  if (pied === null) throw new Error('pied de mentions introuvable');
-  return pied.y;
+  const barre = await page.getByRole('navigation', { name: 'Écrans' }).boundingBox();
+  if (barre === null) throw new Error('barre des écrans introuvable');
+  return barre.y;
 }
 
 /** Le bas d'un élément, ou `null` s'il n'est pas rendu. */
@@ -81,11 +81,11 @@ test('le rang qui porte la date est visible sans défiler', async ({ page }) => 
   expect(rang as number).toBeLessThanOrEqual(limite);
 });
 
-test('le pied ne recouvre jamais la dernière carte', async ({ page }) => {
+test('la barre ne recouvre jamais la dernière carte', async ({ page }) => {
   await page.goto('/');
 
-  // Le défilement étant devenu la règle, la dernière carte finit sous le pied
-  // si la coque ne lui réserve pas sa hauteur *et* l'encart système (D34, D52).
+  // Le défilement étant devenu la règle, la dernière carte finit sous la barre
+  // si la coque ne lui réserve pas sa hauteur *et* l'encart système (D34, D11).
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(200);
 
@@ -94,6 +94,6 @@ test('le pied ne recouvre jamais la dernière carte', async ({ page }) => {
   expect(derniere, 'dernière carte non rendue').not.toBeNull();
   expect(
     derniere as number,
-    'défilement fait, la dernière carte doit être entièrement dégagée du pied'
+    'défilement fait, la dernière carte doit être entièrement dégagée de la barre'
   ).toBeLessThanOrEqual(limite);
 });

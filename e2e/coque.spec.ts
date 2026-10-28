@@ -2,25 +2,22 @@ import { expect, test, type Page } from './test';
 import { STORAGE_KEY } from '../src/lib/filter/storage.js';
 
 /**
- * La coque : les onglets d'écran, le pied fixe et la commande de réglages.
+ * La coque : la barre des écrans, les mentions et la commande de réglages.
  *
- * Ce fichier s'appelait `barre.spec.ts` et vérifiait une barre ancrée au bas de
- * la fenêtre, à portée du pouce (D31). Les onglets sont remontés (D52), et le
- * bas de la fenêtre appartient désormais au pied des mentions.
+ * Ce fichier s'est appelé `barre.spec.ts`, du temps où les onglets étaient
+ * ancrés au bas de la fenêtre (D31). Ils sont remontés (D52), puis redescendus
+ * (refonte-signaletique, D11), et le pied fixe des mentions a disparu : les
+ * mentions suivent la provenance des données, dans le flux.
  *
- * Ce qui a changé, c'est la position ; les garanties ne changent pas. Le pied
- * est ancré et borné comme la barre l'était, il réserve toujours sa place sous
- * le contenu, et les onglets ne portent toujours que deux destinations. Le
- * contrôle de non-décalage à l'hydratation est conservé mot pour mot : il ne
- * dépend d'aucune mise en page, seulement de la géométrie de la pastille.
+ * Ce qui change, c'est la position ; les garanties ne changent pas. La barre est
+ * ancrée et bornée, elle réserve sa place sous le contenu, et elle ne porte que
+ * deux destinations. Le contrôle de non-décalage à l'hydratation est conservé
+ * mot pour mot : il ne dépend d'aucune mise en page, seulement de la géométrie
+ * de la pastille.
  */
 
 function onglets(page: Page) {
   return page.getByRole('navigation', { name: 'Écrans' });
-}
-
-function pied(page: Page) {
-  return page.locator('.pied');
 }
 
 test('l’enseigne mène au menu depuis n’importe quel écran', async ({ page }) => {
@@ -31,49 +28,76 @@ test('l’enseigne mène au menu depuis n’importe quel écran', async ({ page 
   }
 });
 
-test('le pied est ancré au bas de la fenêtre', async ({ page }) => {
+test('la barre des écrans est ancrée au bas de la fenêtre', async ({ page }) => {
   await page.goto('/');
-  const boite = await pied(page).boundingBox();
+  const boite = await onglets(page).boundingBox();
   const fenetre = page.viewportSize();
 
   expect(boite).not.toBeNull();
   expect(fenetre).not.toBeNull();
   expect(
     Math.abs(boite!.y + boite!.height - fenetre!.height),
-    'le pied ne touche pas le bas de la fenêtre'
+    'la barre ne touche pas le bas de la fenêtre'
   ).toBeLessThanOrEqual(1);
 });
 
-test('le pied reste borné à la colonne de contenu', async ({ page }, infos) => {
+test('la barre reste bornée à la colonne de contenu', async ({ page }, infos) => {
   await page.goto('/');
-  const boite = await pied(page).boundingBox();
+  const boite = await onglets(page).boundingBox();
   const fenetre = infos.project.use.viewport?.width ?? 0;
 
-  // La même borne que la colonne : un pied étiré sur toute la largeur serait
+  // La même borne que la colonne : une barre étirée sur toute la largeur serait
   // une seconde mise en page, ce que D23 n'admet pas.
   expect(boite!.width).toBeLessThanOrEqual(720);
   if (fenetre > 720) {
-    expect(boite!.width, 'le pied s’étire sur toute la fenêtre').toBeLessThan(fenetre);
+    expect(boite!.width, 'la barre s’étire sur toute la fenêtre').toBeLessThan(fenetre);
   }
 });
 
-test('le pied offre une cible atteignable au pouce', async ({ page }) => {
-  // `qualite.spec.ts` l'exige de toute cible visible ; c'est rappelé ici parce
-  // que la hauteur du pied est dimensionnée autour d'elle, et non l'inverse.
+test('la barre offre des cibles atteignables au pouce', async ({ page }) => {
   await page.goto('/');
-  const lien = pied(page).getByRole('link');
-  const boite = await lien.boundingBox();
-  expect(boite!.height).toBeGreaterThanOrEqual(44);
+  for (const lien of await onglets(page).getByRole('link').all()) {
+    const boite = await lien.boundingBox();
+    expect(boite!.height).toBeGreaterThanOrEqual(44);
+  }
 });
 
-test('les onglets sont au-dessus du contenu, et non ancrés au bas', async ({ page }) => {
+test('la barre est sous le contenu, et non au-dessus', async ({ page }) => {
   await page.goto('/');
   const barre = await onglets(page).boundingBox();
-  const cartes = await page.locator('.tray').boundingBox();
-  const bas = await pied(page).boundingBox();
+  const rang = await page
+    .getByRole('navigation', { name: 'Navigation entre les jours' })
+    .boundingBox();
 
-  expect(barre!.y, 'les onglets devraient précéder les cartes').toBeLessThan(cartes!.y);
-  expect(barre!.y, 'les onglets ne doivent pas être ancrés au bas').toBeLessThan(bas!.y);
+  expect(barre!.y, 'la barre ne doit pas précéder le rang du jour').toBeGreaterThan(rang!.y);
+});
+
+test('les mentions suivent la provenance des données, sur les deux écrans de menu', async ({
+  page
+}) => {
+  for (const ecran of ['/', '/semaine']) {
+    await page.goto(ecran);
+    const lien = page.locator('.shell footer').getByRole('link', {
+      name: 'Source, mentions et vie privée'
+    });
+    await lien.scrollIntoViewIfNeeded();
+    await expect(lien, `${ecran} : lien des mentions`).toBeVisible();
+
+    // Défilement fait, le lien reste au-dessus de la barre : la réserve de la
+    // coque l'en dégage.
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    const boite = await lien.boundingBox();
+    const barre = await onglets(page).boundingBox();
+    expect(boite!.y + boite!.height, `${ecran} : le lien passe sous la barre`).toBeLessThanOrEqual(
+      barre!.y
+    );
+  }
+});
+
+test('les mentions s’atteignent depuis les réglages', async ({ page }) => {
+  await page.goto('/reglages');
+  await page.getByRole('link', { name: /Source, mentions et vie privée/ }).click();
+  await expect(page).toHaveURL(/\/a-propos\/?$/);
 });
 
 test('les onglets ne portent que des destinations de consultation', async ({ page }) => {
@@ -158,7 +182,7 @@ test('l’en-tête ne change pas de hauteur d’un écran à l’autre', async (
   expect(new Set(hauteurs), `hauteurs relevées : ${hauteurs.join(', ')}`).toHaveProperty('size', 1);
 });
 
-test('le contenu réserve la hauteur du pied', async ({ page }) => {
+test('le contenu réserve la hauteur de la barre', async ({ page }) => {
   // Le défaut que ce test attrape ne se voit pas sur une machine de
   // développement : `viewport-fit=cover` est déclaré depuis l'origine (D34).
   // Ici l'encart système vaut zéro ; ce qui est vérifié, c'est que la
@@ -166,13 +190,12 @@ test('le contenu réserve la hauteur du pied', async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
 
-  const derniere = await page.locator('.tray .carte >> nth=-1').boundingBox();
-  const haut = await pied(page).boundingBox();
+  const dernier = await page.locator('.shell footer').boundingBox();
+  const haut = await onglets(page).boundingBox();
 
-  expect(
-    derniere!.y + derniere!.height,
-    'la dernière carte passe sous le pied'
-  ).toBeLessThanOrEqual(haut!.y);
+  expect(dernier!.y + dernier!.height, 'la fin du contenu passe sous la barre').toBeLessThanOrEqual(
+    haut!.y
+  );
 });
 
 test('l’écran porte un seul titre, et un seul rang de flèches', async ({ page }) => {
@@ -267,9 +290,9 @@ test('la pastille n’occupe aucune place, donc l’hydratation ne déplace rien
   expect(pleine, 'la lecture du stockage a déplacé la mise en page').toEqual(vide);
 });
 
-test('la couche modale recouvre le pied et reste refermable', async ({ page }) => {
+test('la couche modale recouvre la barre et reste refermable', async ({ page }) => {
   // Playwright refuse de cliquer un élément recouvert : si la fermeture passait
-  // sous le pied, ce test échouerait au clic plutôt qu'à l'assertion.
+  // sous la barre, ce test échouerait au clic plutôt qu'à l'assertion.
   await page.goto('/');
   await page.locator('.cible').click();
 

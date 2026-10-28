@@ -2,7 +2,6 @@
   import '#lib/design/tokens.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
-  import { resolve } from '$app/paths';
   import Enseigne from '#lib/ui/Enseigne.svelte';
   import EnTete from '#lib/ui/EnTete.svelte';
   import Onglets from '#lib/ui/Onglets.svelte';
@@ -102,7 +101,7 @@
   const sortie = $derived(montrerOnglets ? null : (SORTIES[chemin] ?? MENU));
 </script>
 
-<div class="shell">
+<div class="shell" class:avec-barre={montrerOnglets}>
   <!--
     L'enseigne est la première ligne de tous les écrans, et elle est hors de
     tout bloc animé : le nom du lieu ne change pas avec le jour (D35).
@@ -111,10 +110,6 @@
 
   {#if entete}
     <EnTete titre={entete.titre} />
-  {/if}
-
-  {#if montrerOnglets}
-    <Onglets />
   {/if}
 
   {#if appUpdate.available}
@@ -141,41 +136,28 @@
 </div>
 
 <!--
-  Le pied est ancré au bas de la fenêtre (design.md, D52).
+  Le choix entre le jour et la semaine est ancré au bas de la fenêtre, sous le
+  pouce (refonte-signaletique, D11, qui rétablit D31).
 
-  Il est hors de la coque parce qu'il n'appartient pas au flux du contenu :
-  celui-ci lui réserve sa hauteur, il ne la lui prend pas.
+  Il est hors de la coque, et après elle dans le document : il n'appartient pas
+  au flux du contenu, qui lui réserve sa hauteur sans la lui prendre, et l'ordre
+  de lecture suit l'ordre de l'écran — le menu, puis le choix d'un autre écran.
 
-  Il ne porte que ce qui ne varie pas d'un écran à l'autre. La date de mise à
-  jour des données et le lien vers le document officiel sont restés dans le flux
-  de l'écran qu'ils qualifient : un pied fixe qui les porterait deviendrait un
-  second en-tête, et affirmerait sur l'écran des réglages une fraîcheur qui ne
-  concerne que les menus.
-
-  « À propos » n'est pas un onglet : on le consulte une fois, pas tous les
-  matins. Il a ici la place qui lui revient — atteignable partout, jamais au
-  premier plan.
+  Il a pris la place du pied fixe des mentions (D52, annulé). Une page qu'on
+  consulte une fois n'a pas à occuper la zone la plus accessible de l'écran : le
+  lien vers les mentions suit désormais la provenance des données, à la fin de
+  chaque écran de menu, et l'écran des réglages en porte un aussi.
 -->
-<footer class="pied">
-  <a href={resolve('/a-propos')}>Source, mentions et vie privée</a>
-</footer>
+{#if montrerOnglets}
+  <Onglets />
+{/if}
 
 <style>
   .shell {
     max-width: var(--colonne);
     margin-inline: auto;
     min-height: 100dvh;
-    /* Le contenu réserve le pied *et* l'encart système sous lui : réserver la
-       seule hauteur du pied ferait passer la dernière carte dessous sur les
-       appareils à indicateur d'accueil, et nulle part ailleurs (D34, D52).
-
-       L'intervalle ajouté à cette réserve est celui de la coque, et non un cran
-       au-dessus (D63). `--barre-reserve` dimensionne déjà la barre et sa zone
-       sûre ; le `--espace-5` qui s'y ajoutait n'avait pas de motif écrit, et
-       c'est lui qu'on lisait comme un grand vide au-dessus des mentions. Le
-       pied fixe est séparé du contenu comme deux enfants de la coque le sont
-       entre eux. */
-    padding: var(--espace-3) var(--espace-3) calc(var(--espace-3) + var(--barre-reserve));
+    padding: var(--espace-3) var(--espace-3) calc(var(--espace-5) + var(--encart-bas));
     display: flex;
     flex-direction: column;
     gap: var(--espace-3);
@@ -195,41 +177,14 @@
   }
 
   /*
-    Le pied reste borné à la colonne de contenu et ne s'étire pas sur toute la
-    fenêtre : un pied de 1 400 pixels serait une seconde mise en page qui ne dit
-    pas son nom, alors que D23 n'en admet qu'une.
-
-    Son fond est opaque : le contenu défile derrière lui, et un fond translucide
-    laisserait passer le texte qui glisse dessous. Le filet dit où finit le
-    contenu, maintenant que le défilement est la règle et non l'exception (D53).
+    Sur les deux écrans de menu, le contenu réserve la barre *et* l'encart
+    système sous elle : réserver la seule hauteur de la barre ferait passer la
+    fin du contenu dessous sur les appareils à indicateur d'accueil, et nulle
+    part ailleurs (D34). L'intervalle ajouté est celui de la coque, et non un
+    cran au-dessus (D63) : la barre est séparée du contenu comme deux enfants de
+    la coque le sont entre eux.
   */
-  .pied {
-    position: fixed;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 1;
-    margin-inline: auto;
-    max-width: var(--colonne);
-    min-height: var(--barre-reserve);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Le rembourrage bas porte l'encart système en plus du sien : c'est ce qui
-       empêche la moitié basse du pied de passer sous l'indicateur d'accueil
-       (D34). */
-    padding: 0 var(--espace-3) var(--encart-bas);
-    background: var(--fond);
-    border-top: 1px solid var(--bord);
-  }
-
-  /* La cible tactile fait 44 pixels comme toutes les autres : le pied est
-     dimensionné autour d'elle, et non l'inverse. */
-  .pied a {
-    color: var(--encre-douce);
-    font-size: var(--texte-xs);
-    min-height: var(--cible);
-    display: inline-flex;
-    align-items: center;
-    padding-inline: var(--espace-3);
+  .shell.avec-barre {
+    padding-bottom: calc(var(--espace-3) + var(--barre-reserve));
   }
 </style>

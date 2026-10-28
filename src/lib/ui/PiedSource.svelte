@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { formatDay } from '#lib/menu/labels.js';
   import LienExterne from './LienExterne.svelte';
 
@@ -14,6 +15,11 @@
    * grève —, avec le même défaut d'alignement trois fois et deux formulations sur
    * trois du repli (design.md, D63). L'écran de la semaine ne repliait pas sur la
    * date, sans raison : c'est la version complète qui est retenue ici.
+   *
+   * **Il porte aussi le lien vers les mentions** (refonte-signaletique, D11). Le
+   * pied fixe qui le portait a laissé le bas de la fenêtre au choix entre le
+   * jour et la semaine ; les mentions qualifient les données au même titre que
+   * leur date et leur source, et suivent donc celles-ci.
    */
   let {
     updatedLabel,
@@ -39,6 +45,7 @@
 <footer>
   <span>{mention}</span>
   <LienExterne href={pdfUrl}>PDF officiel</LienExterne>
+  <a class="mentions" href={resolve('/a-propos')}>Source, mentions et vie privée</a>
 </footer>
 
 <style>
@@ -51,16 +58,25 @@
     séparaient les deux lignes de base, ce qui se lisait comme un chevauchement.
   */
   footer {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--espace-2);
+    column-gap: var(--espace-2);
     padding: var(--espace-3) var(--espace-2) 0;
     /* Filet décoratif : il ne délimite aucune commande et ne porte aucune
        information, donc WCAG 1.4.11 ne lui applique pas de seuil (D27). */
     border-top: 1px solid var(--bord);
     color: var(--encre-douce);
     font-size: var(--texte-xs);
+  }
+
+  /* Les mentions prennent la ligne suivante, entière : elles qualifient tout
+     l'écran, et non la seule date à côté de laquelle elles se poseraient. */
+  .mentions {
+    grid-column: 1 / -1;
+    justify-self: start;
+    font-weight: var(--poids-moyen);
+    color: var(--encre-douce);
   }
 
   footer :global(a) {

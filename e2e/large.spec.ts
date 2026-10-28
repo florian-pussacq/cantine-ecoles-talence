@@ -47,17 +47,18 @@ test('la structure est la même quelle que soit la largeur', async ({ page }) =>
   // pas la structure de l'écran, et un test qui échouerait là-dessus mesurerait
   // la façon d'écrire le balisage plutôt que ce que l'écran présente.
   //
-  // La coque commence par le choix d'écran, puis la navigation entre jours,
-  // puis le pied de source. L'en-tête d'écran n'y figure plus : le titre de
-  // premier niveau est la date, portée par le rang de navigation (D61). Le pied
-  // des mentions est hors de la coque, et `coque.spec.ts` s'en charge.
+  // La coque porte la navigation entre jours, puis le pied de source. L'en-tête
+  // d'écran n'y figure plus : le titre de premier niveau est la date, portée par
+  // le rang de navigation (D61). La barre des écrans est hors de la coque,
+  // ancrée au bas de la fenêtre, et `coque.spec.ts` s'en charge
+  // (refonte-signaletique, D11).
   await page.goto('/');
   const ordre = await page.evaluate(() =>
     [...document.querySelectorAll('.shell nav, .shell header, .shell footer')].map((n) =>
       n.tagName.toLowerCase()
     )
   );
-  expect(ordre, 'la structure de la colonne a changé').toEqual(['nav', 'nav', 'footer']);
+  expect(ordre, 'la structure de la colonne a changé').toEqual(['nav', 'footer']);
 });
 
 test("l'ouverture de la couche modale ne décale pas le contenu", async ({ page }) => {
