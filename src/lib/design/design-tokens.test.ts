@@ -158,29 +158,47 @@ const OPACITES: { fichier: string; valeur: string; pourquoi: string }[] = [
 ];
 
 function ecarts(): string[] {
+  return styles().flatMap(({ fichier, css }) => ecartsDans(fichier, css));
+}
+
+/** Les déclarations d'une feuille qui contournent les jetons. */
+function ecartsDans(fichier: string, css: string): string[] {
   const trouves: string[] = [];
-  for (const { fichier, css } of styles()) {
-    for (const { propriete, valeur } of declarations(css)) {
-      // Une déclaration de jeton (`--nom: valeur`) n'est pas une propriété surveillée.
-      if (propriete.startsWith('--')) continue;
-      const ici = `${fichier} — ${propriete}: ${valeur}`;
-      if (PROPRIETES_PAR_JETON.has(propriete) && !portéeParLesJetons(valeur)) trouves.push(ici);
-      if (propriete === 'font' && valeur !== 'inherit') trouves.push(ici);
-      if (
-        propriete === 'opacity' &&
-        !['0', '1'].includes(valeur) &&
-        !OPACITES.some((o) => o.fichier === fichier && o.valeur === valeur)
-      ) {
-        trouves.push(ici);
-      }
-      if (PROPRIETES_DE_COULEUR.has(propriete) && COULEUR_LITTERALE.test(valeur)) trouves.push(ici);
-      if (
-        PROPRIETES_DE_MOUVEMENT.has(propriete) &&
-        valeur !== NEUTRALISATION &&
-        MOUVEMENT_LITTERAL.test(valeur.replace(DUREE_NULLE, ''))
-      ) {
-        trouves.push(ici);
-      }
+  /*
+    Un `@font-face` ne peint rien : il décrit un fichier. Sa plage de graisses
+    (`300 800`) dit ce que le fichier sait dessiner, pas une graisse choisie
+    pour un texte, et n'a donc pas de cran de l'échelle à emprunter.
+  */
+  const peint = css.replace(/@font-face\s*\{[^}]*\}/g, '');
+  for (const { propriete, valeur } of declarations(peint)) {
+    // Une déclaration de jeton (`--nom: valeur`) n'est pas une propriété surveillée.
+    if (propriete.startsWith('--')) continue;
+    const ici = `${fichier} — ${propriete}: ${valeur}`;
+    if (PROPRIETES_PAR_JETON.has(propriete) && !portéeParLesJetons(valeur)) trouves.push(ici);
+    /*
+      Une famille de police ne se nomme que dans `tokens.css`, où ses
+      `@font-face` la déclarent (refonte-signaletique, D4). Un composant qui en
+      nommerait une contournerait le repli aux métriques ajustées, et ferait
+      dépendre son texte d'un fichier que rien ne précharge.
+    */
+    if (propriete === 'font-family' && fichier !== TOKENS && !portéeParLesJetons(valeur)) {
+      trouves.push(ici);
+    }
+    if (propriete === 'font' && valeur !== 'inherit') trouves.push(ici);
+    if (
+      propriete === 'opacity' &&
+      !['0', '1'].includes(valeur) &&
+      !OPACITES.some((o) => o.fichier === fichier && o.valeur === valeur)
+    ) {
+      trouves.push(ici);
+    }
+    if (PROPRIETES_DE_COULEUR.has(propriete) && COULEUR_LITTERALE.test(valeur)) trouves.push(ici);
+    if (
+      PROPRIETES_DE_MOUVEMENT.has(propriete) &&
+      valeur !== NEUTRALISATION &&
+      MOUVEMENT_LITTERAL.test(valeur.replace(DUREE_NULLE, ''))
+    ) {
+      trouves.push(ici);
     }
   }
   return trouves;
@@ -226,6 +244,17 @@ describe('les composants passent par les jetons', () => {
     // par son sens dans tokens.css — jamais en l'ajoutant aux exceptions sans
     // raison écrite.
     expect(ecarts()).toEqual([]);
+  });
+
+  it('refuse une famille de police nommée hors de tokens.css', () => {
+    // La garde lit les fichiers réels ; ce cas montre qu'elle mord, sur un
+    // composant qui n'existe pas.
+    const composant = 'src/lib/ui/Exemple.svelte';
+    expect(ecartsDans(composant, ".titre { font-family: 'Funnel Sans'; }")).toEqual([
+      `${composant} — font-family: 'Funnel Sans'`
+    ]);
+    expect(ecartsDans(composant, '.titre { font-family: var(--police-affichage); }')).toEqual([]);
+    expect(ecartsDans(TOKENS, "@font-face { font-family: 'Funnel Sans'; }")).toEqual([]);
   });
 
   it('ne cite aucun jeton qui n’existe pas', () => {

@@ -48,5 +48,10 @@ export const handle: Handle = async ({ event, resolve }) =>
     // apparaîtrait un jour dans un chemin SVG serait autrement interprété comme
     // un motif de substitution.
     transformPageChunk: ({ html }) =>
-      html.replace('<html lang="fr">', () => JOUR_RENDU).replace('<!--sprite-->', () => SPRITE)
+      html.replace('<html lang="fr">', () => JOUR_RENDU).replace('<!--sprite-->', () => SPRITE),
+    // Les deux polices s'annoncent dans l'en-tête, comme les modules et les
+    // feuilles de style que SvelteKit précharge déjà : sans cela, le navigateur
+    // ne les découvre qu'après avoir lu la feuille qui les nomme, et le premier
+    // texte est peint dans le repli (refonte-signaletique, D4).
+    preload: ({ type }) => type === 'js' || type === 'css' || type === 'font'
   });

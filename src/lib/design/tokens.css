@@ -18,6 +18,53 @@
  * de couleur ; ils se reconnaissent à leur glyphe et à leur libellé.
  */
 
+/*
+ * Les polices, servies par l'application (refonte-signaletique, D4).
+ *
+ * Le sous-ensemble latin seul — il porte « Œ » et « œ » —, en fichiers variables
+ * de graisse : une coupe, un fichier, toutes les graisses. Vite les empreinte et
+ * le service worker les précache avec le reste de `immutable` ; aucune requête
+ * ne part vers un domaine tiers. `check-budget.js` en borne le poids total.
+ *
+ * `swap` et non `optional` : un texte ne doit jamais être invisible, et le repli
+ * déclaré plus bas occupe la même place que la police, si bien que l'échange ne
+ * déplace presque rien. Les ajustements sont mesurés sur les deux fichiers
+ * contre Liberation Sans, métriquement identique à Arial, sur un texte de menu.
+ */
+@font-face {
+  font-family: 'Funnel Sans';
+  src: url('./polices/funnel-sans-latin-wght-normal.woff2') format('woff2');
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Funnel Display';
+  src: url('./polices/funnel-display-latin-wght-normal.woff2') format('woff2');
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Funnel Sans repli';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica'), local('Roboto');
+  size-adjust: 100.6%;
+  ascent-override: 99.4%;
+  descent-override: 24.9%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Funnel Display repli';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica'), local('Roboto');
+  size-adjust: 105.9%;
+  ascent-override: 94.4%;
+  descent-override: 23.6%;
+  line-gap-override: 0%;
+}
+
 :root {
   /* Les commandes de formulaire vivent sur les cartes, jamais sur le fond :
      c'est leur surface qui décide, pas l'impression générale. */
@@ -113,9 +160,19 @@
      porte aucun texte (audit-design-system, D2). */
   --voile-modale: rgb(0 0 0 / 0.45);
 
-  /* Typographie : pile système, aucune requête réseau (PRD §8) */
-  --police:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /*
+    Typographie : une famille, deux coupes, servies par l'application
+    (refonte-signaletique, D4). Le texte en Funnel Sans ; le grand chiffre du
+    titre et le nom du plat principal, et eux seuls, en Funnel Display.
+
+    Chaque pile passe par un repli aux métriques ajustées avant la pile système :
+    c'est lui qui est peint pendant le chargement, et il occupe la même place que
+    la police qu'il remplace.
+  */
+  --police-texte:
+    'Funnel Sans', 'Funnel Sans repli', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --police-affichage:
+    'Funnel Display', 'Funnel Display repli', 'Funnel Sans', ui-sans-serif, system-ui, sans-serif;
 
   /* Le plus petit cran : les étiquettes en capitales serrées dans une carte
      (« Bio », « Aujourd'hui »), et les pastilles de compte. Aucun texte ne
@@ -292,7 +349,7 @@ body {
   margin: 0;
   background: var(--fond);
   color: var(--encre);
-  font-family: var(--police);
+  font-family: var(--police-texte);
   font-size: var(--texte-base);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;

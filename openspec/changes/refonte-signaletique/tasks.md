@@ -2,12 +2,12 @@
 
 ## 1. Polices
 
-- [ ] 1.1 Copier `funnel-sans-latin-wght-normal.woff2` et `funnel-display-latin-wght-normal.woff2` depuis `@fontsource-variable/funnel-sans` et `@fontsource-variable/funnel-display` (épinglés en dépendances de développement) dans `src/lib/design/polices/`, avec la licence OFL ; vérifier que `npm run build` émet deux fichiers woff2 empreintés dans `immutable`
-- [ ] 1.2 `tokens.css` : deux `@font-face` (`font-display: swap`, plage latine), les jetons `--police-texte` et `--police-affichage`, chacun avec sa pile de repli système aux métriques ajustées (D4) ; vérifier au rendu qu'il n'y a ni texte invisible ni saut notable entre repli et police
-- [ ] 1.3 `hooks.server.ts` : précharger les deux polices par l'option `preload` de `resolve` ; vérifier dans le HTML pré-rendu la présence des deux `<link rel="preload" as="font" crossorigin>`
-- [ ] 1.4 `design-tokens.test.ts` : refuser une famille de police nommée dans un composant (exigence « Les polices viennent de l'application ») ; vérifier que le test échoue sur `font-family: 'Funnel Sans'` dans un composant de test
-- [ ] 1.5 `check-budget.js` : un budget de polices de 40 Ko qui nomme chaque fichier et son poids, et fait échouer la construction s'il est dépassé ; vérifier en abaissant temporairement le seuil que le build échoue avec ce message
-- [ ] 1.6 e2e `offline.spec.ts` : hors ligne après une première visite, le texte est rendu en Funnel Sans (`document.fonts.check`) et aucune police n'est demandée à un domaine tiers
+- [x] 1.1 Copier `funnel-sans-latin-wght-normal.woff2` et `funnel-display-latin-wght-normal.woff2` depuis `@fontsource-variable/funnel-sans` et `@fontsource-variable/funnel-display` (épinglés en dépendances de développement) dans `src/lib/design/polices/`, avec la licence OFL ; vérifier que `npm run build` émet deux fichiers woff2 empreintés dans `immutable`
+- [x] 1.2 `tokens.css` : deux `@font-face` (`font-display: swap`, plage latine), les jetons `--police-texte` et `--police-affichage`, chacun avec sa pile de repli système aux métriques ajustées (D4) ; vérifier au rendu qu'il n'y a ni texte invisible ni saut notable entre repli et police
+- [x] 1.3 `hooks.server.ts` : précharger les deux polices par l'option `preload` de `resolve` ; vérifier dans le HTML pré-rendu la présence des deux `<link rel="preload" as="font" crossorigin>`
+- [x] 1.4 `design-tokens.test.ts` : refuser une famille de police nommée dans un composant (exigence « Les polices viennent de l'application ») ; vérifier que le test échoue sur `font-family: 'Funnel Sans'` dans un composant de test
+- [x] 1.5 `check-budget.js` : un budget de polices de 40 Ko qui nomme chaque fichier et son poids, et fait échouer la construction s'il est dépassé ; vérifier en abaissant temporairement le seuil que le build échoue avec ce message
+- [x] 1.6 e2e `offline.spec.ts` : hors ligne après une première visite, le texte est rendu en Funnel Sans (`document.fonts.check`) et aucune police n'est demandée à un domaine tiers
 
 ## 2. Palettes et jetons
 

@@ -17,6 +17,11 @@
  *    hors-ligne le télécharge en entier à la première visite et à chaque
  *    déploiement : c'est un coût de données, pas d'affichage.
  *
+ *  - Polices : tous les fichiers de police émis, à leur poids réel et non
+ *    compressé — un woff2 l'est déjà. L'application sert ses polices
+ *    (refonte-signaletique, D4) ; ajouter une graisse ou un sous-ensemble doit
+ *    être une décision qu'on voit passer, pas un octet de plus qu'on découvre.
+ *
  * Le JavaScript d'une page se lit dans ce que le build a produit, sans rien
  * simuler (D1). La page nomme les modules qu'elle charge — l'entrée, la coque,
  * la route — et le manifeste de Vite donne leurs imports statiques. Les imports
@@ -37,8 +42,11 @@ const MANIFEST = '.svelte-kit/output/client/.vite/manifest.json';
 const BUDGETS = {
   jsParPage: 60 * 1024,
   premierChargement: 150 * 1024,
-  jsPrecharge: 80 * 1024
+  jsPrecharge: 80 * 1024,
+  polices: 40 * 1024
 };
+
+const POLICES = new Set(['.woff2', '.woff', '.ttf', '.otf']);
 
 /**
  * Les pages sans JavaScript, et pourquoi (D4). Toute autre page qui ne nomme
@@ -166,6 +174,12 @@ const jsPrecharge = files
   .filter((f) => extname(f) === '.js' && !relative(BUILD_DIR, f).startsWith('data/'))
   .reduce((somme, f) => somme + gzipSize(f), 0);
 
+const polices = files
+  .filter((f) => POLICES.has(extname(f)))
+  .map((f) => ({ fichier: relative(BUILD_DIR, f), poids: statSync(f).size }))
+  .sort((a, b) => b.poids - a.poids);
+const policesTotal = polices.reduce((somme, { poids }) => somme + poids, 0);
+
 const plusLourde = (/** @type {'jsTotal' | 'premierChargement'} */ cle) =>
   pages.reduce((a, b) => (b[cle] > a[cle] ? b : a));
 const pireJs = plusLourde('jsTotal');
@@ -179,10 +193,11 @@ const rows = [
     budget: BUDGETS.premierChargement,
     page: pireChargement
   },
-  { label: 'JavaScript préchargé', actual: jsPrecharge, budget: BUDGETS.jsPrecharge, page: null }
+  { label: 'JavaScript préchargé', actual: jsPrecharge, budget: BUDGETS.jsPrecharge, page: null },
+  { label: 'Polices', actual: policesTotal, budget: BUDGETS.polices, page: null }
 ];
 
-console.log('\nBudgets (gzip)');
+console.log('\nBudgets (gzip, polices à leur poids réel)');
 for (const { label, actual, budget, page } of rows) {
   const pct = Math.round((actual / budget) * 100);
   const mark = actual > budget ? '✗' : '✓';
@@ -193,11 +208,21 @@ for (const { label, actual, budget, page } of rows) {
 }
 console.log('    JavaScript par page :');
 for (const p of pages) console.log(`      ${kb(p.jsTotal).padStart(9)}  ${p.page}`);
+console.log('    Polices :');
+for (const { fichier, poids } of polices) console.log(`      ${kb(poids).padStart(9)}  ${fichier}`);
 
 const failures = rows.filter((row) => row.actual > row.budget);
 
 if (failures.length > 0) {
   for (const { label, page } of failures) {
+    if (label === 'Polices') {
+      // Chaque fichier et son poids : c'est une graisse ou un sous-ensemble
+      // qu'il faut retirer, et le nom du fichier dit lequel.
+      console.error('\nBudget des polices dépassé :');
+      for (const { fichier, poids } of polices)
+        console.error(`  ${kb(poids).padStart(9)}  ${fichier}`);
+      continue;
+    }
     // Les modules de la page fautive, et non de tout le build : c'est là qu'il
     // faut couper (D3).
     const modules = page
