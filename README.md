@@ -80,7 +80,7 @@ et les deux réglages de plateforme qui ne vivent pas dans le dépôt, sont dans
 
 ## Démarrer
 
-Node 24 (la version est dans [`.nvmrc`](.nvmrc), lue aussi par la CI et Netlify).
+Node 26 (la version est dans [`.nvmrc`](.nvmrc), lue aussi par la CI et Netlify).
 
 ```bash
 npm ci
