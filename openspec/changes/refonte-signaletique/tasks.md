@@ -47,9 +47,9 @@
 
 ## 7. Intégration
 
-- [ ] 7.1 `mode-sombre.spec.ts` et `premier-rendu.spec.ts` : les deux palettes dès la première peinture, et aucun déplacement à l'hydratation, police comprise
-- [ ] 7.2 Contrôle visuel en clair et en sombre, à 320 pixels, 390 pixels et sur bureau : jour ordinaire, vacances avec allergènes non précisés, férié, week-end, mois non publié, fiche ouverte, filtre actif, réglages, grève, 404 ; comparer à la maquette A2 et aux écarts listés dans `design.md`
-- [ ] 7.3 Passer `npm run validate && npm run build` (budgets, polices comprises) et `npm run test:e2e` en vert
+- [x] 7.1 `mode-sombre.spec.ts` et `premier-rendu.spec.ts` : les deux palettes dès la première peinture, et aucun déplacement à l'hydratation, police comprise
+- [x] 7.2 Contrôle visuel en clair et en sombre, à 320 pixels, 390 pixels et sur bureau : jour ordinaire, vacances avec allergènes non précisés, férié, week-end, mois non publié, fiche ouverte, filtre actif, réglages, grève, 404 ; comparer à la maquette A2 et aux écarts listés dans `design.md`
+- [x] 7.3 Passer `npm run validate && npm run build` (budgets, polices comprises) et `npm run test:e2e` en vert
 
 ## Workflow follow-up
 
