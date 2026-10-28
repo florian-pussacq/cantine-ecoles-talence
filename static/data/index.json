@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T20:33:54Z",
+  "generatedAt": "2026-10-28T18:26:28Z",
   "months": [
     {
       "month": "2026-08",
@@ -26,8 +26,8 @@
     },
     {
       "month": "2026-11",
-      "contentHash": "140dd3e9d73caf758a9e9dc97c032c6fffc1a42fee4272f943ab4c0ef243481f",
-      "updatedAt": "2026-09-02"
+      "contentHash": "e675b42e2a6cab9ac87252f1b9fecd59513519230a76a31a7b721213835cf7f8",
+      "updatedAt": "2026-10-23"
     },
     {
       "month": "2026-12",
@@ -43,8 +43,8 @@
     },
     {
       "month": "2027-01",
-      "contentHash": "a1846ef2ef10d3cdff4f876916c95687f3f3ed4cf7cce8428a30db967785e8fb",
-      "updatedAt": "2026-10-15"
+      "contentHash": "f97b47324906d780c18ed495cde9ec192cb6ffa77fc1d81698090ce57e260e4a",
+      "updatedAt": "2026-10-23"
     }
   ]
 }
