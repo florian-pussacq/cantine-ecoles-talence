@@ -170,7 +170,7 @@
   */
   .parts {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas:
       'chiffre avant'
       'chiffre apres';
@@ -194,11 +194,17 @@
     font-size: var(--titre-semaine);
   }
 
+  /*
+    Ce qui entoure le chiffre peut passer à la ligne ; le chiffre, jamais. Sur un
+    téléphone de 320 pixels, une semaine à cheval sur deux mois — « 30–4 nov. –
+    déc. » — déborderait sous la flèche plutôt que de se replier.
+  */
   .avant,
   .apres {
+    min-width: 0;
     font-size: var(--texte-lg);
     line-height: 1.15;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
   }
 
   .avant {

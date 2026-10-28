@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import Illustration from '#lib/illustrations/Illustration.svelte';
   import { classify } from '#lib/illustrations/families.js';
   import { allergenFilter } from '#lib/filter/allergens.svelte.js';
   import Bandeau from '#lib/ui/Bandeau.svelte';
@@ -20,6 +19,7 @@
     allergenNames,
     allergensUndeclared,
     dayNumber,
+    familyLabel,
     formatWeekday,
     shortAllergenName,
     weekReturnLabel,
@@ -75,7 +75,16 @@
     return day.courses
       .filter((course) => !['plat', 'pain', 'gouter'].includes(course.slot))
       .map((course) => course.label)
-      .join(' · ');
+      .join(', ');
+  }
+
+  /*
+    La famille écrite en tête du résumé (refonte-signaletique, D10) : la tuile
+    la dit par sa couleur, le mot la dit sans elle. Un plat inclassable n'a pas
+    de nom de famille à écrire, et la tuile prend la couleur de repli.
+  */
+  function resume(famille: Parameters<typeof familyLabel>[0], suite: string): string {
+    return [familyLabel(famille), suite].filter((part) => part).join(' · ');
   }
 
   /** Le nombre de plats du jour touchés par la sélection. */
@@ -194,21 +203,23 @@
           <li class:today={isToday}>
             {#if day && day.kind === 'school' && course && match}
               <button type="button" onclick={() => open(date)}>
-                <span
-                  class="disc"
-                  style:--pale={`var(--fam-${match.family}-pale)`}
-                  style:--anneau={`var(--fam-${match.family})`}
-                >
-                  <Illustration name={match.illustration} size={32} />
+                <!--
+                  La tuile : le jour et son quantième, sur la couleur de la
+                  famille du plat principal — la même que l'aplat de l'écran du
+                  jour (refonte-signaletique, D10).
+                -->
+                <span class="tuile" style:--aplat={`var(--fam-${match.family})`}>
+                  <span class="dow">{formatWeekday(date)}</span>
+                  <span class="num">{dayNumber(date)}</span>
                 </span>
                 <span class="body">
-                  <span class="when">
-                    <span class="dow">{formatWeekday(date)}</span>
-                    <span class="num">{dayNumber(date)}</span>
+                  <span class="tete">
+                    <span class="main">{course.label}</span>
                     {#if isToday}<span class="now">Aujourd'hui</span>{/if}
                   </span>
-                  <span class="main">{course.label}</span>
-                  {#if rest(day)}<span class="rest">{rest(day)}</span>{/if}
+                  {#if resume(match.family, rest(day))}
+                    <span class="rest">{resume(match.family, rest(day))}</span>
+                  {/if}
                   {#if day.title}<span class="rest">{day.title}</span>{/if}
                   {#if allergensUndeclared(day.source)}
                     <!-- Le filtre ne peut rien signaler ce jour-là : le dire (allergenes-non-communiques). -->
@@ -223,26 +234,28 @@
               </button>
             {:else}
               <div class="quiet">
-                <span class="disc muted"><Illustration name="inconnu" size={32} /></span>
+                <!-- Un jour sans service n'a pas de famille : sa tuile est vide de couleur. -->
+                <span class="tuile repos">
+                  <span class="dow">{formatWeekday(date)}</span>
+                  <span class="num">{dayNumber(date)}</span>
+                </span>
                 <span class="body">
-                  <span class="when">
-                    <span class="dow">{formatWeekday(date)}</span>
-                    <span class="num">{dayNumber(date)}</span>
-                    {#if isToday}<span class="now">Aujourd'hui</span>{/if}
-                  </span>
-                  <!--
+                  <span class="tete">
+                    <!--
                 Deux absences très différentes. « Pas d'école » est une donnée :
                 la Ville a dit qu'il n'y avait pas de service. « Pas encore
                 publié » est un silence. Les confondre ferait croire à une
                 information là où il n'y en a aucune. Le férié est une donnée
                 plus précise que la première, et se nomme.
               -->
-                  <span class="main quiet-label">
-                    {day === null
-                      ? 'Menu pas encore publié'
-                      : day.kind === 'public-holiday'
-                        ? 'Jour férié'
-                        : "Pas d'école ce jour"}
+                    <span class="main quiet-label">
+                      {day === null
+                        ? 'Menu pas encore publié'
+                        : day.kind === 'public-holiday'
+                          ? 'Jour férié'
+                          : "Pas d'école ce jour"}
+                    </span>
+                    {#if isToday}<span class="now">Aujourd'hui</span>{/if}
                   </span>
                 </span>
               </div>
@@ -268,35 +281,38 @@
 {/if}
 
 <style>
+  /*
+    La semaine est un tableau, comme le déjeuner : un filet d'encre l'ouvre, un
+    filet sépare les jours, et aucune carte ne les enferme (refonte-signaletique,
+    D10).
+  */
   .sheet {
     list-style: none;
     margin: 0;
-    padding: 6px;
-    background: var(--carte);
-    border-radius: var(--rayon-carte);
+    padding: 0;
+    border-top: 2px solid var(--encre);
     display: flex;
     flex-direction: column;
-    gap: 2px;
   }
 
-  li + li {
-    box-shadow: 0 -1px 0 var(--bord);
+  li {
+    border-bottom: 1px solid var(--bord);
   }
 
-  li.today + li {
-    box-shadow: none;
+  /* Le pied de source qui suit porte déjà son filet : un second le doublerait. */
+  li:last-child {
+    border-bottom: 0;
   }
 
   li button,
   .quiet {
     width: 100%;
     display: grid;
-    grid-template-columns: 58px 1fr;
+    grid-template-columns: var(--tuile) minmax(0, 1fr);
     gap: var(--espace-3);
-    align-items: center;
-    padding: var(--espace-2) 0.55rem;
+    align-items: start;
+    padding: var(--espace-3) 0;
     border: 0;
-    border-radius: var(--rayon-pastille);
     background: none;
     font: inherit;
     color: inherit;
@@ -305,79 +321,61 @@
   }
 
   .quiet {
+    align-items: center;
     cursor: default;
   }
 
   /*
-    Le jour courant tient par deux signaux qui ne sont pas des couleurs : la
-    pastille « Aujourd'hui », forme sombre écrite en toutes lettres, et le nom
-    du plat qui monte d'un cran. La ligne reste repérable en niveaux de gris.
-
-    Le fond teinté n'en est pas un troisième : à aucun taux qui laisse son seuil
-    au texte atténué, il ne se distingue de la carte sans couleur. C'est un
-    renfort. Il remplace le contour noir de 2 px, qui se lisait comme un focus
-    clavier (bandeau-et-aujourdhui, D4).
+    La tuile porte la famille par sa couleur, et le jour par son texte blanc — une
+    paire mesurée dans chaque palette. Le jour courant n'y ajoute aucun contour :
+    un contour se lirait comme le focus du clavier (bandeau-et-aujourdhui, D4).
   */
-  li.today button,
-  li.today .quiet {
-    background: var(--voile-accent);
+  .tuile {
+    width: var(--tuile);
+    height: var(--tuile);
+    border-radius: var(--rayon-carte);
+    background: var(--aplat);
+    color: var(--sur-famille);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espace-1);
+    line-height: 1;
   }
 
-  .disc {
-    width: 58px;
-    height: 58px;
-    border-radius: 50%;
-    background: var(--pale);
-    border: 4px solid var(--anneau);
-    display: grid;
-    place-items: center;
+  /* Un jour sans service : la tuile garde sa place et perd sa couleur. Le trait
+     est un repère ; c'est le libellé à côté qui dit pourquoi. */
+  .tuile.repos {
+    background: none;
+    border: 1px dashed var(--voile-trait);
+    color: var(--encre-douce);
   }
 
-  .disc.muted {
-    background: var(--creux);
-    border-color: var(--bord);
+  .dow {
+    font-size: var(--texte-2xs);
+    font-weight: var(--poids-moyen);
+  }
+
+  .num {
+    font-family: var(--police-affichage);
+    font-size: var(--texte-xl);
+    font-weight: var(--poids-fort);
+    font-variant-numeric: tabular-nums;
   }
 
   .body {
     display: flex;
     flex-direction: column;
-    gap: 0.12rem;
+    gap: var(--espace-1);
     min-width: 0;
   }
 
-  .when {
+  .tete {
     display: flex;
     align-items: baseline;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-  }
-
-  .dow {
-    font-size: var(--texte-sm);
-    font-weight: var(--poids-fort);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--encre);
-  }
-
-  .num {
-    font-size: var(--texte-lg);
-    font-weight: var(--poids-titre);
-    letter-spacing: -0.02em;
-    color: var(--encre);
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* La même pastille que la mention de l'écran du jour (D3). */
-  .now {
-    font-size: var(--texte-2xs);
-    font-weight: var(--poids-titre);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: var(--sur-accent);
-    border-radius: var(--rayon-pilule);
-    padding: 0.12rem 0.42rem;
+    justify-content: space-between;
+    gap: var(--espace-2);
   }
 
   .main {
@@ -385,13 +383,18 @@
     font-weight: var(--poids-fort);
     color: var(--encre);
     line-height: 1.25;
-    letter-spacing: -0.01em;
   }
 
-  li.today .main {
-    font-size: var(--texte-lg);
-    font-weight: var(--poids-titre);
-    letter-spacing: -0.02em;
+  /* La même étiquette que la mention de l'écran du jour : une inversion
+     (bandeau-et-aujourdhui, D3 ; refonte-signaletique, D2). */
+  .now {
+    flex: none;
+    padding: 0.1rem 0.45rem;
+    border-radius: var(--rayon-pastille);
+    font-size: var(--texte-xs);
+    font-weight: var(--poids-fort);
+    background: var(--accent);
+    color: var(--sur-accent);
   }
 
   .quiet-label {
@@ -403,10 +406,10 @@
   .rest {
     font-size: var(--texte-xs);
     color: var(--encre-douce);
-    line-height: 1.35;
+    line-height: 1.4;
   }
 
   .chips {
-    margin-top: 0.22rem;
+    margin-top: var(--espace-1);
   }
 </style>

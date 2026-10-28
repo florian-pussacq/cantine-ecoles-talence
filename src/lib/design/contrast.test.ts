@@ -222,20 +222,7 @@ const TRANSPARENCES: {
     fond: 'fond',
     seuil: 3,
     quoi: 'bordure des commandes de navigation et de sortie'
-  },
-  /*
-    La ligne du jour courant de la semaine (bandeau-et-aujourdhui, D4). Le taux
-    est borné par l'encre atténuée des autres plats : à 18 %, elle ne tiendrait
-    plus que 4,62. La teinte, elle, ne se distingue pas de la carte en niveaux
-    de gris, et n'a pas à le faire : c'est la pastille qui porte le signal.
-  */
-  ...(['encre', 'encre-douce', 'accent'] as const).map((texte) => ({
-    voile: 'voile-accent',
-    fond: 'carte',
-    texte,
-    seuil: 4.5,
-    quoi: `--${texte} sur la ligne du jour courant de la semaine`
-  }))
+  }
 ];
 
 /**

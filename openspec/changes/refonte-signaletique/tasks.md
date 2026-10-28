@@ -37,9 +37,9 @@
 
 ## 5. Écran de la semaine
 
-- [ ] 5.1 `semaine/+page.svelte` : une tuile de 56 pixels par jour (couleur de famille, jour abrégé, quantième en Display) ; plat principal, puis « Famille · » et les autres plats ; pastille d'allergène ; plus de légende (D10) ; vérifier `famille.spec.ts` et le nouveau scénario « La famille se lit sans la couleur »
-- [ ] 5.2 Les jours non servis (férié, sans école, non publié) en tuile pointillée sans aplat, et le jour courant marqué de l'étiquette « Aujourd'hui », sans contour ; vérifier `feries.spec.ts`, `week-end.spec.ts` et le scénario « Jour non servi »
-- [ ] 5.3 Le titre de la semaine (intervalle en Display et mois) tient sur une ligne, de 320 pixels au bureau ; vérifier le scénario « Période de la semaine »
+- [x] 5.1 `semaine/+page.svelte` : une tuile de 56 pixels par jour (couleur de famille, jour abrégé, quantième en Display) ; plat principal, puis « Famille · » et les autres plats ; pastille d'allergène ; plus de légende (D10) ; vérifier `famille.spec.ts` et le nouveau scénario « La famille se lit sans la couleur »
+- [x] 5.2 Les jours non servis (férié, sans école, non publié) en tuile pointillée sans aplat, et le jour courant marqué de l'étiquette « Aujourd'hui », sans contour ; vérifier `feries.spec.ts`, `week-end.spec.ts` et le scénario « Jour non servi »
+- [x] 5.3 Le titre de la semaine (intervalle en Display et mois) tient sur une ligne, de 320 pixels au bureau ; vérifier le scénario « Période de la semaine »
 
 ## 6. Écrans secondaires
 

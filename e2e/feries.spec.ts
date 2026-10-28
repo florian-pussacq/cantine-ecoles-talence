@@ -35,6 +35,12 @@ test('la semaine nomme le férié, sans le rendre actionnable', async ({ page })
   await expect(ferie.getByRole('button')).toHaveCount(0);
   // Les quatre autres jours de la semaine sont servis, donc actionnables.
   await expect(page.locator('li button')).toHaveCount(4);
+
+  // Un jour sans service n'a pas de famille : sa tuile garde sa place et perd
+  // sa couleur (refonte-signaletique, D10).
+  const tuile = ferie.locator('.tuile');
+  await expect(tuile).toHaveClass(/repos/);
+  expect(await tuile.getAttribute('style')).toBeNull();
 });
 
 test('la navigation enjambe le férié', async ({ page }) => {

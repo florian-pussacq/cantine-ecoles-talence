@@ -33,7 +33,7 @@ const JETONS = new Set(
  * Les jetons posés par les composants eux-mêmes, en ligne : leur nom est connu
  * du composant qui les pose, pas de `tokens.css`.
  */
-const JETONS_LOCAUX = /^--(sens|pale|anneau|aplat)$/;
+const JETONS_LOCAUX = /^--(sens|pale|aplat)$/;
 
 /** Les styles de l'application : blocs `<style>` et styles en ligne des composants, feuilles CSS. */
 function styles(): { fichier: string; css: string }[] {
