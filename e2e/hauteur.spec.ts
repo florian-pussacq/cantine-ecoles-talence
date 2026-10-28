@@ -14,8 +14,9 @@ import { auRepos, expect, test, type Page } from './test';
  * **Elle est remplacée, non supprimée.** Un test effacé ne laisse aucune trace
  * de ce qu'il garantissait ; un test affaibli le dit. Ce qui survit est le
  * noyau utile : on ouvre l'application pour savoir ce qui est servi, et cette
- * réponse ne doit pas demander un geste. La première carte est entièrement
- * visible d'emblée, et le rang qui porte la date aussi.
+ * réponse ne doit pas demander un geste. Le plat principal est entièrement
+ * visible d'emblée, et le rang qui porte la date aussi (refonte-signaletique,
+ * D7 : il ouvre désormais le déjeuner).
  *
  * Il ne porte que sur le profil mobile. L'exigence parle de la fenêtre d'un
  * téléphone, et un écran de bureau n'en est pas un.
@@ -43,7 +44,7 @@ async function bas(page: Page, selecteur: string): Promise<number | null> {
 
 const ROLES = ['Entrée', 'Plat', 'Accompagnement', 'Laitage', 'Dessert', 'Pain'] as const;
 
-test('la première carte est entièrement visible sans défiler', async ({ page }) => {
+test('le plat principal est entièrement visible sans défiler', async ({ page }) => {
   await page.goto('/');
 
   const suivant = page.locator('nav[aria-label="Navigation entre les jours"] button').nth(1);
@@ -61,11 +62,13 @@ test('la première carte est entièrement visible sans défiler', async ({ page 
 
   const limite = await flottaison(page);
 
-  const premiere = await bas(page, '.tray .carte >> nth=0');
-  expect(premiere, 'première carte non rendue').not.toBeNull();
+  // Le plat principal ouvre le déjeuner, sur l'aplat de sa famille
+  // (refonte-signaletique, D7) : c'est lui qui répond à la question posée.
+  const principal = await bas(page, '.tray .plat.principal');
+  expect(principal, 'plat principal non rendu').not.toBeNull();
   expect(
-    premiere as number,
-    'la première carte doit être entièrement lisible sans le moindre geste'
+    principal as number,
+    'le plat principal doit être entièrement lisible sans le moindre geste'
   ).toBeLessThanOrEqual(limite);
 });
 
@@ -90,8 +93,8 @@ test('la barre ne recouvre jamais la dernière carte', async ({ page }) => {
   await page.waitForTimeout(200);
 
   const limite = await flottaison(page);
-  const derniere = await bas(page, '.tray .carte >> nth=-1');
-  expect(derniere, 'dernière carte non rendue').not.toBeNull();
+  const derniere = await bas(page, '.tray .plat >> nth=-1');
+  expect(derniere, 'dernière ligne non rendue').not.toBeNull();
   expect(
     derniere as number,
     'défilement fait, la dernière carte doit être entièrement dégagée de la barre'

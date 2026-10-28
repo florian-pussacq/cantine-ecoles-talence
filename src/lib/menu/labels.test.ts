@@ -5,6 +5,8 @@ import {
   browsedEyebrow as mentionParcourue,
   courseName,
   dayNumber,
+  dayTitle,
+  weekTitle,
   formatDay,
   formatWeekday,
   shortAllergenName,
@@ -399,5 +401,29 @@ describe('familyLabel', () => {
 
   it('ne nomme pas un plat inclassable', () => {
     expect(familyLabel('inconnu')).toBeNull();
+  });
+});
+
+describe('le titre d’un écran de menu (refonte-signaletique, D6)', () => {
+  it('compose le jour en trois parts, lues dans l’ordre de la phrase', () => {
+    const titre = dayTitle('2026-11-02');
+    expect(titre).toEqual({ avant: 'Lundi', chiffre: '2', apres: 'novembre' });
+    expect([titre.avant, titre.chiffre, titre.apres].join(' ')).toBe(formatDay('2026-11-02'));
+  });
+
+  it('abrège la semaine en un intervalle, et la lit en entier', () => {
+    expect(weekTitle('2026-11-02', '2026-11-06')).toEqual({
+      chiffre: '2–6',
+      apres: 'novembre',
+      lu: '2 au 6 novembre'
+    });
+  });
+
+  it('abrège les mois d’une semaine à cheval, sans abréger sa lecture', () => {
+    expect(weekTitle('2026-11-30', '2026-12-04')).toEqual({
+      chiffre: '30–4',
+      apres: 'nov. – déc.',
+      lu: '30 novembre au 4 décembre'
+    });
   });
 });

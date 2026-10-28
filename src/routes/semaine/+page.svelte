@@ -20,10 +20,10 @@
     allergenNames,
     allergensUndeclared,
     dayNumber,
-    formatDay,
     formatWeekday,
     shortAllergenName,
     weekReturnLabel,
+    weekTitle,
     PAGE_DES_MENUS
   } from '#lib/menu/labels.js';
   import type { PageProps } from './$types.js';
@@ -153,7 +153,8 @@
   cle={first}
   {sens}
   mention={days.some((d) => d.date === today) ? 'Cette semaine' : 'Semaine affichée'}
-  principal={`${formatDay(first, { weekday: undefined })} au ${formatDay(last, { weekday: undefined })}`}
+  principal={weekTitle(first, last)}
+  grand="semaine"
 />
 
 {#if data.status.kind !== 'ok'}

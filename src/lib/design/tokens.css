@@ -280,6 +280,10 @@
   --ill-disque: 88px;
   --ill-plat: 64px;
   --ill-ligne: 32px;
+
+  /* La colonne du rôle, dans les lignes du déjeuner : la largeur de son plus
+     long libellé, « Accompagnement », pour que tous les noms s'alignent (D7). */
+  --colonne-role: 7.25rem;
 }
 
 /*
@@ -357,6 +361,7 @@
     --ill-disque: 104px;
     --ill-plat: 76px;
     --ill-ligne: 40px;
+    --colonne-role: 8rem;
   }
 }
 
@@ -440,6 +445,21 @@ a {
 
 a:hover {
   text-decoration-thickness: 2px;
+}
+
+/*
+ * Un texte que seules les technologies d'assistance lisent : la phrase entière
+ * derrière une forme abrégée à l'œil — « 2–6 », lu « 2 au 6 novembre »
+ * (refonte-signaletique, D6). Il garde sa place dans le flux de lecture et
+ * n'en prend aucune à l'écran.
+ */
+.lu-seulement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* La zone qui dépend du jour, sur une page rendue un autre jour

@@ -9,6 +9,7 @@
   import {
     allergensUndeclared,
     browsedEyebrow,
+    dayTitle,
     formatDay,
     targetEyebrow,
     targetReturnLabel,
@@ -163,7 +164,7 @@
   {sens}
   mention={mention.texte}
   aujourdhui={mention.aujourdhui}
-  principal={date === null ? 'Menus des écoles' : formatDay(date)}
+  principal={date === null ? 'Menus des écoles' : dayTitle(date)}
 />
 
 <!--
@@ -188,12 +189,11 @@
 {:else}
   {#if day.title}
     <!-- Un jour de vacances n'est pas un jour d'école : il se nomme (menus-vacances, D4). -->
-    <Bandeau ton="evenement">{day.title}</Bandeau>
+    <Bandeau ton="evenement" etiquette={day.title} />
   {/if}
 
   {#if day.confidence === 'low'}
-    <Bandeau ton="alerte">
-      Données incertaines pour ce jour.
+    <Bandeau ton="alerte" etiquette="Données incertaines pour ce jour">
       <LienExterne href={day.source.pdfUrl}>Vérifier sur le PDF officiel</LienExterne>
     </Bandeau>
   {/if}
@@ -204,7 +204,7 @@
       n'est connu. Le dire est le seul cas où il parle sans correspondance
       (allergenes-non-communiques, D3).
     -->
-    <Bandeau ton="alerte">
+    <Bandeau ton="alerte" etiquette="Allergènes non précisés">
       {undeclaredNotice(allergenFilter.codes.size > 0)}
       <LienExterne href={day.source.pdfUrl}>Vérifier sur le PDF officiel</LienExterne>
     </Bandeau>
@@ -272,20 +272,15 @@
               une note de bas de page — vingt libellés distincts sur trente-cinq
               jours, c'est la deuxième quantité d'information de l'écran (D29).
 
-              Il prend la même carte que les rôles du déjeuner, et non plus un
-              vocabulaire à lui. Ce vocabulaire propre existait parce que la vedette
-              était le seul modèle disponible depuis la disparition des
-              compartiments (D41) ; la carte l'a remplacé, et le recopier ferait
-              vivre deux dessins de la même chose.
+              Il prend la forme d'une ligne compacte, comme un rôle du déjeuner,
+              sans vignette (lignes-compactes, D2) ; c'est la ligne entière qu'on
+              touche. Il mène à la même fiche que le déjeuner : deux chemins
+              d'ouverture, une seule journée à décrire.
 
-              Il mène à la même fiche que le déjeuner : deux chemins d'ouverture,
-              une seule journée à décrire. La séparation est portée par sa forme et
-              son éloignement, et non par un filet : un trait sépare deux choses de
-              même nature.
-
-              Il prend la forme compacte de la carte : une ligne, sans vignette.
-              Il reste une cible distincte, et c'est la ligne entière qu'on touche
-              (lignes-compactes, D2).
+              Un filet d'encre le sépare du déjeuner, et un intervalle plus grand
+              au-dessus qu'en dessous (refonte-signaletique, D7) : il n'est pas
+              servi au même moment, et ce qui vient après un trait appuyé se lit
+              comme une autre partie de la journée.
             -->
             <button type="button" class="snack" onclick={() => (ouverte = true)}>
               <PlatCarte slot="gouter" course={gouter} legend={jour.legend} compacte />
@@ -359,25 +354,25 @@
   }
 
   /*
-    Le goûter est un second objet, posé plus loin sur la table.
-
-    Il ne porte plus de dessin propre : c'est une carte, comme les rôles du
-    déjeuner, et le bouton n'ajoute autour d'elle qu'une cible (D29, D50). Ce
-    qui le sépare du déjeuner est la distance : la coque espace déjà ses
-    enfants, cette marge double l'intervalle, et la rupture se lit sans qu'aucun
-    trait ne soit ajouté.
+    Le goûter est une autre partie de la journée : un filet d'encre le sépare
+    du déjeuner, et la coque l'espace déjà de ce qui précède (D7).
   */
   .snack {
-    margin-top: var(--espace-3);
+    margin-top: var(--espace-2);
     display: block;
     width: 100%;
-    padding: 0;
+    padding: var(--espace-1) 0 0;
     border: 0;
+    border-top: 2px solid var(--encre);
     background: none;
     font: inherit;
     color: inherit;
     text-align: left;
     cursor: pointer;
+  }
+
+  .snack :global(.plat) {
+    border-bottom: 0;
   }
 
   .snack:focus-visible {

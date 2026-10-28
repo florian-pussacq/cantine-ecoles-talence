@@ -26,14 +26,14 @@
 
 ## 4. Écran du jour
 
-- [ ] 4.1 `RangNavigation.svelte` : `‹` à gauche, `›` à droite, et entre elles le titre (grand chiffre en Display, jour et mois) puis la mention, avec l'étiquette « Aujourd'hui » en inversion (D6) ; vérifier `aujourdhui.spec.ts`, `retour.spec.ts` et « un seul titre de premier niveau »
-- [ ] 4.2 `Bandeau.svelte` : les trois tons en étiquette compacte suivie d'une ligne, et l'ordre événement, alerte, info inchangé (D8) ; vérifier `Bandeau.test.ts` et `vacances.spec.ts`, en particulier le scénario « Un jour de vacances sans allergènes précisés »
-- [ ] 4.3 `PlatCarte.svelte` : le plat principal sur l'aplat de sa famille, avec le nom en Display, « Plat principal · Famille » et l'illustration sur un disque à la teinte pâle ; supprimer le liseré ; un plat inclassable porte le gris de repli sans nom de famille ; tests de composant des scénarios « Le plat principal porte sa famille » et « Plat principal inclassable »
-- [ ] 4.4 `ListeDuJour.svelte` : le plat principal en tête, puis les autres rôles en lignes sur une grille rôle, plat et vignette ; la ligne compacte d'un rôle absent ; aucun libellé au-dessus d'un nom ; supprimer `PastilleRole.svelte` ; adapter `ListeDuJour.test.ts` aux exigences « Le déjeuner, un élément par rôle », « Les autres rôles en lignes » et « Le déjeuner est une seule cible »
-- [ ] 4.5 `PastilleAllergene.svelte` : la surface d'alerte et l'encre noire, les pictogrammes (trois au plus) et les noms (D9) ; vérifier `PastilleAllergene.test.ts`, et la lisibilité en niveaux de gris en e2e (`fiche-allergenes.spec.ts`)
-- [ ] 4.6 Le goûter en ligne compacte, séparé du déjeuner par un filet d'encre, et toujours cible distincte ; vérifier le scénario « Le goûter ouvre la journée »
-- [ ] 4.7 `FicheJour.svelte` : l'ordre de l'écran (plat principal en tête), et l'habillage aux nouveaux jetons ; adapter `FicheJour.test.ts` (« Correspondance des ordres ») et vérifier `couche-modale.spec.ts`
-- [ ] 4.8 `hauteur.spec.ts` : remplacer « la première carte est visible » par « le plat principal est visible d'emblée » à la plus petite fenêtre, et vérifier qu'un jour ordinaire (2 novembre 2026) tient en entier à 390 × 844 pixels
+- [x] 4.1 `RangNavigation.svelte` : `‹` à gauche, `›` à droite, et entre elles le titre (grand chiffre en Display, jour et mois) puis la mention, avec l'étiquette « Aujourd'hui » en inversion (D6) ; vérifier `aujourdhui.spec.ts`, `retour.spec.ts` et « un seul titre de premier niveau »
+- [x] 4.2 `Bandeau.svelte` : les trois tons en étiquette compacte suivie d'une ligne, et l'ordre événement, alerte, info inchangé (D8) ; vérifier `Bandeau.test.ts` et `vacances.spec.ts`, en particulier le scénario « Un jour de vacances sans allergènes précisés »
+- [x] 4.3 `PlatCarte.svelte` : le plat principal sur l'aplat de sa famille, avec le nom en Display, « Plat principal · Famille » et l'illustration sur un disque à la teinte pâle ; supprimer le liseré ; un plat inclassable porte le gris de repli sans nom de famille ; tests de composant des scénarios « Le plat principal porte sa famille » et « Plat principal inclassable »
+- [x] 4.4 `ListeDuJour.svelte` : le plat principal en tête, puis les autres rôles en lignes sur une grille rôle, plat et vignette ; la ligne compacte d'un rôle absent ; aucun libellé au-dessus d'un nom ; supprimer `PastilleRole.svelte` ; adapter `ListeDuJour.test.ts` aux exigences « Le déjeuner, un élément par rôle », « Les autres rôles en lignes » et « Le déjeuner est une seule cible »
+- [x] 4.5 `PastilleAllergene.svelte` : la surface d'alerte et l'encre noire, les pictogrammes (trois au plus) et les noms (D9) ; vérifier `PastilleAllergene.test.ts`, et la lisibilité en niveaux de gris en e2e (`fiche-allergenes.spec.ts`)
+- [x] 4.6 Le goûter en ligne compacte, séparé du déjeuner par un filet d'encre, et toujours cible distincte ; vérifier le scénario « Le goûter ouvre la journée »
+- [x] 4.7 `FicheJour.svelte` : l'ordre de l'écran (plat principal en tête), et l'habillage aux nouveaux jetons ; adapter `FicheJour.test.ts` (« Correspondance des ordres ») et vérifier `couche-modale.spec.ts`
+- [x] 4.8 `hauteur.spec.ts` : remplacer « la première carte est visible » par « le plat principal est visible d'emblée » à la plus petite fenêtre, et vérifier qu'un jour ordinaire (2 novembre 2026) tient en entier à 390 × 844 pixels
 
 ## 5. Écran de la semaine
 

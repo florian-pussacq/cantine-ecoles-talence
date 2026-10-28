@@ -53,4 +53,15 @@ describe('un message porte un ton (bandeau-et-aujourdhui, D1)', () => {
     render(Bandeau, { props: { ton: 'info', children: contenu, action: commande } });
     expect(screen.getByRole('button', { name: 'Appliquer' })).toBeInTheDocument();
   });
+
+  it('peut ne peindre qu’une étiquette, et dire la suite sur le fond (refonte-signaletique, D8)', () => {
+    const { container } = render(Bandeau, {
+      props: { ton: 'alerte', etiquette: 'Allergènes non précisés', children: contenu }
+    });
+    const bandeau = container.querySelector('.bandeau');
+    expect(bandeau?.classList.contains('alerte')).toBe(true);
+    expect(bandeau?.classList.contains('avec-etiquette')).toBe(true);
+    expect(container.querySelector('.etiquette')?.textContent).toBe('Allergènes non précisés');
+    expect(screen.getByRole('link', { name: 'PDF officiel' })).toBeInTheDocument();
+  });
 });

@@ -7,6 +7,12 @@
    * Le signalement ne repose jamais sur la seule couleur : pictogramme, contour
    * appuyé et libellé en toutes lettres. Il reste perceptible en niveaux de gris
    * et se lit correctement à voix haute.
+   *
+   * Il prend la surface de l'alerte, le jaune de la signalisation sous une encre
+   * noire (refonte-signaletique, D9) : un allergène surveillé dans un plat
+   * compromet ce repas pour cet enfant, ce qui est le sens même de l'alerte. Le
+   * jaune se détache mal d'un fond clair ; le contour d'encre, lui, se détache
+   * de tout, l'aplat d'une famille compris.
    */
   let {
     names,
@@ -73,13 +79,13 @@
   .chip {
     display: inline-block;
     align-self: flex-start;
-    background: var(--etiquette);
-    border: 2px solid var(--encre);
+    background: var(--alerte);
+    border: 2px solid var(--sur-alerte);
     border-radius: var(--rayon-pastille);
     padding: 0.12rem 0.4rem;
     font-size: var(--texte-xs);
     font-weight: var(--poids-fort);
-    color: var(--encre);
+    color: var(--sur-alerte);
     line-height: 1.3;
   }
 

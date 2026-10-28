@@ -89,9 +89,10 @@ describe('la feuille porte la journée, pas un plat', () => {
   it("suit l'ordre de l'écran, pour que les deux lectures se correspondent", () => {
     const { container } = sheetFor(jourComplet());
     const roles = [...container.querySelectorAll('.plat-role')].map((n) => n.textContent);
+    // Le plat principal en tête, comme sur l'écran (refonte-signaletique, D7).
     expect(roles).toEqual([
-      'Entrée',
       'Plat',
+      'Entrée',
       'Accompagnement',
       'Laitage',
       'Dessert',
@@ -167,10 +168,10 @@ describe('la fiche met en avant ce que le parent surveille (alerte-et-fiche-coch
     const lignes = [...(resume?.querySelectorAll('li') ?? [])].map((li) => li.textContent?.trim());
     expect(lignes).toEqual([
       expect.stringMatching(
-        /^Gluten\s*Panibuns aux fromages, Moussaka, Pain, Pain au lait Bio \+ Lingotin$/
+        /^Gluten\s*Moussaka, Panibuns aux fromages, Pain, Pain au lait Bio \+ Lingotin$/
       ),
       expect.stringMatching(
-        /^Lait\s*Panibuns aux fromages, Moussaka, Fromage, Pain au lait Bio \+ Lingotin$/
+        /^Lait\s*Moussaka, Panibuns aux fromages, Fromage, Pain au lait Bio \+ Lingotin$/
       )
     ]);
   });

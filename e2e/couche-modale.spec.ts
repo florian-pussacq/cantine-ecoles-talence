@@ -67,7 +67,7 @@ test("le focus revient sur le goûter lorsque c'est lui qui a ouvert", async ({ 
   const gouter = page.locator('.snack');
   // Le goûter est une ligne compacte, sans vignette, mais la ligne entière reste
   // sa cible (lignes-compactes, D2).
-  await expect(gouter.locator('.carte')).toHaveClass(/compacte/);
+  await expect(gouter.locator('.plat')).toHaveClass(/compacte/);
   await expect(gouter.locator('.vignette')).toHaveCount(0);
   await gouter.click();
   await expect(page.locator('dialog')).toBeVisible();

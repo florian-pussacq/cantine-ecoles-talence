@@ -18,8 +18,13 @@
    * pleines, aucun trait fin. Une roue crantée est le contre-exemple typique —
    * dentelée et ajourée, elle se réduit mal. Celle-ci est dessinée pour sa taille
    * de destination : anneau de 5,5 unités d'épaisseur sur 24, dents de 2,8.
+   *
+   * Les chevrons du rang de navigation remplacent les caractères « ‹ » et « › »
+   * (refonte-signaletique) : un glyphe de police n'est pas une icône, il prend la
+   * graisse et la ligne de base du texte voisin, et change avec la police. Ils
+   * sont pleins, épais de 3 unités, pour la même raison que la roue.
    */
-  let { name, size = 22 }: { name: 'reglages'; size?: number } = $props();
+  let { name, size = 22 }: { name: 'reglages' | 'precedent' | 'suivant'; size?: number } = $props();
 
   /** Les huit dents, posées par rotation plutôt que décrites une à une. */
   const DENTS = [0, 45, 90, 135, 180, 225, 270, 315];
@@ -44,6 +49,10 @@
       fill-rule="evenodd"
       d="M12 3.4a8.6 8.6 0 1 0 0 17.2 8.6 8.6 0 0 0 0-17.2Zm0 5.5a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2Z"
     />
+  {:else if name === 'precedent'}
+    <path d="M14.6 4.2 16.7 6.3 11 12l5.7 5.7-2.1 2.1L6.8 12Z" />
+  {:else if name === 'suivant'}
+    <path d="M9.4 4.2 7.3 6.3 13 12l-5.7 5.7 2.1 2.1L17.2 12Z" />
   {/if}
 </svg>
 

@@ -11,8 +11,11 @@ export const PAGE_DES_MENUS = 'https://www.talence.fr/quotidien/enfance-scolarit
 /**
  * Les rôles du déjeuner, dans l'ordre où l'écran les montre.
  *
- * C'est l'ordre du service — entrée, plat, accompagnement, laitage, dessert —
- * suivi du pain. Le pain vient après, et ce n'est pas une entorse : il n'est pas
+ * Le plat principal ouvre la liste : c'est la réponse à la question qu'on pose
+ * à l'écran — qu'est-ce qu'il mange ? —, et la hiérarchie suit la priorité du
+ * produit plutôt que l'ordre du menu imprimé (refonte-signaletique, D7). Les
+ * autres suivent l'ordre du service — entrée, accompagnement, laitage, dessert —,
+ * puis le pain. Le pain vient après, et ce n'est pas une entorse : il n'est pas
  * servi à un moment du repas, il est sur la table du début à la fin. Il s'appelle
  * par ailleurs « Pain » trente-trois jours sur trente-cinq, ce qui en fait la
  * ligne la moins informative de l'ardoise (design.md, D39).
@@ -25,8 +28,8 @@ export const PAGE_DES_MENUS = 'https://www.talence.fr/quotidien/enfance-scolarit
  * cesseraient de se correspondre.
  */
 export const LUNCH_SLOTS = [
-  'entree',
   'plat',
+  'entree',
   'accompagnement',
   'laitage',
   'dessert',
@@ -170,6 +173,56 @@ export function formatWeekday(date: string): string {
 
 export function dayNumber(date: string): string {
   return String(Number(date.slice(8, 10)));
+}
+
+/**
+ * Le titre de premier niveau d'un écran de menu, en trois parts
+ * (refonte-signaletique, D6).
+ *
+ * Le chiffre se compose en grand, et le reste à côté de lui sur deux lignes :
+ * `avant` en haut, `apres` en bas. Le document les lit dans cet ordre —
+ * « Lundi 2 novembre » —, qui est aussi l'ordre de la phrase.
+ *
+ * Quand ce que l'œil lit et ce qu'on dirait diffèrent — « 2–6 » pour « 2 au
+ * 6 » —, `lu` porte la phrase entière : les trois parts sont alors masquées aux
+ * technologies d'assistance, qui n'entendent que `lu`.
+ */
+export type Titre = { avant?: string; chiffre: string; apres: string; lu?: string };
+
+/** Un mois en toutes lettres, ou abrégé, pour une date AAAA-MM-JJ. */
+function mois(date: string, month: 'long' | 'short'): string {
+  return new Intl.DateTimeFormat('fr-FR', { month, timeZone: 'UTC' }).format(
+    new Date(`${date}T00:00:00Z`)
+  );
+}
+
+/** « Lundi », « 2 », « novembre » : le titre de l'écran du jour. */
+export function dayTitle(date: string): Titre {
+  return {
+    avant: formatDay(date, { day: undefined, month: undefined }),
+    chiffre: dayNumber(date),
+    apres: mois(date, 'long')
+  };
+}
+
+/**
+ * « 2–6 novembre » : le titre de l'écran de la semaine, lu « 2 au 6 novembre ».
+ *
+ * Une semaine à cheval sur deux mois abrège ses mois — « nov. – déc. » —, faute
+ * de quoi ils ne tiendraient pas à côté du chiffre sur un téléphone ; la
+ * lecture, elle, les dit en entier.
+ */
+export function weekTitle(first: string, last: string): Titre {
+  const debut = dayNumber(first);
+  const fin = dayNumber(last);
+  const memeMois = first.slice(0, 7) === last.slice(0, 7);
+  return {
+    chiffre: `${debut}–${fin}`,
+    apres: memeMois ? mois(first, 'long') : `${mois(first, 'short')} – ${mois(last, 'short')}`,
+    lu: memeMois
+      ? `${debut} au ${fin} ${mois(first, 'long')}`
+      : `${debut} ${mois(first, 'long')} au ${fin} ${mois(last, 'long')}`
+  };
 }
 
 /**

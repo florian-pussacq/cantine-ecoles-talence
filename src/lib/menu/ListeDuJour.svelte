@@ -22,16 +22,15 @@
 </script>
 
 <!--
-  L'ardoise est devenue une liste de cartes (design.md, D50).
+  Le déjeuner : un aplat, puis un tableau (refonte-signaletique, D7).
 
-  La grille en deux colonnes alignait les rôles pour qu'on lise l'objet d'un coup
-  d'œil. Ce n'est plus ce qu'on lui demande : sept cartes ne tiennent pas dans
-  une fenêtre de téléphone, et l'écran se parcourt désormais au lieu de se
-  saisir (D53). Ce qui remplace l'alignement, c'est la couleur — un repère qui ne
-  bouge pas d'un jour à l'autre, ce que la famille ne pouvait pas être.
+  Le plat principal ouvre la suite sur l'aplat de sa famille ; les autres rôles
+  le suivent en lignes, le rôle dans une colonne, séparées par un filet. Plus de
+  cartes de même poids : c'est la hiérarchie qui dit ce qui compte, et non la
+  répétition d'un même cadre.
 
-  Aucune carte n'est actionnable : la cible est la journée entière, et elle est
-  portée par l'élément qui contient cette liste (D38).
+  Aucun rôle n'est actionnable : la cible est la journée entière, et elle est
+  portée par l'élément qui contient cette suite (D38).
 -->
 <div class="tray">
   {#each lignes as { slot, course } (slot)}
@@ -47,13 +46,18 @@
 
 <style>
   .tray {
-    /*
-      La suite n'a plus de surface propre. Le plateau était une surface claire
-      posée sur un fond sombre ; les cartes sont maintenant les surfaces, et un
-      second plateau sous elles n'ajouterait qu'un cadre autour d'un cadre.
-    */
     display: flex;
     flex-direction: column;
-    gap: var(--espace-2);
+  }
+
+  /* L'aplat se détache du tableau qui le suit par un intervalle, et non par un
+     filet : il en est séparé, pas rangé dedans. */
+  .tray :global(.principal) {
+    margin-bottom: var(--espace-1);
+  }
+
+  /* Le dernier filet fermerait un tableau qui n'a plus rien à séparer. */
+  .tray :global(.plat:last-child) {
+    border-bottom: 0;
   }
 </style>

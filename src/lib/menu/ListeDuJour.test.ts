@@ -28,22 +28,25 @@ describe('la liste ne se referme pas', () => {
     // Les rôles sont interrogés par leur classe : « Pain » est à la fois un rôle
     // et un libellé de plat, une recherche par texte confondrait les deux.
     const roles = [...container.querySelectorAll('.role')].map((node) => node.textContent);
-    expect(roles).toEqual(['Entrée', 'Plat', 'Accompagnement', 'Laitage', 'Dessert', 'Pain']);
+    expect(roles).toEqual(['Plat', 'Entrée', 'Accompagnement', 'Laitage', 'Dessert', 'Pain']);
   });
 
   it('donne un élément à chaque rôle, servi ou non', () => {
     const { container } = trayFor(edges, '2099-01-02');
-    expect(container.querySelectorAll('.carte')).toHaveLength(6);
+    expect(container.querySelectorAll('.plat')).toHaveLength(6);
     // Un creux se distingue d'un contenu autrement que par son absence.
-    expect(container.querySelectorAll('.carte.vide').length).toBeGreaterThan(0);
+    expect(container.querySelectorAll('.plat.vide').length).toBeGreaterThan(0);
   });
-  it("suit l'ordre du service, le pain fermant la liste", () => {
-    // Le pain n'est pas servi à un moment du repas : il est sur la table du
-    // début à la fin, et trente-trois jours sur trente-cinq il s'appelle
-    // « Pain » (design.md, D39).
+
+  it("ouvre sur le plat principal, puis suit l'ordre du service, le pain fermant la liste", () => {
+    // Le plat principal répond à la question qu'on pose à l'écran
+    // (refonte-signaletique, D7). Le pain n'est pas servi à un moment du repas :
+    // il est sur la table du début à la fin, et trente-trois jours sur
+    // trente-cinq il s'appelle « Pain » (design.md, D39).
     const { container } = trayFor(real, '2026-09-03');
     const roles = [...container.querySelectorAll('.role')].map((node) => node.textContent);
-    expect(roles[0]).toBe('Entrée');
+    expect(roles[0]).toBe('Plat');
+    expect(roles[1]).toBe('Entrée');
     expect(roles.at(-1)).toBe('Pain');
   });
 
@@ -57,7 +60,7 @@ describe('la liste ne se referme pas', () => {
 describe('la forme suit le contenu (lignes-compactes)', () => {
   it('ramène un rôle absent à une ligne compacte, sans vignette', () => {
     const { container } = trayFor(edges, '2099-01-02');
-    const vides = [...container.querySelectorAll('.carte.vide')];
+    const vides = [...container.querySelectorAll('.plat.vide')];
     expect(vides).toHaveLength(2);
     for (const ligne of vides) {
       expect(ligne).toHaveClass('compacte');
@@ -65,47 +68,64 @@ describe('la forme suit le contenu (lignes-compactes)', () => {
     }
   });
 
-  it('garde une carte entière à chaque rôle servi', () => {
+  it('garde une ligne entière, avec sa vignette, à chaque rôle servi', () => {
     // Le 2 septembre sert tout sauf le laitage.
     const { container } = trayFor(real, '2026-09-02');
-    const servies = [...container.querySelectorAll('.carte:not(.vide)')];
+    const servies = [...container.querySelectorAll('.plat:not(.vide)')];
     expect(servies).toHaveLength(5);
-    for (const carte of servies) {
-      expect(carte).not.toHaveClass('compacte');
-      expect(carte.querySelector('.vignette')).not.toBeNull();
+    for (const plat of servies) {
+      expect(plat).not.toHaveClass('compacte');
+      expect(plat.querySelector('.vignette')).not.toBeNull();
     }
-    expect(container.querySelector('.carte.vide')).toHaveClass('compacte');
+    expect(container.querySelector('.plat.vide')).toHaveClass('compacte');
+  });
+
+  it('ne compose aucun rôle au-dessus du nom de son plat', () => {
+    // Le surtitre est le défaut qu'Impeccable refuse sans exception
+    // (refonte-signaletique, D7). Dans une ligne, le rôle a sa colonne, qui
+    // précède celle du nom ; sur l'aplat, il suit le nom.
+    const { container } = trayFor(real, '2026-09-03');
+    for (const plat of container.querySelectorAll('.plat:not(.vide)')) {
+      const role = plat.querySelector('.role') as Element;
+      const nom = plat.querySelector('.nom') as Element;
+      if (plat.classList.contains('principal')) {
+        expect(nom.compareDocumentPosition(role) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      } else {
+        expect(role.parentElement).toBe(plat);
+        expect(nom.parentElement).not.toBe(plat);
+      }
+    }
   });
 });
 
 describe('la couleur dit la famille du plat principal (couleur-par-famille)', () => {
-  it('colore la carte principale de sa famille, et la nomme', () => {
-    // Le 3 septembre sert un blanc de poulet : volaille, comme son disque sur
+  it('pose le plat principal sur l’aplat de sa famille, et la nomme', () => {
+    // Le 3 septembre sert un blanc de poulet : volaille, comme sa tuile sur
     // l'écran de la semaine.
     const { container } = trayFor(real, '2026-09-03');
-    const principale = container.querySelector('.carte.principal');
+    const principale = container.querySelector('.plat.principal');
     expect(principale?.classList.contains('famille')).toBe(true);
     expect(principale?.getAttribute('style')).toContain('var(--fam-volaille)');
     expect(principale?.querySelector('.famille-nom')?.textContent).toBe('Volaille');
   });
 
-  it('laisse les autres cartes en encre', () => {
+  it('laisse les autres rôles en encre', () => {
     // Une entrée « végétarienne » au sens de classify() ne dit rien de la
-    // famille du repas : seule la carte principale est colorée (D3).
+    // famille du repas : seul le plat principal est coloré (D3).
     const { container } = trayFor(real, '2026-09-03');
-    const autres = [...container.querySelectorAll('.carte:not(.principal)')];
+    const autres = [...container.querySelectorAll('.plat:not(.principal)')];
     expect(autres.length).toBeGreaterThan(0);
-    for (const carte of autres) {
-      expect(carte.classList.contains('famille')).toBe(false);
-      expect(carte.getAttribute('style') ?? '').not.toContain('--fam-');
-      expect(carte.querySelector('.famille-nom')).toBeNull();
+    for (const plat of autres) {
+      expect(plat.classList.contains('famille')).toBe(false);
+      expect(plat.getAttribute('style') ?? '').not.toContain('--fam-');
+      expect(plat.querySelector('.famille-nom')).toBeNull();
     }
   });
 
   it('ne devine pas la famille d’un plat inclassable', () => {
     // La moussaka du 31 août : couleur de repli, aucun nom de famille.
     const { container } = trayFor(real, '2026-08-31');
-    const principale = container.querySelector('.carte.principal');
+    const principale = container.querySelector('.plat.principal');
     expect(principale?.getAttribute('style')).toContain('var(--fam-inconnu)');
     expect(principale?.querySelector('.famille-nom')).toBeNull();
   });
@@ -122,9 +142,9 @@ describe('le dessin accompagne chaque plat (D51)', () => {
     // plat du jour ». Ce sens est abandonné : l'illustration ne hiérarchise
     // plus, elle ancre le regard dans une liste devenue longue.
     const { container } = trayFor(real, '2026-09-03');
-    const cartes = container.querySelectorAll('.carte');
+    const plats = container.querySelectorAll('.plat');
     const dessins = container.querySelectorAll('.illustration');
-    expect(dessins).toHaveLength(cartes.length);
+    expect(dessins).toHaveLength(plats.length);
   });
 
   it('accepte deux fois le même dessin le même jour', () => {
@@ -149,7 +169,7 @@ describe('le dessin accompagne chaque plat (D51)', () => {
     // Poser le repli « inconnu » sur une absence signalerait une donnée là où il
     // n'y en a pas — l'inverse de ce que la carte vide est là pour dire.
     const { container } = trayFor(edges, '2099-01-02');
-    for (const vide of container.querySelectorAll('.carte.vide')) {
+    for (const vide of container.querySelectorAll('.plat.vide')) {
       expect(vide.querySelector('.illustration')).toBeNull();
     }
   });
@@ -163,7 +183,7 @@ describe('le dessin accompagne chaque plat (D51)', () => {
       expect(svg.getAttribute('aria-hidden')).toBe('true');
     }
     expect(screen.getByText('Blanc de poulet au jus')).toBeInTheDocument();
-    expect(container.querySelector('.carte.principal .role')?.textContent).toBe('Plat');
+    expect(container.querySelector('.plat.principal .role')?.textContent).toBe('Plat');
     expect(screen.getByText('Écrasé de pommes de terre')).toBeInTheDocument();
   });
 });

@@ -12,34 +12,35 @@
   } from './labels.js';
   import { allergenFilter } from '../filter/allergens.svelte.js';
   import PastilleAllergene from './PastilleAllergene.svelte';
-  import PastilleRole from './PastilleRole.svelte';
 
   /**
-   * La carte d'un rôle du service (design.md, D50, D51).
+   * Un rôle du service : le plat principal sur l'aplat de sa famille, ou une
+   * ligne du tableau qui le suit (refonte-signaletique, D7).
    *
-   * Elle existe pour les sept rôles, y compris lorsqu'aucun plat n'est publié :
-   * un creux doit rester distinguable d'une donnée manquante (D12), et une carte
-   * qui disparaîtrait ferait douter de ce que l'écran n'affiche pas.
+   * Il existe pour les six rôles du déjeuner, y compris lorsqu'aucun plat n'est
+   * publié : un creux doit rester distinguable d'une donnée manquante (D12), et
+   * un rôle qui disparaîtrait ferait douter de ce que l'écran n'affiche pas.
    *
-   * Elle est un `div` et non un `li` : la journée entière est une cible unique
-   * (D38), donc cette carte vit dans un `<button>`. Une liste y serait du HTML
+   * Il est un `div` et non un `li` : la journée entière est une cible unique
+   * (D38), donc ce rôle vit dans un `<button>`. Une liste y serait du HTML
    * invalide, et annoncerait aux lecteurs d'écran une structure de liste que le
    * bouton aplatit de toute façon.
    *
    * **Rien ici n'est actionnable** (D38). La cible est la journée entière, et
-   * elle est portée par l'élément qui contient la liste. Un bouton par carte
-   * ferait sept cibles là où il n'y a qu'une seule chose à ouvrir.
+   * elle est portée par l'élément qui contient la suite.
    *
-   * La couleur ne dit plus le rôle : elle dit la famille du plat principal, la
-   * même que son disque sur l'écran de la semaine (couleur-par-famille, D1, D3).
-   * Seule la carte principale la porte ; les autres restent en encre, et se
-   * reconnaissent à leur glyphe et à leur libellé (D4).
+   * Trois formes, et un seul composant, pour que les trois ne divergent pas sur
+   * ce qu'elles disent :
    *
-   * La forme suit le contenu (lignes-compactes, D1, D3). Un rôle absent et le
-   * goûter n'ont pas le poids d'un plat servi : ils prennent la forme
-   * `compacte`, une ligne sans vignette, avec le même libellé et les mêmes
-   * mentions. C'est une forme de cette carte et non un second composant, pour
-   * que les deux ne divergent pas sur ce qu'ils disent.
+   * - **le plat principal** se pose sur l'aplat de sa famille : son nom en
+   *   coupe d'affichage, sous lui le rôle et la famille, et son dessin sur un
+   *   disque à la teinte pâle — jamais sur l'aplat, où un poisson bleu sur fond
+   *   bleu disparaîtrait ;
+   * - **une ligne** pour les autres rôles : le rôle dans une colonne qui précède
+   *   le nom, jamais au-dessus de lui ; ses mentions sous le nom ; sa vignette à
+   *   droite. Aucune couleur de rôle ni de famille ;
+   * - **une ligne compacte** pour un rôle absent et pour le goûter, sans
+   *   vignette (lignes-compactes, D1).
    */
   let {
     slot,
@@ -51,8 +52,8 @@
     slot: Course['slot'];
     course: Course | null;
     /*
-      La carte ne reçoit que la légende, et non le jour entier : c'est tout ce
-      dont elle se sert, et un menu sans date — celui de grève — peut alors la
+      Le rôle ne reçoit que la légende, et non le jour entier : c'est tout ce
+      dont il se sert, et un menu sans date — celui de grève — peut alors le
       rendre sans qu'on ait à lui fabriquer une journée qui n'existe pas.
     */
     legend: AllergenLegend;
@@ -73,184 +74,134 @@
   /*
     L'illustration se déduit du libellé, et un rôle sans plat n'en a pas.
     Poser le repli `inconnu` sur une absence signalerait une donnée là où il n'y
-    en a pas — c'est l'inverse de ce que la carte vide est là pour dire.
+    en a pas — c'est l'inverse de ce que la ligne vide est là pour dire.
   */
   const match = $derived(course === null ? null : classify(course.label));
 
   /* La famille ne vaut que pour le plat principal : `classify()` range aussi une
      salade grecque en « végétarien », ce qui ne dit rien d'une entrée (D3). */
   const famille = $derived(principal && match ? match.family : null);
+
+  /* Le plat principal ne prend l'aplat que s'il est servi : absent, il est une
+     ligne d'absence comme une autre. */
+  const aplat = $derived(famille !== null && course !== null);
+
+  /* Une qualité promue au rang de nom ne se redit pas parmi les mentions. */
+  const mentions = $derived(
+    course === null || nom?.kind === 'quality' ? [] : course.flags.map(qualityLabel)
+  );
 </script>
 
 <div
-  class="carte"
+  class="plat"
   class:vide={course === null}
-  class:principal
-  class:compacte
-  class:famille={famille !== null}
-  style:--anneau={famille ? `var(--fam-${famille})` : undefined}
-  style:--pale={famille ? `var(--fam-${famille}-pale)` : undefined}
+  class:principal={aplat}
+  class:compacte={compacte || course === null}
+  class:famille={aplat}
+  style:--aplat={aplat ? `var(--fam-${famille})` : undefined}
+  style:--pale={aplat ? `var(--fam-${famille}-pale)` : undefined}
 >
-  <span class="pastille"><PastilleRole {slot} size={compacte ? 16 : 20} /></span>
-
-  <span class="corps">
-    <span class="role">{slotLabel(slot)}</span>
-    {#if course && nom}
+  {#if aplat && course && nom}
+    <span class="corps">
       <span class="nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
-      {#if famille && familyLabel(famille)}
-        <span class="famille-nom">{familyLabel(famille)}</span>
-      {/if}
-      <!-- Une qualité promue au rang de nom ne se redit pas en capsule. -->
-      {#if course.flags.length > 0 && nom.kind !== 'quality'}
-        <span class="tags">
-          {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
-        </span>
-      {/if}
+      <span class="meta">
+        <span class="role">{slotLabel(slot)}</span>
+        {#if famille && familyLabel(famille)}
+          · <span class="famille-nom">{familyLabel(famille)}</span>
+        {/if}
+        {#each mentions as mention (mention)}
+          · <em>{mention}</em>
+        {/each}
+      </span>
       {#if signale}
         <PastilleAllergene {...signale} />
       {/if}
-      <!--
-      Un rôle du déjeuner absent s'énonce ; un goûter absent ne produit pas de
-      carte du tout, et n'a donc pas de formulation (D29). Le test de `slot`
-      n'est pas une précaution de typage : c'est cette règle, écrite.
-    -->
-    {:else if slot !== 'gouter'}
-      <span class="absent">{slotAbsence(slot)}</span>
+    </span>
+    {#if match}
+      <span class="vignette"><Illustration name={match.illustration} /></span>
     {/if}
-  </span>
-
-  {#if match && !compacte}
-    <span class="vignette"><Illustration name={match.illustration} /></span>
+  {:else}
+    <span class="role">{slotLabel(slot)}</span>
+    <span class="corps">
+      {#if course && nom}
+        <span class="nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
+        {#if mentions.length > 0}
+          <span class="meta">
+            {#each mentions as mention, i (mention)}{i > 0 ? ' · ' : ''}<em>{mention}</em>{/each}
+          </span>
+        {/if}
+        {#if signale}
+          <PastilleAllergene {...signale} />
+        {/if}
+        <!--
+          Un rôle du déjeuner absent s'énonce ; un goûter absent ne produit pas de
+          ligne du tout, et n'a donc pas de formulation (D29). Le test de `slot`
+          n'est pas une précaution de typage : c'est cette règle, écrite.
+        -->
+      {:else if slot !== 'gouter'}
+        <span class="absent">{slotAbsence(slot)}</span>
+      {/if}
+    </span>
+    {#if match && !compacte}
+      <span class="vignette"><Illustration name={match.illustration} /></span>
+    {/if}
   {/if}
 </div>
 
 <style>
-  .carte {
-    display: flex;
+  /*
+    Une ligne du tableau : le rôle, le plat, la vignette. Un filet la sépare de
+    la suivante, sans carte ni ombre (D7). La colonne du rôle a la largeur de son
+    plus long libellé, « Accompagnement », pour que tous les noms s'alignent.
+  */
+  .plat {
+    display: grid;
+    grid-template-columns: var(--colonne-role) minmax(0, 1fr) var(--ill-ligne);
     align-items: center;
-    gap: var(--espace-3);
-    padding: var(--espace-3);
-    background: var(--carte);
-    border: 1px solid var(--bord);
-    border-radius: var(--rayon-carte);
+    column-gap: var(--espace-3);
+    padding-block: var(--espace-3);
+    border-bottom: 1px solid var(--bord);
     color: var(--encre);
   }
 
-  /* Un creux se lit comme un creux : la carte d'un rôle absent s'enfonce sous le
-     fond au lieu d'en dépasser, et perd la blancheur qui annonce un contenu. */
-  .carte.vide {
-    background: var(--creux);
-  }
-
   /*
-    Par défaut, la pastille est neutre : surface du creux, glyphe en encre
-    atténuée, une paire déjà mesurée. Seule la carte principale l'allume, de la
-    couleur de sa famille, sous un glyphe blanc (D3, D4).
-  */
-  .pastille {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--rayon-pastille);
-    background: var(--creux);
-    color: var(--encre-douce);
-    box-shadow: inset 0 0 0 1px var(--bord);
-    display: grid;
-    place-items: center;
-    flex: none;
-  }
-
-  /*
-    Une ligne et non une carte : la pastille rétrécit, la vignette disparaît, et
-    le libellé, le nom et les mentions se suivent sur une ligne qui ne passe à
-    la suivante que faute de place (D1, D2). Elle ne descend pas sous une cible
-    tactile : le goûter en est une.
+    Une ligne compacte : sans vignette, et plus basse. Elle ne descend pas sous
+    une cible tactile : le goûter en est une (lignes-compactes, D2).
   */
   .compacte {
+    grid-template-columns: var(--colonne-role) minmax(0, 1fr);
     min-height: var(--cible);
     padding-block: var(--espace-2);
-    gap: var(--espace-2);
   }
 
-  .compacte .pastille {
-    width: 24px;
-    height: 24px;
-  }
-
-  .compacte .corps {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: var(--espace-2);
-  }
-
-  .compacte .nom {
-    font-size: var(--texte-sm);
-  }
-
-  /* Le filet et le bord disent la famille sur toute la hauteur de la carte. */
-  .carte.famille {
-    border-color: var(--anneau);
-    box-shadow: inset 4px 0 0 var(--anneau);
-  }
-
-  .famille .pastille {
-    background: var(--anneau);
-    color: var(--sur-famille);
-    box-shadow: none;
+  .role {
+    font-size: var(--texte-xs);
+    font-weight: var(--poids-moyen);
+    color: var(--encre-douce);
   }
 
   .corps {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.15rem;
-    min-width: 0;
-    flex: 1;
-  }
-
-  .role {
-    font-size: var(--texte-xs);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-weight: var(--poids-titre);
-    color: var(--encre-douce);
-  }
-
-  /* Sur la carte principale, le libellé prend la famille : chaque famille tient
-     4,5:1 comme encre sur la carte blanche (contrast.test.ts). */
-  .famille .role {
-    color: var(--anneau);
-  }
-
-  .famille-nom {
-    display: inline-flex;
-    align-items: center;
     gap: var(--espace-1);
-    font-size: var(--texte-xs);
-    font-weight: var(--poids-fort);
-    color: var(--anneau);
-  }
-
-  .famille-nom::before {
-    content: '';
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 50%;
-    background: currentColor;
+    min-width: 0;
   }
 
   .nom {
     font-size: var(--texte-base);
-    font-weight: var(--poids-fort);
+    font-weight: var(--poids-moyen);
     line-height: 1.25;
     text-wrap: balance;
   }
 
-  /* Le seul rang qui reste au plat du jour, et le seul dont il ait besoin. */
-  .principal .nom {
-    font-size: var(--texte-lg);
-    letter-spacing: -0.02em;
-    line-height: 1.15;
+  .meta {
+    font-size: var(--texte-xs);
+    color: var(--encre-douce);
+  }
+
+  .meta em {
+    font-style: normal;
   }
 
   /* Un détail non publié n'est pas un nom de plat : il s'écrit comme une
@@ -258,7 +209,6 @@
      n'annonce aucun plat du tout. */
   .unknown {
     font-style: italic;
-    font-weight: var(--poids-moyen);
     color: var(--encre-douce);
   }
 
@@ -268,45 +218,65 @@
     color: var(--encre-douce);
   }
 
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--espace-1);
-    color: var(--encre-douce);
-  }
-
-  .tags em {
-    font-style: normal;
-    font-size: var(--texte-2xs);
-    font-weight: var(--poids-titre);
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    border: 1.5px solid currentColor;
-    border-radius: var(--rayon-pilule);
-    padding: 0.08rem 0.4rem;
-  }
-
-  /*
-    L'illustration repose sur un disque clair et jamais sur un aplat saturé : un
-    poisson bleu sur fond bleu ne se voit pas. Sur la carte principale, c'est le
-    disque de la semaine en petit — teinte pâle de la famille, cerclée d'elle.
-  */
   .vignette {
-    width: var(--ill-disque);
-    height: var(--ill-disque);
-    border-radius: 50%;
-    background: var(--creux);
     display: grid;
     place-items: center;
-    flex: none;
-  }
-
-  .famille .vignette {
-    background: var(--pale);
-    box-shadow: inset 0 0 0 3px var(--anneau);
   }
 
   .vignette :global(.illustration) {
+    width: var(--ill-ligne);
+    height: var(--ill-ligne);
+  }
+
+  /*
+    Le plat principal : l'aplat de sa famille, le texte en blanc — une paire
+    mesurée dans chaque palette (`contrast.test.ts`) — et le dessin sur un
+    disque à la teinte pâle. Ni filet ni liseré : c'est l'aplat qui dit la
+    famille, sur toute sa surface (D7).
+  */
+  .principal {
+    grid-template-columns: minmax(0, 1fr) var(--ill-disque);
+    padding: var(--espace-4) var(--espace-3) var(--espace-4) var(--espace-4);
+    border-bottom: 0;
+    border-radius: var(--rayon-carte);
+    background: var(--aplat);
+    color: var(--sur-famille);
+  }
+
+  .principal .corps {
+    gap: var(--espace-2);
+  }
+
+  .principal .nom {
+    font-family: var(--police-affichage);
+    font-size: var(--texte-2xl);
+    font-weight: var(--poids-fort);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .principal .meta,
+  .principal .role {
+    font-size: var(--texte-sm);
+    color: var(--sur-famille);
+  }
+
+  .principal .unknown {
+    color: var(--sur-famille);
+  }
+
+  .principal .famille-nom {
+    font-weight: var(--poids-fort);
+  }
+
+  .principal .vignette {
+    width: var(--ill-disque);
+    height: var(--ill-disque);
+    border-radius: 50%;
+    background: var(--pale);
+  }
+
+  .principal .vignette :global(.illustration) {
     width: var(--ill-plat);
     height: var(--ill-plat);
   }
