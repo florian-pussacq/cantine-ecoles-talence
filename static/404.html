@@ -27,20 +27,20 @@
     <style>
       :root {
         color-scheme: light dark;
-        --fond: #f4ecdd;
+        --fond: #f2f3f0;
         --carte: #ffffff;
-        --bord: #ddd0b8;
-        --encre: #2b2318;
-        --accent: #7e6130;
+        --bord: #daddd6;
+        --encre: #131614;
+        --encre-douce: #545a55;
       }
 
       @media (prefers-color-scheme: dark) {
         :root {
-          --fond: #1b1712;
-          --carte: #27211a;
-          --bord: #3c3428;
-          --encre: #f2e9d8;
-          --accent: #d6ad66;
+          --fond: #111412;
+          --carte: #1a1e1b;
+          --bord: #2a302c;
+          --encre: #edefea;
+          --encre-douce: #9aa29c;
         }
       }
 
@@ -71,23 +71,21 @@
         text-align: center;
       }
 
-      p.eyebrow {
+      h1 {
         margin: 0;
-        font-size: 0.6875rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        font-weight: 800;
-        /* Le sourcil de l'application est à l'accent, comme sa mention. */
-        color: var(--accent);
+        font-size: 1.875rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        text-wrap: balance;
       }
 
-      h1 {
-        margin: 0.1rem 0 0.75rem;
-        font-size: 1.375rem;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        line-height: 1.15;
-        text-wrap: balance;
+      /* Le code d'erreur suit le titre au lieu de le surmonter : un surtitre
+         est une ligne de plus à lire avant ce qui compte
+         (refonte-signaletique). */
+      p {
+        margin: 0.5rem 0 1rem;
+        color: var(--encre-douce);
       }
 
       a {
@@ -98,11 +96,11 @@
         min-height: 44px;
         padding-inline: 1rem;
         margin-top: 0.5rem;
-        border-radius: 999px;
+        border-radius: 8px;
         background: var(--carte);
         border: 1px solid var(--bord);
         color: var(--encre);
-        font-weight: 700;
+        font-weight: 600;
         text-decoration: none;
       }
 
@@ -114,8 +112,8 @@
   </head>
   <body>
     <main>
-      <p class="eyebrow">Erreur 404</p>
       <h1>Cette page n'existe pas.</h1>
+      <p>Erreur 404</p>
       <a href="/">Voir le menu du jour</a>
     </main>
   </body>

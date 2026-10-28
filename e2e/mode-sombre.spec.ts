@@ -7,8 +7,9 @@ import { expect, hydratee, test, type Page } from './test';
  * doit donc s'appliquer avant l'application, et même sans elle (D1).
  */
 
-const FOND_CLAIR = 'rgb(244, 236, 221)';
-const FOND_SOMBRE = 'rgb(27, 23, 18)';
+const FOND_CLAIR = 'rgb(242, 243, 240)';
+const FOND_SOMBRE = 'rgb(17, 20, 18)';
+const ENCRE_SOMBRE = 'rgb(237, 239, 234)';
 
 const fondDePage = (page: Page) =>
   page.evaluate(() => getComputedStyle(document.body).backgroundColor);
@@ -35,4 +36,21 @@ test('la palette sombre ne dépend pas du JavaScript de l’application', async 
   await page.goto('/');
 
   expect(await fondDePage(page)).toBe(FOND_SOMBRE);
+});
+
+/**
+ * La sélection de texte appartient à la palette, et non au navigateur
+ * (refonte-signaletique, D12) : dans le sombre, elle est l'encre claire sous le
+ * fond sombre, et non le bleu par défaut.
+ */
+test('la sélection prend les couleurs de la palette sombre', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  await hydratee(page);
+
+  const selection = await page.evaluate(() => {
+    const style = getComputedStyle(document.body, '::selection');
+    return { fond: style.backgroundColor, texte: style.color };
+  });
+  expect(selection).toEqual({ fond: ENCRE_SOMBRE, texte: FOND_SOMBRE });
 });

@@ -11,12 +11,12 @@
 
 ## 2. Palettes et jetons
 
-- [ ] 2.1 `contrast.test.ts` : remplacer les paires « anneau sur teinte pâle » par « texte sur l'aplat de famille » à 4,5:1 dans les deux palettes ; ajouter la paire de sélection (`::selection`) ; vérifier que le test échoue sur les valeurs actuelles des familles sombres, encore claires
-- [ ] 2.2 `tokens.css`, palette claire : les valeurs de D2 (fond, carte, encre, encre douce, bord, accent égal à l'encre, alerte jaune avec `--sur-alerte`) ; ajuster les surfaces info et événement pour qu'elles tiennent leurs seuils ; vérifier `contrast.test.ts` en vert
-- [ ] 2.3 `tokens.css`, palette sombre : les valeurs de D3 (familles en tons profonds, `--sur-famille` blanc dans les deux palettes) ; vérifier `contrast.test.ts` en vert, et « l'alerte ne ressemble à aucun plat » en vert (sinon le jaune passe à `#F2D50F`, selon les risques de `design.md`)
-- [ ] 2.4 `tokens.css` : l'échelle de D5 (13 à 96 px, plafond de 6rem, `tabular-nums` sur les chiffres), des rayons ramenés à 8 et 4 pixels, les jetons de la barre (`--barre`, `--barre-reserve`) à la place de ceux du pied (D11) ; vérifier `design-tokens.test.ts` en vert, et qu'aucun texte n'est sous le plus petit cran
-- [ ] 2.5 `tokens.css` : `::selection`, `caret-color`, `:focus-visible` et le soulignement des liens par jetons, dans chaque palette (D12) ; vérifier en e2e, sous `colorScheme: 'dark'`, que la sélection prend les couleurs de la palette sombre
-- [ ] 2.6 `static/404.html`, `app.html` (`theme-color` par média) et `manifest.webmanifest` : reprendre les nouvelles valeurs ; retirer le surtitre (`.eyebrow`) de la 404 ; vérifier le test « La page autonome reprend les jetons »
+- [x] 2.1 `contrast.test.ts` : remplacer les paires « anneau sur teinte pâle » par « texte sur l'aplat de famille » à 4,5:1 dans les deux palettes ; ajouter la paire de sélection (`::selection`) ; vérifier que le test échoue sur les valeurs actuelles des familles sombres, encore claires
+- [x] 2.2 `tokens.css`, palette claire : les valeurs de D2 (fond, carte, encre, encre douce, bord, accent égal à l'encre, alerte jaune avec `--sur-alerte`) ; ajuster les surfaces info et événement pour qu'elles tiennent leurs seuils ; vérifier `contrast.test.ts` en vert
+- [x] 2.3 `tokens.css`, palette sombre : les valeurs de D3 (familles en tons profonds, `--sur-famille` blanc dans les deux palettes) ; vérifier `contrast.test.ts` en vert, et « l'alerte ne ressemble à aucun plat » en vert (sinon le jaune passe à `#F2D50F`, selon les risques de `design.md`)
+- [x] 2.4 `tokens.css` : l'échelle de D5 (13 à 96 px, plafond de 6rem, `tabular-nums` sur les chiffres), des rayons ramenés à 8 et 4 pixels, les jetons de la barre (`--barre`, `--barre-reserve`) à la place de ceux du pied (D11) ; vérifier `design-tokens.test.ts` en vert, et qu'aucun texte n'est sous le plus petit cran
+- [x] 2.5 `tokens.css` : `::selection`, `caret-color`, `:focus-visible` et le soulignement des liens par jetons, dans chaque palette (D12) ; vérifier en e2e, sous `colorScheme: 'dark'`, que la sélection prend les couleurs de la palette sombre
+- [x] 2.6 `static/404.html`, `app.html` (`theme-color` par média) et `manifest.webmanifest` : reprendre les nouvelles valeurs ; retirer le surtitre (`.eyebrow`) de la 404 ; vérifier le test « La page autonome reprend les jetons »
 
 ## 3. Coque : enseigne, barre basse, mentions
 

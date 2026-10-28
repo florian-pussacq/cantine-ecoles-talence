@@ -148,41 +148,32 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
   },
   { texte: 'sur-evenement', fond: 'evenement', seuil: 4.5, quoi: 'bandeau d’événement' },
   /*
-    Les familles portent désormais deux emplois de plus, sur la carte principale
-    de l'écran du jour (couleur-par-famille, D3) : l'aplat de la pastille, sous
-    un glyphe blanc, et l'encre du libellé du rôle sur la carte. Aucune n'est
-    posée sur le fond crème, où trois d'entre elles ne tiendraient pas 4,5:1.
+    La sélection de texte est une inversion : le fond peint en texte sur
+    l'encre (refonte-signaletique, D12).
   */
-  ...FAMILLES.flatMap((famille) => [
-    {
-      texte: `fam-${famille}`,
-      fond: 'carte',
-      seuil: 4.5,
-      quoi: `libellé du rôle sur la carte principale ${famille}`
-    },
-    {
-      texte: 'sur-famille',
-      fond: `fam-${famille}`,
-      seuil: 4.5,
-      quoi: `glyphe sur l'aplat ${famille}`
-    }
-  ]),
+  { texte: 'fond', fond: 'encre', seuil: 4.5, quoi: 'sélection de texte' },
+  /*
+    Le texte posé sur l'aplat d'une famille : le nom du plat principal et sa
+    famille sur l'écran du jour, le quantième sur la tuile de la semaine
+    (refonte-signaletique, D7, D10). Il tient 4,5:1 dans chaque palette, la
+    sombre ayant des familles en tons profonds sous du blanc (D3).
+
+    Les familles ne sont plus employées comme encre : le libellé du rôle de la
+    carte principale qui les portait a disparu avec la carte. Elles ne sont pas
+    non plus tracées en anneau sur leur teinte pâle — l'anneau est parti avec
+    le disque —, et la mesure qui le gardait est retirée avec lui.
+  */
+  ...FAMILLES.map((famille) => ({
+    texte: 'sur-famille',
+    fond: `fam-${famille}`,
+    seuil: 4.5,
+    quoi: `texte sur l'aplat ${famille}`
+  })),
   ...FAMILLES.map((famille) => ({
     texte: 'encre',
     fond: `fam-${famille}-pale`,
     seuil: 4.5,
     quoi: `texte sur la teinte pâle ${famille}`
-  })),
-  /*
-    L'anneau du disque de la semaine : c'est lui qui dit la famille. Élément
-    graphique porteur de sens, donc 3:1 (WCAG 1.4.11). La volaille n'y tenait
-    que 2,07 sans que rien ne le mesure (alerte-et-fiche-cochee, D2).
-  */
-  ...FAMILLES.map((famille) => ({
-    texte: `fam-${famille}`,
-    fond: `fam-${famille}-pale`,
-    seuil: 3,
-    quoi: `anneau ${famille} sur sa teinte pâle`
   }))
 ];
 
@@ -285,6 +276,65 @@ describe.each(PALETTES)('la palette %s', (_, jetons) => {
       ).toBeGreaterThanOrEqual(seuil);
     });
   }
+});
+
+/**
+ * La distance perçue entre deux couleurs, dans l'espace OKLab.
+ *
+ * Le contraste de luminance ne dit pas si deux couleurs se ressemblent : un
+ * orange et un ambre de même clarté peuvent tenir chacun leur seuil sous un
+ * texte et se confondre côte à côte. OKLab est construit pour qu'une même
+ * distance y soit une même différence perçue.
+ */
+export function distancePercue(a: string, b: string): number {
+  const oklab = (hex: string): [number, number, number] => {
+    const [r, g, bleu] = composantes(hex).map((v) => {
+      const c = v / 255;
+      return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    }) as [number, number, number];
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * bleu);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * bleu);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * bleu);
+    return [
+      0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+      1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+      0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+    ];
+  };
+  const [l1, a1, b1] = oklab(a);
+  const [l2, a2, b2] = oklab(b);
+  return Math.hypot(l1 - l2, a1 - a2, b1 - b2);
+}
+
+/**
+ * L'alerte ne ressemble à aucun plat (design-tokens, exigence du même nom).
+ *
+ * Un jour de dinde a eu la couleur du bandeau « allergènes non précisés » :
+ * l'ambre de la volaille et l'orange de l'alerte étaient à 0,10 l'un de
+ * l'autre (alerte-et-fiche-cochee, D1). L'exigence existait depuis ; aucun test
+ * ne la gardait (refonte-signaletique). Le seuil de 0,15 refuse cet ancien
+ * couple, et le jaune de la signalisation s'en tient à plus du double.
+ */
+const ECART_ALERTE_MIN = 0.15;
+
+describe.each(PALETTES)('l’alerte ne ressemble à aucun plat, palette %s', (_, jetons) => {
+  for (const famille of FAMILLES) {
+    it(`l’alerte se distingue de la famille ${famille}`, () => {
+      const alerte = jetons['alerte'];
+      const teinte = jetons[`fam-${famille}`];
+      expect(alerte, 'jeton --alerte absent').toBeDefined();
+      expect(teinte, `jeton --fam-${famille} absent`).toBeDefined();
+      const ecart = distancePercue(alerte as string, teinte as string);
+      expect(
+        Number(ecart.toFixed(3)),
+        `--alerte et --fam-${famille} : ${ecart.toFixed(3)} en OKLab`
+      ).toBeGreaterThanOrEqual(ECART_ALERTE_MIN);
+    });
+  }
+
+  it('la mesure refuse l’ancien couple orange et ambre', () => {
+    expect(distancePercue('#e89406', '#c27a00')).toBeLessThan(ECART_ALERTE_MIN);
+  });
 });
 
 describe.each(PALETTES)('les surfaces peintes par transparence, palette %s', (_, jetons) => {

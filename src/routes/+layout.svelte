@@ -170,12 +170,12 @@
        appareils à indicateur d'accueil, et nulle part ailleurs (D34, D52).
 
        L'intervalle ajouté à cette réserve est celui de la coque, et non un cran
-       au-dessus (D63). `--pied-reserve` dimensionne déjà la barre et sa zone
+       au-dessus (D63). `--barre-reserve` dimensionne déjà la barre et sa zone
        sûre ; le `--espace-5` qui s'y ajoutait n'avait pas de motif écrit, et
        c'est lui qu'on lisait comme un grand vide au-dessus des mentions. Le
        pied fixe est séparé du contenu comme deux enfants de la coque le sont
        entre eux. */
-    padding: var(--espace-3) var(--espace-3) calc(var(--espace-3) + var(--pied-reserve));
+    padding: var(--espace-3) var(--espace-3) calc(var(--espace-3) + var(--barre-reserve));
     display: flex;
     flex-direction: column;
     gap: var(--espace-3);
@@ -210,7 +210,7 @@
     z-index: 1;
     margin-inline: auto;
     max-width: var(--colonne);
-    min-height: var(--pied-reserve);
+    min-height: var(--barre-reserve);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -70,47 +70,54 @@
      c'est leur surface qui décide, pas l'impression générale. */
   color-scheme: light;
 
+  /*
+   * La palette « Signalétique » (refonte-signaletique, D2).
+   *
+   * De l'encre sur un fond gris-vert froid, et une couleur par information : la
+   * famille du plat principal, l'alerte, et rien d'autre. Le crème et le brun
+   * doré de D49 sont partis : c'était l'esthétique par défaut que D5 avait
+   * refusée, revenue par la palette.
+   */
+
   /* Surfaces */
-  --fond: #f4ecdd;
+  --fond: #f2f3f0;
   --carte: #ffffff;
   --etiquette: #ffffff;
   /* Un creux se lit comme un creux : la surface d'un rôle absent s'enfonce
      sous le fond au lieu d'en dépasser. */
-  --creux: #eae0cd;
+  --creux: #e6e8e3;
   /* Séparation décorative. Elle ne délimite aucune commande et ne porte aucune
      information : rien ne dépend de sa perception, et WCAG 1.4.11 ne lui
      applique donc pas de seuil. */
-  --bord: #ddd0b8;
+  --bord: #daddd6;
 
   /* Encres */
-  --encre: #2b2318;
-  --encre-douce: #6d6353;
+  --encre: #131614;
+  --encre-douce: #545a55;
 
-  /* L'accent : enseigne, onglet courant, commande de retour. Il est plus sombre
-     que le doré de la maquette parce qu'il doit porter du texte blanc et se lire
-     lui-même sur le fond crème — un doré clair ne fait ni l'un ni l'autre. */
-  --accent: #7e6130;
+  /* L'accent est l'encre : il n'y a plus de couleur qui ne veuille rien dire.
+     L'onglet courant et l'étiquette « Aujourd'hui » sont des inversions, un
+     texte clair sur l'encre (D2). */
+  --accent: #131614;
   --sur-accent: #ffffff;
 
   /*
-   * Les familles du plat principal : le seul code couleur du menu, sur le disque
-   * de la semaine comme sur la carte principale de l'écran du jour
-   * (couleur-par-famille, D1, D2).
+   * Les familles du plat principal : le seul code couleur du menu, sur la tuile
+   * de la semaine comme sur l'aplat du plat principal (couleur-par-famille, D1,
+   * D2 ; refonte-signaletique, D7, D10).
    *
-   * Chaque valeur tient 4,5:1 sous un glyphe blanc et comme encre sur la carte
-   * blanche ; aucune n'est posée sur le fond crème. Une illustration colorée
+   * Chaque valeur tient 4,5:1 sous un texte blanc. Une illustration colorée
    * n'est jamais posée sur l'aplat saturé — elle repose sur la teinte pâle, sans
    * quoi un poisson bleu sur fond bleu disparaît.
    */
-  /* Le glyphe posé sur l'aplat d'une famille. */
+  /* Le texte posé sur l'aplat d'une famille. */
   --sur-famille: #ffffff;
 
   --fam-viande: #d93b2b;
   --fam-viande-pale: #faded9;
 
   /* Ambre brun, et non plus l'orange de l'alerte : un jour de dinde avait la
-     couleur du bandeau « allergènes non précisés ». La valeur tient 4,5:1 sous
-     un glyphe blanc, en prévision du code couleur unique (alerte-et-fiche-cochee,
+     couleur du bandeau « allergènes non précisés » (alerte-et-fiche-cochee,
      D1). */
   --fam-volaille: #9a5c00;
   --fam-volaille-pale: #fcebce;
@@ -128,17 +135,22 @@
    * Les trois tons des messages (bandeau-et-aujourdhui, D1).
    *
    * L'alerte n'appartient qu'à ce qui compromet la lecture d'un repas :
-   * employée pour tout, elle ne signalerait plus rien. L'info dit les limites
-   * de l'application, l'événement ce qui caractérise le jour. Les deux surfaces
-   * ne se distinguent du fond que par la teinte, ce que WCAG ne leur demande
-   * pas : c'est le texte posé dessus qui se lit, et il tient plus de 9:1.
+   * employée pour tout, elle ne signalerait plus rien. C'est le jaune de la
+   * signalisation, sous une encre noire, et il marque aussi la pastille d'un
+   * allergène surveillé (refonte-signaletique, D9). Il est bien plus clair que
+   * toutes les familles, l'ambre de la volaille compris : `contrast.test.ts` en
+   * mesure l'écart.
+   *
+   * L'info dit les limites de l'application, l'événement ce qui caractérise le
+   * jour. Leurs surfaces ne se distinguent du fond que par la teinte, ce que
+   * WCAG ne leur demande pas : c'est le texte posé dessus qui se lit.
    */
-  --alerte: #e89406;
-  --sur-alerte: #2a1b00;
-  --info: #e4ecf2;
+  --alerte: #f5c518;
+  --sur-alerte: #131614;
+  --info: #e3eaef;
   --sur-info: #17384f;
-  --evenement: #f6e3c4;
-  --sur-evenement: #4a3510;
+  --evenement: #e4e7e1;
+  --sur-evenement: #131614;
 
   /*
    * Les voiles : de l'encre posée par transparence (fermer-les-echelles, D2).
@@ -174,22 +186,32 @@
   --police-affichage:
     'Funnel Display', 'Funnel Display repli', 'Funnel Sans', ui-sans-serif, system-ui, sans-serif;
 
-  /* Le plus petit cran : les étiquettes en capitales serrées dans une carte
-     (« Bio », « Aujourd'hui »), et les pastilles de compte. Aucun texte ne
+  /* L'échelle du texte : un rapport d'environ 1,2 d'un cran à l'autre, celui
+     d'une interface qu'on utilise plutôt qu'on ne lit (refonte-signaletique,
+     D5). Le plus petit cran porte les pastilles de compte ; aucun texte ne
      descend plus bas (audit-design-system, D3). */
-  --texte-2xs: 0.625rem;
-  --texte-xs: 0.6875rem;
-  --texte-sm: 0.8125rem;
-  --texte-base: 0.9375rem;
-  --texte-lg: 1.125rem;
-  --texte-xl: 1.375rem;
-  --texte-2xl: 1.5rem;
+  --texte-2xs: 0.75rem;
+  --texte-xs: 0.8125rem;
+  --texte-sm: 0.9375rem;
+  --texte-base: 1.0625rem;
+  --texte-lg: 1.25rem;
+  --texte-xl: 1.5rem;
+  --texte-2xl: 1.875rem;
+
+  /* Les deux titres d'affichage : l'intervalle de la semaine et le chiffre du
+     jour. Le second est au plafond de 6rem, et ne grandit pas sur écran large
+     (D5). */
+  --titre-semaine: 3.5rem;
+  --titre-jour: 6rem;
+  /* Le plus serré des espacements de lettres, pour les titres d'affichage :
+     en deçà, les chiffres se touchent (D5). */
+  --serrage-titre: -0.04em;
 
   /* Graisses. Elles ne changent pas au palier large : une graisse n'a pas à
      grandir avec l'écran (fermer-les-echelles, D3). */
-  --poids-moyen: 600;
-  --poids-fort: 700;
-  --poids-titre: 800;
+  --poids-moyen: 500;
+  --poids-fort: 600;
+  --poids-titre: 700;
 
   /* Espacements */
   --espace-1: 0.25rem;
@@ -198,11 +220,12 @@
   --espace-4: 1rem;
   --espace-5: 1.5rem;
 
-  --rayon-carte: 16px;
-  --rayon-pastille: 10px;
+  /* Des coins nets : un panneau, pas une gélule (D2). */
+  --rayon-carte: 8px;
+  --rayon-pastille: 4px;
   --rayon-pilule: 999px;
   /* Le haut de la fiche du jour, qui monte du bas de l'écran. */
-  --rayon-feuille: 20px;
+  --rayon-feuille: 12px;
   /* L'indicateur de focus, qui épouse sans les recouvrir les coins d'une commande. */
   --rayon-focus: 4px;
 
@@ -210,22 +233,24 @@
   --cible: 44px;
 
   /*
-   * Le pied fixe des mentions, et la place qu'il faut lui laisser (D52).
+   * La barre du choix entre le jour et la semaine, ancrée au bas de la fenêtre
+   * sous le pouce, et la place qu'il faut lui laisser (refonte-signaletique,
+   * D11, qui rétablit D31 et D34).
    *
    * Les deux ne sont pas la même chose, et les confondre est le défaut qu'on ne
    * voit pas sur une machine de développement : `viewport-fit=cover` est déclaré
    * depuis l'origine dans `app.html`, ce qui étend la page sous l'indicateur
    * d'accueil des téléphones qui en ont un.
    *
-   * `--pied` est la hauteur du pied lui-même — sa cible tactile et son
-   * rembourrage. `--encart-bas` est ce que le système réserve sous lui.
-   * `--pied-reserve` est ce que le contenu doit laisser libre : la somme des
-   * deux. Réserver seulement `--pied` ferait passer la dernière carte sous le
-   * pied sur les appareils concernés, et nulle part ailleurs (D34, D52).
+   * `--barre` est la hauteur de la barre elle-même — ses cibles tactiles et leur
+   * rembourrage. `--encart-bas` est ce que le système réserve sous elle.
+   * `--barre-reserve` est ce que le contenu doit laisser libre : la somme des
+   * deux. Réserver seulement `--barre` ferait passer la fin du contenu sous la
+   * barre sur les appareils concernés, et nulle part ailleurs (D34).
    */
-  --pied: 48px;
+  --barre: 56px;
   --encart-bas: env(safe-area-inset-bottom, 0px);
-  --pied-reserve: calc(var(--pied) + var(--encart-bas));
+  --barre-reserve: calc(var(--barre) + var(--encart-bas));
 
   /* Durée de la transition entre jours et entre semaines. Elle gouverne l'écran
      entier sous une seule horloge : l'en-tête qui annonce le jour ne change pas
@@ -250,18 +275,21 @@
      pas (design.md, D23). */
   --colonne: 520px;
 
-  /* Échelle des illustrations, pour qu'elles suivent la colonne. */
-  --ill-plat: 46px;
-  --ill-disque: 68px;
+  /* Échelle des illustrations, pour qu'elles suivent la colonne : le disque du
+     plat principal et son dessin, puis la vignette d'une ligne (D7). */
+  --ill-disque: 88px;
+  --ill-plat: 64px;
+  --ill-ligne: 32px;
 }
 
 /*
- * La palette sombre (mode-sombre, D3).
+ * La palette sombre (mode-sombre, D3 ; refonte-signaletique, D3).
  *
- * Elle part de la piste 6 de l'audit de design. Les surfaces restent brunes,
- * comme le crème dont elles sont l'envers, et non grises : c'est le même menu,
- * le soir. Les familles s'éclaircissent et leurs teintes pâles s'assombrissent ;
- * le glyphe posé sur leur aplat passe donc du blanc au foncé.
+ * Elle est recomposée, et non inversée. Les surfaces sont presque noires,
+ * teintées du même vert que le fond clair. Les familles ne s'éclaircissent pas :
+ * elles passent à des tons profonds sous un texte blanc, parce qu'un aplat
+ * saumon de cent cinquante pixels éblouit à la lampe du soir. Le jaune de
+ * l'alerte est le même dans les deux palettes.
  *
  * Les voiles n'y figurent pas : ils dérivent de l'encre et de l'accent, et se
  * recalculent d'eux-mêmes. Le voile de la modale reste noir, qui assourdit les
@@ -273,36 +301,36 @@
   :root {
     color-scheme: dark;
 
-    --fond: #1b1712;
-    --carte: #27211a;
-    --etiquette: #27211a;
-    --creux: #15120e;
-    --bord: #3c3428;
+    --fond: #111412;
+    --carte: #1a1e1b;
+    --etiquette: #1a1e1b;
+    --creux: #0c0f0d;
+    --bord: #2a302c;
 
-    --encre: #f2e9d8;
-    --encre-douce: #b3a690;
+    --encre: #edefea;
+    --encre-douce: #9aa29c;
 
-    --accent: #d6ad66;
-    --sur-accent: #1b1712;
+    --accent: #edefea;
+    --sur-accent: #111412;
 
-    --sur-famille: #1b1712;
-    --fam-viande: #ff8a7a;
+    --sur-famille: #ffffff;
+    --fam-viande: #8e2a1f;
     --fam-viande-pale: #3d2420;
-    --fam-volaille: #f2b54a;
+    --fam-volaille: #7a4a00;
     --fam-volaille-pale: #3a2d16;
-    --fam-poisson: #6cb8ee;
+    --fam-poisson: #0f5c91;
     --fam-poisson-pale: #1d2f3e;
-    --fam-vegetarien: #6fcf86;
+    --fam-vegetarien: #1b6b33;
     --fam-vegetarien-pale: #1e3324;
-    --fam-inconnu: #a9b3ae;
+    --fam-inconnu: #4e5853;
     --fam-inconnu-pale: #2a2e2c;
 
-    --alerte: #f2a93b;
-    --sur-alerte: #1b1300;
-    --info: #1f2c37;
+    --alerte: #f5c518;
+    --sur-alerte: #131614;
+    --info: #1c2730;
     --sur-info: #cfe2f1;
-    --evenement: #3a2e1a;
-    --sur-evenement: #f3dcb0;
+    --evenement: #232823;
+    --sur-evenement: #e4e8e2;
   }
 }
 
@@ -317,16 +345,18 @@
   :root {
     --colonne: 720px;
 
-    --texte-2xs: 0.6875rem;
-    --texte-xs: 0.75rem;
-    --texte-sm: 0.875rem;
-    --texte-base: 1rem;
-    --texte-lg: 1.25rem;
-    --texte-xl: 1.5rem;
-    --texte-2xl: 1.75rem;
+    --texte-2xs: 0.8125rem;
+    --texte-xs: 0.875rem;
+    --texte-sm: 1rem;
+    --texte-base: 1.125rem;
+    --texte-lg: 1.375rem;
+    --texte-xl: 1.625rem;
+    --texte-2xl: 2.125rem;
+    --titre-semaine: 4rem;
 
-    --ill-plat: 58px;
-    --ill-disque: 84px;
+    --ill-disque: 104px;
+    --ill-plat: 76px;
+    --ill-ligne: 40px;
   }
 }
 
@@ -378,12 +408,38 @@ body {
   }
 }
 
-/* L'indicateur de focus se pose désormais sur des surfaces claires : c'est
-   l'encre qui le trace, et non plus la couleur d'un texte sur fond sombre. */
+/* L'indicateur de focus : l'encre le trace, dans les deux palettes. */
 :where(a, button):focus-visible {
   outline: 3px solid var(--encre);
   outline-offset: 2px;
   border-radius: var(--rayon-focus);
+}
+
+/*
+ * Les surfaces que le navigateur dessine de lui-même (refonte-signaletique,
+ * D12) : la sélection, le curseur d'insertion, le soulignement des liens.
+ * Laissées à leurs valeurs par défaut, elles n'appartiennent à aucune palette ;
+ * c'est le signe le moins coûteux d'une page construite plutôt qu'assemblée.
+ *
+ * La sélection est une inversion — le fond en texte sur l'encre —, mesurée
+ * comme une paire par `contrast.test.ts`.
+ */
+::selection {
+  background: var(--encre);
+  color: var(--fond);
+}
+
+html {
+  caret-color: var(--encre);
+}
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* La zone qui dépend du jour, sur une page rendue un autre jour
