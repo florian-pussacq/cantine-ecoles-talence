@@ -123,15 +123,15 @@ depuis le réseau pour représenter un plat.
 
 #### Scenario: Chaque plat porte son illustration
 - **WHEN** l'écran du jour affiche un jour dont tous les rôles sont publiés
-- **THEN** chaque carte porte une illustration déduite du libellé de son plat
+- **THEN** le plat principal et chaque ligne de plat portent une illustration déduite du libellé de leur plat
 
 #### Scenario: Deux plats de même famille
 - **WHEN** l'entrée et l'accompagnement d'un même jour relèvent tous deux de la famille des légumes
-- **THEN** les deux cartes portent la même illustration, sans que le système la remplace
+- **THEN** les deux lignes portent la même illustration, sans que le système la remplace
 
 #### Scenario: Rôle absent
 - **WHEN** un rôle ne comporte aucun plat publié
-- **THEN** sa carte ne porte aucune illustration
+- **THEN** sa ligne ne porte aucune illustration
 
 #### Scenario: Aucune requête d'image
 - **WHEN** un écran de menu est chargé

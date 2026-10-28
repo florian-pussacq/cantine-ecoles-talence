@@ -133,6 +133,8 @@ Sur un écran étroit, la couche SHALL occuper toute la largeur et être ancrée
 
 Le système SHALL présenter les cinq jours ouvrés de la semaine du jour affiché, sous une forme compacte permettant une lecture d'ensemble. Chaque jour SHALL être actionnable pour ouvrir le détail correspondant sur l'écran Aujourd'hui.
 
+Chaque jour servi SHALL porter la couleur de la famille de son plat principal, la même que sur l'écran du jour, et le nom de cette famille écrit. La couleur NE SHALL PAS être le seul support de la famille. Un plat principal inclassable SHALL porter la couleur de repli neutre, sans nom de famille.
+
 #### Scenario: Consultation de la semaine
 - **WHEN** l'utilisateur ouvre l'écran Semaine
 - **THEN** les cinq jours ouvrés sont visibles avec au minimum le plat principal de chacun
@@ -144,6 +146,14 @@ Le système SHALL présenter les cinq jours ouvrés de la semaine du jour affich
 #### Scenario: Semaine partiellement publiée
 - **WHEN** certains jours de la semaine ne figurent pas dans les données
 - **THEN** ces jours sont présentés comme non publiés, distincts d'un jour sans école
+
+#### Scenario: La famille se lit sans la couleur
+- **WHEN** l'écran Semaine est affiché en niveaux de gris
+- **THEN** la famille du plat principal de chaque jour servi reste lisible, écrite en toutes lettres
+
+#### Scenario: Jour non servi
+- **WHEN** la semaine contient un jour férié
+- **THEN** ce jour ne porte aucune couleur de famille, et se distingue d'un jour servi
 
 ### Requirement: États limites de consultation
 
@@ -287,7 +297,7 @@ Lorsqu'un texte partage sa ligne avec une commande dont la cible tactile impose 
 
 ### Requirement: Accès aux écrans
 
-Le système SHALL rendre atteignables depuis les écrans de consultation d'un menu, sans défiler ni ouvrir de menu, les deux destinations consultées quotidiennement — l'écran du jour et l'écran de la semaine.
+Le système SHALL rendre atteignables depuis les écrans de consultation d'un menu, sans défiler ni ouvrir de menu, les deux destinations consultées quotidiennement — l'écran du jour et l'écran de la semaine. Ce choix SHALL être ancré au bas de la fenêtre.
 
 Ce choix NE SHALL PAS mettre sur le même plan une vue de consultation et un réglage, et NE SHALL PAS être affiché sur un écran qu'il ne permet pas de choisir : rien de ce qu'il propose ne s'y consulte, et il n'en est donc pas une sortie.
 
@@ -300,15 +310,15 @@ La commande de sortie SHALL nommer sa destination, et SHALL mener à l'écran de
 
 Cet emplacement NE SHALL jamais rester vide, et sa hauteur SHALL être réservée de sorte que l'en-tête ne change pas de hauteur d'un écran à l'autre.
 
-Les mentions SHALL rester atteignables depuis n'importe quel écran par le pied de page.
+Les mentions SHALL rester atteignables depuis n'importe quel écran : par un lien rendu dans le flux des écrans de consultation d'un menu, à la suite de la provenance des données, et par un lien de l'écran des réglages.
 
-Le pied de page SHALL compenser la zone sûre inférieure de l'appareil, et le contenu de l'écran SHALL réserver sa hauteur augmentée de cette zone sûre, de sorte qu'aucun contenu ne reste inaccessible derrière lui. Cette réserve NE SHALL PAS être augmentée d'un intervalle qui la doublerait.
+Le choix entre les deux écrans SHALL compenser la zone sûre inférieure de l'appareil, et le contenu de l'écran SHALL réserver sa hauteur augmentée de cette zone sûre, de sorte qu'aucun contenu ne reste inaccessible derrière lui. Cette réserve NE SHALL PAS être augmentée d'un intervalle qui la doublerait.
 
-Sur un écran large, le pied de page SHALL rester borné à la colonne de contenu, conformément à l'exigence de lisibilité sur écran large.
+Sur un écran large, le choix entre les deux écrans SHALL rester borné à la colonne de contenu, conformément à l'exigence de lisibilité sur écran large.
 
 #### Scenario: Destinations quotidiennes atteignables
 - **WHEN** l'utilisateur consulte l'écran du jour ou celui de la semaine
-- **THEN** l'autre est atteignable sans défiler ni ouvrir de menu
+- **THEN** l'autre est atteignable sans défiler ni ouvrir de menu, depuis le bas de la fenêtre
 
 #### Scenario: Écran secondaire
 - **WHEN** l'utilisateur consulte le réglage des allergènes, le menu de grève ou les mentions
@@ -324,11 +334,15 @@ Sur un écran large, le pied de page SHALL rester borné à la colonne de conten
 
 #### Scenario: Zone sûre inférieure
 - **WHEN** l'application est ouverte sur un appareil dont le bas de l'écran est occupé par un indicateur système
-- **THEN** le pied de page reste atteignable et aucun contenu ne demeure caché derrière lui
+- **THEN** le choix entre les deux écrans reste atteignable au-dessus de l'indicateur, et aucun contenu ne demeure caché derrière lui
 
-#### Scenario: Pied de page sur écran large
-- **WHEN** l'application est ouverte sur un écran de bureau
-- **THEN** le pied de page reste borné à la largeur de la colonne de contenu et ne s'étire pas sur toute la fenêtre
+#### Scenario: Les mentions depuis un écran de menu
+- **WHEN** l'utilisateur défile jusqu'au bas de l'écran du jour ou de celui de la semaine
+- **THEN** un lien vers les mentions suit la provenance des données, et reste visible au-dessus du choix entre les deux écrans
+
+#### Scenario: Les mentions depuis les réglages
+- **WHEN** l'utilisateur consulte l'écran des réglages
+- **THEN** un lien y mène aux mentions
 
 #### Scenario: Deux écrans, un actif
 - **WHEN** l'écran du jour est affiché
@@ -337,6 +351,10 @@ Sur un écran large, le pied de page SHALL rester borné à la colonne de conten
 #### Scenario: Le choix survit au changement d'écran
 - **WHEN** l'utilisateur a choisi un jour puis passe à l'écran de la semaine et revient
 - **THEN** le jour choisi est toujours affiché
+
+#### Scenario: Pied de page sur écran large
+- **WHEN** l'application est ouverte sur un écran de bureau
+- **THEN** la provenance des données et le lien vers les mentions restent bornés à la largeur de la colonne de contenu
 
 #### Scenario: Barre sur écran large
 - **WHEN** l'application est ouverte sur un écran de bureau
@@ -441,77 +459,6 @@ La commande menant aux réglages SHALL continuer d'annoncer le nombre d'allergè
 #### Scenario: Nom accessible de la commande
 - **WHEN** trois allergènes sont surveillés
 - **THEN** la commande menant aux réglages annonce les réglages et le nombre d'allergènes surveillés
-
-### Requirement: Cartes du jour
-
-L'écran du jour SHALL présenter le déjeuner comme une suite d'éléments, un par rôle du déjeuner
-et jamais moins, dans l'ordre du service. Un rôle servi SHALL être présenté par une carte. Un
-rôle absent SHALL produire une ligne compacte énonçant son absence, sans illustration, afin qu'un
-creux reste distinguable d'une donnée manquante et ne pèse pas autant qu'un plat servi.
-
-Aucune carte NE SHALL être actionnable : la cible est la journée entière, portée par l'élément
-qui contient la suite.
-
-Chaque carte SHALL porter le libellé de son rôle, le nom du plat, et — lorsqu'ils existent — les
-mentions de qualité et le signalement d'allergène. Elle NE SHALL PAS porter de texte descriptif :
-les données n'en comportent pas.
-
-La couleur SHALL désigner la famille du plat principal, et elle seule : la carte du plat
-principal SHALL porter la couleur de sa famille, la même que sur l'écran de la semaine, et le nom
-de cette famille écrit. Les autres cartes NE SHALL PAS porter de couleur de rôle ni de famille.
-Un plat principal dont la famille n'est pas reconnue SHALL porter la couleur de repli neutre, sans
-nom de famille.
-
-La première carte SHALL être entièrement visible sans défilement, sur la plus petite fenêtre
-prise en charge. Les cartes suivantes MAY demander un défilement.
-
-#### Scenario: Un rôle par carte
-- **WHEN** l'écran du jour affiche un jour servi
-- **THEN** chaque rôle du déjeuner est présent, dans l'ordre du service, y compris ceux dont aucun plat n'est publié
-
-#### Scenario: Rôle absent
-- **WHEN** un jour ne comporte pas d'entrée
-- **THEN** une ligne compacte énonce l'absence d'entrée, et ne se confond pas avec une carte portant un plat
-
-#### Scenario: Aucune carte n'est actionnable
-- **WHEN** l'écran du jour est parcouru au clavier
-- **THEN** aucune carte ne reçoit le focus, et l'ouverture du détail se fait par la cible qui porte la journée
-
-#### Scenario: La première carte est visible d'emblée
-- **WHEN** l'écran du jour est affiché sur la plus petite fenêtre prise en charge
-- **THEN** la première carte est entièrement visible sans défiler
-
-#### Scenario: Le plat principal porte sa famille
-- **WHEN** l'écran du jour affiche un rôti de bœuf en plat principal
-- **THEN** sa carte porte la couleur de la famille viande et le mot « Viande », la même couleur que son disque sur l'écran de la semaine
-
-#### Scenario: Les autres cartes restent en encre
-- **WHEN** l'écran du jour affiche une salade grecque en entrée
-- **THEN** sa carte ne porte aucune couleur de famille ni de rôle
-
-#### Scenario: Plat principal inclassable
-- **WHEN** le plat principal n'appartient à aucune famille reconnue
-- **THEN** sa carte porte la couleur de repli neutre et aucun nom de famille
-
-### Requirement: Pied fixe de mentions
-
-L'application SHALL porter un pied fixe, ancré au bas de la fenêtre, donnant accès aux mentions
-et à la provenance des données depuis n'importe quel écran.
-
-Ce pied SHALL réserver sous le contenu une hauteur égale à la sienne augmentée de l'encart que
-le système réserve au bas de la fenêtre, afin qu'aucun contenu ne passe dessous.
-
-Ce pied NE SHALL PAS porter d'information variant d'un écran à l'autre. La date de mise à jour
-des données et le lien vers le document officiel SHALL rester dans le flux de l'écran qu'ils
-qualifient.
-
-#### Scenario: Le pied reste atteignable
-- **WHEN** l'utilisateur défile jusqu'au bas d'un écran long
-- **THEN** le pied est visible et son lien actionnable, sans recouvrir la dernière carte
-
-#### Scenario: Encart bas du système
-- **WHEN** l'application est affichée sur un appareil réservant un encart au bas de la fenêtre
-- **THEN** le pied se place au-dessus de cet encart et le contenu ne passe pas dessous
 
 ### Requirement: Un jour de vacances se présente comme tel
 
@@ -645,3 +592,55 @@ Les commandes visibles et le clavier SHALL produire le même mouvement qu'un ges
 #### Scenario: Mouvement réduit
 - **WHEN** l'utilisateur a demandé la réduction des animations et relève le doigt après un geste abouti
 - **THEN** le jour voisin est présenté sans glissement
+
+### Requirement: Le déjeuner, un élément par rôle
+
+L'écran du jour SHALL présenter le déjeuner comme une suite d'éléments, un par rôle du déjeuner et jamais moins. Le plat principal SHALL ouvrir la suite ; les autres rôles SHALL le suivre dans l'ordre du service. Un rôle absent SHALL produire une ligne compacte énonçant son absence, sans illustration, distincte d'une ligne portant un plat.
+
+#### Scenario: Un rôle par élément
+- **WHEN** l'écran du jour affiche un jour servi
+- **THEN** chaque rôle du déjeuner est présent, le plat principal en tête puis les autres dans l'ordre du service, y compris ceux dont aucun plat n'est publié
+
+#### Scenario: Rôle absent
+- **WHEN** un jour ne comporte pas d'entrée
+- **THEN** une ligne compacte énonce l'absence d'entrée, et ne se confond pas avec une ligne portant un plat
+
+#### Scenario: Le plat principal est visible d'emblée
+- **WHEN** l'écran du jour est affiché sur la plus petite fenêtre prise en charge
+- **THEN** le plat principal, son aplat et son illustration sont entièrement visibles sans défiler
+
+### Requirement: Le plat principal sur l'aplat de sa famille
+
+Le plat principal SHALL être présenté sur un aplat de la couleur de sa famille, la même que sur l'écran de la semaine, avec le nom de cette famille écrit. Un plat principal dont la famille n'est pas reconnue SHALL porter la couleur de repli neutre, sans nom de famille. Aucun autre élément du déjeuner NE SHALL porter de couleur de famille ni de rôle.
+
+#### Scenario: Le plat principal porte sa famille
+- **WHEN** l'écran du jour affiche un rôti de bœuf en plat principal
+- **THEN** son aplat porte la couleur de la famille viande et le mot « Viande », la même couleur que la tuile de ce jour sur l'écran de la semaine
+
+#### Scenario: Plat principal inclassable
+- **WHEN** le plat principal n'appartient à aucune famille reconnue
+- **THEN** son aplat porte la couleur de repli neutre et aucun nom de famille
+
+### Requirement: Les autres rôles en lignes
+
+Les rôles du déjeuner autres que le plat principal SHALL être présentés par des lignes alignées sur une même grille, le libellé du rôle dans une colonne qui précède le nom du plat. Ces lignes NE SHALL PAS être présentées comme des cartes. Le libellé d'un rôle NE SHALL PAS être composé au-dessus du nom de son plat. Chaque ligne SHALL porter, lorsqu'ils existent, les mentions de qualité et le signalement d'allergène, et aucun texte descriptif.
+
+#### Scenario: Les autres rôles restent en encre
+- **WHEN** l'écran du jour affiche une salade grecque en entrée
+- **THEN** sa ligne ne porte aucune couleur de famille ni de rôle, et son rôle se lit dans la colonne qui précède le nom du plat
+
+#### Scenario: Pas de surtitre
+- **WHEN** l'écran du jour est affiché
+- **THEN** aucun libellé de rôle n'est composé au-dessus du nom de son plat
+
+#### Scenario: Mentions d'une ligne
+- **WHEN** l'accompagnement du jour est bio et déclare du céleri
+- **THEN** sa ligne porte la mention « Bio » et nomme le céleri, sans autre texte
+
+### Requirement: Le déjeuner est une seule cible
+
+Aucun élément du déjeuner NE SHALL être actionnable isolément : la cible est la journée entière, portée par l'élément qui contient la suite.
+
+#### Scenario: Aucun élément n'est actionnable
+- **WHEN** l'écran du jour est parcouru au clavier
+- **THEN** aucun élément de la suite ne reçoit le focus, et l'ouverture du détail se fait par la cible qui porte la journée

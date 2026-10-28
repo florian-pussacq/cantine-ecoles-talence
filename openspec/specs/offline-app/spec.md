@@ -70,7 +70,7 @@ Le système SHALL afficher la date de mise à jour des données consultées. Lor
 
 ### Requirement: Budgets de performance
 
-Le JavaScript que charge chaque page SHALL rester sous 60 Ko compressés, et son premier chargement — son document, ses feuilles de style et son JavaScript — sous 150 Ko transférés. L'ensemble du JavaScript que le service worker précharge pour le hors-ligne SHALL rester sous 80 Ko compressés. Le passage d'un jour à l'autre SHALL s'effectuer en moins de 100 ms.
+Le JavaScript que charge chaque page SHALL rester sous 60 Ko compressés, et son premier chargement — son document, ses feuilles de style et son JavaScript — sous 150 Ko transférés. L'ensemble du JavaScript que le service worker précharge pour le hors-ligne SHALL rester sous 80 Ko compressés. Les fichiers de police que l'application sert SHALL rester, ensemble, sous 40 Ko. Le passage d'un jour à l'autre SHALL s'effectuer en moins de 100 ms.
 
 Le JavaScript d'une page SHALL être mesuré sur ce que le build produit : les modules que la page charge et leurs imports statiques, à l'exclusion des modules que l'application ne charge qu'à la demande.
 
@@ -91,3 +91,7 @@ Le dépassement d'un budget SHALL faire échouer la construction du projet.
 #### Scenario: Aucune ressource tierce
 - **WHEN** l'application se charge
 - **THEN** aucune police, aucun script et aucune ressource n'est requis depuis un domaine tiers
+
+#### Scenario: Budget de polices dépassé
+- **WHEN** l'ajout d'une graisse ou d'un sous-ensemble porte les fichiers de police au-delà de 40 Ko
+- **THEN** la construction échoue en nommant ce budget et chaque fichier de police avec son poids
