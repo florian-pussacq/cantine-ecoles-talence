@@ -107,6 +107,76 @@ describe('classify', () => {
     });
   });
 
+  /*
+    La famille se lit par la protéine, et non par le mot le plus long
+    (finitions-et-plat-inconnu, D3 bis). Ces quatre libellés sont réels : la
+    règle de longueur écrivait « Végétarien » sur du porc.
+  */
+  describe('la famille se départage par rang', () => {
+    it('fait primer la protéine animale sur la garniture', () => {
+      expect(familyOf("Sauté de porc à l'ananas*")).toBe('viande');
+      expect(familyOf('Lasagnes saumon épinards')).toBe('poisson');
+      expect(familyOf('Salade de pâtes à la dinde')).toBe('volaille');
+    });
+
+    it('fait primer un qualificatif végétal sur la protéine nommée', () => {
+      expect(familyOf('Cordon bleu végétal')).toBe('vegetarien');
+      expect(familyOf('Moussaka végétarienne')).toBe('vegetarien');
+    });
+
+    it('départage deux protéines par la longueur', () => {
+      expect(familyOf('Saucisse de volaille')).toBe('volaille');
+    });
+
+    it("laisse l'illustration au mot-clé le plus long", () => {
+      expect(classify('Lasagnes saumon épinards')).toMatchObject({
+        illustration: 'pates',
+        family: 'poisson'
+      });
+    });
+  });
+
+  /*
+    N'entre dans la table que ce qui ne désigne qu'une famille (D3). Ces plats
+    changent de famille d'une cuisine à l'autre : les deviner serait
+    l'approximation interdite.
+  */
+  it('laisse inclassables les plats dont la famille varie', () => {
+    for (const label of [
+      'Escalope viennoise',
+      'Émincé au curry',
+      'Croustade limousine',
+      'Moussaka'
+    ]) {
+      expect(familyOf(label), label).toBe('inconnu');
+    }
+  });
+
+  it('dessine les libellés relevés par le recensement', () => {
+    const attendus: [string, string][] = [
+      ['Potatoes au four', 'feculent'],
+      ['Mâche', 'salade-verte'],
+      ['Babybel', 'fromage'],
+      ['Tome noire', 'fromage'],
+      ['Tiramisu de Noël', 'gateau'],
+      ['Cheesecake aux Oreo', 'gateau'],
+      ['Far aux pruneaux', 'gateau'],
+      ['Donut sucré', 'gateau'],
+      ['Pasteis de nata', 'gateau'],
+      ['Houmous et petits toasts', 'legumineuse'],
+      ["Saucisson à l'ail*", 'viande'],
+      ['Rillettes de la mer', 'fruits-de-mer'],
+      ['Poêlée campagnarde', 'legume'],
+      ['Crêpe aux champignons', 'legume'],
+      ['Cobette de maïs au paprika fumé', 'legume']
+    ];
+    for (const [label, illustration] of attendus) {
+      expect(classify(label).illustration, label).toBe(illustration);
+    }
+    // « salade de maïs » reste plus long que « maïs » : une salade composée.
+    expect(classify('Salade de maïs').illustration).toBe('salade-composee');
+  });
+
   it('ne dit rien des allergènes', () => {
     // Un plat contenant du lait et un plat n'en contenant pas peuvent partager
     // la même famille : la couleur ne renseigne jamais sur les allergènes.

@@ -70,10 +70,19 @@ type Entry = {
   readonly keywords: readonly string[];
   readonly illustration: Illustration;
   readonly family: Family;
+  /** Une déclaration explicite du plat : elle l'emporte sur toute protéine nommée. */
+  readonly qualificatif?: true;
 };
 
 /**
  * La table, ordonnée par spécificité décroissante à égalité de longueur.
+ *
+ * **N'entre un mot-clé de plat principal que si tous les plats qu'il désigne en
+ * restauration scolaire appartiennent à la même famille**
+ * (finitions-et-plat-inconnu, D3). « Escalope » est de veau, de dinde ou de
+ * porc selon la cuisine, « émincé » de n'importe quelle viande, « croustade »
+ * sucrée ou salée, et une moussaka peut être végétarienne sans le dire : ils
+ * restent dehors, et leur plat reste inclassable plutôt que mal classé.
  *
  * La règle de correspondance est documentée et testée : **le mot-clé le plus
  * long l'emporte**, et à longueur égale, le premier de la table. C'est ce qui
@@ -102,6 +111,7 @@ const TABLE: readonly Entry[] = [
       'merguez',
       'jambon',
       'saucisse',
+      'saucisson',
       'hachis parmentier'
     ],
     illustration: 'viande',
@@ -147,7 +157,7 @@ const TABLE: readonly Entry[] = [
   // Coquillages et céphalopodes — même famille colorée que le poisson, dessin
   // distinct : un encornet ne ressemble pas à un filet.
   {
-    keywords: ['fruits de mer', 'encornet', 'calamar', 'moule', 'crevette'],
+    keywords: ['fruits de mer', 'rillettes de la mer', 'encornet', 'calamar', 'moule', 'crevette'],
     illustration: 'fruits-de-mer',
     family: 'poisson'
   },
@@ -164,7 +174,8 @@ const TABLE: readonly Entry[] = [
       'quinoa',
       'ble',
       'puree',
-      'ecrase'
+      'ecrase',
+      'potatoes'
     ],
     illustration: 'feculent',
     family: 'vegetarien'
@@ -177,8 +188,17 @@ const TABLE: readonly Entry[] = [
     family: 'vegetarien'
   },
 
-  // Ce qui se déclare végétarien, ou ne peut être que végétal.
-  { keywords: ['vege', 'vegetarien', 'seitan'], illustration: 'legume', family: 'vegetarien' },
+  /*
+    Ce qui se déclare végétarien, ou ne peut être que végétal. « vegetarien »
+    ne trouve ni « végétarienne » ni « végétal » : le comparateur n'admet que
+    les pluriels, d'où les formes écrites ici.
+  */
+  {
+    keywords: ['vege', 'vegetarien', 'vegetarienne', 'vegetal', 'vegetale', 'seitan'],
+    illustration: 'legume',
+    family: 'vegetarien',
+    qualificatif: true
+  },
 
   // Œufs
   { keywords: ['omelette', 'oeuf', 'œuf'], illustration: 'oeuf', family: 'vegetarien' },
@@ -201,7 +221,17 @@ const TABLE: readonly Entry[] = [
     family: 'vegetarien'
   },
   {
-    keywords: ['fromage', 'mozzarella', 'feta', 'camembert', 'brie', 'emmental'],
+    keywords: [
+      'fromage',
+      'mozzarella',
+      'feta',
+      'camembert',
+      'brie',
+      'emmental',
+      'babybel',
+      'tome',
+      'tomme'
+    ],
     illustration: 'fromage',
     family: 'vegetarien'
   },
@@ -242,6 +272,11 @@ const TABLE: readonly Entry[] = [
       'moelleux',
       'brownie',
       'quatre quarts',
+      'tiramisu',
+      'cheesecake',
+      'far',
+      'donut',
+      'pasteis de nata',
       // Ce que le document écrit quand il annonce un dessert sans le nommer.
       // « crème dessert » reste plus long, et part donc vers le laitage sucré.
       'dessert'
@@ -313,7 +348,15 @@ const TABLE: readonly Entry[] = [
     family: 'vegetarien'
   },
   {
-    keywords: ['salade verte', 'salade d endives', 'endive', 'laitue', 'roquette', 'salade'],
+    keywords: [
+      'salade verte',
+      'salade d endives',
+      'endive',
+      'laitue',
+      'roquette',
+      'mache',
+      'salade'
+    ],
     illustration: 'salade-verte',
     family: 'vegetarien'
   },
@@ -336,13 +379,31 @@ const TABLE: readonly Entry[] = [
   },
   { keywords: ['poireau'], illustration: 'poireau', family: 'vegetarien' },
   {
-    keywords: ['lentille', 'pois chiche', 'haricot', 'flageolet', 'legumineuse', 'petits pois'],
+    keywords: [
+      'lentille',
+      'pois chiche',
+      'haricot',
+      'flageolet',
+      'legumineuse',
+      'petits pois',
+      'houmous'
+    ],
     illustration: 'legumineuse',
     family: 'vegetarien'
   },
   { keywords: ['courge', 'potiron', 'butternut'], illustration: 'courge', family: 'vegetarien' },
   {
-    keywords: ['legume', 'epinard', 'poivron', 'artichaut', 'navet', 'carotte'],
+    keywords: [
+      'legume',
+      'epinard',
+      'poivron',
+      'artichaut',
+      'navet',
+      'carotte',
+      'champignon',
+      'poelee',
+      'mais'
+    ],
     illustration: 'legume',
     family: 'vegetarien'
   },
@@ -380,24 +441,54 @@ const MOTIFS = TABLE.flatMap((entry) =>
 const FALLBACK: DishMatch = { illustration: 'inconnu', family: 'inconnu', matched: null };
 
 /**
+ * Le rang d'une entrée pour la famille : le plus petit l'emporte (D3 bis).
+ *
+ * La longueur seule écrivait « Végétarien » sur un « Sauté de porc à
+ * l'ananas » : « ananas » compte six lettres, « porc » quatre. Une garniture ne
+ * dit pas la famille d'un plat ; sa protéine la dit, et un qualificatif végétal
+ * la dit mieux encore, puisqu'il est la déclaration du plat lui-même.
+ */
+function rang(entry: Entry): number {
+  if (entry.qualificatif) return 0;
+  if (entry.family === 'viande' || entry.family === 'volaille' || entry.family === 'poisson') {
+    return 1;
+  }
+  return 2;
+}
+
+type Candidat = { entry: Entry; keyword: string };
+
+/**
  * Classe un plat. Rend le repli plutôt que de deviner quand rien ne correspond.
+ *
+ * Deux gagnants sur un même parcours : l'illustration au mot-clé le plus long,
+ * qui dessine ce qu'on voit dans l'assiette, et la famille par rang, puis par
+ * longueur. Une lasagne au saumon se dessine en pâtes et se colore en poisson.
  */
 export function classify(label: string): DishMatch {
   const haystack = normalise(label);
-  let best: { entry: Entry; keyword: string } | null = null;
+  let dessin: Candidat | null = null;
+  let famille: Candidat | null = null;
 
   for (const { entry, needle, motif } of MOTIFS) {
     if (!motif.test(haystack)) continue;
-    if (best === null || needle.length > best.keyword.length) {
-      best = { entry, keyword: needle };
+    if (dessin === null || needle.length > dessin.keyword.length) {
+      dessin = { entry, keyword: needle };
+    }
+    if (
+      famille === null ||
+      rang(entry) < rang(famille.entry) ||
+      (rang(entry) === rang(famille.entry) && needle.length > famille.keyword.length)
+    ) {
+      famille = { entry, keyword: needle };
     }
   }
 
-  if (best === null) return FALLBACK;
+  if (dessin === null || famille === null) return FALLBACK;
   return {
-    illustration: best.entry.illustration,
-    family: best.entry.family,
-    matched: best.keyword
+    illustration: dessin.entry.illustration,
+    family: famille.entry.family,
+    matched: dessin.keyword
   };
 }
 
