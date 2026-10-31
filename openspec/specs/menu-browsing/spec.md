@@ -133,7 +133,7 @@ Sur un écran étroit, la couche SHALL occuper toute la largeur et être ancrée
 
 Le système SHALL présenter les cinq jours ouvrés de la semaine du jour affiché, sous une forme compacte permettant une lecture d'ensemble. Chaque jour SHALL être actionnable pour ouvrir le détail correspondant sur l'écran Aujourd'hui.
 
-Chaque jour servi SHALL porter la couleur de la famille de son plat principal, la même que sur l'écran du jour, et le nom de cette famille écrit. La couleur NE SHALL PAS être le seul support de la famille. Un plat principal inclassable SHALL porter la couleur de repli neutre, sans nom de famille.
+Chaque jour servi SHALL porter la couleur de la famille de son plat principal, la même que sur l'écran du jour, et le nom de cette famille écrit. La couleur NE SHALL PAS être le seul support de la famille. Un plat principal inclassable NE SHALL PAS porter de couleur de famille ni de nom de famille ; sa présentation SHALL se distinguer à la fois d'un jour servi d'une famille reconnue et d'un jour sans service.
 
 #### Scenario: Consultation de la semaine
 - **WHEN** l'utilisateur ouvre l'écran Semaine
@@ -154,6 +154,10 @@ Chaque jour servi SHALL porter la couleur de la famille de son plat principal, l
 #### Scenario: Jour non servi
 - **WHEN** la semaine contient un jour férié
 - **THEN** ce jour ne porte aucune couleur de famille, et se distingue d'un jour servi
+
+#### Scenario: Plat principal inclassable sur la semaine
+- **WHEN** le plat principal d'un jour servi n'appartient à aucune famille reconnue
+- **THEN** ce jour ne porte aucune couleur de famille ni aucun nom de famille, et ne se confond ni avec un jour d'une famille reconnue ni avec un jour sans service
 
 ### Requirement: États limites de consultation
 
@@ -310,7 +314,7 @@ La commande de sortie SHALL nommer sa destination, et SHALL mener à l'écran de
 
 Cet emplacement NE SHALL jamais rester vide, et sa hauteur SHALL être réservée de sorte que l'en-tête ne change pas de hauteur d'un écran à l'autre.
 
-Les mentions SHALL rester atteignables depuis n'importe quel écran : par un lien rendu dans le flux des écrans de consultation d'un menu, à la suite de la provenance des données, et par un lien de l'écran des réglages.
+Les mentions SHALL être atteignables depuis l'écran des réglages. Les écrans de consultation d'un menu NE SHALL PAS porter de lien vers les mentions : ils s'achèvent sur la provenance des données, et les mentions s'y atteignent par la commande menant aux réglages.
 
 Le choix entre les deux écrans SHALL compenser la zone sûre inférieure de l'appareil, et le contenu de l'écran SHALL réserver sa hauteur augmentée de cette zone sûre, de sorte qu'aucun contenu ne reste inaccessible derrière lui. Cette réserve NE SHALL PAS être augmentée d'un intervalle qui la doublerait.
 
@@ -337,8 +341,12 @@ Sur un écran large, le choix entre les deux écrans SHALL rester borné à la c
 - **THEN** le choix entre les deux écrans reste atteignable au-dessus de l'indicateur, et aucun contenu ne demeure caché derrière lui
 
 #### Scenario: Les mentions depuis un écran de menu
+- **WHEN** l'utilisateur consulte l'écran du jour ou celui de la semaine et veut lire les mentions
+- **THEN** il les atteint en ouvrant les réglages, et aucun lien vers les mentions ne figure au bas de l'écran de menu
+
+#### Scenario: La provenance reste au bas des écrans de menu
 - **WHEN** l'utilisateur défile jusqu'au bas de l'écran du jour ou de celui de la semaine
-- **THEN** un lien vers les mentions suit la provenance des données, et reste visible au-dessus du choix entre les deux écrans
+- **THEN** la date de mise à jour des menus et le lien vers le PDF officiel y figurent, visibles au-dessus du choix entre les deux écrans
 
 #### Scenario: Les mentions depuis les réglages
 - **WHEN** l'utilisateur consulte l'écran des réglages
@@ -354,7 +362,7 @@ Sur un écran large, le choix entre les deux écrans SHALL rester borné à la c
 
 #### Scenario: Pied de page sur écran large
 - **WHEN** l'application est ouverte sur un écran de bureau
-- **THEN** la provenance des données et le lien vers les mentions restent bornés à la largeur de la colonne de contenu
+- **THEN** la provenance des données reste bornée à la largeur de la colonne de contenu
 
 #### Scenario: Barre sur écran large
 - **WHEN** l'application est ouverte sur un écran de bureau
@@ -611,7 +619,7 @@ L'écran du jour SHALL présenter le déjeuner comme une suite d'éléments, un 
 
 ### Requirement: Le plat principal sur l'aplat de sa famille
 
-Le plat principal SHALL être présenté sur un aplat de la couleur de sa famille, la même que sur l'écran de la semaine, avec le nom de cette famille écrit. Un plat principal dont la famille n'est pas reconnue SHALL porter la couleur de repli neutre, sans nom de famille. Aucun autre élément du déjeuner NE SHALL porter de couleur de famille ni de rôle.
+Le plat principal SHALL être présenté sur un aplat de la couleur de sa famille, la même que sur l'écran de la semaine, avec le nom de cette famille écrit. Un plat principal dont la famille n'est pas reconnue NE SHALL PAS être posé sur un aplat : il SHALL être présenté sur une surface claire délimitée par un filet d'encre, son nom en encre, sans nom de famille, avec l'illustration de repli. Aucun autre élément du déjeuner NE SHALL porter de couleur de famille ni de rôle.
 
 #### Scenario: Le plat principal porte sa famille
 - **WHEN** l'écran du jour affiche un rôti de bœuf en plat principal
@@ -619,7 +627,7 @@ Le plat principal SHALL être présenté sur un aplat de la couleur de sa famill
 
 #### Scenario: Plat principal inclassable
 - **WHEN** le plat principal n'appartient à aucune famille reconnue
-- **THEN** son aplat porte la couleur de repli neutre et aucun nom de famille
+- **THEN** il est présenté sur une surface claire cerclée d'un filet d'encre, sans couleur ni nom de famille, et reste désigné comme le plat principal
 
 ### Requirement: Les autres rôles en lignes
 
