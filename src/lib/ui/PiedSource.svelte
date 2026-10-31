@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { resolve } from '$app/paths';
   import { formatDay } from '#lib/menu/labels.js';
   import LienExterne from './LienExterne.svelte';
 
@@ -16,10 +15,11 @@
    * trois du repli (design.md, D63). L'écran de la semaine ne repliait pas sur la
    * date, sans raison : c'est la version complète qui est retenue ici.
    *
-   * **Il porte aussi le lien vers les mentions** (refonte-signaletique, D11). Le
-   * pied fixe qui le portait a laissé le bas de la fenêtre au choix entre le
-   * jour et la semaine ; les mentions qualifient les données au même titre que
-   * leur date et leur source, et suivent donc celles-ci.
+   * **Il ne porte plus le lien vers les mentions** (finitions-et-plat-inconnu,
+   * D7). La refonte l'y avait posé faute d'autre place ; c'était une ligne de
+   * plus sur l'écran qu'on ouvre chaque matin, pour un texte qu'on lit une fois.
+   * Les mentions ont leur section dans les réglages, à deux gestes de tout écran
+   * de menu. Ce qui reste ici dit d'où vient ce qu'on lit, et sa place est là.
    */
   let {
     updatedLabel,
@@ -45,7 +45,6 @@
 <footer>
   <span>{mention}</span>
   <LienExterne href={pdfUrl}>PDF officiel</LienExterne>
-  <a class="mentions" href={resolve('/a-propos')}>Source, mentions et vie privée</a>
 </footer>
 
 <style>
@@ -70,17 +69,11 @@
     font-size: var(--texte-xs);
   }
 
-  /* Les mentions prennent la ligne suivante, entière : elles qualifient tout
-     l'écran, et non la seule date à côté de laquelle elles se poseraient. */
-  .mentions {
-    grid-column: 1 / -1;
-    justify-self: start;
-    font-weight: var(--poids-moyen);
-    color: var(--encre-douce);
-  }
-
+  /* Une commande, et seule de sa ligne : elle prend le cran du texte courant
+     des petites mentions, et non celui de la date qu'elle accompagne (D7). */
   footer :global(a) {
     color: var(--encre);
+    font-size: var(--texte-sm);
     font-weight: var(--poids-fort);
     /* Cible tactile : un lien isolé doit être atteignable au pouce. */
     min-height: var(--cible);

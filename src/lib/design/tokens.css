@@ -128,8 +128,8 @@
   --fam-vegetarien: #23803e;
   --fam-vegetarien-pale: #d8eddf;
 
-  --fam-inconnu: #5f6b66;
-  --fam-inconnu-pale: #e3e6e4;
+  /* Pas de famille « inconnu » : un plat inclassable ne prend aucune couleur,
+     il se pose sur la carte cerclée d'encre (finitions-et-plat-inconnu, D1). */
 
   /*
    * Les trois tons des messages (bandeau-et-aujourdhui, D1).
@@ -199,6 +199,9 @@
   /* Le plus serré des espacements de lettres, pour les titres d'affichage :
      en deçà, les chiffres se touchent (D5). */
   --serrage-titre: -0.04em;
+  /* L'approche des intitulés : nom du plat principal, titre d'un écran ou de la
+     fiche. Moitié du grand chiffre, plus large à ces tailles (finitions-et-plat-inconnu, D5). */
+  --serrage-intitule: -0.02em;
 
   /* Graisses. Elles ne changent pas au palier large : une graisse n'a pas à
      grandir avec l'écran (fermer-les-echelles, D3). */
@@ -224,6 +227,11 @@
 
   /* Cible tactile minimale (WCAG 2.1 AA) */
   --cible: 44px;
+  /* La mesure du texte courant : des lignes sous le
+     plafond de 75 (finitions-et-plat-inconnu, D4). `ch` est la chasse du zéro,
+     plus large que la lettre moyenne de Funnel Sans : 65ch en donnaient 80,
+     58ch encore 78 sur un texte riche en « l » et en apostrophes. */
+  --mesure: 55ch;
 
   /*
    * La barre du choix entre le jour et la semaine, ancrée au bas de la fenêtre
@@ -322,8 +330,6 @@
     --fam-poisson-pale: #1d2f3e;
     --fam-vegetarien: #1b6b33;
     --fam-vegetarien-pale: #1e3324;
-    --fam-inconnu: #4e5853;
-    --fam-inconnu-pale: #2a2e2c;
 
     --alerte: #f5c518;
     --sur-alerte: #131614;
@@ -385,6 +391,27 @@ body {
   font-size: var(--texte-base);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Le texte courant se compose pour être lu (finitions-et-plat-inconnu, D4).
+ *
+ * Posé une fois ici plutôt qu'écran par écran : un paragraphe ajouté demain n'a
+ * rien à déclarer pour tenir sa mesure ni éviter le mot seul en dernière ligne.
+ * `:where()` ne pèse rien, de sorte qu'un composant qui a une raison de s'en
+ * écarter le fait sans surenchère. Un navigateur qui ignore `text-wrap` coupe
+ * comme avant : c'est une amélioration, pas une condition.
+ */
+:where(p) {
+  max-inline-size: var(--mesure);
+}
+
+:where(p, li, dd) {
+  text-wrap: pretty;
+}
+
+:where(h1, h2, h3) {
+  text-wrap: balance;
 }
 
 /*

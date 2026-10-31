@@ -116,7 +116,17 @@ const PROPRIETES_DE_COULEUR = new Set([
 ]);
 
 /** Les propriétés qui ne doivent contenir que des jetons ou des exceptions. */
-const PROPRIETES_PAR_JETON = new Set(['font-size', 'font-weight', 'border-radius']);
+/*
+  L'approche en fait partie (finitions-et-plat-inconnu, D5) : quatre valeurs
+  écrites en dur avaient fini par diverger, de -0.01 à -0.03em, sans
+  qu'aucune ne se voie ni ne se justifie.
+*/
+const PROPRIETES_PAR_JETON = new Set([
+  'font-size',
+  'font-weight',
+  'border-radius',
+  'letter-spacing'
+]);
 
 const PROPRIETES_DE_MOUVEMENT = new Set([
   'transition',
@@ -255,6 +265,17 @@ describe('les composants passent par les jetons', () => {
     ]);
     expect(ecartsDans(composant, '.titre { font-family: var(--police-affichage); }')).toEqual([]);
     expect(ecartsDans(TOKENS, "@font-face { font-family: 'Funnel Sans'; }")).toEqual([]);
+  });
+
+  it('refuse une approche écrite en dur', () => {
+    const composant = 'src/lib/ui/Exemple.svelte';
+    expect(ecartsDans(composant, '.titre { letter-spacing: -0.03em; }')).toEqual([
+      `${composant} — letter-spacing: -0.03em`
+    ]);
+    expect(ecartsDans(composant, '.titre { letter-spacing: var(--serrage-intitule); }')).toEqual(
+      []
+    );
+    expect(ecartsDans(composant, '.titre { letter-spacing: normal; }')).toEqual([]);
   });
 
   it('ne cite aucun jeton qui n’existe pas', () => {

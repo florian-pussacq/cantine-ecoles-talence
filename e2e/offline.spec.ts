@@ -48,6 +48,33 @@ test('la semaine reste consultable hors ligne', async ({ page, context }) => {
 });
 
 /**
+ * Les mentions ne s'atteignent plus que par les réglages
+ * (finitions-et-plat-inconnu, D7) : le chemin entier doit tenir hors ligne, et
+ * non la seule page.
+ */
+test('les mentions restent atteignables hors ligne, par les réglages', async ({
+  page,
+  context
+}) => {
+  await page.goto('/');
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (navigator.serviceWorker.controller === null) {
+      await new Promise((resolve) =>
+        navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true })
+      );
+    }
+  });
+
+  await context.setOffline(true);
+  await page.getByRole('link', { name: /^Réglages/ }).click();
+  await page.getByRole('link', { name: /Source, mentions et vie privée/ }).click();
+
+  await expect(page).toHaveURL(/\/a-propos\/?$/);
+  await expect(page.getByText('Seul le document officiel de la Ville')).toBeVisible();
+});
+
+/**
  * Les polices sont servies par l'application et précachées avec elle
  * (refonte-signaletique, D4). Hors ligne, le texte doit encore être dessiné
  * dans la police de l'application, et non dans son repli : un repli ne serait

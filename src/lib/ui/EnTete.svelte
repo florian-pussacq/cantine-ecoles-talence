@@ -29,19 +29,24 @@
 </header>
 
 <style>
+  /*
+    Sur l'axe gauche de la colonne, dans la coupe d'affichage : comme le titre
+    des écrans de menu. Centré, il était la seule entorse à la grille
+    (finitions-et-plat-inconnu, D6).
+  */
   header {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--espace-1);
-    text-align: center;
   }
 
   h1 {
     margin: 0;
+    font-family: var(--police-affichage);
     font-size: var(--texte-2xl);
     font-weight: var(--poids-titre);
-    letter-spacing: -0.03em;
+    letter-spacing: var(--serrage-intitule);
     line-height: 1.1;
     color: var(--encre);
     text-wrap: balance;

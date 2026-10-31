@@ -20,7 +20,7 @@ test('le plat principal nomme sa famille, et lui seul', async ({ page }) => {
 /**
  * Sur la semaine, la famille se lit sans la couleur (refonte-signaletique,
  * D10) : la tuile la dit par sa teinte, le résumé la dit par son nom. Un plat
- * inclassable a la couleur de repli, et aucun nom.
+ * inclassable n'a ni couleur ni nom (finitions-et-plat-inconnu, D1).
  */
 test('la semaine écrit la famille de chaque jour servi', async ({ page }) => {
   const NOMS: Record<string, string> = {
@@ -40,12 +40,53 @@ test('la semaine écrit la famille de chaque jour servi', async ({ page }) => {
 
   for (let i = 0; i < total; i++) {
     const jour = jours.nth(i);
-    const style = (await jour.locator('.tuile').getAttribute('style')) ?? '';
+    const tuile = jour.locator('.tuile');
+    const style = (await tuile.getAttribute('style')) ?? '';
     const famille = style.match(/--fam-([a-z]+)/)?.[1];
-    expect(famille, `jour ${i} : tuile sans famille`).toBeDefined();
+    if (await tuile.evaluate((el) => el.classList.contains('inconnue'))) {
+      expect(famille, `jour ${i} : un inclassable ne porte aucune famille`).toBeUndefined();
+      await expect(jour).not.toContainText(/Viande|Volaille|Poisson|Végétarien/);
+      continue;
+    }
     const nom = NOMS[famille as string];
-    const resume = jour.locator('.rest').first();
-    if (nom) await expect(resume).toHaveText(new RegExp(`^${nom}( · |$)`));
-    else await expect(jour).not.toContainText(/Viande|Volaille|Poisson|Végétarien/);
+    expect(nom, `jour ${i} : tuile sans famille`).toBeDefined();
+    await expect(jour.locator('.rest').first()).toHaveText(new RegExp(`^${nom}( · |$)`));
   }
+});
+
+/**
+ * Le plat inclassable : une carte claire cerclée d'encre sur l'écran du jour, et
+ * une tuile de même facture sur la semaine, distincte d'un jour sans service
+ * (finitions-et-plat-inconnu, D1). Le 3 novembre 2026 sert une croustade
+ * limousine, sucrée ou salée selon la cuisine.
+ */
+test('un plat inclassable ne porte aucune couleur de famille', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-03T10:00:00+01:00') });
+  await page.goto('/');
+  await hydratee(page);
+
+  const principale = page.locator('.courant .plat.principal');
+  await expect(principale).toContainText('Croustade limousine');
+  await expect(principale).toHaveClass(/\binconnue\b/);
+  await expect(principale.locator('.famille-nom')).toHaveCount(0);
+  const [fond, carte, filet] = await principale.evaluate((el) => {
+    const s = getComputedStyle(el);
+    const sonde = document.createElement('div');
+    sonde.style.background = 'var(--carte)';
+    document.body.append(sonde);
+    const c = getComputedStyle(sonde).backgroundColor;
+    sonde.remove();
+    return [s.backgroundColor, c, `${s.borderTopWidth} ${s.borderTopStyle}`];
+  });
+  expect(fond).toBe(carte);
+  expect(filet).toBe('2px solid');
+
+  await page.goto('/semaine');
+  await hydratee(page);
+  const mardi = page.locator('.courant .sheet li').filter({ hasText: 'Croustade limousine' });
+  const tuile = mardi.locator('.tuile');
+  await expect(tuile).toHaveClass(/\binconnue\b/);
+  expect((await tuile.getAttribute('style')) ?? '').not.toContain('--fam-');
+  expect(await tuile.evaluate((el) => getComputedStyle(el).borderTopStyle)).toBe('solid');
+  await expect(mardi).not.toContainText(/Viande|Volaille|Poisson|Végétarien/);
 });

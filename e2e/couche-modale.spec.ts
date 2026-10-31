@@ -78,7 +78,22 @@ test("le focus revient sur le goûter lorsque c'est lui qui a ouvert", async ({ 
   await expect(gouter).toBeFocused();
 });
 
+/**
+ * Une fenêtre basse, pour que l'écran du jour défile.
+ *
+ * Depuis que les mentions ont quitté le bas des écrans de menu
+ * (finitions-et-plat-inconnu, D7), le déjeuner du 2 septembre tient sans
+ * défiler dans la fenêtre d'un Pixel 7. C'est le but de l'écran ; ces deux tests
+ * ont pourtant besoin d'une page qui défile pour prouver quelque chose. La
+ * largeur reste celle de l'appareil.
+ */
+async function fenetreBasse(page: Page): Promise<void> {
+  const { width } = page.viewportSize() ?? { width: 412 };
+  await page.setViewportSize({ width, height: 600 });
+}
+
 test('le contenu situé derrière ne défile pas', async ({ page }) => {
+  await fenetreBasse(page);
   await page.goto('/');
 
   // Le geste, et non `window.scrollTo` : `overflow: hidden` empêche l'utilisateur
@@ -105,6 +120,7 @@ test('le contenu situé derrière ne défile pas', async ({ page }) => {
 test("l'ouverture de la couche ne fait pas remonter la page", async ({ page }) => {
   // Poser le verrou de défilement ne doit pas ramener au début du document :
   // on rouvrirait sur un écran qui a bougé pendant qu'on ne regardait pas.
+  await fenetreBasse(page);
   await page.goto('/');
   await page.mouse.wheel(0, 300);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);

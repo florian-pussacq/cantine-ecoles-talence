@@ -295,7 +295,7 @@
     margin: 0;
     font-size: var(--texte-lg);
     font-weight: var(--poids-titre);
-    letter-spacing: -0.03em;
+    letter-spacing: var(--serrage-intitule);
     line-height: 1.15;
   }
 

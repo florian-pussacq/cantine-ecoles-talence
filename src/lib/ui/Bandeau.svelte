@@ -132,7 +132,6 @@
     margin: 0;
     font-size: var(--texte-base);
     font-weight: var(--poids-titre);
-    letter-spacing: -0.01em;
   }
 
   p {

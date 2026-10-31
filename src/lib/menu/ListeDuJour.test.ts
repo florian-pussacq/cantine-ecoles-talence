@@ -123,11 +123,17 @@ describe('la couleur dit la famille du plat principal (couleur-par-famille)', ()
   });
 
   it('ne devine pas la famille d’un plat inclassable', () => {
-    // La moussaka du 31 août : couleur de repli, aucun nom de famille.
+    // La moussaka du 31 août : aucune couleur ni aucun nom de famille, une
+    // carte cerclée (finitions-et-plat-inconnu, D1).
     const { container } = trayFor(real, '2026-08-31');
     const principale = container.querySelector('.plat.principal');
-    expect(principale?.getAttribute('style')).toContain('var(--fam-inconnu)');
+    expect(principale?.classList.contains('inconnue')).toBe(true);
+    expect(principale?.classList.contains('famille')).toBe(false);
+    expect(principale?.getAttribute('style') ?? '').not.toContain('--fam-');
     expect(principale?.querySelector('.famille-nom')).toBeNull();
+    expect(principale?.querySelector('.illustration use')?.getAttribute('href')).toBe(
+      '#ill-inconnu'
+    );
   });
 
   it('ne porte plus aucune couleur de rôle', () => {

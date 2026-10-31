@@ -86,6 +86,13 @@
      ligne d'absence comme une autre. */
   const aplat = $derived(famille !== null && course !== null);
 
+  /*
+    Un plat principal sans famille reconnue ne prend aucune couleur : une carte
+    claire cerclée d'encre (finitions-et-plat-inconnu, D1). Une couleur de repli
+    se lisait « désactivé » ; l'absence de couleur se lit « on ne sait pas ».
+  */
+  const inconnue = $derived(aplat && famille === 'inconnu');
+
   /* Une qualité promue au rang de nom ne se redit pas parmi les mentions. */
   const mentions = $derived(
     course === null || nom?.kind === 'quality' ? [] : course.flags.map(qualityLabel)
@@ -97,9 +104,10 @@
   class:vide={course === null}
   class:principal={aplat}
   class:compacte={compacte || course === null}
-  class:famille={aplat}
-  style:--aplat={aplat ? `var(--fam-${famille})` : undefined}
-  style:--pale={aplat ? `var(--fam-${famille}-pale)` : undefined}
+  class:inconnue
+  class:famille={aplat && !inconnue}
+  style:--aplat={aplat && !inconnue ? `var(--fam-${famille})` : undefined}
+  style:--pale={aplat && !inconnue ? `var(--fam-${famille}-pale)` : undefined}
 >
   {#if aplat && course && nom}
     <span class="corps">
@@ -252,7 +260,7 @@
     font-size: var(--texte-2xl);
     font-weight: var(--poids-fort);
     line-height: 1.05;
-    letter-spacing: -0.02em;
+    letter-spacing: var(--serrage-intitule);
   }
 
   .principal .meta,
@@ -279,5 +287,27 @@
   .principal .vignette :global(.illustration) {
     width: var(--ill-plat);
     height: var(--ill-plat);
+  }
+
+  /*
+    Le plat inclassable garde la composition du plat principal, et change de
+    surface : la carte, cerclée du filet d'encre qui ouvre déjà les tableaux, le
+    texte en encre et le dessin sur le creux. Des paires que `contrast.test.ts`
+    mesure déjà (D1).
+  */
+  .principal.inconnue {
+    background: var(--carte);
+    border: 2px solid var(--encre);
+    color: var(--encre);
+  }
+
+  .principal.inconnue .meta,
+  .principal.inconnue .role,
+  .principal.inconnue .unknown {
+    color: var(--encre-douce);
+  }
+
+  .principal.inconnue .vignette {
+    background: var(--creux);
   }
 </style>

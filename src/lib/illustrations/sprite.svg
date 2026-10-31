@@ -108,10 +108,19 @@
       <path d="M13 13h22a3 3 0 0 1 3 3v9H10v-9a3 3 0 0 1 3-3Z" fill="url(#lustre)"/>
     </symbol>
 
+    <!--
+      Le plat inclassable : une cloche posée sur son plateau
+      (finitions-et-plat-inconnu, D2). L'assiette vide qu'elle remplace disait une
+      absence ; la cloche dit « le plat du jour » sans en nommer la nature. Acier
+      neutre, pour ne ressembler à aucune famille.
+    -->
     <symbol id="ill-inconnu" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <circle cx="24" cy="24" r="16" fill="#b3bcb7"/><circle cx="24" cy="24" r="10.5" fill="#d8ded9"/>
-      <path d="M24 8a16 16 0 0 1 16 16H8A16 16 0 0 1 24 8Z" fill="url(#lustre)"/>
+      <ellipse cx="24" cy="41" rx="16" ry="2.4" fill="#000" opacity=".10"/>
+      <ellipse cx="24" cy="36.2" rx="19" ry="3.4" fill="#8e9894"/><ellipse cx="24" cy="35.2" rx="19" ry="2.8" fill="#c9d0cd"/>
+      <path d="M8.5 34a15.5 19 0 0 1 31 0Z" fill="#b4bdbb"/><rect x="8.5" y="32" width="31" height="2.2" rx="1.1" fill="#8e9894"/>
+      <ellipse cx="17" cy="23.5" rx="2.2" ry="6.5" transform="rotate(24 17 23.5)" fill="#fff" opacity=".5"/>
+      <rect x="22.8" y="12.6" width="2.4" height="3" fill="#8e9894"/><circle cx="24" cy="12" r="2.8" fill="#a3acaa"/>
+      <path d="M8.5 34a15.5 19 0 0 1 31 0Z" fill="url(#lustre)"/>
     </symbol>
 
     <!-- Salade composée : plusieurs couleurs dans un bol, ce qui la distingue de la salade verte. -->

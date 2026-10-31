@@ -76,8 +76,13 @@ const PALETTES: [string, Record<string, string>][] = [
   ['sombre', { ...CLAIRS, ...SOMBRES }]
 ];
 
-/** Les familles du plat principal : le seul code couleur du menu (couleur-par-famille). */
-const FAMILLES = ['viande', 'volaille', 'poisson', 'vegetarien', 'inconnu'] as const;
+/**
+ * Les familles du plat principal : le seul code couleur du menu (couleur-par-famille).
+ *
+ * Un plat inclassable n'en a pas : il se pose sur la carte, en encre, des paires
+ * déjà mesurées plus bas (finitions-et-plat-inconnu, D1).
+ */
+const FAMILLES = ['viande', 'volaille', 'poisson', 'vegetarien'] as const;
 
 function canal(valeur: number): number {
   const s = valeur / 255;

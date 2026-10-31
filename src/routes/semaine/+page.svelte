@@ -81,7 +81,7 @@
   /*
     La famille écrite en tête du résumé (refonte-signaletique, D10) : la tuile
     la dit par sa couleur, le mot la dit sans elle. Un plat inclassable n'a pas
-    de nom de famille à écrire, et la tuile prend la couleur de repli.
+    de nom de famille à écrire, et sa tuile ne prend aucune couleur.
   */
   function resume(famille: Parameters<typeof familyLabel>[0], suite: string): string {
     return [familyLabel(famille), suite].filter((part) => part).join(' · ');
@@ -206,9 +206,17 @@
                 <!--
                   La tuile : le jour et son quantième, sur la couleur de la
                   famille du plat principal — la même que l'aplat de l'écran du
-                  jour (refonte-signaletique, D10).
+                  jour (refonte-signaletique, D10). Un plat inclassable n'en a
+                  pas : sa tuile est une carte cerclée d'encre, comme sur l'écran
+                  du jour (finitions-et-plat-inconnu, D1).
                 -->
-                <span class="tuile" style:--aplat={`var(--fam-${match.family})`}>
+                <span
+                  class="tuile"
+                  class:inconnue={match.family === 'inconnu'}
+                  style:--aplat={match.family === 'inconnu'
+                    ? undefined
+                    : `var(--fam-${match.family})`}
+                >
                   <span class="dow">{formatWeekday(date)}</span>
                   <span class="num">{dayNumber(date)}</span>
                 </span>
@@ -350,6 +358,14 @@
     background: none;
     border: 1px dashed var(--voile-trait);
     color: var(--encre-douce);
+  }
+
+  /* Un jour servi d'un plat inclassable : ni couleur ni tiret. Le filet plein
+     dit « servi », l'absence de couleur dit « famille inconnue » (D1). */
+  .tuile.inconnue {
+    background: var(--carte);
+    border: 2px solid var(--encre);
+    color: var(--encre);
   }
 
   .dow {

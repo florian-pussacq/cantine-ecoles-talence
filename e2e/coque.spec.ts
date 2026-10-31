@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './test';
+import { expect, hydratee, test, type Page } from './test';
 import { STORAGE_KEY } from '../src/lib/filter/storage.js';
 
 /**
@@ -6,8 +6,9 @@ import { STORAGE_KEY } from '../src/lib/filter/storage.js';
  *
  * Ce fichier s'est appelé `barre.spec.ts`, du temps où les onglets étaient
  * ancrés au bas de la fenêtre (D31). Ils sont remontés (D52), puis redescendus
- * (refonte-signaletique, D11), et le pied fixe des mentions a disparu : les
- * mentions suivent la provenance des données, dans le flux.
+ * (refonte-signaletique, D11), et le pied fixe des mentions a disparu. Les
+ * mentions ont un temps suivi la provenance des données, dans le flux ; elles
+ * ne s'atteignent plus que par les réglages (finitions-et-plat-inconnu, D7).
  *
  * Ce qui change, c'est la position ; les garanties ne changent pas. La barre est
  * ancrée et bornée, elle réserve sa place sous le contenu, et elle ne porte que
@@ -72,32 +73,37 @@ test('la barre est sous le contenu, et non au-dessus', async ({ page }) => {
   expect(barre!.y, 'la barre ne doit pas précéder le rang du jour').toBeGreaterThan(rang!.y);
 });
 
-test('les mentions suivent la provenance des données, sur les deux écrans de menu', async ({
-  page
-}) => {
+test('les écrans de menu s’achèvent sur la provenance des données', async ({ page }) => {
   for (const ecran of ['/', '/semaine']) {
     await page.goto(ecran);
-    const lien = page.locator('.shell footer').getByRole('link', {
-      name: 'Source, mentions et vie privée'
-    });
-    await lien.scrollIntoViewIfNeeded();
-    await expect(lien, `${ecran} : lien des mentions`).toBeVisible();
+    // Aucun lien vers les mentions : une ligne de plus sur l'écran du matin,
+    // pour un texte qu'on lit une fois.
+    await expect(page.locator('.shell a[href$="a-propos"]'), ecran).toHaveCount(0);
 
-    // Défilement fait, le lien reste au-dessus de la barre : la réserve de la
-    // coque l'en dégage.
+    const pdf = page.locator('.shell footer').getByRole('link', { name: 'PDF officiel' });
+    await expect(page.locator('.shell footer'), ecran).toContainText(/mis à jour/i);
+
+    // Défilement fait, la provenance reste au-dessus de la barre : la réserve
+    // de la coque l'en dégage.
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    const boite = await lien.boundingBox();
+    await expect(pdf, `${ecran} : lien du PDF officiel`).toBeVisible();
+    const boite = await pdf.boundingBox();
     const barre = await onglets(page).boundingBox();
-    expect(boite!.y + boite!.height, `${ecran} : le lien passe sous la barre`).toBeLessThanOrEqual(
+    expect(boite!.y + boite!.height, `${ecran} : le PDF passe sous la barre`).toBeLessThanOrEqual(
       barre!.y
     );
   }
 });
 
-test('les mentions s’atteignent depuis les réglages', async ({ page }) => {
-  await page.goto('/reglages');
-  await page.getByRole('link', { name: /Source, mentions et vie privée/ }).click();
-  await expect(page).toHaveURL(/\/a-propos\/?$/);
+test('les mentions s’atteignent par les réglages, en deux gestes', async ({ page }) => {
+  for (const ecran of ['/', '/semaine']) {
+    await page.goto(ecran);
+    await hydratee(page);
+    await page.getByRole('link', { name: /^Réglages/ }).click();
+    await expect(page).toHaveURL(/\/reglages\/?$/);
+    await page.getByRole('link', { name: /Source, mentions et vie privée/ }).click();
+    await expect(page, ecran).toHaveURL(/\/a-propos\/?$/);
+  }
 });
 
 test('les onglets ne portent que des destinations de consultation', async ({ page }) => {
