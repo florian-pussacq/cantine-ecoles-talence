@@ -62,14 +62,36 @@ Les teintes restent neutres (gris acier et blanc), et le dessin se lit sur `--cr
 
 Le critère, à écrire en tête de la table : **un mot-clé de plat principal n'entre que si tous les plats qu'il désigne en restauration scolaire appartiennent à la même famille.**
 
-- **Entrent** :
-  - `moussaka` → viande. Une moussaka sans viande s'annonce végétarienne.
-  - `vegetarienne` → végétarien. Le comparateur n'admet que les pluriels en `-s` ou `-x`, si bien que `vegetarien` ne trouve pas « végétarienne ». Le mot-clé plus long l'emporte sur `moussaka`.
+- **Entrent** : `vegetal`, `vegetale` et `vegetarienne` → végétarien. Le comparateur n'admet que les pluriels en `-s` ou `-x`, si bien que `vegetarien` ne trouve ni « végétarienne » ni « végétal ».
 - **Restent dehors** :
   - `escalope` (veau, dinde ou porc selon la cuisine) ;
   - `emince` (n'importe quelle viande) ;
   - `croustade` (sucrée ou salée) ;
-  - `curry`.
+  - `curry` ;
+  - `moussaka`. La proposition l'avait fait entrer comme viande ; c'est un écart à la proposition, découvert à l'application. Un test existant la juge ambiguë, au motif qu'elle peut être végétarienne sans le dire. Les coûts ne sont pas symétriques : écrire « Viande » sur un plat végétarien est une erreur, alors que la carte neutre de D1 ne coûte presque plus rien. Elle reste donc inclassable.
+
+### D3 bis — La famille d'un plat se lit par sa protéine, et non par son mot le plus long
+
+Le recensement par semaine, fait à l'application, montre que la règle « le mot-clé le plus long l'emporte » écrit une **fausse famille** sur des plats principaux :
+
+| Libellé | Mot le plus long | Famille affichée | Famille réelle |
+|---|---|---|---|
+| Sauté de porc à l'ananas | `ananas` (6) | Végétarien | Viande |
+| Lasagnes saumon épinards | `lasagne` (7) | Végétarien | Poisson |
+| Salade de pâtes à la dinde | `salade` (6) | Végétarien | Volaille |
+| Cordon bleu végétal | `cordon bleu` (11) | Volaille | Végétarien |
+
+C'est plus grave qu'un plat inconnu, puisque cela affirme le faux. La famille se départage désormais **par rang, puis par longueur** :
+
+1. **Un qualificatif végétal** (`vege`, `vegetarien`, `vegetarienne`, `vegetal`, `vegetale`, `seitan`) l'emporte sur tout. Il est la déclaration explicite du plat.
+2. **Une protéine animale** : toute entrée de famille viande, volaille ou poisson. À rang égal, le mot-clé le plus long l'emporte, si bien que « Saucisse de volaille » reste une volaille.
+3. **Le reste** (féculents, légumes, desserts, qui sont végétariens par défaut), au mot-clé le plus long.
+
+**L'illustration garde la règle du plus long**, qui dessine ce que l'on voit dans l'assiette. La lasagne au saumon est dessinée en pâtes et colorée en poisson, comme le ravioli bolognaise est déjà dessiné en pâtes et coloré en viande.
+
+Concrètement, `classify()` calcule deux gagnants sur le même parcours. Le retour garde sa forme `{ illustration, family, matched }`, où `matched` reste le mot-clé de l'illustration, celui que sert le recensement.
+
+*Écartée :* ajouter des mots-clés plus longs pour chaque combinaison (« porc à l'ananas », « lasagnes saumon »). Ce serait courir après chaque libellé d'un mois sur l'autre, alors que le défaut est dans la règle.
 
 Les autres rôles ne prennent pas de famille (D3 de la refonte), et ces mots-clés ne servent pour eux qu'à l'illustration. On n'y emploie que des dessins existants, l'ensemble étant fixé par les tests :
 
@@ -87,13 +109,13 @@ Chaque ajout reçoit un cas dans `families.test.ts`, et le recensement de l'audi
 ### D4 — La mesure et les coupures se posent une fois, dans `tokens.css`
 
 ```css
-:root { --mesure: 65ch; }
+:root { --mesure: 55ch; }
 p, li, dd { text-wrap: pretty; }
 p { max-inline-size: var(--mesure); }
 h1, h2, h3 { text-wrap: balance; }
 ```
 
-Avec le dessin de Funnel Sans, `65ch` donne environ 70 caractères réels par ligne, sous le plafond de 75 de la spec. Comme la règle est globale, un paragraphe ajouté demain n'a rien à déclarer pour être lisible.
+`ch` est la chasse du zéro, plus large que la lettre moyenne de Funnel Sans : mesuré à l'application, `65ch` donnait 80 caractères réels, `58ch` encore 78 sur un paragraphe riche en lettres étroites, et `55ch` reste sous le plafond de 75 de la spec sur les trois écrans de texte. Comme la règle est globale, un paragraphe ajouté demain n'a rien à déclarer pour être lisible.
 
 `max-inline-size` sur `p` ne gêne aucun paragraphe court : la mention du rang, le corps d'un bandeau et le pied sont plus étroits que la mesure. Sur bureau, le bandeau garde sa largeur de colonne, et seul son texte s'arrête à la mesure. La règle se pose avant les styles des composants, si bien qu'un composant qui aurait une bonne raison de s'en écarter peut le faire.
 

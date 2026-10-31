@@ -9,7 +9,7 @@ Viennent ensuite des **finitions typographiques** :
 - sur bureau, les paragraphes de l'À propos, des réglages et de la grève courent sur une centaine de caractères ;
 - dix-sept paragraphes finissent sur un mot seul ;
 - le titre des écrans secondaires est centré, alors que toute l'interface s'aligne à gauche sur un axe de panneau ;
-- trois valeurs d'approche négative sont écrites en dur, hors des jetons.
+- quatre valeurs d'approche négative sont écrites en dur, hors des jetons.
 
 Enfin, **le lien vers les mentions** a été placé au bas des écrans de menu par la refonte (D11), à défaut d'autre place. Il y ajoute une ligne de plus sur le seul écran consulté chaque jour, coincée au-dessus de la barre des onglets. Or les mentions se consultent une fois, pas chaque matin. L'écran des réglages leur consacre déjà une section, « Application ».
 
@@ -20,12 +20,13 @@ Enfin, **le lien vers les mentions** a été placé au bas des écrans de menu p
   - Sur l'écran de la semaine, sa tuile reprend ce traitement avec un filet plein. Le filet tireté reste réservé aux jours sans service.
   - L'assiette vide grise est remplacée par une **cloche de service**, un dessin assumé qui dit « le plat du jour » sans prétendre en connaître la nature.
   - Les jetons `--fam-inconnu` et `--fam-inconnu-pale` disparaissent. **BREAKING (spec)** : « la couleur de repli neutre » n'existe plus, et l'état neutre se marque par l'absence de couleur.
+- **La famille ne s'écrit plus fausse.** Le recensement par semaine montre quatre plats principaux affichés dans une famille qui n'est pas la leur, parce que le mot-clé le plus long l'emporte : « Sauté de porc à l'ananas » est écrit Végétarien, « Lasagnes saumon épinards » Végétarien, « Salade de pâtes à la dinde » Végétarien, et « Cordon bleu végétal » Volaille. La famille se départage désormais par rang : un qualificatif végétal, puis une protéine animale, puis le reste. L'illustration garde la règle du plus long.
 - **La table des familles s'enrichit, sans approximation.**
-  - « Moussaka » est de la viande par définition, et une moussaka végétarienne le dit, d'où le mot-clé « végétarienne » qui l'emporte par sa longueur.
-  - Les plats dont la famille varie d'une cuisine à l'autre restent inclassables : l'escalope viennoise (veau ou dinde), l'émincé au curry, la croustade limousine.
+  - « végétal » et « végétarienne » entrent comme qualificatifs végétaux.
+  - Les plats dont la famille varie d'une cuisine à l'autre restent inclassables : l'escalope viennoise (veau ou dinde), l'émincé au curry, la croustade limousine et la moussaka, qui peut être végétarienne sans le dire.
   - Des libellés d'autres rôles reçoivent une illustration qui existe déjà dans la bibliothèque : potatoes, mâche, Babybel, tome, tiramisu, cheesecake, far, donut, houmous, saucisson, poêlée, maïs.
 - **Le texte courant se compose pour être lu.**
-  - Les paragraphes sont bornés à une mesure de lecture d'environ 65 caractères.
+  - Les paragraphes sont bornés à une mesure de lecture d'environ 70 caractères.
   - Ils évitent le mot seul en dernière ligne (`text-wrap: pretty`), et les titres s'équilibrent (`text-wrap: balance`). Les deux règles sont posées une fois dans `tokens.css`.
 - **Le titre des écrans secondaires s'aligne à gauche**, dans la coupe d'affichage, comme le titre des écrans de menu. Les approches négatives passent par des jetons, et la vérification des jetons couvre désormais `letter-spacing`.
 - **Les mentions quittent les écrans de menu.** On les atteint par les réglages, dont la section « Application » les porte déjà. La provenance des données, c'est-à-dire la date de mise à jour et le lien vers le PDF officiel, reste au bas de chaque écran de menu : elle dit d'où vient ce qu'on lit, et sa place est là. Le lien vers le PDF passe au cran de texte `--texte-sm`. **BREAKING (spec)** : cela annule la partie de D11 de la refonte qui posait les mentions dans le flux des écrans de menu.
@@ -38,7 +39,7 @@ _Aucune._
 
 ### Modified Capabilities
 
-- `dish-illustration` : **Déduction de la famille du plat** remplace « la couleur de repli neutre » par une présentation sans couleur de famille.
+- `dish-illustration` : **Déduction de la famille du plat** remplace « la couleur de repli neutre » par une présentation sans couleur de famille, et départage la famille par la protéine plutôt que par le mot-clé le plus long.
 - `menu-browsing` :
   - **Écran Semaine** : la tuile d'un plat inclassable ne porte aucune couleur de famille ;
   - **Le plat principal sur l'aplat de sa famille** : un plat inclassable se pose sur une carte cerclée et non sur un aplat ;
