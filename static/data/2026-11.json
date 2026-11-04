@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "month": "2026-11",
   "source": {
-    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/10/11-MENUS-WEB-NOVEMBRE-2026.pdf",
-    "pdfSha256": "b83a5a0b64e6d5ad3fd181781b44b575e9eac020c20893163076c5eca79a4909",
-    "updatedLabel": "Menus mis à jour le 23 octobre 2026",
-    "updatedAt": "2026-10-23",
-    "fetchedAt": "2026-10-28T18:26:22Z",
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/11/11-MENUS-WEB-NOVEMBRE-2026.pdf",
+    "pdfSha256": "0cbd0e121eaa984fde81aec8c608cee409435347a2adbc69bc82a669969441b3",
+    "updatedLabel": "Menus mis à jour le 3 novembre 2026",
+    "updatedAt": "2026-11-03",
+    "fetchedAt": "2026-11-04T18:23:53Z",
     "producerVersion": "extract-menu-pdf/1"
   },
   "allergenLegend": {
@@ -109,12 +109,11 @@
         { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
         {
           "slot": "entree",
-          "label": "Rillettes de la mer",
-          "allergens": [3, 4, 7, 9, 10],
-          "flags": []
+          "label": "Macédoine de légumes",
+          "allergens": [3, 7, 10],
+          "flags": ["bio"]
         },
-        { "slot": "plat", "label": "Rôti de dinde au jus", "allergens": [9], "flags": [] },
-        { "slot": "accompagnement", "label": "Quinoa", "allergens": [], "flags": ["bio"] },
+        { "slot": "plat", "label": "Ravioli Bolognaise", "allergens": [1, 3, 7, 9], "flags": [] },
         { "slot": "laitage", "label": "Yaourt naure", "allergens": [7], "flags": ["bio"] },
         { "slot": "dessert", "label": "Fruit de saison", "allergens": [], "flags": ["bio"] },
         {
@@ -170,7 +169,7 @@
         },
         { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
         { "slot": "dessert", "label": "Fruit", "allergens": [], "flags": ["bio"] },
-        { "slot": "gouter", "label": "Pain + Crème vanille", "allergens": [1, 7], "flags": [] }
+        { "slot": "gouter", "label": "Pain + Yaourt", "allergens": [1, 7], "flags": [] }
       ]
     },
     {
@@ -210,12 +209,12 @@
         { "slot": "pain", "label": "Pain", "allergens": [1], "flags": ["label-rouge"] },
         {
           "slot": "entree",
-          "label": "Concombre à la crème",
-          "allergens": [7, 10, 12],
-          "flags": ["bio"]
+          "label": "Rillette de la mer",
+          "allergens": [3, 4, 7, 9, 10],
+          "flags": []
         },
-        { "slot": "plat", "label": "Tajine de mouton", "allergens": [8, 12], "flags": [] },
-        { "slot": "accompagnement", "label": "Semoule", "allergens": [1], "flags": ["bio"] },
+        { "slot": "plat", "label": "Rôti de dinde au jus", "allergens": [9], "flags": [] },
+        { "slot": "accompagnement", "label": "Quinoa", "allergens": [], "flags": ["bio"] },
         { "slot": "laitage", "label": "Fromage", "allergens": [7], "flags": ["bio"] },
         { "slot": "dessert", "label": "Compote pommes poires", "allergens": [], "flags": ["bio"] },
         { "slot": "gouter", "label": "Barre de céréales", "allergens": [1, 3, 7, 8], "flags": [] }
@@ -246,7 +245,7 @@
           "allergens": [1, 3, 7, 8],
           "flags": []
         },
-        { "slot": "gouter", "label": "Pain Bio + Confiture", "allergens": [1], "flags": [] }
+        { "slot": "gouter", "label": "Pain Bio + Crème vanille", "allergens": [1, 7], "flags": [] }
       ]
     },
     {
