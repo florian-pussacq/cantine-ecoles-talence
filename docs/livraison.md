@@ -68,6 +68,19 @@ dans les deux interfaces.
 
 Symptôme d'un hook absent : le workflow `publier` échoue en le nommant.
 
+## Réglage 3 — GitHub Pages
+
+Le workflow `publier` déploie aussi sur GitHub Pages (job `pages`), en parallèle
+de Netlify. Réglage à faire une fois, dans _Settings → Pages → Build and
+deployment → Source_ : **GitHub Actions**. Le site est déplaçable (chemins
+relatifs) : aucun sous-chemin à configurer.
+
+Netlify et Pages dépendent tous deux de la barrière, pas l'un de l'autre : un
+hook absent ne retient pas Pages, et un échec de Pages ne retient pas Netlify.
+
+Symptôme d'un réglage manquant : le job `pages` échoue à l'étape de déploiement
+en mentionnant Pages.
+
 ## La veille des menus
 
 Le workflow `veille` (`.github/workflows/veille.yml`) compare chaque matin les

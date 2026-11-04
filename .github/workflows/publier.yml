@@ -7,6 +7,9 @@
 #
 # Il ne publie qu'une tête de `main` dont les jobs `verifier` et `e2e` ont réussi,
 # et dit pourquoi quand il refuse (`scripts/barriere-publication.js`, D2).
+# Deux cibles, une même barrière : Netlify (par build hook) et GitHub Pages. Elles
+# dépendent toutes deux du job `barriere`, et non l'une de l'autre : une panne de
+# l'une ne retient pas l'autre.
 # Le geste ne s'approuve pas dans un réglage du dépôt : la garantie se lit ici
 # (D1). Le détail, et les réglages hors du dépôt, sont dans `docs/livraison.md`.
 
@@ -22,11 +25,32 @@ concurrency:
 
 permissions:
   contents: read
-  # Pour lire les exécutions de `verifier` et leurs jobs.
-  actions: read
 
 jobs:
-  publier:
+  # Refuse, en disant pourquoi, une tête de `main` non vérifiée, une vérification
+  # en cours, ou un lancement depuis une autre branche (D2, D3).
+  barriere:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Pour lire les exécutions de `verifier` et leurs jobs.
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+      # Sans `npm ci` : le script n'a d'autre dépendance que Node.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: La tête de main est-elle vérifiée ?
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/barriere-publication.js
+
+  # Le hook construit la tête de `main` au moment de l'appel. Une poussée glissée
+  # depuis la lecture passerait sans vérification : c'est la fenêtre acceptée par
+  # `barriere-de-deploiement`, D2 (D4).
+  netlify:
+    needs: barriere
     runs-on: ubuntu-latest
     steps:
       # Sans le secret, rien ne peut partir : l'échec doit le nommer (D5).
@@ -38,23 +62,36 @@ jobs:
             echo "::error::Secret NETLIFY_BUILD_HOOK absent : rien ne peut être publié."
             exit 1
           fi
-      - uses: actions/checkout@v7
-      # Sans `npm ci` : le script n'a d'autre dépendance que Node.
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-      # Refuse, en disant pourquoi, une tête de `main` non vérifiée, une
-      # vérification en cours, ou un lancement depuis une autre branche (D2, D3).
-      - name: La tête de main est-elle vérifiée ?
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node scripts/barriere-publication.js
-      # Le hook construit la tête de `main` au moment de l'appel. Une poussée
-      # glissée depuis la lecture passerait sans vérification : c'est la fenêtre
-      # acceptée par `barriere-de-deploiement`, D2 (D4).
       - name: Publier
         env:
           HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
         run: |
           curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
           echo "Publication demandée à Netlify."
+
+  # GitHub Pages : construit la tête de `main` à l'appel, puis la déploie. Le site
+  # est déplaçable (chemins relatifs, `paths.relative`) : rien à réécrire pour un
+  # sous-chemin. Nécessite Pages réglé sur « GitHub Actions » dans le dépôt.
+  pages:
+    needs: barriere
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+      - id: deploiement
+        uses: actions/deploy-pages@v4
