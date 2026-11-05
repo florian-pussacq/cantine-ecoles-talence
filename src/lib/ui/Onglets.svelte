@@ -36,7 +36,7 @@
 
 <nav class="onglets" aria-label="Écrans">
   {#each tabs as tab (tab.path)}
-    {@const current = page.url.pathname.replace(/\/$/, '') === tab.path.replace(/\/$/, '')}
+    {@const current = (page.route.id ?? '') === tab.path}
     <a href={resolve(tab.path)} aria-current={current ? 'page' : undefined}>{tab.label}</a>
   {/each}
 </nav>

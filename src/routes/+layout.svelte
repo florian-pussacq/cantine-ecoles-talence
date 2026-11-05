@@ -59,7 +59,13 @@
     '/a-propos': { titre: "D'où viennent ces menus" }
   };
 
-  const chemin = $derived(page.url.pathname.replace(/(.)\/$/, '$1'));
+  /*
+    L'écran se lit à sa route, et non à son chemin d'URL. Le chemin porte le
+    sous-dossier où le site est servi (GitHub Pages : `/cantine-ecoles-talence/`),
+    et une comparaison à `/` ferait disparaître les onglets et la roue sur tout
+    déploiement déplacé. La route, elle, ne dépend pas de l'hébergement.
+  */
+  const chemin = $derived(page.route.id ?? '');
   const entete = $derived(TITRES[chemin]);
 
   /*
