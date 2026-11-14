@@ -1,6 +1,7 @@
 # Vérification de chaque poussée sur `main`, et des pull requests s'il y en a.
 #
-# Elle ne publie pas. Netlify ne publie plus à la poussée : `netlify.toml` annule
+# Elle publie sur GitHub Pages à chaque poussée sur `main` dont `verifier` et
+# `e2e` sont verts (job `pages`). Netlify, lui, ne publie pas. Netlify ne publie plus à la poussée : `netlify.toml` annule
 # ces constructions. La publication est un geste humain, le workflow `publier`,
 # qui n'appelle le build hook que si `verifier` et `e2e` ont réussi sur la tête
 # de `main` (deploiement-manuel ; `docs/livraison.md`). Netlify rejoue
@@ -84,3 +85,32 @@ jobs:
       # La version de PyMuPDF est celle que déclare le dépôt, épinglée (D1).
       - run: pip install -r scripts/requirements.txt
       - run: python scripts/test_extraction.py
+
+  # GitHub Pages suit `main` : chaque poussée vérifiée est mise en ligne, sans
+  # geste humain. Le site est déplaçable (chemins relatifs, `paths.relative`) :
+  # rien à réécrire pour le sous-chemin. Nécessite Pages réglé sur « GitHub
+  # Actions » dans le dépôt. `extraction` ne le retient pas, comme pour Netlify.
+  pages:
+    if: github.event_name == 'push'
+    needs: [verifier, e2e]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+      - id: deploiement
+        uses: actions/deploy-pages@v4

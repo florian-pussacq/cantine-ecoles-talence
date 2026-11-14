@@ -12,7 +12,7 @@ commits sur main, en local ──► vérification locale ──► poussée gro
                                     Netlify : construction annulée (ignore)
                                                             │
                                     GitHub Actions : verifier + e2e
-                                                            │ et rien de plus
+                                                            │ verts ──► GitHub Pages publie
                                                             ┊
                          geste humain : Actions → publier → Run workflow
                                                             │ verifier et e2e verts
@@ -22,9 +22,10 @@ commits sur main, en local ──► vérification locale ──► poussée gro
 
 - **On travaille sur `main`** (développement sur le tronc). Les commits restent
   en local et partent ensemble.
-- **Une poussée ne publie pas.** `netlify.toml` annule toute construction de
-  production née d'une poussée ; Netlify n'annule jamais une construction
-  déclenchée par un build hook. La CI vérifie, et s'arrête là.
+- **Une poussée ne publie pas sur Netlify.** `netlify.toml` annule toute
+  construction de production née d'une poussée ; Netlify n'annule jamais une
+  construction déclenchée par un build hook. En revanche, une poussée dont
+  `verifier` et `e2e` sont verts met GitHub Pages à jour (job `pages`).
 - **Publier est un geste humain** (`deploiement-manuel`). Sur GitHub, ou dans
   son application mobile : _Actions → publier → Run workflow_, depuis `main`.
 - **La CI reste la barrière.** Le workflow `publier` n'appelle le hook que si les
@@ -70,13 +71,14 @@ Symptôme d'un hook absent : le workflow `publier` échoue en le nommant.
 
 ## Réglage 3 — GitHub Pages
 
-Le workflow `publier` déploie aussi sur GitHub Pages (job `pages`), en parallèle
-de Netlify. Réglage à faire une fois, dans _Settings → Pages → Build and
+GitHub Pages se met à jour à chaque poussée sur `main` dont `verifier` et `e2e`
+sont verts (job `pages` de `verifier.yml`), sans geste humain. Netlify, lui, reste
+manuel (`publier`). Réglage à faire une fois, dans _Settings → Pages → Build and
 deployment → Source_ : **GitHub Actions**. Le site est déplaçable (chemins
 relatifs) : aucun sous-chemin à configurer.
 
-Netlify et Pages dépendent tous deux de la barrière, pas l'un de l'autre : un
-hook absent ne retient pas Pages, et un échec de Pages ne retient pas Netlify.
+Pages et Netlify sont indépendants : un hook absent ne retient pas Pages, et un
+échec de Pages ne retient pas `publier`.
 
 Symptôme d'un réglage manquant : le job `pages` échoue à l'étape de déploiement
 en mentionnant Pages.

@@ -7,9 +7,8 @@
 #
 # Il ne publie qu'une tête de `main` dont les jobs `verifier` et `e2e` ont réussi,
 # et dit pourquoi quand il refuse (`scripts/barriere-publication.js`, D2).
-# Deux cibles, une même barrière : Netlify (par build hook) et GitHub Pages. Elles
-# dépendent toutes deux du job `barriere`, et non l'une de l'autre : une panne de
-# l'une ne retient pas l'autre.
+# Netlify seul passe par ce geste : GitHub Pages, lui, se met à jour à chaque
+# poussée vérifiée (job `pages` de `verifier.yml`).
 # Le geste ne s'approuve pas dans un réglage du dépôt : la garantie se lit ici
 # (D1). Le détail, et les réglages hors du dépôt, sont dans `docs/livraison.md`.
 
@@ -68,30 +67,3 @@ jobs:
         run: |
           curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
           echo "Publication demandée à Netlify."
-
-  # GitHub Pages : construit la tête de `main` à l'appel, puis la déploie. Le site
-  # est déplaçable (chemins relatifs, `paths.relative`) : rien à réécrire pour un
-  # sous-chemin. Nécessite Pages réglé sur « GitHub Actions » dans le dépôt.
-  pages:
-    needs: barriere
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploiement.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: build
-      - id: deploiement
-        uses: actions/deploy-pages@v4
