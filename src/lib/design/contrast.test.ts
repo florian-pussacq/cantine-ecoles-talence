@@ -174,6 +174,17 @@ const PAIRES: { texte: string; fond: string; seuil: number; quoi: string }[] = [
     seuil: 4.5,
     quoi: `texte sur l'aplat ${famille}`
   })),
+  /*
+    Les pictogrammes de qualité sur leur pastille (accompagnement-dans-le-plat,
+    D5) : des composants graphiques, donc 3:1 (WCAG 1.4.11). La pastille reste
+    claire en apparence sombre, et la mesure l'y vérifie aussi.
+  */
+  ...['bio', 'label-rouge'].map((marque) => ({
+    texte: `marque-${marque}`,
+    fond: 'marque-fond',
+    seuil: 3,
+    quoi: `pictogramme ${marque} sur sa pastille`
+  })),
   ...FAMILLES.map((famille) => ({
     texte: 'encre',
     fond: `fam-${famille}-pale`,

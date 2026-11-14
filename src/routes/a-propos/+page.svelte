@@ -1,7 +1,13 @@
 <script lang="ts">
   import LienExterne from '#lib/ui/LienExterne.svelte';
   import Bandeau from '#lib/ui/Bandeau.svelte';
-  import { formatDay, PAGE_DES_MENUS } from '#lib/menu/labels.js';
+  import MarqueQualite from '#lib/menu/MarqueQualite.svelte';
+  import {
+    formatDay,
+    PAGE_DES_MENUS,
+    QUALITY_MARK_MEANINGS,
+    QUALITY_MARKS
+  } from '#lib/menu/labels.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -79,6 +85,28 @@
   </dl>
 </section>
 
+<!--
+  La légende des pictogrammes (accompagnement-dans-le-plat, D6). Elle se rend
+  depuis `QUALITY_MARKS` : elle ne peut pas oublier une marque. Le lien « Que
+  signifient ces pictogrammes ? » sur l'écran du jour a été écarté : ce qui se
+  consulte une fois n'a pas sa place là où l'on regarde chaque matin.
+-->
+<section class="panel">
+  <h2>Les labels de qualité</h2>
+  <p>
+    Sur l'écran du jour, un pictogramme suit le nom du plat ou de l'accompagnement qui porte un
+    label. Ce sont des dessins propres à cette application, et non les logos officiels.
+  </p>
+  <ul class="marques">
+    {#each QUALITY_MARKS as marque (marque)}
+      <li>
+        <strong><MarqueQualite {marque} taille={1.6} filet mot /></strong>
+        <span>{QUALITY_MARK_MEANINGS[marque]}</span>
+      </li>
+    {/each}
+  </ul>
+</section>
+
 <section class="panel">
   <h2>Ce que cette application n'est pas</h2>
   <p>
@@ -142,6 +170,26 @@
     margin: 0;
     font-size: var(--texte-sm);
     line-height: 1.55;
+  }
+
+  .marques {
+    margin: var(--espace-1) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .marques li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espace-1);
+    padding-block: var(--espace-2);
+    font-size: var(--texte-sm);
+  }
+
+  .marques li + li {
+    border-top: 1px solid var(--bord);
   }
 
   dl {

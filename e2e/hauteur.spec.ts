@@ -1,4 +1,4 @@
-import { auRepos, expect, test, type Page } from './test';
+import { auRepos, expect, hydratee, test, type Page } from './test';
 
 /**
  * La garantie affaiblie, et pourquoi elle l'est (design.md, D53).
@@ -42,7 +42,12 @@ async function bas(page: Page, selecteur: string): Promise<number | null> {
   return boite === null ? null : boite.y + boite.height;
 }
 
-const ROLES = ['Entrée', 'Plat', 'Accompagnement', 'Laitage', 'Dessert', 'Pain'] as const;
+/*
+  Les rôles écrits dans une colonne. Le plat principal n'écrit pas le sien — il se
+  lit à sa place et à sa couleur — et l'accompagnement n'a pas de ligne : il est
+  dans l'intitulé du plat (accompagnement-dans-le-plat, D2).
+*/
+const ROLES = ['Entrée', 'Laitage', 'Dessert', 'Pain'] as const;
 
 test('le plat principal est entièrement visible sans défiler', async ({ page }) => {
   await page.goto('/');
@@ -70,6 +75,44 @@ test('le plat principal est entièrement visible sans défiler', async ({ page }
     principal as number,
     'le plat principal doit être entièrement lisible sans le moindre geste'
   ).toBeLessThanOrEqual(limite);
+});
+
+/**
+ * La paire la plus longue du corpus, sur la plus petite fenêtre
+ * (accompagnement-dans-le-plat, D1, risques).
+ *
+ * « Sauté de canard façon wakandaise & riz tchiké », le 19 novembre 2026, prend
+ * plusieurs lignes à 320 pixels. L'exigence « le plat principal est visible
+ * d'emblée » ne doit pas tomber sur ce cas : l'aplat entier, son accompagnement et
+ * son illustration, sans défiler. Si ce test échoue, on descend l'accompagnement
+ * d'un cran (`--texte-xl`) plutôt que de tronquer.
+ *
+ * La largeur est la plus petite prise en charge, celle où l'intitulé passe le
+ * plus à la ligne. La hauteur reste celle du profil mobile : ce jour porte un
+ * bandeau de présentation de près de 460 pixels, étranger à l'accompagnement, et
+ * aucune fenêtre plus basse ne laisserait voir un aplat qui le suit.
+ */
+test('la plus longue paire plat et accompagnement tient sur la plus petite fenêtre', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 320, height: 915 });
+  await page.clock.install({ time: new Date('2026-11-19T10:00:00+01:00') });
+  await page.goto('/');
+  await hydratee(page);
+
+  const principal = page.locator('.courant .tray .plat.principal');
+  await expect(principal.locator('.nom')).toContainText('Sauté de canard façon wakandaise');
+  await expect(principal.locator('.nom')).toContainText('riz tchiké');
+
+  const limite = await flottaison(page);
+  const fin = await bas(page, '.courant .tray .plat.principal');
+  expect(fin, 'plat principal non rendu').not.toBeNull();
+  expect(fin as number, 'l’aplat entier doit être lisible sans défiler').toBeLessThanOrEqual(
+    limite
+  );
+  // Le dessin est dans l'aplat, et aussi visible que lui.
+  const dessin = await bas(page, '.courant .tray .plat.principal .vignette');
+  expect(dessin as number).toBeLessThanOrEqual(limite);
 });
 
 test('le rang qui porte la date est visible sans défiler', async ({ page }) => {

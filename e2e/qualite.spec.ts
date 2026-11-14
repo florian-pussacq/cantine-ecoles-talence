@@ -161,3 +161,36 @@ test('le menu du jour est peint rapidement', async ({ page }) => {
   // preuve que l'objectif est tenu. Celle-ci demande un appareil réel (12.4).
   expect(lcp).toBeLessThan(2500);
 });
+
+/**
+ * Les pictogrammes de qualité portent une information : ils se nomment, et
+ * l'écran À propos les explique (accompagnement-dans-le-plat, D4, D6).
+ */
+test('un pictogramme de qualité a un nom accessible, posé après le nom qu’il qualifie', async ({
+  page
+}) => {
+  // Le 6 novembre 2026 : la purée de panais est bio, le filet de colin ne l'est pas.
+  await page.clock.install({ time: new Date('2026-11-06T10:00:00+01:00') });
+  await page.goto('/');
+  await hydratee(page);
+
+  const principal = page.locator('.courant .tray .plat.principal .nom');
+  await expect(principal.getByRole('img', { name: 'Bio' })).toHaveCount(1);
+  await expect(principal.locator('.accessoire').getByRole('img', { name: 'Bio' })).toHaveCount(1);
+  // L'entrée est bio aussi : sa ligne porte le pictogramme, et non le mot sous son nom.
+  const entree = page.locator('.courant .tray .plat', { hasText: 'Entrée' });
+  await expect(entree.getByRole('img', { name: 'Bio' })).toHaveCount(1);
+  await expect(entree.locator('.meta')).toHaveCount(0);
+});
+
+test('l’écran À propos légende chaque pictogramme de qualité', async ({ page }) => {
+  await page.goto('/a-propos');
+
+  const section = page.locator('section', {
+    has: page.getByRole('heading', { name: 'Les labels de qualité' })
+  });
+  await expect(section.locator('li')).toHaveCount(2);
+  await expect(section.locator('li').nth(0)).toContainText('Bio');
+  await expect(section.locator('li').nth(1)).toContainText('Label Rouge');
+  await expect(section.locator('li svg')).toHaveCount(2);
+});

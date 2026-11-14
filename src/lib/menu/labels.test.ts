@@ -18,7 +18,12 @@ import {
   allergensUndeclared,
   noAllergenLabel,
   undeclaredNotice,
-  familyLabel
+  familyLabel,
+  accrocher,
+  estMarque,
+  intitulePlat,
+  LUNCH_SLOTS,
+  QUALITY_MARKS
 } from './labels.js';
 import type { Course } from '../data/schema.js';
 
@@ -179,7 +184,93 @@ describe('browsedEyebrow', () => {
 describe('slotAbsence', () => {
   it('accorde la formulation au rôle', () => {
     expect(slotAbsence('entree')).toBe("Pas d'entrée ce jour");
-    expect(slotAbsence('accompagnement')).toBe("Pas d'accompagnement ce jour");
+  });
+});
+
+describe('LUNCH_SLOTS (accompagnement-dans-le-plat, D2)', () => {
+  it('place l’accompagnement juste après le plat', () => {
+    expect([...LUNCH_SLOTS]).toEqual([
+      'plat',
+      'accompagnement',
+      'entree',
+      'laitage',
+      'dessert',
+      'pain'
+    ]);
+  });
+});
+
+describe('intitulePlat (accompagnement-dans-le-plat, D1)', () => {
+  const plat = (label: string, flags: Course['flags'] = []): Course => ({
+    slot: 'plat',
+    label,
+    allergens: [],
+    flags
+  });
+  const accompagnement = (label: string, flags: Course['flags'] = []): Course => ({
+    slot: 'accompagnement',
+    label,
+    allergens: [],
+    flags
+  });
+
+  it('réunit le plat et son accompagnement en deux parties, la seconde accessoire', () => {
+    const parties = intitulePlat(
+      plat('Filet de colin'),
+      accompagnement('Purée de panais à la vanille')
+    );
+    expect(parties).toEqual([
+      { texte: 'Filet de colin', flags: [], accessoire: false },
+      { texte: 'purée de panais à la vanille', flags: [], accessoire: true }
+    ]);
+  });
+
+  it('ne rend qu’une partie pour un plat complet', () => {
+    expect(intitulePlat(plat('Ravioli bolognaise'), null)).toEqual([
+      { texte: 'Ravioli bolognaise', flags: [], accessoire: false }
+    ]);
+  });
+
+  it('garde la casse d’un sigle en tête d’accompagnement', () => {
+    expect(intitulePlat(plat('Rôti'), accompagnement('IGP de pommes de terre'))[1]?.texte).toBe(
+      'IGP de pommes de terre'
+    );
+  });
+
+  it('ne descend que l’initiale, et laisse la suite telle quelle', () => {
+    expect(intitulePlat(plat('Rôti'), accompagnement('Pommes Pont-Neuf'))[1]?.texte).toBe(
+      'pommes Pont-Neuf'
+    );
+  });
+
+  it('porte les mentions de chaque partie sur sa propre partie', () => {
+    const parties = intitulePlat(
+      plat('Rôti de bœuf', ['label-rouge']),
+      accompagnement('Poêlée de légumes', ['bio'])
+    );
+    expect(parties[0]?.flags).toEqual(['label-rouge']);
+    expect(parties[1]?.flags).toEqual(['bio']);
+  });
+});
+
+describe('accrocher (accompagnement-dans-le-plat, D4)', () => {
+  it('sépare le dernier mot, qui portera ses pictogrammes', () => {
+    expect(accrocher('Poêlée de légumes')).toEqual({ debut: 'Poêlée de', dernierMot: 'légumes' });
+  });
+
+  it('rend un début vide pour un mot seul', () => {
+    expect(accrocher('Pain')).toEqual({ debut: '', dernierMot: 'Pain' });
+  });
+});
+
+describe('estMarque (accompagnement-dans-le-plat, D4)', () => {
+  it('reconnaît bio et label rouge, et eux seuls', () => {
+    expect([...QUALITY_MARKS]).toEqual(['bio', 'label-rouge']);
+    expect(estMarque('bio')).toBe(true);
+    expect(estMarque('label-rouge')).toBe(true);
+    for (const autre of ['vbf', 'vpf', 'vf', 'pf', 'msc', 'igp', 'bbc', 'ue-subventionne']) {
+      expect(estMarque(autre)).toBe(false);
+    }
   });
 });
 

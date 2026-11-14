@@ -6,11 +6,15 @@
     courseName,
     familyLabel,
     flaggedAllergenNames,
-    qualityLabel,
+    intitulePlat,
+    mentionsEcrites,
     slotAbsence,
     slotLabel
   } from './labels.js';
   import { allergenFilter } from '../filter/allergens.svelte.js';
+  import Intitule from './Intitule.svelte';
+  import NomQualifie from './NomQualifie.svelte';
+  import QualiteNommee from './QualiteNommee.svelte';
   import PastilleAllergene from './PastilleAllergene.svelte';
 
   /**
@@ -32,10 +36,12 @@
    * Trois formes, et un seul composant, pour que les trois ne divergent pas sur
    * ce qu'elles disent :
    *
-   * - **le plat principal** se pose sur l'aplat de sa famille : son nom en
-   *   coupe d'affichage, sous lui le rôle et la famille, et son dessin sur un
-   *   disque à la teinte pâle — jamais sur l'aplat, où un poisson bleu sur fond
-   *   bleu disparaîtrait ;
+   * - **le plat principal** se pose sur l'aplat de sa famille : son intitulé en
+   *   coupe d'affichage — le plat, puis son accompagnement, subordonné par sa
+   *   graisse (accompagnement-dans-le-plat, D1) —, sous lui la seule famille, et
+   *   son dessin sur un disque à la teinte pâle — jamais sur l'aplat, où un
+   *   poisson bleu sur fond bleu disparaîtrait. « Plat » ne s'y écrit pas : il se
+   *   lit à la place et à la couleur de l'aplat ;
    * - **une ligne** pour les autres rôles : le rôle dans une colonne qui précède
    *   le nom, jamais au-dessus de lui ; ses mentions sous le nom ; sa vignette à
    *   droite. Aucune couleur de rôle ni de famille ;
@@ -47,7 +53,8 @@
     course,
     legend,
     principal = false,
-    compacte = false
+    compacte = false,
+    accompagnement = null
   }: {
     slot: Course['slot'];
     course: Course | null;
@@ -59,14 +66,28 @@
     legend: AllergenLegend;
     principal?: boolean;
     compacte?: boolean;
+    /* Il n'a de sens que pour le plat principal, qui le porte : l'accompagnement
+       n'a pas de ligne propre (accompagnement-dans-le-plat, D2). */
+    accompagnement?: Course | null;
   } = $props();
 
-  /** Les allergènes cochés que porte ce plat : leurs codes et leurs noms courts. */
+  /* L'accompagnement ne se lit que sur un plat principal servi. */
+  const accessoire = $derived(principal && course !== null ? accompagnement : null);
+
+  /**
+   * Les allergènes cochés que porte ce plat — et son accompagnement, qui ne fait
+   * qu'un avec lui à l'écran : leurs codes et leurs noms courts. L'écran dit
+   * qu'un des deux est concerné, la fiche dit lequel (D1, risques).
+   */
   const signale = $derived.by(() => {
     if (course === null) return null;
-    const codes = allergenFilter.matching(course);
+    const ensemble: Course = {
+      ...course,
+      allergens: [...new Set([...course.allergens, ...(accessoire?.allergens ?? [])])]
+    };
+    const codes = allergenFilter.matching(ensemble);
     if (codes.length === 0) return null;
-    return { codes, names: flaggedAllergenNames(course, legend, codes) };
+    return { codes, names: flaggedAllergenNames(ensemble, legend, codes) };
   });
 
   const nom = $derived(course === null ? null : courseName(course));
@@ -93,10 +114,19 @@
   */
   const inconnue = $derived(aplat && famille === 'inconnu');
 
-  /* Une qualité promue au rang de nom ne se redit pas parmi les mentions. */
+  /*
+    Les mentions qui ne sont pas des marques s'écrivent en texte ; Bio et Label
+    Rouge se lisent en pictogramme, à la suite du nom qu'elles qualifient. Une
+    qualité promue au rang de nom ne se redit pas.
+  */
   const mentions = $derived(
-    course === null || nom?.kind === 'quality' ? [] : course.flags.map(qualityLabel)
+    course === null || nom?.kind === 'quality'
+      ? []
+      : [...new Set(mentionsEcrites([...course.flags, ...(accessoire?.flags ?? [])]))]
   );
+
+  /* L'intitulé du plat principal : des parties, chacune avec ses pictogrammes. */
+  const parties = $derived(course === null ? [] : intitulePlat(course, accessoire));
 </script>
 
 <div
@@ -111,16 +141,25 @@
 >
   {#if aplat && course && nom}
     <span class="corps">
-      <span class="nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
-      <span class="meta">
-        <span class="role">{slotLabel(slot)}</span>
-        {#if famille && familyLabel(famille)}
-          · <span class="famille-nom">{familyLabel(famille)}</span>
+      <span class="nom" class:unknown={nom.kind === 'undisclosed'}>
+        {#if nom.kind === 'label'}
+          <Intitule {parties} taille={0.7} />
+        {:else if nom.kind === 'quality'}
+          <QualiteNommee flags={course.flags} taille={0.7} />
+        {:else}
+          {nom.text}
         {/if}
-        {#each mentions as mention (mention)}
-          · <em>{mention}</em>
-        {/each}
       </span>
+      {#if (famille && familyLabel(famille)) || mentions.length > 0}
+        <span class="meta">
+          {#if famille && familyLabel(famille)}
+            <span class="famille-nom">{familyLabel(famille)}</span>
+          {/if}
+          {#each mentions as mention (mention)}
+            {#if famille && familyLabel(famille)}<span>&nbsp;·&nbsp;</span>{/if}<em>{mention}</em>
+          {/each}
+        </span>
+      {/if}
       {#if signale}
         <PastilleAllergene {...signale} />
       {/if}
@@ -132,7 +171,15 @@
     <span class="role">{slotLabel(slot)}</span>
     <span class="corps">
       {#if course && nom}
-        <span class="nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
+        <span class="nom" class:unknown={nom.kind === 'undisclosed'}>
+          {#if nom.kind === 'label'}
+            <NomQualifie texte={course.label} flags={course.flags} taille={1.15} filet />
+          {:else if nom.kind === 'quality'}
+            <QualiteNommee flags={course.flags} taille={1.15} filet />
+          {:else}
+            {nom.text}
+          {/if}
+        </span>
         {#if mentions.length > 0}
           <span class="meta">
             {#each mentions as mention, i (mention)}{i > 0 ? ' · ' : ''}<em>{mention}</em>{/each}
@@ -146,7 +193,7 @@
           ligne du tout, et n'a donc pas de formulation (D29). Le test de `slot`
           n'est pas une précaution de typage : c'est cette règle, écrite.
         -->
-      {:else if slot !== 'gouter'}
+      {:else if slot !== 'gouter' && slot !== 'accompagnement'}
         <span class="absent">{slotAbsence(slot)}</span>
       {/if}
     </span>

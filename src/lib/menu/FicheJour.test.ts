@@ -89,11 +89,13 @@ describe('la feuille porte la journée, pas un plat', () => {
   it("suit l'ordre de l'écran, pour que les deux lectures se correspondent", () => {
     const { container } = sheetFor(jourComplet());
     const roles = [...container.querySelectorAll('.plat-role')].map((n) => n.textContent);
-    // Le plat principal en tête, comme sur l'écran (refonte-signaletique, D7).
+    // Le plat principal en tête, comme sur l'écran (refonte-signaletique, D7),
+    // et son accompagnement juste après lui, comme l'intitulé les réunit
+    // (accompagnement-dans-le-plat, D2).
     expect(roles).toEqual([
       'Plat',
-      'Entrée',
       'Accompagnement',
+      'Entrée',
       'Laitage',
       'Dessert',
       'Pain',
@@ -130,6 +132,18 @@ describe('contenu du détail', () => {
   it('affiche les labels de qualité quand un plat en porte', () => {
     sheetFor('2026-08-31');
     expect(screen.getAllByText(/Bio/).length).toBeGreaterThan(0);
+  });
+
+  it('écrit la mention en pictogramme suivi du mot', () => {
+    // Le 2 septembre sert des plats bio : la fiche est la légende en situation
+    // (accompagnement-dans-le-plat, D6).
+    const { container } = sheetFor('2026-08-31');
+    const mentions = container.querySelectorAll('.tags .mention');
+    expect(mentions.length).toBeGreaterThan(0);
+    for (const mention of mentions) {
+      expect(mention.querySelector('svg')).not.toBeNull();
+      expect(mention.textContent?.trim()).toMatch(/^(Bio|Label Rouge)$/);
+    }
   });
 
   it('rappelle que seul le document officiel fait foi', () => {

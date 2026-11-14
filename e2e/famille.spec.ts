@@ -90,3 +90,19 @@ test('un plat inclassable ne porte aucune couleur de famille', async ({ page }) 
   expect(await tuile.evaluate((el) => getComputedStyle(el).borderTopStyle)).toBe('solid');
   await expect(mardi).not.toContainText(/Viande|Volaille|Poisson|Végétarien/);
 });
+
+/**
+ * La ligne sous l'intitulé ne dit que la famille (accompagnement-dans-le-plat).
+ *
+ * « Plat » se lit à la place et à la couleur de l'aplat ; Bio se lit en pictogramme,
+ * à la suite du nom qu'il qualifie. Le 25 novembre 2026 sert un rôti de bœuf bio.
+ */
+test('la ligne sous l’intitulé ne porte que la famille', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-25T10:00:00+01:00') });
+  await page.goto('/');
+  await hydratee(page);
+
+  const principale = page.locator('.courant .plat.principal');
+  await expect(principale.locator('.meta')).toHaveText('Viande');
+  await expect(principale.locator('.role')).toHaveCount(0);
+});

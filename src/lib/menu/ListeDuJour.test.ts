@@ -23,17 +23,21 @@ describe('la liste ne se referme pas', () => {
     expect(screen.getByText('Pas de laitage ce jour')).toBeInTheDocument();
   });
 
-  it('conserve les six rôles du déjeuner quel que soit le jour', () => {
+  it('conserve les rôles du déjeuner quel que soit le jour, sans ligne d’accompagnement', () => {
     const { container } = trayFor(edges, '2099-01-02');
     // Les rôles sont interrogés par leur classe : « Pain » est à la fois un rôle
-    // et un libellé de plat, une recherche par texte confondrait les deux.
+    // et un libellé de plat, une recherche par texte confondrait les deux. Le
+    // plat principal ne porte pas le sien (il se lit à sa place et à sa couleur),
+    // et l'accompagnement n'a pas de ligne : il est dans l'intitulé du plat.
     const roles = [...container.querySelectorAll('.role')].map((node) => node.textContent);
-    expect(roles).toEqual(['Plat', 'Entrée', 'Accompagnement', 'Laitage', 'Dessert', 'Pain']);
+    expect(roles).toEqual(['Entrée', 'Laitage', 'Dessert', 'Pain']);
+    expect(container.querySelector('.plat.principal')).not.toBeNull();
   });
 
   it('donne un élément à chaque rôle, servi ou non', () => {
     const { container } = trayFor(edges, '2099-01-02');
-    expect(container.querySelectorAll('.plat')).toHaveLength(6);
+    // Le plat principal, avec son accompagnement, puis une ligne par autre rôle.
+    expect(container.querySelectorAll('.plat')).toHaveLength(5);
     // Un creux se distingue d'un contenu autrement que par son absence.
     expect(container.querySelectorAll('.plat.vide').length).toBeGreaterThan(0);
   });
@@ -44,10 +48,39 @@ describe('la liste ne se referme pas', () => {
     // il est sur la table du début à la fin, et trente-trois jours sur
     // trente-cinq il s'appelle « Pain » (design.md, D39).
     const { container } = trayFor(real, '2026-09-03');
+    const plats = [...container.querySelectorAll('.plat')];
+    expect(plats[0]).toHaveClass('principal');
     const roles = [...container.querySelectorAll('.role')].map((node) => node.textContent);
-    expect(roles[0]).toBe('Plat');
-    expect(roles[1]).toBe('Entrée');
+    expect(roles[0]).toBe('Entrée');
     expect(roles.at(-1)).toBe('Pain');
+  });
+
+  it('réunit l’accompagnement au plat, et ne lui laisse aucune ligne', () => {
+    // Le 3 septembre : un blanc de poulet au jus, avec un écrasé de pommes de terre.
+    const { container } = trayFor(real, '2026-09-03');
+    expect(container.querySelectorAll('.plat.principal')).toHaveLength(1);
+    const principal = container.querySelector('.plat.principal .nom');
+    expect(principal?.textContent).toContain('Blanc de poulet au jus');
+    expect(principal?.textContent).toContain('écrasé de pommes de terre');
+    expect(screen.queryByText('Accompagnement')).not.toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/Pas d'accompagnement/);
+  });
+
+  it('n’énonce aucune absence d’accompagnement pour un plat complet', () => {
+    // Le 6 janvier : « Gumbo de Tiana », sans accompagnement.
+    const { container } = trayFor(edges, '2099-01-06');
+    expect(container.querySelector('.plat.principal .nom')?.textContent?.trim()).toBe(
+      'Gumbo de Tiana'
+    );
+    expect(container.textContent).not.toMatch(/accompagnement/i);
+  });
+
+  it('garde l’absence des autres rôles', () => {
+    // Le 6 janvier : ni entrée, ni laitage, ni dessert.
+    const { container } = trayFor(edges, '2099-01-06');
+    expect(container.textContent).toContain("Pas d'entrée ce jour");
+    expect(container.textContent).toContain('Pas de laitage ce jour');
+    expect(container.textContent).toContain('Pas de dessert ce jour');
   });
 
   it("n'affiche pas le goûter dans le déjeuner", () => {
@@ -69,10 +102,11 @@ describe('la forme suit le contenu (lignes-compactes)', () => {
   });
 
   it('garde une ligne entière, avec sa vignette, à chaque rôle servi', () => {
-    // Le 2 septembre sert tout sauf le laitage.
+    // Le 2 septembre sert tout sauf le laitage : le plat principal avec son
+    // accompagnement, l'entrée, le dessert et le pain.
     const { container } = trayFor(real, '2026-09-02');
     const servies = [...container.querySelectorAll('.plat:not(.vide)')];
-    expect(servies).toHaveLength(5);
+    expect(servies).toHaveLength(4);
     for (const plat of servies) {
       expect(plat).not.toHaveClass('compacte');
       expect(plat.querySelector('.vignette')).not.toBeNull();
@@ -86,11 +120,12 @@ describe('la forme suit le contenu (lignes-compactes)', () => {
     // précède celle du nom ; sur l'aplat, il suit le nom.
     const { container } = trayFor(real, '2026-09-03');
     for (const plat of container.querySelectorAll('.plat:not(.vide)')) {
-      const role = plat.querySelector('.role') as Element;
       const nom = plat.querySelector('.nom') as Element;
       if (plat.classList.contains('principal')) {
-        expect(nom.compareDocumentPosition(role) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        // Le plat principal n'écrit aucun rôle : il se lit à sa place et à sa couleur.
+        expect(plat.querySelector('.role')).toBeNull();
       } else {
+        const role = plat.querySelector('.role') as Element;
         expect(role.parentElement).toBe(plat);
         expect(nom.parentElement).not.toBe(plat);
       }
@@ -148,6 +183,8 @@ describe('le dessin accompagne chaque plat (D51)', () => {
     // plat du jour ». Ce sens est abandonné : l'illustration ne hiérarchise
     // plus, elle ancre le regard dans une liste devenue longue.
     const { container } = trayFor(real, '2026-09-03');
+    // Une illustration par plat servi : l'accompagnement partage celle du plat
+    // principal, il n'a pas de carte pour la porter.
     const plats = container.querySelectorAll('.plat');
     const dessins = container.querySelectorAll('.illustration');
     expect(dessins).toHaveLength(plats.length);
@@ -185,12 +222,15 @@ describe('le dessin accompagne chaque plat (D51)', () => {
     // masqués aux technologies d'assistance, et le menu doit rester complet
     // sans eux.
     const { container } = trayFor(real, '2026-09-03');
-    for (const svg of container.querySelectorAll('svg')) {
+    for (const svg of container.querySelectorAll('svg:not([role="img"])')) {
       expect(svg.getAttribute('aria-hidden')).toBe('true');
     }
-    expect(screen.getByText('Blanc de poulet au jus')).toBeInTheDocument();
-    expect(container.querySelector('.plat.principal .role')?.textContent).toBe('Plat');
-    expect(screen.getByText('Écrasé de pommes de terre')).toBeInTheDocument();
+    expect(container.querySelector('.plat.principal .nom')?.textContent).toContain(
+      'Blanc de poulet au jus'
+    );
+    expect(container.querySelector('.plat.principal .nom')?.textContent).toContain(
+      'écrasé de pommes de terre'
+    );
   });
 });
 

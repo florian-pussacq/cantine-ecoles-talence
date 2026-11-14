@@ -14,6 +14,7 @@
   import RangNavigation from '#lib/ui/RangNavigation.svelte';
   import PiedSource from '#lib/ui/PiedSource.svelte';
   import CommandeRetour from '#lib/ui/CommandeRetour.svelte';
+  import Intitule from '#lib/menu/Intitule.svelte';
   import PastilleAllergene from '#lib/menu/PastilleAllergene.svelte';
   import {
     allergenNames,
@@ -21,11 +22,13 @@
     dayNumber,
     familyLabel,
     formatWeekday,
+    intitulePlat,
     shortAllergenName,
     weekReturnLabel,
     weekTitle,
     PAGE_DES_MENUS
   } from '#lib/menu/labels.js';
+  import type { Course } from '#lib/data/schema.js';
   import type { PageProps } from './$types.js';
 
   let { data }: PageProps = $props();
@@ -67,13 +70,27 @@
     return day.courses.find((course) => course.slot === 'plat') ?? day.courses[0] ?? null;
   }
 
+  /**
+   * L'intitulé du jour : le plat principal et son accompagnement, comme sur
+   * l'écran du jour (accompagnement-dans-le-plat, D7). Le repli sur un autre
+   * plat n'en porte pas : l'accompagnement ne va qu'avec le plat principal.
+   */
+  function titre(day: NonNullable<(typeof days)[number]['day']>, course: Course) {
+    const accompagnement =
+      course.slot === 'plat'
+        ? (day.courses.find(({ slot }) => slot === 'accompagnement') ?? null)
+        : null;
+    return intitulePlat(course, accompagnement);
+  }
+
   /*
     Le résumé écarte le pain et le goûter : ils sont présents presque chaque jour
-    et ne distinguent rien. Ce qui reste est ce qui change d'un jour à l'autre.
+    et ne distinguent rien. Il écarte aussi l'accompagnement, que le titre porte
+    déjà (D7). Ce qui reste est ce qui change d'un jour à l'autre.
   */
   function rest(day: NonNullable<(typeof days)[number]['day']>) {
     return day.courses
-      .filter((course) => !['plat', 'pain', 'gouter'].includes(course.slot))
+      .filter((course) => !['plat', 'accompagnement', 'pain', 'gouter'].includes(course.slot))
       .map((course) => course.label)
       .join(', ');
   }
@@ -222,7 +239,7 @@
                 </span>
                 <span class="body">
                   <span class="tete">
-                    <span class="main">{course.label}</span>
+                    <span class="main"><Intitule parties={titre(day, course)} /></span>
                     {#if isToday}<span class="now">Aujourd'hui</span>{/if}
                   </span>
                   {#if resume(match.family, rest(day))}

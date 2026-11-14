@@ -128,6 +128,19 @@
   --fam-vegetarien: #23803e;
   --fam-vegetarien-pale: #d8eddf;
 
+  /*
+   * Les pictogrammes de qualité (accompagnement-dans-le-plat, D5).
+   *
+   * Une pastille claire, dans les deux palettes : un vert et un rouge de marque se
+   * reconnaissent sur fond clair, et la pastille se détache ainsi de tous les
+   * aplats. Le vert du Bio est un vert-bleu foncé, à distance de celui de la
+   * famille végétarienne. Chaque dessin tient 3:1 sur sa pastille, le seuil des
+   * composants graphiques (WCAG 1.4.11).
+   */
+  --marque-fond: #fbfaf5;
+  --marque-bio: #0f5c4d;
+  --marque-label-rouge: #b3261e;
+
   /* Pas de famille « inconnu » : un plat inclassable ne prend aucune couleur,
      il se pose sur la carte cerclée d'encre (finitions-et-plat-inconnu, D1). */
 
@@ -330,6 +343,10 @@
     --fam-poisson-pale: #1d2f3e;
     --fam-vegetarien: #1b6b33;
     --fam-vegetarien-pale: #1e3324;
+
+    --marque-fond: #fbfaf5;
+    --marque-bio: #0f5c4d;
+    --marque-label-rouge: #b3261e;
 
     --alerte: #f5c518;
     --sur-alerte: #131614;

@@ -13,9 +13,11 @@ export const PAGE_DES_MENUS = 'https://www.talence.fr/quotidien/enfance-scolarit
  *
  * Le plat principal ouvre la liste : c'est la réponse à la question qu'on pose
  * à l'écran — qu'est-ce qu'il mange ? —, et la hiérarchie suit la priorité du
- * produit plutôt que l'ordre du menu imprimé (refonte-signaletique, D7). Les
- * autres suivent l'ordre du service — entrée, accompagnement, laitage, dessert —,
- * puis le pain. Le pain vient après, et ce n'est pas une entorse : il n'est pas
+ * produit plutôt que l'ordre du menu imprimé (refonte-signaletique, D7).
+ * L'accompagnement vient juste après lui, parce qu'il va avec lui : l'ardoise le
+ * fait porter par le plat principal et ne lui donne pas de ligne, la fiche de
+ * journée le liste à sa suite (accompagnement-dans-le-plat, D2). Les autres
+ * suivent l'ordre du service — entrée, laitage, dessert —, puis le pain. Le pain vient après, et ce n'est pas une entorse : il n'est pas
  * servi à un moment du repas, il est sur la table du début à la fin. Il s'appelle
  * par ailleurs « Pain » trente-trois jours sur trente-cinq, ce qui en fait la
  * ligne la moins informative de l'ardoise (design.md, D39).
@@ -29,8 +31,8 @@ export const PAGE_DES_MENUS = 'https://www.talence.fr/quotidien/enfance-scolarit
  */
 export const LUNCH_SLOTS = [
   'plat',
-  'entree',
   'accompagnement',
+  'entree',
   'laitage',
   'dessert',
   'pain'
@@ -52,17 +54,21 @@ export function slotLabel(slot: Course['slot']): string {
   return SLOT_LABELS[slot];
 }
 
-/** Formulation de l'absence, au genre du rôle. */
-const SLOT_ABSENT: Record<LunchSlot, string> = {
+/**
+ * Formulation de l'absence, au genre du rôle.
+ *
+ * L'accompagnement n'en a pas : un plat complet n'en a pas par nature, et
+ * l'intitulé seul ne laisse aucun doute (accompagnement-dans-le-plat, D3).
+ */
+const SLOT_ABSENT: Record<Exclude<LunchSlot, 'accompagnement'>, string> = {
   pain: 'Pas de pain ce jour',
   entree: "Pas d'entrée ce jour",
   plat: 'Pas de plat ce jour',
-  accompagnement: "Pas d'accompagnement ce jour",
   laitage: 'Pas de laitage ce jour',
   dessert: 'Pas de dessert ce jour'
 };
 
-export function slotAbsence(slot: LunchSlot): string {
+export function slotAbsence(slot: Exclude<LunchSlot, 'accompagnement'>): string {
   return SLOT_ABSENT[slot];
 }
 
@@ -81,6 +87,93 @@ const QUALITY_LABELS: Record<string, string> = {
 
 export function qualityLabel(flag: string): string {
   return QUALITY_LABELS[flag] ?? flag;
+}
+
+/**
+ * Les mentions qui se signalent par un pictogramme (accompagnement-dans-le-plat,
+ * D4). Les autres restent écrites en toutes lettres par `qualityLabel()`.
+ */
+export const QUALITY_MARKS = ['bio', 'label-rouge'] as const;
+
+export type QualityMark = (typeof QUALITY_MARKS)[number];
+
+export function estMarque(flag: string): flag is QualityMark {
+  return (QUALITY_MARKS as readonly string[]).includes(flag);
+}
+
+/**
+ * Les mentions qui ne sont pas des marques, écrites en toutes lettres : elles se
+ * lisent en texte sous le nom, là où les marques se lisent en pictogramme à sa
+ * suite (accompagnement-dans-le-plat, D4).
+ */
+export function mentionsEcrites(flags: readonly string[]): string[] {
+  return flags.filter((flag) => !estMarque(flag)).map(qualityLabel);
+}
+
+/**
+ * Ce que garantit chaque marque, en une phrase : la légende de l'écran À propos
+ * (accompagnement-dans-le-plat, D6). Un `Record` et non une liste : une marque
+ * ajoutée à `QUALITY_MARKS` sans phrase ne compile pas, et la légende ne peut
+ * donc pas l'oublier.
+ */
+export const QUALITY_MARK_MEANINGS: Record<QualityMark, string> = {
+  bio: 'Le produit est issu de l’agriculture biologique.',
+  'label-rouge':
+    'Le produit répond à un cahier des charges officiel, garant d’une qualité supérieure.'
+};
+
+/** Une partie de l'intitulé d'un plat principal : un nom et ses propres mentions. */
+export type PartieIntitule = {
+  texte: string;
+  flags: Course['flags'];
+  /** Vrai pour l'accompagnement, subordonné au plat par sa graisse. */
+  accessoire: boolean;
+};
+
+/*
+  Seul le premier caractère descend, et seulement si le deuxième est en
+  minuscule : « IGP… » garde son sigle. Un nom propre en minuscule non accentuée
+  est la limite connue de la règle (design.md, risques).
+*/
+function minusculeInitiale(texte: string): string {
+  const [premier = '', second = ''] = texte;
+  if (premier === '' || second !== second.toLowerCase() || second === second.toUpperCase()) {
+    return texte;
+  }
+  return premier.toLowerCase() + texte.slice(1);
+}
+
+/**
+ * L'intitulé du plat principal : le plat, puis son accompagnement s'il y en a un
+ * (accompagnement-dans-le-plat, D1).
+ *
+ * Des parties plutôt qu'une chaîne : chacune porte ses propres pictogrammes et sa
+ * propre graisse, et le jour comme la semaine la lisent sans pouvoir diverger sur
+ * la manière de composer.
+ */
+export function intitulePlat(plat: Course, accompagnement: Course | null): PartieIntitule[] {
+  const parties: PartieIntitule[] = [{ texte: plat.label, flags: plat.flags, accessoire: false }];
+  if (accompagnement !== null) {
+    parties.push({
+      texte: minusculeInitiale(accompagnement.label),
+      flags: accompagnement.flags,
+      accessoire: true
+    });
+  }
+  return parties;
+}
+
+/**
+ * Sépare le dernier mot d'un nom : c'est lui, et les pictogrammes qui le suivent,
+ * qu'on garde insécables, pour qu'un pictogramme n'arrive jamais seul en début de
+ * ligne (accompagnement-dans-le-plat, D4).
+ */
+export function accrocher(texte: string): { debut: string; dernierMot: string } {
+  const fin = texte.trimEnd();
+  const coupe = fin.lastIndexOf(' ');
+  return coupe === -1
+    ? { debut: '', dernierMot: fin }
+    : { debut: fin.slice(0, coupe), dernierMot: fin.slice(coupe + 1) };
 }
 
 /**

@@ -440,6 +440,41 @@
     </symbol>
 
     <!--
+      Les pictogrammes de qualité (accompagnement-dans-le-plat, D4, D5).
+
+      Contrairement à tout le reste de ce fichier, ils ne sont pas décoratifs : ils
+      portent une mention que le texte ne redit pas. C'est `MarqueQualite.svelte`
+      qui les emprunte, avec un nom accessible — le symbole seul n'en a pas.
+
+      Ce sont des dessins maison, et non les logos officiels AB, Eurofeuille ou
+      Label Rouge, qui sont des marques avec une charte d'usage. Ils sont peints
+      avec les jetons `--marque-*` et non avec des teintes figées : la pastille
+      qui les porte reste claire dans les deux palettes, et `contrast.test.ts`
+      mesure chaque dessin sur elle. La pastille est le fond de l'élément, pas du
+      symbole.
+    -->
+    <symbol id="marque-bio" viewBox="0 0 48 48">
+      <path d="M40 8C22 8 8 16 8 30c0 5 3 9 8 10 14 2 25-8 24-32Z" fill="var(--marque-bio)" />
+      <path
+        d="M14 38C20 28 27 21 35 15"
+        stroke="var(--marque-fond)"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        fill="none"
+      />
+    </symbol>
+
+    <symbol id="marque-label-rouge" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="19" fill="var(--marque-label-rouge)" />
+      <path d="M13 16.5h3.2v11h6.3V31H13Z" fill="var(--marque-fond)" />
+      <path
+        d="M25.5 16.5h5.6a4.3 4.3 0 0 1 1.6 8.3L35.4 31h-3.6l-2.1-5.6h-1v5.6h-3.2Zm3.2 3v3.2h2.2a1.6 1.6 0 0 0 0-3.2Z"
+        fill="var(--marque-fond)"
+        fill-rule="evenodd"
+      />
+    </symbol>
+
+    <!--
       La marque de l'enseigne : une assiette et deux couverts.
 
       Décorative, comme tout ce que porte ce fichier — « Cantine des écoles de

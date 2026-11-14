@@ -4,9 +4,10 @@
   import {
     allergenNames,
     courseName,
+    estMarque,
     formatDay,
     LUNCH_SLOTS,
-    qualityLabel,
+    mentionsEcrites,
     slotLabel,
     allergensUndeclared,
     noAllergenLabel,
@@ -15,6 +16,8 @@
     watchedSummary
   } from './labels.js';
   import LienExterne from '../ui/LienExterne.svelte';
+  import MarqueQualite from './MarqueQualite.svelte';
+  import QualiteNommee from './QualiteNommee.svelte';
   import Bandeau from '../ui/Bandeau.svelte';
   import { allergenFilter } from '../filter/allergens.svelte.js';
   import { allergenIcon } from '../illustrations/allergens.js';
@@ -129,16 +132,31 @@
         <li>
           <span class="plat-role">{slotLabel(course.slot)}</span>
           <span class="plat-ligne">
-            <span class="plat-nom" class:unknown={nom.kind === 'undisclosed'}>{nom.text}</span>
+            <span class="plat-nom" class:unknown={nom.kind === 'undisclosed'}>
+              {#if nom.kind === 'quality'}
+                <QualiteNommee flags={course.flags} taille={1.15} filet />
+              {:else}
+                {nom.text}
+              {/if}
+            </span>
             <!--
               Les labels précèdent les allergènes, sur la ligne du nom. Rendus en
               dessous et en gris, ils se lisaient comme un allergène de plus — la
               dernière confusion qu'on veuille sur cette feuille. Une qualité
-              promue au rang de nom ne se redit pas.
+              promue au rang de nom ne se redit pas. Bio et Label Rouge s'y lisent en
+              pictogramme suivi du mot : c'est ici qu'on apprend le pictogramme, là
+              où l'on regarde pour comprendre un jour (accompagnement-dans-le-plat,
+              D6).
             -->
             {#if course.flags.length > 0 && nom.kind !== 'quality'}
               <span class="tags">
-                {#each course.flags as flag (flag)}<em>{qualityLabel(flag)}</em>{/each}
+                {#each course.flags.filter(estMarque) as marque (marque)}<MarqueQualite
+                    {marque}
+                    taille={1.15}
+                    filet
+                    mot
+                  />{/each}
+                {#each mentionsEcrites(course.flags) as mention (mention)}<em>{mention}</em>{/each}
               </span>
             {/if}
           </span>
