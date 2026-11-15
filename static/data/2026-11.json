@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "month": "2026-11",
   "source": {
-    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/11/11-MENUS-WEB-NOVEMBRE-2026.pdf",
-    "pdfSha256": "0cbd0e121eaa984fde81aec8c608cee409435347a2adbc69bc82a669969441b3",
-    "updatedLabel": "Menus mis à jour le 3 novembre 2026",
-    "updatedAt": "2026-11-03",
-    "fetchedAt": "2026-11-04T18:23:53Z",
+    "pdfUrl": "https://www.talence.fr/wp-content/uploads/2026/11/11-MENUS-WEB-NOVEMBRE-2026-1.pdf",
+    "pdfSha256": "fc6f0de012c0c9af7d4abcc203d433819038a37e852cbb64432dc75ba3e9a749",
+    "updatedLabel": "Menus mis à jour le 9 novembre 2026",
+    "updatedAt": "2026-11-09",
+    "fetchedAt": "2026-11-15T09:03:39Z",
     "producerVersion": "extract-menu-pdf/1"
   },
   "allergenLegend": {
@@ -466,7 +466,7 @@
           "allergens": [10, 12],
           "flags": ["bio"]
         },
-        { "slot": "plat", "label": "Blanc de poulet au jus", "allergens": [7, 9, 12], "flags": [] },
+        { "slot": "plat", "label": "Tajine de mouton", "allergens": [8, 12], "flags": [] },
         { "slot": "accompagnement", "label": "Boulgour", "allergens": [1], "flags": ["bio"] },
         { "slot": "dessert", "label": "Flan pâtissier", "allergens": [1, 3, 7], "flags": [] },
         { "slot": "gouter", "label": "Pain + Berlingot Bio", "allergens": [1], "flags": [] }
