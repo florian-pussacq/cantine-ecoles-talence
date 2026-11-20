@@ -126,10 +126,12 @@
   <h2>Vos données</h2>
   <p>
     Il n'y en a pas. Aucun compte, aucun serveur, aucun cookie, aucune mesure d'audience, aucune
-    police ni image chargée depuis un autre site. Les allergènes que vous cochez restent dans ce
-    navigateur et ne sont envoyés nulle part.
+    police ni image chargée depuis un autre site. Les allergènes que vous cochez et l'apparence que
+    vous choisissez restent dans ce navigateur et ne sont envoyés nulle part.
   </p>
-  <p>Effacer les données de navigation efface ce réglage : c'est le prix de l'absence de compte.</p>
+  <p>
+    Effacer les données de navigation efface ces réglages : c'est le prix de l'absence de compte.
+  </p>
 </section>
 
 <section class="panel">

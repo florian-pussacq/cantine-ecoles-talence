@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!--
-      Le seul script exécuté avant la première peinture (jour-au-premier-rendu,
-      D1). La page porte le jour de Paris pour lequel elle a été rendue ; le
+      Le premier des deux scripts exécutés avant la première peinture
+      (jour-au-premier-rendu, D1). La page porte le jour de Paris pour lequel elle a été rendue ; le
       service worker peut la servir des semaines plus tard. Si ce jour n'est pas
       celui du navigateur, la page est marquée périmée, et la zone qui dépend du
       jour reste masquée jusqu'à l'hydratation (tokens.css). D32 avait refusé un
@@ -22,16 +22,54 @@
       })(document.documentElement);
     </script>
     <!--
-      L'apparence suit le système, claire ou sombre, sans script de thème
-      (mode-sombre, D1, D5). `color-scheme` le dit au navigateur avant la feuille
-      de style, pour que le canevas de la première peinture ne soit pas blanc
-      chez qui est en sombre ; la barre du navigateur prend le fond de chaque
-      palette. Ces deux couleurs recopient `--fond` : une balise ne lit pas les
-      jetons.
+      Par défaut, l'apparence suit le système, claire ou sombre (mode-sombre, D1,
+      D5). `color-scheme` le dit au navigateur avant la feuille de style, pour que
+      le canevas de la première peinture ne soit pas blanc chez qui est en
+      sombre ; la barre du navigateur prend le fond de chaque palette. Ces deux
+      couleurs recopient `--fond` : une balise ne lit pas les jetons.
     -->
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#f2f3f0" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111412" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="theme-color"
+      content="#f2f3f0"
+      media="(prefers-color-scheme: light)"
+      data-palette="clair"
+    />
+    <meta
+      name="theme-color"
+      content="#111412"
+      media="(prefers-color-scheme: dark)"
+      data-palette="sombre"
+    />
+    <!--
+      Le second : le choix d'apparence fait dans les réglages (choix-d-apparence,
+      D2). Il doit précéder la feuille de style, sans quoi chaque ouverture
+      flasherait la palette du système avant celle choisie. Il suit les balises
+      ci-dessus, qu'il ajuste. Sans choix enregistré, il ne touche à rien.
+
+      Il recopie `appliquerApparence` (src/lib/design/apparence.ts), qu'il ne peut
+      pas importer : `apparence.test.ts` exécute l'un et l'autre et compare.
+    -->
+    <script>
+      (function (document) {
+        var choix;
+        try {
+          choix = localStorage.getItem('cantine.apparence');
+        } catch (e) {
+          return;
+        }
+        if (choix !== 'clair' && choix !== 'sombre') return;
+        document.documentElement.setAttribute('data-apparence', choix);
+        document
+          .querySelector('meta[name="color-scheme"]')
+          .setAttribute('content', choix === 'clair' ? 'light' : 'dark');
+        var barres = document.querySelectorAll('meta[name="theme-color"][data-palette]');
+        for (var i = 0; i < barres.length; i++) {
+          var palette = barres[i].getAttribute('data-palette');
+          barres[i].setAttribute('media', palette === choix ? 'all' : 'not all');
+        }
+      })(document);
+    </script>
     <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
     <link rel="apple-touch-icon" href="%sveltekit.assets%/icons/apple-touch-icon.png" />
     <link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />

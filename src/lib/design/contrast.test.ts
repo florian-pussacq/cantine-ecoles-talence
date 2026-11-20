@@ -23,11 +23,17 @@ import { describe, expect, it } from 'vitest';
  * sombre la recouvre sous `prefers-color-scheme: dark`. Chaque contrôle de ce
  * fichier s'exécute sur l'une et sur l'autre : une paire qui ne tiendrait que
  * dans une palette n'en tient aucune.
+ *
+ * La sombre s'écrit deux fois (choix-d-apparence, D1) : sous la requête de
+ * média, pour qui suit son appareil, et sous `[data-apparence='sombre']`, pour
+ * qui l'a choisie. Les contrôles portent sur la première ; la seconde doit lui
+ * être identique, ce qui est vérifié plus bas.
  */
 
 const CSS = readFileSync('src/lib/design/tokens.css', 'utf8');
 
 const REQUETE_SOMBRE = '@media (prefers-color-scheme: dark)';
+const SOMBRE_CHOISI = ":root[data-apparence='sombre']";
 
 /**
  * Le bloc de la palette sombre, et la feuille sans lui.
@@ -35,8 +41,8 @@ const REQUETE_SOMBRE = '@media (prefers-color-scheme: dark)';
  * Le bloc se délimite par ses accolades : une expression régulière ne sait pas
  * les équilibrer, et le bloc contient lui-même `:root { … }`.
  */
-function separer(css: string): { clair: string; sombre: string } {
-  const debut = css.indexOf(REQUETE_SOMBRE);
+function separer(css: string, ouverture = REQUETE_SOMBRE): { clair: string; sombre: string } {
+  const debut = css.indexOf(ouverture);
   if (debut === -1) return { clair: css, sombre: '' };
   let profondeur = 0;
   let fin = css.indexOf('{', debut);
@@ -48,7 +54,8 @@ function separer(css: string): { clair: string; sombre: string } {
   return { clair: css.slice(0, debut) + css.slice(fin), sombre: css.slice(debut, fin) };
 }
 
-const { clair: CSS_CLAIR, sombre: CSS_SOMBRE } = separer(CSS);
+const { clair: CSS_SANS_SYSTEME, sombre: CSS_SOMBRE } = separer(CSS);
+const { clair: CSS_CLAIR, sombre: CSS_SOMBRE_CHOISI } = separer(CSS_SANS_SYSTEME, SOMBRE_CHOISI);
 
 /** Les jetons de couleur opaques déclarés dans un extrait de la feuille. */
 function readTokens(css: string): Record<string, string> {
@@ -393,19 +400,33 @@ describe('couverture des transparences', () => {
 });
 
 /**
- * Deux palettes, et une seule bascule (mode-sombre, D2, D4).
+ * Deux palettes, et la bascule en un seul fichier (mode-sombre, D2, D4 ;
+ * choix-d-apparence, D1).
  *
  * D25 et D49 interdisaient toute trace d'un thème. Le suivi du système est
- * revenu, mais en un seul endroit : une requête de média dans `tokens.css`, et
- * aucun sélecteur `data-theme`, puisque l'application n'offre aucun réglage
- * propre (D1).
+ * revenu, en une requête de média dans `tokens.css`. Le choix propre à
+ * l'application l'a rejoint, au même endroit : l'attribut `data-apparence` de
+ * la racine, posé avant la première peinture par `app.html`.
  */
 describe('les deux palettes', () => {
-  it('ne connaît qu’une requête de thème, la sombre, et aucun réglage', () => {
+  it('ne connaît qu’une requête de thème, la sombre, et un seul attribut de choix', () => {
     expect(CSS.split('prefers-color-scheme').length - 1).toBe(1);
     expect(CSS).toContain(REQUETE_SOMBRE);
+    // Le clair choisi soustrait la requête ; le sombre choisi la recopie.
+    expect([...CSS.matchAll(/data-apparence='(\w+)'/g)].map((m) => m[1])).toEqual([
+      'clair',
+      'sombre'
+    ]);
+    expect(CSS).toContain(":root:not([data-apparence='clair'])");
     expect(CSS).not.toContain('data-theme');
     expect(CSS).not.toContain('--dark-');
+  });
+
+  it('le sombre choisi recopie à l’identique le sombre du système (choix-d-apparence, D1)', () => {
+    // Une valeur corrigée dans un seul des deux blocs peindrait deux palettes
+    // sombres, dont une seule serait mesurée.
+    expect(readTokens(CSS_SOMBRE_CHOISI)).toEqual(SOMBRES);
+    expect(CSS_SOMBRE_CHOISI).toMatch(/color-scheme:\s*dark/);
   });
 
   it('la sombre redéclare chaque jeton de couleur de la claire', () => {
@@ -424,6 +445,7 @@ describe('les deux palettes', () => {
     const racine = CSS.search(/^:root\s*\{/m);
     expect(racine).toBeGreaterThan(-1);
     expect(CSS.indexOf(REQUETE_SOMBRE)).toBeGreaterThan(racine);
+    expect(CSS.indexOf(SOMBRE_CHOISI)).toBeGreaterThan(racine);
   });
 
   it('la sombre ne déclare rien que la claire ignore', () => {
@@ -459,7 +481,7 @@ describe('les deux palettes', () => {
     const barre = (schema: string) =>
       html.match(
         new RegExp(
-          `<meta name="theme-color" content="(#[0-9a-fA-F]{6})" media="\\(prefers-color-scheme: ${schema}\\)"`
+          `<meta\\s+name="theme-color"\\s+content="(#[0-9a-fA-F]{6})"\\s+media="\\(prefers-color-scheme: ${schema}\\)"`
         )
       )?.[1];
     expect(barre('light')).toBe(CLAIRS['fond']);
@@ -611,6 +633,7 @@ describe('aucun composant ne dépend de la préférence d’apparence', () => {
       const source = readFileSync(fichier, 'utf8');
       expect(source).not.toContain('prefers-color-scheme');
       expect(source).not.toContain('data-theme');
+      expect(source).not.toContain('data-apparence');
     });
   }
 });

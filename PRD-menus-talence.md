@@ -263,7 +263,7 @@ Direction contre le « slop » (= ce que produit un LLM laissé seul : dégradé
 - Pas de cartes empilées : la journée est une **liste verticale** avec des repères de rôle discrets (petites capitales : ENTRÉE, PLAT, DESSERT). Ça ressemble à un menu de restaurant, pas à un dashboard.
 - **Zéro skeleton, zéro spinner.** Les données sont en cache : elles s'affichent, point. Un shimmer sur des données instantanées, c'est du théâtre.
 - Emojis : uniquement s'ils portent une information (allergène, thème du jour), jamais en décoration.
-- Mode sombre via `prefers-color-scheme`, pas de toggle en V1.
+- Mode sombre via `prefers-color-scheme` par défaut ; choix clair/sombre dans les réglages (`choix-d-apparence`).
 - `prefers-reduced-motion` respecté. Transitions ≤ 200 ms, uniquement pour la continuité spatiale (swipe entre jours).
 
 ### 7.2 Écrans

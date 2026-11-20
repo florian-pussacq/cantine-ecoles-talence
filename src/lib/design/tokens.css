@@ -316,10 +316,12 @@
  * recalculent d'eux-mêmes. Le voile de la modale reste noir, qui assourdit les
  * deux fonds.
  *
+ * Elle suit le système, sauf si l'on a choisi le clair dans les réglages.
+ *
  * Chaque valeur est mesurée par `contrast.test.ts`, comme sa jumelle claire.
  */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-apparence='clair']) {
     color-scheme: dark;
 
     --fond: #111412;
@@ -355,6 +357,51 @@
     --evenement: #232823;
     --sur-evenement: #e4e8e2;
   }
+}
+
+/*
+ * La même palette, choisie dans les réglages (choix-d-apparence, D1).
+ *
+ * Le bloc recopie celui du dessus, déclaration pour déclaration : une requête de
+ * média et un sélecteur d'attribut ne se combinent pas en une seule règle, et
+ * `light-dark()` exclurait les iPhone restés sous iOS 17.4 ou avant. La copie
+ * est gardée par `contrast.test.ts`, qui exige les deux blocs identiques.
+ */
+:root[data-apparence='sombre'] {
+  color-scheme: dark;
+
+  --fond: #111412;
+  --carte: #1a1e1b;
+  --etiquette: #1a1e1b;
+  --creux: #0c0f0d;
+  --bord: #2a302c;
+
+  --encre: #edefea;
+  --encre-douce: #9aa29c;
+
+  --accent: #edefea;
+  --sur-accent: #111412;
+
+  --sur-famille: #ffffff;
+  --fam-viande: #8e2a1f;
+  --fam-viande-pale: #3d2420;
+  --fam-volaille: #7a4a00;
+  --fam-volaille-pale: #3a2d16;
+  --fam-poisson: #0f5c91;
+  --fam-poisson-pale: #1d2f3e;
+  --fam-vegetarien: #1b6b33;
+  --fam-vegetarien-pale: #1e3324;
+
+  --marque-fond: #fbfaf5;
+  --marque-bio: #0f5c4d;
+  --marque-label-rouge: #b3261e;
+
+  --alerte: #f5c518;
+  --sur-alerte: #131614;
+  --info: #1c2730;
+  --sur-info: #cfe2f1;
+  --evenement: #232823;
+  --sur-evenement: #e4e8e2;
 }
 
 /*

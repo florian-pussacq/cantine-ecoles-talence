@@ -2,6 +2,8 @@
   import { resolve } from '$app/paths';
   import { allergenFilter } from '#lib/filter/allergens.svelte.js';
   import { ALLERGEN_CODES } from '#lib/filter/storage.js';
+  import { apparence } from '#lib/design/apparence.svelte.js';
+  import type { Apparence } from '#lib/design/apparence.js';
   import Bandeau from '#lib/ui/Bandeau.svelte';
   import type { PageProps } from './$types.js';
 
@@ -25,6 +27,18 @@
   );
 
   const count = $derived(allergenFilter.codes.size);
+
+  apparence.hydrate();
+
+  /*
+    Trois choix, et non un interrupteur (choix-d-apparence, D1) : un interrupteur
+    clair/sombre ne sait pas rendre la main à l'appareil, qui est le défaut.
+  */
+  const APPARENCES: { valeur: Apparence; nom: string; detail?: string }[] = [
+    { valeur: 'appareil', nom: 'Comme l’appareil', detail: 'Clair ou sombre, selon son réglage' },
+    { valeur: 'clair', nom: 'Clair' },
+    { valeur: 'sombre', nom: 'Sombre' }
+  ];
 </script>
 
 <svelte:head>
@@ -81,6 +95,40 @@
     <strong>Seul le document officiel de la Ville fait foi.</strong> Cette application n'est pas un service
     municipal, ne remplace pas un PAI, et l'absence d'allergène déclaré ne garantit pas l'absence de traces.
   </p>
+</section>
+
+<section class="panel">
+  <h2 id="titre-apparence">Apparence</h2>
+
+  {#if !apparence.persiste}
+    <Bandeau ton="info">
+      Le stockage de ce navigateur est indisponible : votre choix ne sera pas conservé après la
+      fermeture de l'onglet.
+    </Bandeau>
+  {/if}
+
+  <ul role="radiogroup" aria-labelledby="titre-apparence">
+    {#each APPARENCES as option (option.valeur)}
+      <li>
+        <label>
+          <input
+            type="radio"
+            name="apparence"
+            value={option.valeur}
+            checked={apparence.choix === option.valeur}
+            aria-describedby={option.detail ? `apparence-${option.valeur}` : undefined}
+            onchange={() => apparence.choisir(option.valeur)}
+          />
+          <span class="option">
+            <span>{option.nom}</span>
+            {#if option.detail}<span class="detail" id="apparence-{option.valeur}"
+                >{option.detail}</span
+              >{/if}
+          </span>
+        </label>
+      </li>
+    {/each}
+  </ul>
 </section>
 
 <!--
@@ -144,7 +192,14 @@
     text-decoration: underline;
   }
 
-  .lien .detail {
+  .option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .lien .detail,
+  .option .detail {
     font-size: var(--texte-sm);
     color: var(--encre-douce);
   }

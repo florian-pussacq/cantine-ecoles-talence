@@ -54,3 +54,62 @@ test('la sélection prend les couleurs de la palette sombre', async ({ page }) =
   });
   expect(selection).toEqual({ fond: ENCRE_SOMBRE, texte: FOND_SOMBRE });
 });
+
+/**
+ * Le choix d'apparence des réglages (choix-d-apparence).
+ *
+ * Par défaut, l'appareil décide ; un choix imposé l'emporte sur lui, survit au
+ * rechargement, et s'applique avant l'application, comme le suivi du système.
+ */
+const choisir = async (page: Page, nom: string) => {
+  await page.goto('/reglages');
+  await hydratee(page);
+  await page.getByRole('radio', { name: nom, exact: true }).check();
+};
+
+test('par défaut, les réglages suivent l’appareil', async ({ page }) => {
+  await page.goto('/reglages');
+  await hydratee(page);
+
+  await expect(page.getByRole('radio', { name: /Comme l’appareil/ })).toBeChecked();
+});
+
+test('le sombre choisi l’emporte sur un système en clair, et survit au rechargement', async ({
+  page
+}) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await choisir(page, 'Sombre');
+  expect(await fondDePage(page)).toBe(FOND_SOMBRE);
+
+  // Le choix est peint avant l'application : même sans son JavaScript.
+  await page.route('**/_app/**/*.js', (route) => route.abort());
+  await page.goto('/');
+  expect(await fondDePage(page)).toBe(FOND_SOMBRE);
+  await expect(page.locator('meta[name="theme-color"][media="all"]')).toHaveAttribute(
+    'content',
+    '#111412'
+  );
+});
+
+test('le clair choisi l’emporte sur un système en sombre', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await choisir(page, 'Clair');
+  expect(await fondDePage(page)).toBe(FOND_CLAIR);
+
+  await page.reload();
+  expect(await fondDePage(page)).toBe(FOND_CLAIR);
+});
+
+test('rendre la main à l’appareil le fait suivre à nouveau', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await choisir(page, 'Clair');
+  await page.getByRole('radio', { name: /Comme l’appareil/ }).check();
+  expect(await fondDePage(page)).toBe(FOND_SOMBRE);
+
+  await page.emulateMedia({ colorScheme: 'light' });
+  expect(await fondDePage(page)).toBe(FOND_CLAIR);
+
+  await page.reload();
+  await hydratee(page);
+  await expect(page.getByRole('radio', { name: /Comme l’appareil/ })).toBeChecked();
+});
