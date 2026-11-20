@@ -51,8 +51,10 @@
     </p>
     <!-- Une limite de l'application : info. L'orange reste à ce qui menace un repas (D1). -->
     <Bandeau ton="info">
-      Cette application ne sait pas s'il y a grève aujourd'hui. Aucune source ne le lui dit, et elle
-      n'affiche donc jamais ce menu d'elle-même.
+      <!-- L'insécable lie les deux derniers mots : sur bureau, « d'elle-même. »
+           restait seul sur sa ligne, malgré `text-wrap: pretty` (finitions-et-plat-inconnu, D4). -->
+      Cette application ne sait pas s'il y a grève aujourd'hui. Aucune source ne le lui dit, et elle n'affiche
+      donc jamais ce menu&nbsp;d'elle-même.
     </Bandeau>
   </div>
 
