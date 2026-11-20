@@ -290,10 +290,13 @@
   --colonne: 520px;
 
   /* Échelle des illustrations, pour qu'elles suivent la colonne : le disque du
-     plat principal et son dessin, puis la vignette d'une ligne (D7). */
+     plat principal et son dessin, puis la vignette d'une ligne (D7). Les
+     gommettes remplissent davantage leur case que les volumes qu'elles
+     remplacent : le dessin du plat et la vignette gagnent chacun quelques
+     pixels, le disque ne bouge pas (pictos-gommettes, D4). */
   --ill-disque: 88px;
-  --ill-plat: 64px;
-  --ill-ligne: 32px;
+  --ill-plat: 70px;
+  --ill-ligne: 36px;
 
   /* La colonne du rôle, dans les lignes du déjeuner : la largeur de son plus
      long libellé, « Accompagnement », pour que tous les noms s'alignent (D7). */
@@ -425,8 +428,8 @@
     --titre-semaine: 4rem;
 
     --ill-disque: 104px;
-    --ill-plat: 76px;
-    --ill-ligne: 40px;
+    --ill-plat: 84px;
+    --ill-ligne: 44px;
     --colonne-role: 8rem;
     --tuile: 64px;
   }

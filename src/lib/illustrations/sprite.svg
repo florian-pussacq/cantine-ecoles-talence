@@ -21,238 +21,351 @@
 <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
   <defs>
     <!--
-      Le volume, déclaré une fois et emprunté par tous (design.md, D58).
+      Les trente et une illustrations de plat, en gommettes de papier découpé
+      (pictos-gommettes, D1 à D3).
 
-      Deux voiles suffisent, et ils sont neutres : un lustre blanc en haut à
-      gauche, une ombre propre en bas. Étant des voiles d'opacité et non des
-      couleurs, ils se posent sur n'importe quelle teinte — un seul jeu sert les
-      trente et un dessins.
+      Une seule grammaire pour tout le jeu, et c'est elle qui tient la cohérence :
+      de deux à cinq pièces de papier par dessin, trois couleurs au plus, prises
+      dans une palette commune ; un détail est une pièce collée, jamais un trait
+      dessiné ; chaque dessin est légèrement incliné, comme collé à la main.
 
-      Un dégradé par symbole aurait coûté 1,8 fois plus d'octets pour le même
-      rendu. Un `feDropShadow` aurait coûté du temps de rendu sur sept vignettes
-      simultanées, contre un LCP tenu sous la seconde en 4G bridée : l'ombre est
-      donc une forme posée, pas un filtre calculé.
+      L'ombre de papier est la silhouette du dessin, décalée de 1,3 et 1,8 unités
+      et posée à 16 % d'encre. C'est un ornement : le dessin se lit sans elle
+      (dish-illustration, rôle décoratif). Elle est une forme et non un filtre,
+      pour la même raison que D58 avait écarté `feDropShadow` : sept vignettes
+      simultanées sur un téléphone d'entrée de gamme.
+
+      Les couleurs sont écrites en dur, comme avant : ce sont des papiers, non
+      des jetons d'interface, et ils sont les mêmes dans les deux palettes. Le
+      dessin repose sur le disque pâle de la famille ou sur le fond, et reste
+      lisible sur l'un comme sur l'autre, en clair comme en sombre.
     -->
-    <radialGradient id="lustre" cx="34%" cy="26%" r="76%">
-      <stop offset="0" stop-color="#fff" stop-opacity=".55" />
-      <stop offset="0.55" stop-color="#fff" stop-opacity=".08" />
-      <stop offset="1" stop-color="#000" stop-opacity=".14" />
-    </radialGradient>
 
-    <linearGradient id="assise" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0.45" stop-color="#000" stop-opacity="0" />
-      <stop offset="1" stop-color="#000" stop-opacity=".16" />
-    </linearGradient>
-
-    <!--
-      Les trente et une illustrations de plat (design.md, D59).
-
-      Chacune est bâtie de la même façon : une ombre de contact posée au sol, un
-      corps en aplats francs, puis un voile de volume emprunté aux dégradés
-      partagés ci-dessus. Les aplats restent lisibles seuls — le voile ajoute du
-      relief, il ne porte jamais la forme.
-    -->
-    <!-- Le pain : une miche dorée, la seule forme qui revienne trente-trois jours sur trente-cinq. -->
+    <!-- Le plat principal et ses protéines. -->
     <symbol id="ill-pain" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="24" cy="27" rx="17" ry="11" fill="#c98a4b"/><ellipse cx="24" cy="24.5" rx="17" ry="10.5" fill="#e2ab6c"/><ellipse cx="17" cy="20" rx="6" ry="4" fill="#eec292"/>
-      <path d="M24 14a17 10.5 0 0 1 17 10.5 17 10.5 0 0 1-34 0A17 10.5 0 0 1 24 14Z" fill="url(#lustre)"/>
+      <g transform="rotate(-4 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><ellipse cx="24" cy="26" rx="18" ry="11.5" fill="#1F2A26"/>
+<ellipse cx="19" cy="21.5" rx="9" ry="4.5" fill="#1F2A26"/>
+<g fill="#1F2A26"><rect x="13" y="18.5" width="4" height="13" rx="2" transform="rotate(32 15 25)"/><rect x="21.5" y="16.5" width="4" height="14" rx="2" transform="rotate(32 23.5 23.5)"/><rect x="30" y="16.5" width="4" height="13" rx="2" transform="rotate(32 32 23)"/></g></g><ellipse cx="24" cy="26" rx="18" ry="11.5" fill="#D99A5B"/>
+<ellipse cx="19" cy="21.5" rx="9" ry="4.5" fill="#E8B57A"/>
+<g fill="#9A5A2C"><rect x="13" y="18.5" width="4" height="13" rx="2" transform="rotate(32 15 25)"/><rect x="21.5" y="16.5" width="4" height="14" rx="2" transform="rotate(32 23.5 23.5)"/><rect x="30" y="16.5" width="4" height="13" rx="2" transform="rotate(32 32 23)"/></g></g>
     </symbol>
-
     <symbol id="ill-viande" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <rect x="7" y="15" width="34" height="20" rx="10" fill="#9c3a2b"/><rect x="7" y="15" width="34" height="13" rx="6.5" fill="#c25542"/><rect x="16" y="15.5" width="3.4" height="19" rx="1.7" fill="#f0dcbb"/><rect x="28" y="15.5" width="3.4" height="19" rx="1.7" fill="#f0dcbb"/>
-      <path d="M17 15h14a10 10 0 0 1 10 10 10 10 0 0 1-10 10H17A10 10 0 0 1 7 25 10 10 0 0 1 17 15Z" fill="url(#lustre)"/>
+      <g transform="rotate(4 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M7 21c-.5-8 9.5-13 20-12.5 11 .5 16.5 7 15.5 14.5-1 8.5-9 14.5-20 14.5C12 37.5 7.5 30 7 21Z" fill="#1F2A26"/>
+<path d="M9.5 22.5c-.4-6 7.5-10.5 16.6-10 9 .4 13.6 5.4 12.8 11.2-.8 6.7-7.4 11.2-16.4 11.2-8 0-12.6-5.5-13-12.4Z" fill="#1F2A26"/>
+<path d="M13 25c4-1 6.5-4.5 11-5.5 3.5-.8 6 .8 9.5-.5-2.5 2.8-5.5 2.6-8.5 3.6-4.5 1.6-7 4.4-12 2.4Z" fill="#1F2A26"/>
+<path d="M20 31.5c3.5-1.2 6-3.2 10-3.6 2.4-.2 4 .4 6-.4-1.8 2.4-4 2.6-6.2 3.2-3.4 1-5.6 2.4-9.8.8Z" fill="#1F2A26"/></g><path d="M7 21c-.5-8 9.5-13 20-12.5 11 .5 16.5 7 15.5 14.5-1 8.5-9 14.5-20 14.5C12 37.5 7.5 30 7 21Z" fill="#F4A6A0"/>
+<path d="M9.5 22.5c-.4-6 7.5-10.5 16.6-10 9 .4 13.6 5.4 12.8 11.2-.8 6.7-7.4 11.2-16.4 11.2-8 0-12.6-5.5-13-12.4Z" fill="#B8352A"/>
+<path d="M13 25c4-1 6.5-4.5 11-5.5 3.5-.8 6 .8 9.5-.5-2.5 2.8-5.5 2.6-8.5 3.6-4.5 1.6-7 4.4-12 2.4Z" fill="#F4A6A0"/>
+<path d="M20 31.5c3.5-1.2 6-3.2 10-3.6 2.4-.2 4 .4 6-.4-1.8 2.4-4 2.6-6.2 3.2-3.4 1-5.6 2.4-9.8.8Z" fill="#F4A6A0"/></g>
     </symbol>
-
     <symbol id="ill-volaille" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M31 12a10 10 0 0 1 0 20 10 10 0 0 1-9.6-7.2l-8.6 8.6a3 3 0 0 1-4.2-4.2l8.6-8.6A10 10 0 0 1 31 12Z" fill="#c98a4b"/><circle cx="31" cy="22" r="8" fill="#e0a765"/><rect x="8" y="30" width="9" height="4" rx="2" transform="rotate(-45 8 30)" fill="#f2e6d2"/>
-      <path d="M31 12a10 10 0 1 1 0 20 10 10 0 0 1 0-20Z" fill="url(#lustre)"/>
+      <g transform="rotate(3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M19.5 28.5 10.5 37.5" stroke="#1F2A26" stroke-width="5.5" stroke-linecap="round"/>
+<circle cx="7.5" cy="36" r="3.6" fill="#1F2A26"/><circle cx="11.8" cy="40.5" r="3.6" fill="#1F2A26"/>
+<path d="M17 31V18.5A12.5 12.5 0 1 1 29.5 31Z" fill="#1F2A26" transform="rotate(-4 29 19)"/>
+<path d="M30 9.5a10 10 0 0 1 9 12.5c-2 1-5 .5-7-1.5s-3-6.5-2-11Z" fill="#1F2A26"/>
+<ellipse cx="23" cy="15" rx="2.2" ry="4" fill="#1F2A26" transform="rotate(40 23 15)"/></g><path d="M19.5 28.5 10.5 37.5" stroke="#E6D3AE" stroke-width="5.5" stroke-linecap="round"/>
+<circle cx="7.5" cy="36" r="3.6" fill="#E6D3AE"/><circle cx="11.8" cy="40.5" r="3.6" fill="#E6D3AE"/>
+<path d="M17 31V18.5A12.5 12.5 0 1 1 29.5 31Z" fill="#D99A5B" transform="rotate(-4 29 19)"/>
+<path d="M30 9.5a10 10 0 0 1 9 12.5c-2 1-5 .5-7-1.5s-3-6.5-2-11Z" fill="#9A5A2C"/>
+<ellipse cx="23" cy="15" rx="2.2" ry="4" fill="#F6E7C8" transform="rotate(40 23 15)"/></g>
     </symbol>
-
     <symbol id="ill-poisson" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M8 24c5-8 13-12 21-12 4 0 8 1.5 11 4l-4 8 4 8c-3 2.5-7 4-11 4-8 0-16-4-21-12Z" fill="#4a90c4"/><path d="M8 24c5-8 13-12 21-12 4 0 8 1.5 11 4l-4 8H8Z" fill="#6fb0dd"/><circle cx="34" cy="21" r="2" fill="#17384f"/>
-      <path d="M8 24c5-8 13-12 21-12 4 0 8 1.5 11 4l-4 8H8Z" fill="url(#lustre)"/>
+      <g transform="rotate(-3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M36.5 24 45 15.5 43.5 33Z" fill="#1F2A26"/>
+<path d="M17 15.5c2-4.5 7-6.5 11-5.5-.5 3-2 5-4.5 6.5Z" fill="#1F2A26"/>
+<path d="M3.5 24.5C10 13.5 27.5 11 38 23.5 27 37 9.5 35 3.5 24.5Z" fill="#1F2A26"/>
+<path d="M6 27c8 4.5 21 5 30-2.2C27 35.5 11.5 34.5 6 27Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><path d="M21 17.5c2.2 3.4 2.2 9 0 13" stroke="#1F2A26" stroke-width="2.2" stroke-linecap="round" fill="none"/></g>
+<circle cx="12" cy="21.5" r="3.4" fill="#1F2A26"/><circle cx="12.7" cy="21.5" r="1.6" fill="#1F2A26"/></g><path d="M36.5 24 45 15.5 43.5 33Z" fill="#2F6FBF"/>
+<path d="M17 15.5c2-4.5 7-6.5 11-5.5-.5 3-2 5-4.5 6.5Z" fill="#8CC3EC"/>
+<path d="M3.5 24.5C10 13.5 27.5 11 38 23.5 27 37 9.5 35 3.5 24.5Z" fill="#2F6FBF"/>
+<path d="M6 27c8 4.5 21 5 30-2.2C27 35.5 11.5 34.5 6 27Z" fill="#8CC3EC"/>
+<g fill="#8CC3EC"><path d="M21 17.5c2.2 3.4 2.2 9 0 13" stroke="#8CC3EC" stroke-width="2.2" stroke-linecap="round" fill="none"/></g>
+<circle cx="12" cy="21.5" r="3.4" fill="#FFFFFF"/><circle cx="12.7" cy="21.5" r="1.6" fill="#1F2A26"/></g>
     </symbol>
-
-    <!-- Les coquillages et céphalopodes : même famille colorée que le poisson, silhouette différente. -->
     <symbol id="ill-fruits-de-mer" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="24" cy="19" rx="9" ry="11" fill="#e08a76"/><path d="M17 27c-1 6-3 9-5 12m8-11c0 6 0 9-1 12m5-12c0 6 1 9 2 12m4-13c1 6 3 9 5 11" stroke="#e08a76" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="21" cy="15" rx="5" ry="6" fill="#f0ab99"/>
-      <path d="M24 8a9 11 0 0 1 9 11 9 11 0 0 1-18 0A9 11 0 0 1 24 8Z" fill="url(#lustre)"/>
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M14.8 15.8A13 13 0 1 0 35.3 31.5" stroke="#1F2A26" stroke-width="10" stroke-linecap="round" fill="none"/>
+<path d="M15 25H7M18 31l-5.5 5.5M24 34v7.5M29 32l4.5 6" stroke="#1F2A26" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M35 31 44 26.5l-1.5 7 3 4.5-8.5-1Z" fill="#1F2A26"/>
+<circle cx="14.8" cy="15.8" r="6.5" fill="#1F2A26"/><circle cx="12.6" cy="14.4" r="1.5" fill="#1F2A26"/>
+<path d="M10.5 11.5C6.5 8 6 4.5 8.5 2M13 10c-1-4 1-7 4.5-8" stroke="#1F2A26" stroke-width="1.5" stroke-linecap="round" fill="none"/></g><path d="M14.8 15.8A13 13 0 1 0 35.3 31.5" stroke="#F28C28" stroke-width="10" stroke-linecap="round" fill="none"/>
+<path d="M15 25H7M18 31l-5.5 5.5M24 34v7.5M29 32l4.5 6" stroke="#F4A6A0" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M35 31 44 26.5l-1.5 7 3 4.5-8.5-1Z" fill="#D96C12"/>
+<circle cx="14.8" cy="15.8" r="6.5" fill="#D96C12"/><circle cx="12.6" cy="14.4" r="1.5" fill="#1F2A26"/>
+<path d="M10.5 11.5C6.5 8 6 4.5 8.5 2M13 10c-1-4 1-7 4.5-8" stroke="#D96C12" stroke-width="1.5" stroke-linecap="round" fill="none"/></g>
     </symbol>
-
     <symbol id="ill-pates" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M12 22c2-6 6-9 12-9s10 3 12 9" fill="none" stroke="#e0bd6d" stroke-width="4" stroke-linecap="round"/><path d="M15 21c2-4 5-6 9-6s7 2 9 6" fill="none" stroke="#f0d189" stroke-width="3.4" stroke-linecap="round"/><path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#dcd3c0"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#efe9db"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><g transform="rotate(28 34 14)"><path d="M25 9.5c0-1.6 1.4-2.3 2.7-1.4L34 12.5v5.5l-6.3 4.4c-1.3.9-2.7.2-2.7-1.4Z" fill="#1F2A26"/><path d="M43 9.5c0-1.6-1.4-2.3-2.7-1.4L34 12.5v5.5l6.3 4.4c1.3.9 2.7.2 2.7-1.4Z" fill="#1F2A26"/><rect x="31.8" y="10.8" width="4.4" height="9" rx="2" fill="#1F2A26"/></g>
+<g transform="rotate(-14 21 31)"><path d="M4 22c0-2.2 1.9-3 3.7-1.9L21 27.5v7L7.7 41.9C5.9 43 4 42.2 4 40Z" fill="#1F2A26"/><path d="M38 22c0-2.2-1.9-3-3.7-1.9L21 27.5v7l13.3 7.4c1.8 1.1 3.7.3 3.7-1.9Z" fill="#1F2A26"/><rect x="17.5" y="25" width="7" height="12" rx="3" fill="#1F2A26"/><g fill="#1F2A26"><rect x="9" y="25" width="2.2" height="12" rx="1.1"/><rect x="30.8" y="25" width="2.2" height="12" rx="1.1"/></g></g></g><g transform="rotate(28 34 14)"><path d="M25 9.5c0-1.6 1.4-2.3 2.7-1.4L34 12.5v5.5l-6.3 4.4c-1.3.9-2.7.2-2.7-1.4Z" fill="#E2A426"/><path d="M43 9.5c0-1.6-1.4-2.3-2.7-1.4L34 12.5v5.5l6.3 4.4c1.3.9 2.7.2 2.7-1.4Z" fill="#E2A426"/><rect x="31.8" y="10.8" width="4.4" height="9" rx="2" fill="#F28C28"/></g>
+<g transform="rotate(-14 21 31)"><path d="M4 22c0-2.2 1.9-3 3.7-1.9L21 27.5v7L7.7 41.9C5.9 43 4 42.2 4 40Z" fill="#F6C445"/><path d="M38 22c0-2.2-1.9-3-3.7-1.9L21 27.5v7l13.3 7.4c1.8 1.1 3.7.3 3.7-1.9Z" fill="#F6C445"/><rect x="17.5" y="25" width="7" height="12" rx="3" fill="#F28C28"/><g fill="#E2A426"><rect x="9" y="25" width="2.2" height="12" rx="1.1"/><rect x="30.8" y="25" width="2.2" height="12" rx="1.1"/></g></g></g>
     </symbol>
-
     <symbol id="ill-feculent" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#dcd3c0"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#efe9db"/><ellipse cx="24" cy="21" rx="12" ry="5.4" fill="#f7f4ea"/><ellipse cx="19" cy="20" rx="2.6" ry="1.5" transform="rotate(-20 19 20)" fill="#ddd6c4"/><ellipse cx="25" cy="19" rx="2.6" ry="1.5" transform="rotate(15 25 19)" fill="#ddd6c4"/><ellipse cx="30" cy="21" rx="2.6" ry="1.5" transform="rotate(-10 30 21)" fill="#ddd6c4"/><ellipse cx="22" cy="23" rx="2.4" ry="1.4" transform="rotate(8 22 23)" fill="#ddd6c4"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
+      <g transform="rotate(-3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><ellipse cx="24" cy="23" rx="19" ry="6" fill="#1F2A26"/>
+<path d="M10 23.5c.5-8.5 6.5-13 14-13s13.5 4.5 14 13c-4 2-9 3-14 3s-10-1-14-3Z" fill="#1F2A26"/>
+<rect x="20.5" y="10.5" width="7.5" height="6.5" rx="1.4" fill="#1F2A26" transform="rotate(-14 24 13.5)"/>
+<path d="M5 24c3 3.6 10.5 5.5 19 5.5S40 27.6 43 24c0 9.4-8.5 16.5-19 16.5S5 33.4 5 24Z" fill="#1F2A26"/>
+<path d="M8.5 31.5c4 2.5 9.5 3.6 15.5 3.6s11.5-1.1 15.5-3.6c-.6 1.6-1.4 3-2.4 4.3-3.6 1.6-8 2.4-13.1 2.4S14.5 37.4 10.9 35.8c-1-1.3-1.8-2.7-2.4-4.3Z" fill="#1F2A26"/></g><ellipse cx="24" cy="23" rx="19" ry="6" fill="#24734A"/>
+<path d="M10 23.5c.5-8.5 6.5-13 14-13s13.5 4.5 14 13c-4 2-9 3-14 3s-10-1-14-3Z" fill="#F6E7C8"/>
+<rect x="20.5" y="10.5" width="7.5" height="6.5" rx="1.4" fill="#F6C445" transform="rotate(-14 24 13.5)"/>
+<path d="M5 24c3 3.6 10.5 5.5 19 5.5S40 27.6 43 24c0 9.4-8.5 16.5-19 16.5S5 33.4 5 24Z" fill="#3C9A58"/>
+<path d="M8.5 31.5c4 2.5 9.5 3.6 15.5 3.6s11.5-1.1 15.5-3.6c-.6 1.6-1.4 3-2.4 4.3-3.6 1.6-8 2.4-13.1 2.4S14.5 37.4 10.9 35.8c-1-1.3-1.8-2.7-2.4-4.3Z" fill="#F6E7C8"/></g>
     </symbol>
-
     <symbol id="ill-oeuf" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="24" cy="26" rx="15" ry="11" fill="#f7f4ec"/><circle cx="24" cy="24" r="6.5" fill="#f0a92e"/><circle cx="22" cy="22" r="3" fill="#f6c463"/>
-      <path d="M24 15a15 11 0 0 1 15 11 15 11 0 0 1-30 0A15 11 0 0 1 24 15Z" fill="url(#lustre)"/>
+      <g transform="rotate(5 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M23.5 6c9 0 17.5 5 17 14.5-.4 8 3.5 14.5-4.5 19-7.5 4-15 1.5-22 1.5-8 0-11.4-8-9.4-16 2-8 7.9-19 18.9-19Z" fill="#1F2A26"/>
+<circle cx="23" cy="24" r="8.5" fill="#1F2A26"/><circle cx="21.5" cy="22.5" r="8" fill="#1F2A26"/><ellipse cx="18.8" cy="19.5" rx="2.4" ry="1.5" fill="#1F2A26" transform="rotate(-35 18.8 19.5)"/></g><path d="M23.5 6c9 0 17.5 5 17 14.5-.4 8 3.5 14.5-4.5 19-7.5 4-15 1.5-22 1.5-8 0-11.4-8-9.4-16 2-8 7.9-19 18.9-19Z" fill="#FFFFFF"/>
+<circle cx="23" cy="24" r="8.5" fill="#F28C28"/><circle cx="21.5" cy="22.5" r="8" fill="#F6C445"/><ellipse cx="18.8" cy="19.5" rx="2.4" ry="1.5" fill="#FFFFFF" transform="rotate(-35 18.8 19.5)"/></g>
     </symbol>
 
+    <!-- Les légumes, crus et cuits. -->
+    <symbol id="ill-legume" viewBox="0 0 48 48">
+      <g transform="rotate(-3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M12 13c-6 0-9 6-8 14s5 14 11 14c3 0 4-2 6-2s3 2 6 2c6 0 10-6 11-14 1-8-2-14-8-14-3 0-4 2-8.5 2S15 13 12 13Z" fill="#1F2A26"/>
+<path d="M27 13c6 0 9 6 8 14s-5 14-11 14c4-3 6-8 6-14s-1-11-3-14Z" fill="#1F2A26"/>
+<ellipse cx="11.5" cy="22" rx="2" ry="4.5" fill="#1F2A26" transform="rotate(15 11.5 22)"/>
+<ellipse cx="21" cy="13.5" rx="5.5" ry="2.6" fill="#1F2A26"/><rect x="19.2" y="5" width="3.6" height="9" rx="1.8" fill="#1F2A26" transform="rotate(10 21 9.5)"/>
+<rect x="34" y="31" width="6" height="11" rx="2.5" fill="#1F2A26"/>
+<path d="M29 34a8 6.8 0 0 1 16 0c0 1-.8 1.5-1.8 1.5H30.8c-1 0-1.8-.5-1.8-1.5Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><circle cx="34" cy="30.5" r="1.1"/><circle cx="39.5" cy="29.5" r="1.3"/></g></g><path d="M12 13c-6 0-9 6-8 14s5 14 11 14c3 0 4-2 6-2s3 2 6 2c6 0 10-6 11-14 1-8-2-14-8-14-3 0-4 2-8.5 2S15 13 12 13Z" fill="#E5483A"/>
+<path d="M27 13c6 0 9 6 8 14s-5 14-11 14c4-3 6-8 6-14s-1-11-3-14Z" fill="#B8352A"/>
+<ellipse cx="11.5" cy="22" rx="2" ry="4.5" fill="#F4A6A0" transform="rotate(15 11.5 22)"/>
+<ellipse cx="21" cy="13.5" rx="5.5" ry="2.6" fill="#24734A"/><rect x="19.2" y="5" width="3.6" height="9" rx="1.8" fill="#3C9A58" transform="rotate(10 21 9.5)"/>
+<rect x="34" y="31" width="6" height="11" rx="2.5" fill="#F6E7C8"/>
+<path d="M29 34a8 6.8 0 0 1 16 0c0 1-.8 1.5-1.8 1.5H30.8c-1 0-1.8-.5-1.8-1.5Z" fill="#D99A5B"/>
+<g fill="#F6E7C8"><circle cx="34" cy="30.5" r="1.1"/><circle cx="39.5" cy="29.5" r="1.3"/></g></g>
+    </symbol>
+    <symbol id="ill-salade-composee" viewBox="0 0 48 48">
+      <g transform="rotate(3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><ellipse cx="24" cy="22" rx="19" ry="6" fill="#1F2A26"/>
+<circle cx="14.5" cy="19.5" r="3.8" fill="#1F2A26"/><path d="M14.5 15.7a3.8 3.8 0 0 1 3.8 3.8h-3.8Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><circle cx="21.5" cy="16.5" r="1.9"/><circle cx="24.5" cy="19.5" r="1.9"/><circle cx="20" cy="21" r="1.7"/></g>
+<circle cx="30" cy="17.5" r="3.8" fill="#1F2A26"/><circle cx="30" cy="17.5" r="2.5" fill="#1F2A26"/>
+<circle cx="34.5" cy="22" r="3.4" fill="#1F2A26"/><circle cx="34.5" cy="22" r="1.7" fill="#1F2A26"/>
+<circle cx="26.5" cy="14.5" r="1.7" fill="#1F2A26"/>
+<path d="M5 22.5c3 3.6 10.5 5.5 19 5.5s16-1.9 19-5.5c0 9.4-8.5 16-19 16S5 31.9 5 22.5Z" fill="#1F2A26"/>
+<path d="M7.6 29.8c4.4 2.4 10 3.5 16.4 3.5s12-1.1 16.4-3.5c-.5 1.3-1.2 2.6-2 3.8-3.8 1.5-8.6 2.3-14.4 2.3s-10.6-.8-14.4-2.3c-.8-1.2-1.5-2.5-2-3.8Z" fill="#1F2A26"/></g><ellipse cx="24" cy="22" rx="19" ry="6" fill="#24734A"/>
+<circle cx="14.5" cy="19.5" r="3.8" fill="#E5483A"/><path d="M14.5 15.7a3.8 3.8 0 0 1 3.8 3.8h-3.8Z" fill="#B8352A"/>
+<g fill="#F6C445"><circle cx="21.5" cy="16.5" r="1.9"/><circle cx="24.5" cy="19.5" r="1.9"/><circle cx="20" cy="21" r="1.7"/></g>
+<circle cx="30" cy="17.5" r="3.8" fill="#3C9A58"/><circle cx="30" cy="17.5" r="2.5" fill="#CFE6A8"/>
+<circle cx="34.5" cy="22" r="3.4" fill="#FFFFFF"/><circle cx="34.5" cy="22" r="1.7" fill="#F6C445"/>
+<circle cx="26.5" cy="14.5" r="1.7" fill="#1F2A26"/>
+<path d="M5 22.5c3 3.6 10.5 5.5 19 5.5s16-1.9 19-5.5c0 9.4-8.5 16-19 16S5 31.9 5 22.5Z" fill="#FFFFFF"/>
+<path d="M7.6 29.8c4.4 2.4 10 3.5 16.4 3.5s12-1.1 16.4-3.5c-.5 1.3-1.2 2.6-2 3.8-3.8 1.5-8.6 2.3-14.4 2.3s-10.6-.8-14.4-2.3c-.8-1.2-1.5-2.5-2-3.8Z" fill="#E5483A"/></g>
+    </symbol>
+    <symbol id="ill-salade-verte" viewBox="0 0 48 48">
+      <g transform="rotate(-2 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M6 30c-2-8 4-15 11-15 1-6 8-9 13-6 6-2 12 3 11 10 5 3 4 11-1 13-1 6-8 8-12 5-4 4-12 3-14-2-5 0-8-2-8-5Z" fill="#1F2A26"/>
+<path d="M10 29c-1-6 3.5-10.5 8.5-10.5 1-4.5 6-6.5 10-4.5 4.5-1.5 9 2 8.3 7.3 3.7 2.2 3 8.2-.8 9.7-.8 4.5-6 6-9 3.7-3 3-9 2.3-10.5-1.5-3.7 0-6.5-1.5-6.5-4.2Z" fill="#1F2A26"/>
+<path d="M14 31c4-3 8-8.5 9-14M24 34c1-5 3.5-10 8-14" stroke="#1F2A26" stroke-width="2" stroke-linecap="round" fill="none"/></g><path d="M6 30c-2-8 4-15 11-15 1-6 8-9 13-6 6-2 12 3 11 10 5 3 4 11-1 13-1 6-8 8-12 5-4 4-12 3-14-2-5 0-8-2-8-5Z" fill="#24734A"/>
+<path d="M10 29c-1-6 3.5-10.5 8.5-10.5 1-4.5 6-6.5 10-4.5 4.5-1.5 9 2 8.3 7.3 3.7 2.2 3 8.2-.8 9.7-.8 4.5-6 6-9 3.7-3 3-9 2.3-10.5-1.5-3.7 0-6.5-1.5-6.5-4.2Z" fill="#3C9A58"/>
+<path d="M14 31c4-3 8-8.5 9-14M24 34c1-5 3.5-10 8-14" stroke="#7CC36E" stroke-width="2" stroke-linecap="round" fill="none"/></g>
+    </symbol>
+    <symbol id="ill-crudite-rapee" viewBox="0 0 48 48">
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><ellipse cx="37" cy="8" rx="2.6" ry="6.5" fill="#1F2A26" transform="rotate(20 37 8)"/>
+<ellipse cx="41.5" cy="11.5" rx="2.6" ry="6.5" fill="#1F2A26" transform="rotate(68 41.5 11.5)"/>
+<ellipse cx="39.5" cy="8.5" rx="2.6" ry="6.8" fill="#1F2A26" transform="rotate(42 39.5 8.5)"/>
+<path d="M8.5 41.5C13 33 18.5 22.5 23 15.5c2.6-4 8-4.6 11-1.6s2.6 8.4-1.4 11C25.7 29.4 16 35.6 8.5 41.5Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><rect x="20" y="20" width="7" height="2.2" rx="1.1" transform="rotate(42 23.5 21)"/><rect x="15" y="28" width="6" height="2.2" rx="1.1" transform="rotate(42 18 29)"/><rect x="24.5" y="25" width="5" height="2.2" rx="1.1" transform="rotate(42 27 26)"/></g></g><ellipse cx="37" cy="8" rx="2.6" ry="6.5" fill="#24734A" transform="rotate(20 37 8)"/>
+<ellipse cx="41.5" cy="11.5" rx="2.6" ry="6.5" fill="#3C9A58" transform="rotate(68 41.5 11.5)"/>
+<ellipse cx="39.5" cy="8.5" rx="2.6" ry="6.8" fill="#3C9A58" transform="rotate(42 39.5 8.5)"/>
+<path d="M8.5 41.5C13 33 18.5 22.5 23 15.5c2.6-4 8-4.6 11-1.6s2.6 8.4-1.4 11C25.7 29.4 16 35.6 8.5 41.5Z" fill="#F28C28"/>
+<g fill="#D96C12"><rect x="20" y="20" width="7" height="2.2" rx="1.1" transform="rotate(42 23.5 21)"/><rect x="15" y="28" width="6" height="2.2" rx="1.1" transform="rotate(42 18 29)"/><rect x="24.5" y="25" width="5" height="2.2" rx="1.1" transform="rotate(42 27 26)"/></g></g>
+    </symbol>
+    <symbol id="ill-tomate" viewBox="0 0 48 48">
+      <g transform="rotate(4 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><circle cx="24" cy="26" r="16" fill="#1F2A26"/>
+<path d="M24 10a16 16 0 0 1 15.4 20.3C34 34 26 32 24 26Z" fill="#1F2A26"/>
+<ellipse cx="16" cy="21" rx="2.4" ry="4.4" fill="#1F2A26" transform="rotate(30 16 21)"/>
+<path d="M24 12.5 20 7l1.6 6.2L14.5 11l5.6 4.4-6 2.6 7.5-.6L24 21l2.4-3.6 7.5.6-6-2.6 5.6-4.4-7.1 2.2L28 7Z" fill="#1F2A26"/></g><circle cx="24" cy="26" r="16" fill="#E5483A"/>
+<path d="M24 10a16 16 0 0 1 15.4 20.3C34 34 26 32 24 26Z" fill="#B8352A"/>
+<ellipse cx="16" cy="21" rx="2.4" ry="4.4" fill="#F4A6A0" transform="rotate(30 16 21)"/>
+<path d="M24 12.5 20 7l1.6 6.2L14.5 11l5.6 4.4-6 2.6 7.5-.6L24 21l2.4-3.6 7.5.6-6-2.6 5.6-4.4-7.1 2.2L28 7Z" fill="#3C9A58"/></g>
+    </symbol>
+    <symbol id="ill-concombre" viewBox="0 0 48 48">
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><g transform="rotate(-35 22 21)"><rect x="4" y="15" width="36" height="12" rx="6" fill="#1F2A26"/><rect x="9" y="17.5" width="26" height="2.6" rx="1.3" fill="#1F2A26"/>
+<g fill="#1F2A26"><circle cx="12" cy="23.5" r=".9"/><circle cx="19" cy="24" r=".9"/><circle cx="26" cy="23.5" r=".9"/><circle cx="33" cy="24" r=".9"/></g></g>
+<circle cx="32" cy="33" r="8.5" fill="#1F2A26"/><circle cx="32" cy="33" r="7" fill="#1F2A26"/>
+<g fill="#1F2A26"><ellipse cx="35" cy="33" rx="1.2" ry=".7"/><ellipse cx="33.5" cy="35.6" rx="1.2" ry=".7" transform="rotate(60 33.5 35.6)"/><ellipse cx="30.5" cy="35.6" rx="1.2" ry=".7" transform="rotate(-60 30.5 35.6)"/><ellipse cx="29" cy="33" rx="1.2" ry=".7"/><ellipse cx="30.5" cy="30.4" rx="1.2" ry=".7" transform="rotate(60 30.5 30.4)"/><ellipse cx="33.5" cy="30.4" rx="1.2" ry=".7" transform="rotate(-60 33.5 30.4)"/></g></g><g transform="rotate(-35 22 21)"><rect x="4" y="15" width="36" height="12" rx="6" fill="#24734A"/><rect x="9" y="17.5" width="26" height="2.6" rx="1.3" fill="#3C9A58"/>
+<g fill="#3C9A58"><circle cx="12" cy="23.5" r=".9"/><circle cx="19" cy="24" r=".9"/><circle cx="26" cy="23.5" r=".9"/><circle cx="33" cy="24" r=".9"/></g></g>
+<circle cx="32" cy="33" r="8.5" fill="#24734A"/><circle cx="32" cy="33" r="7" fill="#CFE6A8"/>
+<g fill="#F4F8E6"><ellipse cx="35" cy="33" rx="1.2" ry=".7"/><ellipse cx="33.5" cy="35.6" rx="1.2" ry=".7" transform="rotate(60 33.5 35.6)"/><ellipse cx="30.5" cy="35.6" rx="1.2" ry=".7" transform="rotate(-60 30.5 35.6)"/><ellipse cx="29" cy="33" rx="1.2" ry=".7"/><ellipse cx="30.5" cy="30.4" rx="1.2" ry=".7" transform="rotate(60 30.5 30.4)"/><ellipse cx="33.5" cy="30.4" rx="1.2" ry=".7" transform="rotate(-60 33.5 30.4)"/></g></g>
+    </symbol>
+    <symbol id="ill-chou" viewBox="0 0 48 48">
+      <g transform="rotate(-3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M19 44 21.5 28h5L29 44Z" fill="#1F2A26"/>
+<path d="M22 32 16 27M26 32l6-5" stroke="#1F2A26" stroke-width="3" stroke-linecap="round"/>
+<g fill="#1F2A26"><circle cx="17.5" cy="26" r="6.5"/><circle cx="30.5" cy="26" r="6.5"/></g>
+<g fill="#1F2A26"><circle cx="14.5" cy="19.5" r="7"/><circle cx="33.5" cy="19.5" r="7"/><circle cx="24" cy="14.5" r="8.5"/><circle cx="24" cy="23" r="6.5"/></g>
+<g fill="#1F2A26"><circle cx="21" cy="11" r="1.4"/><circle cx="12" cy="17" r="1.2"/><circle cx="31.5" cy="16.5" r="1.3"/><circle cx="26" cy="21" r="1.1"/></g></g><path d="M19 44 21.5 28h5L29 44Z" fill="#8BCB63"/>
+<path d="M22 32 16 27M26 32l6-5" stroke="#8BCB63" stroke-width="3" stroke-linecap="round"/>
+<g fill="#24734A"><circle cx="17.5" cy="26" r="6.5"/><circle cx="30.5" cy="26" r="6.5"/></g>
+<g fill="#3C9A58"><circle cx="14.5" cy="19.5" r="7"/><circle cx="33.5" cy="19.5" r="7"/><circle cx="24" cy="14.5" r="8.5"/><circle cx="24" cy="23" r="6.5"/></g>
+<g fill="#8BCB63"><circle cx="21" cy="11" r="1.4"/><circle cx="12" cy="17" r="1.2"/><circle cx="31.5" cy="16.5" r="1.3"/><circle cx="26" cy="21" r="1.1"/></g></g>
+    </symbol>
+    <symbol id="ill-courgette" viewBox="0 0 48 48">
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><g transform="rotate(30 23 24.5)"><rect x="5" y="19" width="36" height="11" rx="5.5" fill="#1F2A26"/>
+<rect x="9" y="21.2" width="28" height="2" rx="1" fill="#1F2A26"/><rect x="11" y="25.8" width="26" height="2" rx="1" fill="#1F2A26"/>
+<rect x="2" y="22.5" width="6" height="4" rx="1.5" fill="#1F2A26"/></g>
+<g fill="#1F2A26"><ellipse cx="41.5" cy="36" rx="2.4" ry="4.4" transform="rotate(20 41.5 36)"/><ellipse cx="39.5" cy="39.5" rx="2.4" ry="4.4" transform="rotate(-50 39.5 39.5)"/><ellipse cx="43.5" cy="40" rx="2.4" ry="4.4" transform="rotate(70 43.5 40)"/></g><circle cx="41.5" cy="38.5" r="1.6" fill="#1F2A26"/></g><g transform="rotate(30 23 24.5)"><rect x="5" y="19" width="36" height="11" rx="5.5" fill="#24734A"/>
+<rect x="9" y="21.2" width="28" height="2" rx="1" fill="#3C9A58"/><rect x="11" y="25.8" width="26" height="2" rx="1" fill="#3C9A58"/>
+<rect x="2" y="22.5" width="6" height="4" rx="1.5" fill="#3C9A58"/></g>
+<g fill="#F6C445"><ellipse cx="41.5" cy="36" rx="2.4" ry="4.4" transform="rotate(20 41.5 36)"/><ellipse cx="39.5" cy="39.5" rx="2.4" ry="4.4" transform="rotate(-50 39.5 39.5)"/><ellipse cx="43.5" cy="40" rx="2.4" ry="4.4" transform="rotate(70 43.5 40)"/></g><circle cx="41.5" cy="38.5" r="1.6" fill="#F28C28"/></g>
+    </symbol>
+    <symbol id="ill-poireau" viewBox="0 0 48 48">
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><g transform="rotate(35 24 24)"><g fill="#1F2A26"><rect x="20.5" y="41" width="1.6" height="5" rx=".8" transform="rotate(15 21.3 41)"/><rect x="23.2" y="41" width="1.6" height="5.5" rx=".8"/><rect x="25.9" y="41" width="1.6" height="5" rx=".8" transform="rotate(-15 26.7 41)"/></g>
+<path d="M20 20 13 4l5.5-1.5L24.5 18Z" fill="#1F2A26"/><path d="M28 20 35 4l-5.5-1.5L23.5 18Z" fill="#1F2A26"/>
+<rect x="21" y="2" width="6" height="22" rx="3" fill="#1F2A26"/>
+<rect x="20" y="22" width="8" height="21" rx="4" fill="#1F2A26"/><rect x="20" y="20" width="8" height="8" rx="2" fill="#1F2A26"/></g></g><g transform="rotate(35 24 24)"><g fill="#D99A5B"><rect x="20.5" y="41" width="1.6" height="5" rx=".8" transform="rotate(15 21.3 41)"/><rect x="23.2" y="41" width="1.6" height="5.5" rx=".8"/><rect x="25.9" y="41" width="1.6" height="5" rx=".8" transform="rotate(-15 26.7 41)"/></g>
+<path d="M20 20 13 4l5.5-1.5L24.5 18Z" fill="#24734A"/><path d="M28 20 35 4l-5.5-1.5L23.5 18Z" fill="#24734A"/>
+<rect x="21" y="2" width="6" height="22" rx="3" fill="#3C9A58"/>
+<rect x="20" y="22" width="8" height="21" rx="4" fill="#F6E7C8"/><rect x="20" y="20" width="8" height="8" rx="2" fill="#8BCB63"/></g></g>
+    </symbol>
+    <symbol id="ill-legumineuse" viewBox="0 0 48 48">
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><g transform="translate(16 31) rotate(-18) scale(1)"><path d="M-10 0C-10-5.5-5-7.5 0-6 2.5-5.2 4-6.8 7-6.4 10.5-5.8 11-1 9.5 2.5 7.5 7 1.5 8-3.5 7.5-8 7-10 4-10 0Z" fill="#1F2A26"/><ellipse cx="1.5" cy="-4" rx="2" ry="1" fill="#1F2A26"/></g><g transform="translate(32.5 32.5) rotate(14) scale(1)"><path d="M-10 0C-10-5.5-5-7.5 0-6 2.5-5.2 4-6.8 7-6.4 10.5-5.8 11-1 9.5 2.5 7.5 7 1.5 8-3.5 7.5-8 7-10 4-10 0Z" fill="#1F2A26"/><ellipse cx="1.5" cy="-4" rx="2" ry="1" fill="#1F2A26"/></g>
+<path d="M24.5 8.5c5.5 0 9 3.8 9 8.4s-3.6 8.6-9 8.6-9-3.6-9-8.4c0-2.4 1-4.4 2.6-5.8-.4-1.4-.2-2.6.8-3.2 1-.5 2 0 2.6.9 1-.3 2-.5 3-.5Z" fill="#1F2A26"/>
+<path d="M20.5 14.5c1.5 3 4.5 5 8.5 5" stroke="#1F2A26" stroke-width="1.8" stroke-linecap="round" fill="none"/></g><g transform="translate(16 31) rotate(-18) scale(1)"><path d="M-10 0C-10-5.5-5-7.5 0-6 2.5-5.2 4-6.8 7-6.4 10.5-5.8 11-1 9.5 2.5 7.5 7 1.5 8-3.5 7.5-8 7-10 4-10 0Z" fill="#A8392C"/><ellipse cx="1.5" cy="-4" rx="2" ry="1" fill="#FFFFFF"/></g><g transform="translate(32.5 32.5) rotate(14) scale(1)"><path d="M-10 0C-10-5.5-5-7.5 0-6 2.5-5.2 4-6.8 7-6.4 10.5-5.8 11-1 9.5 2.5 7.5 7 1.5 8-3.5 7.5-8 7-10 4-10 0Z" fill="#C4DA8E"/><ellipse cx="1.5" cy="-4" rx="2" ry="1" fill="#FFFFFF"/></g>
+<path d="M24.5 8.5c5.5 0 9 3.8 9 8.4s-3.6 8.6-9 8.6-9-3.6-9-8.4c0-2.4 1-4.4 2.6-5.8-.4-1.4-.2-2.6.8-3.2 1-.5 2 0 2.6.9 1-.3 2-.5 3-.5Z" fill="#E9C27E"/>
+<path d="M20.5 14.5c1.5 3 4.5 5 8.5 5" stroke="#C99A55" stroke-width="1.8" stroke-linecap="round" fill="none"/></g>
+    </symbol>
+    <symbol id="ill-courge" viewBox="0 0 48 48">
+      <g transform="rotate(3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M22 13.5 23.5 7l4 .8-1 6Z" fill="#1F2A26"/><path d="M26.5 10c3-4.5 9-5 12-3.5-1.5 4-7 6-12 3.5Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><ellipse cx="15" cy="28.5" rx="9.5" ry="12"/><ellipse cx="33" cy="28.5" rx="9.5" ry="12"/></g>
+<ellipse cx="24" cy="28" rx="9.5" ry="13.5" fill="#1F2A26"/>
+<ellipse cx="19" cy="22" rx="1.6" ry="4" fill="#1F2A26" transform="rotate(15 19 22)"/></g><path d="M22 13.5 23.5 7l4 .8-1 6Z" fill="#9A5A2C"/><path d="M26.5 10c3-4.5 9-5 12-3.5-1.5 4-7 6-12 3.5Z" fill="#3C9A58"/>
+<g fill="#D96C12"><ellipse cx="15" cy="28.5" rx="9.5" ry="12"/><ellipse cx="33" cy="28.5" rx="9.5" ry="12"/></g>
+<ellipse cx="24" cy="28" rx="9.5" ry="13.5" fill="#F28C28"/>
+<ellipse cx="19" cy="22" rx="1.6" ry="4" fill="#F7B26A" transform="rotate(15 19 22)"/></g>
+    </symbol>
+
+    <!-- Les laitages. -->
+    <symbol id="ill-yaourt" viewBox="0 0 48 48">
+      <g transform="rotate(3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M10 16h28l-3.2 23.5a2.8 2.8 0 0 1-2.8 2.5H16a2.8 2.8 0 0 1-2.8-2.5Z" fill="#1F2A26"/>
+<path d="M11.4 26h25.2l-1 7H12.4Z" fill="#1F2A26"/>
+<rect x="7" y="11" width="34" height="6" rx="3" fill="#1F2A26" transform="rotate(-4 24 14)"/>
+<circle cx="8" cy="9.5" r="3.4" fill="#1F2A26"/>
+<circle cx="24" cy="29.5" r="5" fill="#1F2A26"/><path d="M24 26.5c2.6 0 3.6 2 2.6 4.2-.7 1.5-1.6 2.3-2.6 2.8-1-.5-1.9-1.3-2.6-2.8-1-2.2 0-4.2 2.6-4.2Z" fill="#1F2A26"/></g><path d="M10 16h28l-3.2 23.5a2.8 2.8 0 0 1-2.8 2.5H16a2.8 2.8 0 0 1-2.8-2.5Z" fill="#8CC3EC"/>
+<path d="M11.4 26h25.2l-1 7H12.4Z" fill="#2F6FBF"/>
+<rect x="7" y="11" width="34" height="6" rx="3" fill="#F4A6A0" transform="rotate(-4 24 14)"/>
+<circle cx="8" cy="9.5" r="3.4" fill="#F4A6A0"/>
+<circle cx="24" cy="29.5" r="5" fill="#FFFFFF"/><path d="M24 26.5c2.6 0 3.6 2 2.6 4.2-.7 1.5-1.6 2.3-2.6 2.8-1-.5-1.9-1.3-2.6-2.8-1-2.2 0-4.2 2.6-4.2Z" fill="#E5483A"/></g>
+    </symbol>
+    <symbol id="ill-laitage-sucre" viewBox="0 0 48 48">
+      <g transform="rotate(2 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><ellipse cx="24" cy="40" rx="18.5" ry="3.6" fill="#1F2A26"/>
+<path d="M11.5 38.5 15 19h18l3.5 19.5Z" fill="#1F2A26"/>
+<path d="M15 19h18l.8 4.5c-1.2 2-2.6 2-3.4 0-.8 3-3 3-3.6 0-1 2.4-3.2 2.4-4 0-.8 3.4-3.2 3.4-3.8 0-.8 2-2.4 2-3.4 0Z" fill="#1F2A26"/>
+<ellipse cx="24" cy="19" rx="9" ry="2" fill="#1F2A26"/>
+<rect x="15.5" y="28" width="2.6" height="8" rx="1.3" fill="#1F2A26"/></g><ellipse cx="24" cy="40" rx="18.5" ry="3.6" fill="#FFFFFF"/>
+<path d="M11.5 38.5 15 19h18l3.5 19.5Z" fill="#F3CD6A"/>
+<path d="M15 19h18l.8 4.5c-1.2 2-2.6 2-3.4 0-.8 3-3 3-3.6 0-1 2.4-3.2 2.4-4 0-.8 3.4-3.2 3.4-3.8 0-.8 2-2.4 2-3.4 0Z" fill="#9A5A2C"/>
+<ellipse cx="24" cy="19" rx="9" ry="2" fill="#B56B33"/>
+<rect x="15.5" y="28" width="2.6" height="8" rx="1.3" fill="#F8DE91"/></g>
+    </symbol>
+    <symbol id="ill-fromage" viewBox="0 0 48 48">
+      <g transform="rotate(-4 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M5 27 33.5 10 43 27Z" fill="#1F2A26"/>
+<path d="M5 27h38v10a2.5 2.5 0 0 1-2.5 2.5h-33A2.5 2.5 0 0 1 5 37Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><circle cx="13" cy="33" r="2.8"/><circle cx="26" cy="34" r="3.4"/><circle cx="36" cy="31.5" r="2"/></g>
+<g fill="#1F2A26"><circle cx="30.5" cy="20" r="2.6"/><circle cx="20" cy="23.5" r="1.7"/></g></g><path d="M5 27 33.5 10 43 27Z" fill="#F6C445"/>
+<path d="M5 27h38v10a2.5 2.5 0 0 1-2.5 2.5h-33A2.5 2.5 0 0 1 5 37Z" fill="#E2A426"/>
+<g fill="#F28C28"><circle cx="13" cy="33" r="2.8"/><circle cx="26" cy="34" r="3.4"/><circle cx="36" cy="31.5" r="2"/></g>
+<g fill="#E2A426"><circle cx="30.5" cy="20" r="2.6"/><circle cx="20" cy="23.5" r="1.7"/></g></g>
+    </symbol>
+
+    <!-- Les desserts. -->
+    <symbol id="ill-compote" viewBox="0 0 48 48">
+      <g transform="rotate(-3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M8 20h32l-3 18a3 3 0 0 1-3 2.5H14a3 3 0 0 1-3-2.5Z" fill="#1F2A26"/>
+<ellipse cx="24" cy="20" rx="16" ry="4.5" fill="#1F2A26"/>
+<path d="M11.2 26h25.6l-.8 5H12Z" fill="#1F2A26"/>
+<path d="M25 18c2-6 9-8.5 13-7-1 5-7 8-13 7Z" fill="#1F2A26"/><path d="M25 18c2-6 9-8.5 13-7" stroke="#1F2A26" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<path d="M30 12.5 31.5 8" stroke="#1F2A26" stroke-width="1.8" stroke-linecap="round"/></g><path d="M8 20h32l-3 18a3 3 0 0 1-3 2.5H14a3 3 0 0 1-3-2.5Z" fill="#FFFFFF"/>
+<ellipse cx="24" cy="20" rx="16" ry="4.5" fill="#D99A5B"/>
+<path d="M11.2 26h25.6l-.8 5H12Z" fill="#8CC3EC"/>
+<path d="M25 18c2-6 9-8.5 13-7-1 5-7 8-13 7Z" fill="#F4D58A"/><path d="M25 18c2-6 9-8.5 13-7" stroke="#E5483A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<path d="M30 12.5 31.5 8" stroke="#9A5A2C" stroke-width="1.8" stroke-linecap="round"/></g>
+    </symbol>
+    <symbol id="ill-melon" viewBox="0 0 48 48">
+      <g transform="rotate(-8 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M5 20a19 19 0 0 0 38 0Z" fill="#1F2A26"/>
+<path d="M7 20a17 17 0 0 0 34 0Z" fill="#1F2A26"/>
+<path d="M8.5 20a15.5 15.5 0 0 0 31 0Z" fill="#1F2A26"/>
+<path d="M14 20a10 7 0 0 0 20 0Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><ellipse cx="17" cy="22" rx="1.5" ry=".9" transform="rotate(25 17 22)"/><ellipse cx="21" cy="24" rx="1.5" ry=".9" transform="rotate(10 21 24)"/><ellipse cx="25.5" cy="24.4" rx="1.5" ry=".9"/><ellipse cx="30" cy="23" rx="1.5" ry=".9" transform="rotate(-20 30 23)"/></g></g><path d="M5 20a19 19 0 0 0 38 0Z" fill="#3C9A58"/>
+<path d="M7 20a17 17 0 0 0 34 0Z" fill="#CFE6A8"/>
+<path d="M8.5 20a15.5 15.5 0 0 0 31 0Z" fill="#F5A04A"/>
+<path d="M14 20a10 7 0 0 0 20 0Z" fill="#F28C28"/>
+<g fill="#F6E7C8"><ellipse cx="17" cy="22" rx="1.5" ry=".9" transform="rotate(25 17 22)"/><ellipse cx="21" cy="24" rx="1.5" ry=".9" transform="rotate(10 21 24)"/><ellipse cx="25.5" cy="24.4" rx="1.5" ry=".9"/><ellipse cx="30" cy="23" rx="1.5" ry=".9" transform="rotate(-20 30 23)"/></g></g>
+    </symbol>
+    <symbol id="ill-fruit-sirop" viewBox="0 0 48 48">
+      <g transform="rotate(2 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><circle cx="16" cy="19.5" r="5.5" fill="#1F2A26"/><circle cx="16" cy="19.5" r="2.2" fill="#1F2A26"/>
+<circle cx="27.5" cy="18" r="6" fill="#1F2A26"/><circle cx="27.5" cy="18" r="2.4" fill="#1F2A26"/>
+<ellipse cx="35.5" cy="19.5" rx="3.6" ry="4.5" fill="#1F2A26"/>
+<path d="M22 11.5c.3-3 2-5 4.5-6" stroke="#1F2A26" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="21.5" cy="12.5" r="3.3" fill="#1F2A26"/>
+<path d="M6.5 21h35c0 9.5-7.8 15-17.5 15S6.5 30.5 6.5 21Z" fill="#1F2A26"/>
+<path d="M9 27h30c-2.5 5-8 9-15 9S11.5 32 9 27Z" fill="#1F2A26"/>
+<rect x="22.5" y="35" width="3" height="6" fill="#1F2A26"/><ellipse cx="24" cy="42" rx="8.5" ry="2.2" fill="#1F2A26"/></g><circle cx="16" cy="19.5" r="5.5" fill="#F28C28"/><circle cx="16" cy="19.5" r="2.2" fill="#D96C12"/>
+<circle cx="27.5" cy="18" r="6" fill="#F5A04A"/><circle cx="27.5" cy="18" r="2.4" fill="#D96C12"/>
+<ellipse cx="35.5" cy="19.5" rx="3.6" ry="4.5" fill="#F6C445"/>
+<path d="M22 11.5c.3-3 2-5 4.5-6" stroke="#9A5A2C" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="21.5" cy="12.5" r="3.3" fill="#E5483A"/>
+<path d="M6.5 21h35c0 9.5-7.8 15-17.5 15S6.5 30.5 6.5 21Z" fill="#CFE4F4"/>
+<path d="M9 27h30c-2.5 5-8 9-15 9S11.5 32 9 27Z" fill="#9CC8EA"/>
+<rect x="22.5" y="35" width="3" height="6" fill="#CFE4F4"/><ellipse cx="24" cy="42" rx="8.5" ry="2.2" fill="#CFE4F4"/></g>
+    </symbol>
+    <symbol id="ill-fruit" viewBox="0 0 48 48">
+      <g transform="rotate(-3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M24 14.5c5-4 14-4 16 4.5 2 9-3 21-10 22-3 .5-4-1-6-1s-3 1.5-6 1C11 40 6 28 8 19c2-8.5 11-8.5 16-4.5Z" fill="#1F2A26"/>
+<path d="M24 14.5c5-4 14-4 16 4.5 2 9-3 21-10 22 4-6 5.5-15 3-21-1.6-3.6-5-5.5-9-5.5Z" fill="#1F2A26"/>
+<path d="M24 15l1.2-8" stroke="#1F2A26" stroke-width="3" stroke-linecap="round"/>
+<path d="M27 9.5c2-5.5 8.5-6.5 12-5.5-1 4.5-6.5 7.5-12 5.5Z" fill="#1F2A26"/>
+<ellipse cx="14" cy="20" rx="2" ry="4" fill="#1F2A26" transform="rotate(20 14 20)"/></g><path d="M24 14.5c5-4 14-4 16 4.5 2 9-3 21-10 22-3 .5-4-1-6-1s-3 1.5-6 1C11 40 6 28 8 19c2-8.5 11-8.5 16-4.5Z" fill="#E5483A"/>
+<path d="M24 14.5c5-4 14-4 16 4.5 2 9-3 21-10 22 4-6 5.5-15 3-21-1.6-3.6-5-5.5-9-5.5Z" fill="#B8352A"/>
+<path d="M24 15l1.2-8" stroke="#9A5A2C" stroke-width="3" stroke-linecap="round"/>
+<path d="M27 9.5c2-5.5 8.5-6.5 12-5.5-1 4.5-6.5 7.5-12 5.5Z" fill="#3C9A58"/>
+<ellipse cx="14" cy="20" rx="2" ry="4" fill="#F4A6A0" transform="rotate(20 14 20)"/></g>
+    </symbol>
+    <symbol id="ill-biscuit" viewBox="0 0 48 48">
+      <g transform="rotate(-8 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><g fill="#1F2A26"><rect x="8" y="12" width="32" height="24" rx="1.5"/><circle cx="10" cy="12" r="2.3"/><circle cx="10" cy="36" r="2.3"/><circle cx="14" cy="12" r="2.3"/><circle cx="14" cy="36" r="2.3"/><circle cx="18" cy="12" r="2.3"/><circle cx="18" cy="36" r="2.3"/><circle cx="22" cy="12" r="2.3"/><circle cx="22" cy="36" r="2.3"/><circle cx="26" cy="12" r="2.3"/><circle cx="26" cy="36" r="2.3"/><circle cx="30" cy="12" r="2.3"/><circle cx="30" cy="36" r="2.3"/><circle cx="34" cy="12" r="2.3"/><circle cx="34" cy="36" r="2.3"/><circle cx="38" cy="12" r="2.3"/><circle cx="38" cy="36" r="2.3"/><circle cx="8" cy="14" r="2.3"/><circle cx="40" cy="14" r="2.3"/><circle cx="8" cy="18" r="2.3"/><circle cx="40" cy="18" r="2.3"/><circle cx="8" cy="22" r="2.3"/><circle cx="40" cy="22" r="2.3"/><circle cx="8" cy="26" r="2.3"/><circle cx="40" cy="26" r="2.3"/><circle cx="8" cy="30" r="2.3"/><circle cx="40" cy="30" r="2.3"/><circle cx="8" cy="34" r="2.3"/><circle cx="40" cy="34" r="2.3"/></g><rect x="12" y="16" width="24" height="16" rx="1" fill="#1F2A26"/><g fill="#1F2A26"><circle cx="15" cy="19" r="1.3"/><circle cx="15" cy="29" r="1.3"/><circle cx="21" cy="19" r="1.3"/><circle cx="21" cy="29" r="1.3"/><circle cx="27" cy="19" r="1.3"/><circle cx="27" cy="29" r="1.3"/><circle cx="33" cy="19" r="1.3"/><circle cx="33" cy="29" r="1.3"/></g></g><g fill="#E8B160"><rect x="8" y="12" width="32" height="24" rx="1.5"/><circle cx="10" cy="12" r="2.3"/><circle cx="10" cy="36" r="2.3"/><circle cx="14" cy="12" r="2.3"/><circle cx="14" cy="36" r="2.3"/><circle cx="18" cy="12" r="2.3"/><circle cx="18" cy="36" r="2.3"/><circle cx="22" cy="12" r="2.3"/><circle cx="22" cy="36" r="2.3"/><circle cx="26" cy="12" r="2.3"/><circle cx="26" cy="36" r="2.3"/><circle cx="30" cy="12" r="2.3"/><circle cx="30" cy="36" r="2.3"/><circle cx="34" cy="12" r="2.3"/><circle cx="34" cy="36" r="2.3"/><circle cx="38" cy="12" r="2.3"/><circle cx="38" cy="36" r="2.3"/><circle cx="8" cy="14" r="2.3"/><circle cx="40" cy="14" r="2.3"/><circle cx="8" cy="18" r="2.3"/><circle cx="40" cy="18" r="2.3"/><circle cx="8" cy="22" r="2.3"/><circle cx="40" cy="22" r="2.3"/><circle cx="8" cy="26" r="2.3"/><circle cx="40" cy="26" r="2.3"/><circle cx="8" cy="30" r="2.3"/><circle cx="40" cy="30" r="2.3"/><circle cx="8" cy="34" r="2.3"/><circle cx="40" cy="34" r="2.3"/></g><rect x="12" y="16" width="24" height="16" rx="1" fill="#F0C27A"/><g fill="#C98A3E"><circle cx="15" cy="19" r="1.3"/><circle cx="15" cy="29" r="1.3"/><circle cx="21" cy="19" r="1.3"/><circle cx="21" cy="29" r="1.3"/><circle cx="27" cy="19" r="1.3"/><circle cx="27" cy="29" r="1.3"/><circle cx="33" cy="19" r="1.3"/><circle cx="33" cy="29" r="1.3"/></g></g>
+    </symbol>
+    <symbol id="ill-gateau" viewBox="0 0 48 48">
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M8 21 19 27V42L8 36Z" fill="#1F2A26"/>
+<path d="M19 27 40 20.5V35.5L19 42Z" fill="#1F2A26"/>
+<path d="M8 28.5 19 34.5v3.6L8 32.1Z" fill="#1F2A26"/><path d="M19 34.5 40 28v3.6L19 38.1Z" fill="#1F2A26"/>
+<path d="M8 21 29.5 14.5 40 20.5 19 27Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><rect x="10.5" y="21" width="3.2" height="6.5" rx="1.6" transform="rotate(-28 12 24)"/><rect x="24" y="22" width="3.2" height="7.5" rx="1.6" transform="rotate(16 25.6 25.7)"/><rect x="33.5" y="19.5" width="3.2" height="6" rx="1.6" transform="rotate(16 35 22.5)"/></g>
+<circle cx="24.5" cy="16.5" r="4" fill="#1F2A26"/><path d="M23 13c.8-1.6 2.5-2 4-1.6-.4 1.4-2 2.3-4 1.6Z" fill="#1F2A26"/></g><path d="M8 21 19 27V42L8 36Z" fill="#D99A5B"/>
+<path d="M19 27 40 20.5V35.5L19 42Z" fill="#C07F43"/>
+<path d="M8 28.5 19 34.5v3.6L8 32.1Z" fill="#F6E7C8"/><path d="M19 34.5 40 28v3.6L19 38.1Z" fill="#F6E7C8"/>
+<path d="M8 21 29.5 14.5 40 20.5 19 27Z" fill="#F4A6A0"/>
+<g fill="#F4A6A0"><rect x="10.5" y="21" width="3.2" height="6.5" rx="1.6" transform="rotate(-28 12 24)"/><rect x="24" y="22" width="3.2" height="7.5" rx="1.6" transform="rotate(16 25.6 25.7)"/><rect x="33.5" y="19.5" width="3.2" height="6" rx="1.6" transform="rotate(16 35 22.5)"/></g>
+<circle cx="24.5" cy="16.5" r="4" fill="#E5483A"/><path d="M23 13c.8-1.6 2.5-2 4-1.6-.4 1.4-2 2.3-4 1.6Z" fill="#3C9A58"/></g>
+    </symbol>
+    <symbol id="ill-mousse" viewBox="0 0 48 48">
+      <g transform="rotate(3 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><path d="M7 21h34l-3 17a4 4 0 0 1-4 3.4H14a4 4 0 0 1-4-3.4Z" fill="#1F2A26"/>
+<path d="M8.6 26h30.8l-2 11.6a3 3 0 0 1-3 2.6H13.6a3 3 0 0 1-3-2.6Z" fill="#1F2A26"/>
+<path d="M8 22c2-6 8.5-9.5 16-9.5S38 16 40 22c-4.5 1.8-10 2.8-16 2.8S12.5 23.8 8 22Z" fill="#1F2A26"/>
+<path d="M18 16.5c0-3.5 2.8-6 6-6s6 2.5 6 6c-2 1-4 1.4-6 1.4s-4-.4-6-1.4Z" fill="#1F2A26"/>
+<path d="M21 11.5c.6-2.6 2.4-4.4 5-4.8-.3 2.4-2 4.3-5 4.8Z" fill="#1F2A26"/>
+<g fill="#1F2A26"><rect x="12" y="18" width="4" height="1.6" rx=".8" transform="rotate(-20 14 18.8)"/><rect x="31.5" y="18.5" width="4" height="1.6" rx=".8" transform="rotate(25 33.5 19.3)"/></g>
+<rect x="12.5" y="28" width="2.4" height="9" rx="1.2" fill="#1F2A26"/></g><path d="M7 21h34l-3 17a4 4 0 0 1-4 3.4H14a4 4 0 0 1-4-3.4Z" fill="#CFE4F4"/>
+<path d="M8.6 26h30.8l-2 11.6a3 3 0 0 1-3 2.6H13.6a3 3 0 0 1-3-2.6Z" fill="#7A4424"/>
+<path d="M8 22c2-6 8.5-9.5 16-9.5S38 16 40 22c-4.5 1.8-10 2.8-16 2.8S12.5 23.8 8 22Z" fill="#8B4E2A"/>
+<path d="M18 16.5c0-3.5 2.8-6 6-6s6 2.5 6 6c-2 1-4 1.4-6 1.4s-4-.4-6-1.4Z" fill="#F6E7C8"/>
+<path d="M21 11.5c.6-2.6 2.4-4.4 5-4.8-.3 2.4-2 4.3-5 4.8Z" fill="#F6E7C8"/>
+<g fill="#5C2F17"><rect x="12" y="18" width="4" height="1.6" rx=".8" transform="rotate(-20 14 18.8)"/><rect x="31.5" y="18.5" width="4" height="1.6" rx=".8" transform="rotate(25 33.5 19.3)"/></g>
+<rect x="12.5" y="28" width="2.4" height="9" rx="1.2" fill="#9A5E36"/></g>
+    </symbol>
     <symbol id="ill-chocolat" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <rect x="10" y="13" width="28" height="24" rx="3" fill="#5c3218"/><rect x="10" y="13" width="28" height="12" rx="3" fill="#7a4522"/><path d="M24 13v24M10 25h28" stroke="#43230f" stroke-width="2"/>
-      <path d="M13 13h22a3 3 0 0 1 3 3v9H10v-9a3 3 0 0 1 3-3Z" fill="url(#lustre)"/>
+      <g transform="rotate(-6 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><rect x="11" y="6" width="26" height="22" rx="2" fill="#1F2A26"/>
+<g fill="#1F2A26"><rect x="13" y="8" width="10" height="8" rx="1.2"/><rect x="25" y="8" width="10" height="8" rx="1.2"/><rect x="13" y="18" width="10" height="8" rx="1.2"/><rect x="25" y="18" width="10" height="8" rx="1.2"/></g>
+<rect x="9" y="23" width="30" height="19" rx="2" fill="#1F2A26"/><rect x="9" y="29.5" width="30" height="4.5" fill="#1F2A26"/>
+<path d="M9 23h30l-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5Z" fill="#1F2A26"/></g><rect x="11" y="6" width="26" height="22" rx="2" fill="#6B3A1F"/>
+<g fill="#84502B"><rect x="13" y="8" width="10" height="8" rx="1.2"/><rect x="25" y="8" width="10" height="8" rx="1.2"/><rect x="13" y="18" width="10" height="8" rx="1.2"/><rect x="25" y="18" width="10" height="8" rx="1.2"/></g>
+<rect x="9" y="23" width="30" height="19" rx="2" fill="#E5483A"/><rect x="9" y="29.5" width="30" height="4.5" fill="#F6C445"/>
+<path d="M9 23h30l-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5-2.5-3.5-2.5 3.5Z" fill="#B8352A"/></g>
     </symbol>
 
     <!--
       Le plat inclassable : une cloche posée sur son plateau
-      (finitions-et-plat-inconnu, D2). L'assiette vide qu'elle remplace disait une
-      absence ; la cloche dit « le plat du jour » sans en nommer la nature. Acier
-      neutre, pour ne ressembler à aucune famille.
+      (finitions-et-plat-inconnu, D2). Acier neutre, pour ne ressembler à aucune
+      famille ni à aucun papier de la palette.
     -->
     <symbol id="ill-inconnu" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="16" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="24" cy="36.2" rx="19" ry="3.4" fill="#8e9894"/><ellipse cx="24" cy="35.2" rx="19" ry="2.8" fill="#c9d0cd"/>
-      <path d="M8.5 34a15.5 19 0 0 1 31 0Z" fill="#b4bdbb"/><rect x="8.5" y="32" width="31" height="2.2" rx="1.1" fill="#8e9894"/>
-      <ellipse cx="17" cy="23.5" rx="2.2" ry="6.5" transform="rotate(24 17 23.5)" fill="#fff" opacity=".5"/>
-      <rect x="22.8" y="12.6" width="2.4" height="3" fill="#8e9894"/><circle cx="24" cy="12" r="2.8" fill="#a3acaa"/>
-      <path d="M8.5 34a15.5 19 0 0 1 31 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <!-- Salade composée : plusieurs couleurs dans un bol, ce qui la distingue de la salade verte. -->
-    <symbol id="ill-salade-composee" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><circle cx="17" cy="20" r="3.4" fill="#cf4436"/><circle cx="25" cy="19" r="3.6" fill="#5fa04a"/><circle cx="32" cy="21" r="3.2" fill="#e8a93a"/><circle cx="21" cy="23" r="2.6" fill="#7cb861"/><circle cx="29" cy="23" r="2.4" fill="#d8573f"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-salade-verte" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><ellipse cx="18" cy="19" rx="8" ry="5.5" transform="rotate(-22 18 19)" fill="#4e9142"/><ellipse cx="29" cy="19" rx="8" ry="5.5" transform="rotate(20 29 19)" fill="#68ad55"/><ellipse cx="24" cy="21" rx="7" ry="4.5" fill="#7cbf66"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <!-- Crudités râpées : des filaments, pas des morceaux. -->
-    <symbol id="ill-crudite-rapee" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><path d="M13 22c4-3 8-5 12-5s8 2 11 5" stroke="#e2842f" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M15 19c3-2 6-3 9-3s7 1 9 3" stroke="#f09b45" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-tomate" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <circle cx="24" cy="27" r="13" fill="#cf3b2c"/><circle cx="24" cy="27" r="13" fill="url(#assise)"/><path d="M24 15c-3-3-7-3.5-9-2 1 3 4 5 7 5.2m2-3.2c3-3 7-3.5 9-2-1 3-4 5-7 5.2" fill="#4e9142"/><rect x="22.6" y="10" width="2.8" height="6" rx="1.4" fill="#4e9142"/>
-      <path d="M24 14a13 13 0 0 1 13 13 13 13 0 0 1-26 0A13 13 0 0 1 24 14Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-concombre" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="18" cy="28" rx="9.5" ry="9.5" fill="#8bbf5c"/><ellipse cx="18" cy="28" rx="7" ry="7" fill="#d6e9bd"/><ellipse cx="31" cy="22" rx="8.5" ry="8.5" fill="#7cb34f"/><ellipse cx="31" cy="22" rx="6.2" ry="6.2" fill="#c8e2ac"/><circle cx="31" cy="22" r="1.6" fill="#9dc47a"/><circle cx="18" cy="28" r="1.8" fill="#a8cc84"/>
-      <path d="M31 13.5a8.5 8.5 0 0 1 8.5 8.5H22.5A8.5 8.5 0 0 1 31 13.5Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-chou" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="12" cy="30" rx="8" ry="5.5" transform="rotate(-25 12 30)" fill="#5b9448"/><ellipse cx="36" cy="30" rx="8" ry="5.5" transform="rotate(25 36 30)" fill="#5b9448"/><ellipse cx="24" cy="28" rx="13" ry="10" fill="#e6e2cf"/><circle cx="16" cy="24" r="5.5" fill="#f2efe0"/><circle cx="24" cy="21" r="6.5" fill="#f7f5ea"/><circle cx="32" cy="24" r="5.5" fill="#f2efe0"/><circle cx="20" cy="27" r="4.5" fill="#efece0"/><circle cx="29" cy="27" r="4.5" fill="#efece0"/>
-      <path d="M24 15a13 10 0 0 1 13 10 13 10 0 0 1-26 0A13 10 0 0 1 24 15Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-courgette" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M10 32c0-10 7-18 17-18 5 0 9 3 9 8 0 10-7 18-17 18-5 0-9-3-9-8Z" fill="#4e9142"/><path d="M14 30c0-8 6-14 13-14 3 0 5 2 5 5 0 8-6 14-13 14-3 0-5-2-5-5Z" fill="#68ad55"/><rect x="26" y="9" width="3" height="7" rx="1.5" transform="rotate(18 26 9)" fill="#3d7334"/>
-      <path d="M10 32c0-10 7-18 17-18 5 0 9 3 9 8H10Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-poireau" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M24 24c-5-8-9-12-14-14 1 8 6 13 12 16m4 0c6-3 11-8 12-16-5 2-9 6-14 14" fill="#4e9142"/><path d="M24 23c-2-7-3-11-4-14 0 7 1 11 3 15" fill="#68ad55"/><rect x="19" y="22" width="10" height="18" rx="5" fill="#f2f0e2"/><rect x="19" y="22" width="10" height="18" rx="5" fill="url(#assise)"/><path d="M19 27h10M19 32h10" stroke="#ddd9c6" stroke-width="1.6"/>
-      <path d="M24 10c5 4 9 9 10 14H14c1-5 5-10 10-14Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <!-- Légumineuses : des grains ronds, distincts des filaments râpés. -->
-    <symbol id="ill-legumineuse" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><circle cx="17" cy="20" r="3" fill="#a6712f"/><circle cx="24" cy="19" r="3.2" fill="#c08b45"/><circle cx="31" cy="20" r="3" fill="#a6712f"/><circle cx="20.5" cy="23" r="2.8" fill="#b57f3a"/><circle cx="27.5" cy="23" r="2.8" fill="#b57f3a"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-courge" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <ellipse cx="24" cy="27" rx="14" ry="12" fill="#e08a2a"/><ellipse cx="17" cy="27" rx="6" ry="12" fill="#ec9c3d"/><ellipse cx="31" cy="27" rx="6" ry="12" fill="#ec9c3d"/><rect x="22.5" y="11" width="3" height="6" rx="1.5" fill="#5f7f3a"/>
-      <path d="M24 15a14 12 0 0 1 14 12 14 12 0 0 1-28 0A14 12 0 0 1 24 15Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-legume" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#dcd3c0"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#efe9db"/><circle cx="17" cy="20" r="3.8" fill="#e2842f"/><circle cx="17" cy="20" r="1.8" fill="#f0a45c"/><ellipse cx="26" cy="19" rx="6.5" ry="3.4" transform="rotate(-18 26 19)" fill="#4e9142"/><circle cx="31.5" cy="23" r="3" fill="#7cb861"/><circle cx="22" cy="23" r="2.6" fill="#5fa04a"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <!-- Yaourt : un pot, et non une part de fromage — le paquet précédent confondait les deux. -->
-    <symbol id="ill-yaourt" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M14 18h20l-2.4 19a3 3 0 0 1-3 2.6h-9.2a3 3 0 0 1-3-2.6Z" fill="#f4f1e6"/><path d="M14.8 24h18.4l-.7 6H15.5Z" fill="#c9d9e8"/><rect x="11" y="12" width="26" height="7" rx="3.5" fill="#d3ccb8"/><rect x="13" y="13.4" width="22" height="2.6" rx="1.3" fill="#e6e0cf"/>
-      <path d="M14 18h20l-1.2 8H15.2Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-laitage-sucre" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M13 22h22l-2 15a4 4 0 0 1-4 3.4H19a4 4 0 0 1-4-3.4Z" fill="#e8dcc6"/><path d="M13 22h22l-.8 6H13.8Z" fill="#f4ecdc"/><path d="M24 10c-4 0-7 2.6-7 6 0 3 3 5 7 5s7-2 7-5c0-3.4-3-6-7-6Z" fill="#fbf7ef"/>
-      <path d="M17 10h14c0 3.4-3 6-7 6s-7-2.6-7-6Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-fromage" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M8 32V20l32-8v12Z" fill="#e8b93c"/><path d="M8 20 40 12v6L8 26Z" fill="#f2cf62"/><circle cx="18" cy="25" r="2.4" fill="#d9a52c"/><circle cx="29" cy="21" r="2" fill="#d9a52c"/>
-      <path d="M8 20 40 12v6L8 26Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <!-- Compote : une purée lisse dans un bol, distincte du fruit entier. -->
-    <symbol id="ill-compote" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="#e9e2d2"/><ellipse cx="24" cy="24" rx="17" ry="3.4" fill="#f4efe3"/><ellipse cx="24" cy="21" rx="12" ry="4.6" fill="#e8b661"/><ellipse cx="21" cy="20" rx="5" ry="2.4" fill="#f2ca85"/>
-      <path d="M7 24h34a17 17 0 0 1-34 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-melon" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M6 30a18 18 0 0 1 36 0Z" fill="#5c8f3e"/><path d="M10 30a14 14 0 0 1 28 0Z" fill="#f0a75c"/><path d="M14 30a10 10 0 0 1 20 0Z" fill="#f7bd7e"/><circle cx="20" cy="26" r="1.4" fill="#e0904a"/><circle cx="28" cy="26" r="1.4" fill="#e0904a"/>
-      <path d="M10 30a14 14 0 0 1 28 0Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-fruit-sirop" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M11 18h26l-3 19a4 4 0 0 1-4 3.4H18a4 4 0 0 1-4-3.4Z" fill="#f3d9a8" opacity=".85"/><circle cx="19" cy="27" r="3.6" fill="#e8963c"/><circle cx="28" cy="25" r="3.2" fill="#efab55"/><circle cx="24" cy="32" r="3" fill="#e8963c"/><path d="M11 18h26l-.7 5H11.7Z" fill="#f8e9cb"/>
-      <path d="M11 18h26l-1.4 9H12.4Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-fruit" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <circle cx="24" cy="28" r="12" fill="#cf4436"/><path d="M24 16a12 12 0 0 1 12 12H12a12 12 0 0 1 12-12Z" fill="#e05a49"/><rect x="22.8" y="11" width="2.6" height="6" rx="1.3" fill="#7a5a34"/><ellipse cx="29" cy="13" rx="4.5" ry="2.6" transform="rotate(-25 29 13)" fill="#5fa04a"/>
-      <path d="M24 16a12 12 0 0 1 12 12H12a12 12 0 0 1 12-12Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <!-- Biscuit sec : rond et piqué, il ne se confond pas avec une part de gâteau. -->
-    <symbol id="ill-biscuit" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <circle cx="24" cy="26" r="13" fill="#c99a58"/><circle cx="24" cy="26" r="13" fill="url(#assise)"/><circle cx="19" cy="22" r="1.8" fill="#8f6a34"/><circle cx="28" cy="24" r="1.8" fill="#8f6a34"/><circle cx="23" cy="30" r="1.8" fill="#8f6a34"/><circle cx="30" cy="30" r="1.5" fill="#8f6a34"/>
-      <path d="M24 13a13 13 0 0 1 13 13 13 13 0 0 1-26 0A13 13 0 0 1 24 13Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-gateau" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M10 38V22l14-8 14 8v16Z" fill="#d8a86a"/><path d="M10 22 24 14l14 8-14 7Z" fill="#eac492"/><path d="M10 27h28v5H10Z" fill="#a9613a"/><circle cx="24" cy="12" r="2.6" fill="#cf4436"/>
-      <path d="M10 22 24 14l14 8-14 7Z" fill="url(#lustre)"/>
-    </symbol>
-
-    <symbol id="ill-mousse" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="41" rx="13" ry="2.4" fill="#000" opacity=".10"/>
-      <path d="M13 20h22l-2.4 17a4 4 0 0 1-4 3.4h-9.2a4 4 0 0 1-4-3.4Z" fill="#c98f5e"/><path d="M13 20h22l-.7 5H13.7Z" fill="#dba876"/><path d="M24 6c-5 0-9 3.4-9 8 0 3.4 4 6 9 6s9-2.6 9-6c0-4.6-4-8-9-8Z" fill="#f2e4d2"/><circle cx="24" cy="7" r="2.2" fill="#cf4436"/>
-      <path d="M15 6h18c0 3.4-4 6-9 6s-9-2.6-9-6Z" fill="url(#lustre)"/>
+      <g transform="rotate(0 24 24)"><g transform="translate(1.3 1.8)" opacity=".16"><ellipse cx="24" cy="37.5" rx="19" ry="4" fill="#1F2A26"/><ellipse cx="24" cy="36.5" rx="19" ry="3.4" fill="#1F2A26"/>
+<path d="M8 35.5a16 17 0 0 1 32 0Z" fill="#1F2A26"/>
+<ellipse cx="16.5" cy="25" rx="2.4" ry="6" fill="#1F2A26" transform="rotate(25 16.5 25)"/>
+<rect x="22.8" y="16" width="2.4" height="3" fill="#1F2A26"/><circle cx="24" cy="15.5" r="3.2" fill="#1F2A26"/></g><ellipse cx="24" cy="37.5" rx="19" ry="4" fill="#A3ACAA"/><ellipse cx="24" cy="36.5" rx="19" ry="3.4" fill="#DDE2E0"/>
+<path d="M8 35.5a16 17 0 0 1 32 0Z" fill="#C3CBC8"/>
+<ellipse cx="16.5" cy="25" rx="2.4" ry="6" fill="#FFFFFF" opacity=".6" transform="rotate(25 16.5 25)"/>
+<rect x="22.8" y="16" width="2.4" height="3" fill="#A3ACAA"/><circle cx="24" cy="15.5" r="3.2" fill="#A3ACAA"/></g>
     </symbol>
 
     <!--
