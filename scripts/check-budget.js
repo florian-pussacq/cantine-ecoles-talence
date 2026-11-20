@@ -125,9 +125,13 @@ const taille = (chemin) => {
  */
 function chargesPar(page) {
   const html = readFileSync(join(BUILD_DIR, page), 'utf8');
+  /*
+    Les chemins sont relatifs à la page : `./_app/…` à la racine, `../_app/…`
+    pour une page rangée dans un sous-dossier (`reglages/allergenes.html`).
+  */
   const nommes = [
     ...new Set(
-      [...html.matchAll(/["(]\.?\/?(_app\/immutable\/[^"')]+\.js)/g)].map((m) => m[1] ?? '')
+      [...html.matchAll(/["(](?:\.\.?\/)*(_app\/immutable\/[^"')]+\.js)/g)].map((m) => m[1] ?? '')
     )
   ];
   if (nommes.length === 0)

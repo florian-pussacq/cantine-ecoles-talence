@@ -55,6 +55,7 @@
   */
   const TITRES: Record<string, { titre: string }> = {
     '/reglages': { titre: 'Réglages' },
+    '/reglages/allergenes': { titre: 'Allergènes' },
     '/greve': { titre: 'Menu de grève' },
     '/a-propos': { titre: "D'où viennent ces menus" }
   };
@@ -71,8 +72,8 @@
   /*
     Où mène la sortie de chaque écran secondaire (design.md, D62).
 
-    Elle remonte d'un cran, et non toujours à l'accueil. Le menu de grève ne
-    s'atteint que par les réglages : une commande d'en-tête qui sauterait
+    Elle remonte d'un cran, et non toujours à l'accueil. Le menu de grève et
+    les allergènes ne s'atteignent que par les réglages : une commande d'en-tête qui sauterait
     par-dessus l'écran d'où l'on vient contredirait la place qu'elle occupe.
 
     Elle n'est pas calculée sur l'historique du navigateur. Il rendrait la
@@ -81,12 +82,14 @@
   */
   const MENU = { vers: '/', nom: 'Menu', libelle: 'Retour au menu' } as const;
 
-  const SORTIES: Record<string, typeof MENU | { vers: '/reglages'; nom: string; libelle: string }> =
-    {
-      '/reglages': MENU,
-      '/a-propos': MENU,
-      '/greve': { vers: '/reglages', nom: 'Réglages', libelle: 'Retour aux réglages' }
-    };
+  const REGLAGES = { vers: '/reglages', nom: 'Réglages', libelle: 'Retour aux réglages' } as const;
+
+  const SORTIES: Record<string, typeof MENU | typeof REGLAGES> = {
+    '/reglages': MENU,
+    '/a-propos': MENU,
+    '/reglages/allergenes': REGLAGES,
+    '/greve': REGLAGES
+  };
 
   /*
     Le choix Jour/Semaine n'appartient qu'aux deux écrans de menu (D31). Sur

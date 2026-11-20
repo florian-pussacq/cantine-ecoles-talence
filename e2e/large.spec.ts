@@ -28,7 +28,7 @@ test('la colonne de contenu reste bornée', async ({ page }, infos) => {
 });
 
 test('la page ne défile jamais horizontalement', async ({ page }) => {
-  for (const ecran of ['/', '/semaine', '/reglages', '/a-propos']) {
+  for (const ecran of ['/', '/semaine', '/reglages', '/reglages/allergenes', '/a-propos']) {
     await page.goto(ecran);
     const debordement = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth

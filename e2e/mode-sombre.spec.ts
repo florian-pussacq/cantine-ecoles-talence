@@ -71,7 +71,7 @@ test('par défaut, les réglages suivent l’appareil', async ({ page }) => {
   await page.goto('/reglages');
   await hydratee(page);
 
-  await expect(page.getByRole('radio', { name: /Comme l’appareil/ })).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'Appareil', exact: true })).toBeChecked();
 });
 
 test('le sombre choisi l’emporte sur un système en clair, et survit au rechargement', async ({
@@ -103,7 +103,7 @@ test('le clair choisi l’emporte sur un système en sombre', async ({ page }) =
 test('rendre la main à l’appareil le fait suivre à nouveau', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await choisir(page, 'Clair');
-  await page.getByRole('radio', { name: /Comme l’appareil/ }).check();
+  await page.getByRole('radio', { name: 'Appareil', exact: true }).check();
   expect(await fondDePage(page)).toBe(FOND_SOMBRE);
 
   await page.emulateMedia({ colorScheme: 'light' });
@@ -111,5 +111,5 @@ test('rendre la main à l’appareil le fait suivre à nouveau', async ({ page }
 
   await page.reload();
   await hydratee(page);
-  await expect(page.getByRole('radio', { name: /Comme l’appareil/ })).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'Appareil', exact: true })).toBeChecked();
 });

@@ -9,7 +9,7 @@ import { expect, hydratee, test } from './test';
  * courant sont ceux que l'audit relevait, à 100 caractères sur bureau et avec
  * dix-sept mots seuls.
  */
-const ECRANS = ['/a-propos', '/reglages', '/greve'];
+const ECRANS = ['/a-propos', '/reglages', '/reglages/allergenes', '/greve'];
 
 type Mesure = { texte: string; plusLongue: number; motSeul: string | null };
 

@@ -1,6 +1,13 @@
 import { expect, hydratee, test, type Page } from './test';
 
-const ECRANS = ['/', '/semaine', '/reglages', '/greve', '/a-propos'] as const;
+const ECRANS = [
+  '/',
+  '/semaine',
+  '/reglages',
+  '/reglages/allergenes',
+  '/greve',
+  '/a-propos'
+] as const;
 
 /**
  * Aucune requête ne doit sortir vers un autre domaine.

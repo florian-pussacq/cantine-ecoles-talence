@@ -22,7 +22,7 @@ function onglets(page: Page) {
 }
 
 test('l’enseigne mène au menu depuis n’importe quel écran', async ({ page }) => {
-  for (const ecran of ['/semaine', '/reglages', '/greve', '/a-propos']) {
+  for (const ecran of ['/semaine', '/reglages', '/reglages/allergenes', '/greve', '/a-propos']) {
     await page.goto(ecran);
     await page.getByRole('link', { name: 'Cantine des écoles de Talence' }).click();
     await expect(page).toHaveURL(/\/$/);
@@ -116,7 +116,7 @@ test('les onglets ne portent que des destinations de consultation', async ({ pag
 test('les onglets ne figurent que sur les deux écrans qu’ils choisissent entre', async ({
   page
 }) => {
-  for (const ecran of ['/reglages', '/greve', '/a-propos']) {
+  for (const ecran of ['/reglages', '/reglages/allergenes', '/greve', '/a-propos']) {
     await page.goto(ecran);
     await expect(onglets(page)).toHaveCount(0);
   }
@@ -129,6 +129,7 @@ test('un écran hors des onglets porte sa sortie dans l’en-tête, nommée', as
   const sorties = [
     { ecran: '/reglages', nom: 'Retour au menu', vers: /\/$/ },
     { ecran: '/a-propos', nom: 'Retour au menu', vers: /\/$/ },
+    { ecran: '/reglages/allergenes', nom: 'Retour aux réglages', vers: /\/reglages\/?$/ },
     { ecran: '/greve', nom: 'Retour aux réglages', vers: /\/reglages\/?$/ }
   ];
 
@@ -160,6 +161,7 @@ test('l’emplacement de commande de l’enseigne porte toujours une commande, e
     { ecran: '/', roue: 1 },
     { ecran: '/semaine', roue: 1 },
     { ecran: '/reglages', roue: 0 },
+    { ecran: '/reglages/allergenes', roue: 0 },
     { ecran: '/greve', roue: 0 },
     { ecran: '/a-propos', roue: 0 }
   ];
@@ -179,7 +181,14 @@ test('l’en-tête ne change pas de hauteur d’un écran à l’autre', async (
   // de se replier (D62).
   const hauteurs: number[] = [];
 
-  for (const ecran of ['/', '/semaine', '/reglages', '/greve', '/a-propos']) {
+  for (const ecran of [
+    '/',
+    '/semaine',
+    '/reglages',
+    '/reglages/allergenes',
+    '/greve',
+    '/a-propos'
+  ]) {
     await page.goto(ecran);
     const boite = await page.locator('.enseigne').boundingBox();
     hauteurs.push(boite!.height);
