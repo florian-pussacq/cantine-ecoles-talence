@@ -271,7 +271,7 @@ Les écrans de consultation SHALL respecter le niveau WCAG 2.1 AA : contraste de
 
 Le système SHALL respecter `prefers-reduced-motion`.
 
-Le système SHALL suivre la préférence d'apparence du système de l'utilisateur, claire ou sombre, et chacune de ses deux palettes SHALL satisfaire les seuils de contraste de cette exigence. Il NE SHALL PAS offrir de choix d'apparence propre à l'application.
+Le système SHALL offrir, dans l'écran des réglages, un choix d'apparence en trois positions : comme l'appareil, clair, sombre. Par défaut, et tant que l'utilisateur n'a rien choisi, il SHALL suivre la préférence d'apparence du système, claire ou sombre. Le choix SHALL être conservé dans le navigateur et SHALL s'appliquer dès la première peinture, sans dépendre du JavaScript de l'application. Chacune des deux palettes SHALL satisfaire les seuils de contraste de cette exigence.
 
 Les rapports de contraste SHALL être vérifiés sur les couleurs telles qu'elles sont peintes, y compris lorsqu'une surface est obtenue par mélange à l'opacité ou par transparence partielle.
 
@@ -289,9 +289,13 @@ Lorsqu'un texte partage sa ligne avec une commande dont la cible tactile impose 
 - **WHEN** le système de l'utilisateur est en thème sombre
 - **THEN** l'application présente sa palette sombre dès la première peinture, sans réglage à faire dans l'application
 
-#### Scenario: Aucun choix propre à l'application
-- **WHEN** l'utilisateur parcourt les réglages de l'application
-- **THEN** il n'y trouve aucun choix d'apparence
+#### Scenario: Apparence choisie dans l'application
+- **WHEN** le système de l'utilisateur est en thème clair et qu'il a choisi « Sombre » dans les réglages
+- **THEN** l'application présente sa palette sombre, y compris dès la première peinture des ouvertures suivantes
+
+#### Scenario: Retour au défaut
+- **WHEN** l'utilisateur choisit « Comme l'appareil » après avoir imposé une apparence
+- **THEN** l'application suit de nouveau la préférence du système, et ses changements
 
 #### Scenario: Surface obtenue par opacité
 - **WHEN** un texte ou une bordure est peint par mélange à l'opacité sur le fond de page
@@ -317,7 +321,7 @@ Ce choix NE SHALL PAS mettre sur le même plan une vue de consultation et un ré
 
 L'en-tête de l'application SHALL réserver un emplacement unique, occupé sur tout écran par exactement une commande :
 
-- sur les écrans de consultation d'un menu, la commande menant au réglage des allergènes ;
+- sur les écrans de consultation d'un menu, la commande menant aux réglages ;
 - sur tout autre écran, la commande de sortie de cet écran.
 
 La commande de sortie SHALL nommer sa destination, et SHALL mener à l'écran depuis lequel son écran s'atteint.
@@ -335,12 +339,12 @@ Sur un écran large, le choix entre les deux écrans SHALL rester borné à la c
 - **THEN** l'autre est atteignable sans défiler ni ouvrir de menu, depuis le bas de la fenêtre
 
 #### Scenario: Écran secondaire
-- **WHEN** l'utilisateur consulte le réglage des allergènes, le menu de grève ou les mentions
+- **WHEN** l'utilisateur consulte les réglages, le réglage des allergènes, le menu de grève ou les mentions
 - **THEN** le choix entre les deux écrans de menu n'est pas affiché, la commande menant aux réglages n'est pas affichée, et une commande d'en-tête nommée permet de sortir de l'écran
 
 #### Scenario: Sortie vers l'écran d'origine
-- **WHEN** l'utilisateur ouvre le menu de grève depuis le réglage des allergènes puis actionne la commande de sortie
-- **THEN** il revient au réglage des allergènes
+- **WHEN** l'utilisateur ouvre le menu de grève ou le réglage des allergènes depuis les réglages, puis actionne la commande de sortie
+- **THEN** il revient aux réglages
 
 #### Scenario: L'en-tête ne change pas de hauteur
 - **WHEN** l'utilisateur passe d'un écran de consultation à un écran secondaire
@@ -472,11 +476,27 @@ Il SHALL être atteignable depuis l'écran des réglages.
 
 L'écran des réglages SHALL porter un titre couvrant l'ensemble des sujets qu'il regroupe, et SHALL distinguer chaque sujet par un intitulé de section.
 
+Il SHALL être un sommaire tenant sans défiler dans la plus petite fenêtre de téléphone prise en charge, et SHALL présenter ses sujets dans cet ordre : Apparence, Allergènes, Menus, Application.
+
+L'apparence SHALL s'y régler sur place. Le réglage des allergènes NE SHALL PAS y figurer : il SHALL occuper un écran dédié, atteint par l'entrée de la section Allergènes. Cet écran SHALL porter, à la suite des allergènes à cocher, l'avertissement selon lequel seul le document officiel de la Ville fait foi.
+
 La commande menant aux réglages SHALL continuer d'annoncer le nombre d'allergènes surveillés dans son nom accessible.
 
 #### Scenario: Nom accessible de la commande
 - **WHEN** trois allergènes sont surveillés
 - **THEN** la commande menant aux réglages annonce les réglages et le nombre d'allergènes surveillés
+
+#### Scenario: Le sommaire tient dans le premier écran
+- **WHEN** l'utilisateur ouvre les réglages sur un téléphone de 390 × 844
+- **THEN** les sections Apparence, Allergènes, Menus et Application sont visibles dans cet ordre, sans défiler
+
+#### Scenario: L'apparence se règle sur place
+- **WHEN** l'utilisateur choisit « Sombre » dans le sommaire des réglages
+- **THEN** l'application passe en palette sombre sans quitter l'écran
+
+#### Scenario: Le réglage des allergènes a son écran
+- **WHEN** l'utilisateur actionne l'entrée de la section Allergènes
+- **THEN** l'écran des allergènes s'affiche, avec les quatorze allergènes à cocher suivis de l'avertissement
 
 ### Requirement: Un jour de vacances se présente comme tel
 

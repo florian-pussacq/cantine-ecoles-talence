@@ -124,11 +124,11 @@ Lorsque la sélection est vide, le détail NE SHALL comporter ni résumé ni inv
 
 Lorsqu'au moins un allergène est sélectionné, le système SHALL l'indiquer en permanence sur les écrans de consultation, indépendamment de la présence d'un plat concerné ce jour-là. L'indication SHALL énoncer le nombre d'allergènes surveillés.
 
-Cette indication SHALL être portée par la commande qui mène au réglage, de sorte que voir l'état et aller le corriger soient le même geste.
+Cette indication SHALL être portée par la commande qui mène aux réglages. L'écran des réglages SHALL redire, sans défiler, l'état de la sélection — les allergènes surveillés et leur nombre — sur l'entrée qui mène au réglage des allergènes, de sorte que l'état vu sur l'écran de consultation se retrouve à l'arrivée et que la correction soit à un geste de plus.
 
 Le nombre SHALL être restitué aux technologies d'assistance par le nom accessible de cette commande, et NE SHALL PAS reposer sur la seule présence d'une marque visuelle.
 
-Lorsque la sélection est vide, aucune indication NE SHALL être affichée — ni marque, ni compte nul, ni invitation à configurer un filtre.
+Lorsque la sélection est vide, aucune indication NE SHALL être affichée sur la commande — ni marque, ni compte nul, ni invitation à configurer un filtre. L'entrée des réglages SHALL alors énoncer qu'aucun allergène n'est surveillé, sans compte nul.
 
 L'espace occupé par cette indication SHALL être réservé dans la mise en page indépendamment de l'état de la sélection, de sorte que sa lecture depuis le stockage local ne déplace aucun contenu.
 
@@ -137,7 +137,7 @@ L'espace occupé par cette indication SHALL être réservé dans la mise en page
 - **THEN** l'écran indique néanmoins que trois allergènes sont surveillés
 
 #### Scenario: Restitution du compte
-- **WHEN** un lecteur d'écran atteint la commande qui mène au réglage des allergènes
+- **WHEN** un lecteur d'écran atteint la commande qui mène aux réglages
 - **THEN** il annonce ce que la commande ouvre et le nombre d'allergènes surveillés
 
 #### Scenario: Sélection vide
@@ -150,7 +150,11 @@ L'espace occupé par cette indication SHALL être réservé dans la mise en page
 
 #### Scenario: Correction depuis l'indication
 - **WHEN** l'utilisateur actionne la commande portant l'indication
-- **THEN** il atteint l'écran de réglage des allergènes
+- **THEN** il atteint l'écran des réglages, où l'entrée des allergènes nomme les allergènes surveillés et leur nombre sans défiler, et mène au réglage des allergènes
+
+#### Scenario: Aucun allergène surveillé dans les réglages
+- **WHEN** aucun allergène n'est sélectionné et que l'utilisateur ouvre les réglages
+- **THEN** l'entrée des allergènes énonce qu'aucun n'est surveillé, sans compte
 
 ### Requirement: Allergènes non précisés par le document
 
